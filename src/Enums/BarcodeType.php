@@ -2,7 +2,8 @@
 
 namespace Spatie\LaravelMobilePass\Enums;
 
-enum BarcodeType: string {
+enum BarcodeType: string
+{
     case QR = 'PKBarcodeFormatQR';
     case PDF417 = 'PKBarcodeFormatPDF417';
     case Aztec = 'PKBarcodeFormatAztec';

@@ -2,7 +2,8 @@
 
 namespace Spatie\LaravelMobilePass\Enums;
 
-enum TimeStyleType: string {
+enum TimeStyleType: string
+{
     case None = 'PKDateStyleNone';
     case Short = 'PKDateStyleShort';
     case Medium = 'PKDateStyleMedium';

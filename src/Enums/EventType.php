@@ -2,7 +2,8 @@
 
 namespace Spatie\LaravelMobilePass\Enums;
 
-enum EventType: string {
+enum EventType: string
+{
     case Generic = 'PKEventTypeGeneric';
     case LivePerformance = 'PKEventTypeLivePerformance';
     case Movie = 'PKEventTypeMovie';

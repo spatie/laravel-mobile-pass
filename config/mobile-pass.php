@@ -2,5 +2,5 @@
 
 // config for Spatie/LaravelMobilePass
 return [
-    
+
 ];
