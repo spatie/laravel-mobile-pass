@@ -2,23 +2,33 @@
 
 namespace Spatie\LaravelMobilePass\Entities;
 
-class Price
+use Illuminate\Contracts\Support\Arrayable;
+
+class Price implements Arrayable
 {
     public function __construct(
-        public ?int $amountInSmallestUnit = null,
+        public ?string $amount = null,
         public ?string $currencyCode = null,
     )
     {
     }
 
     public static function make(
-        ?int $amountInSmallestUnit = null,
+        ?string $amount = null,
         ?string $currencyCode = null
     )
     {
         return new self(
-            amountInSmallestUnit: $amountInSmallestUnit,
+            amount: $amount,
             currencyCode: $currencyCode,
         );
+    }
+
+    public function toArray()
+    {
+        return [
+            'amount' => $this->amount,
+            'currencyCode' => $this->currencyCode,
+        ];
     }
 }

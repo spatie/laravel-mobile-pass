@@ -2,7 +2,9 @@
 
 namespace Spatie\LaravelMobilePass\Entities;
 
-class Location
+use Illuminate\Contracts\Support\Arrayable;
+
+class Location implements Arrayable
 {
     public function __construct(
         public string $latitude,
@@ -20,5 +22,13 @@ class Location
             latitude: $latitude,
             longitude: $longitude,
         );
+    }
+
+    public function toArray()
+    {
+        return [
+            'latitude' => $this->latitude,
+            'longitude' => $this->longitude,
+        ];
     }
 }

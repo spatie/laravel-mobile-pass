@@ -2,7 +2,9 @@
 
 namespace Spatie\LaravelMobilePass\Entities;
 
-class Seat
+use Illuminate\Contracts\Support\Arrayable;
+
+class Seat implements Arrayable
 {
     public function __construct(
         public ?string $description,
@@ -32,5 +34,17 @@ class Seat
             section: $section,
             type: $type,
         );
+    }
+
+    public function toArray()
+    {
+        return array_filter([
+            'description' => $this->description,
+            'identifier' => $this->identifier,
+            'number' => $this->number,
+            'row' => $this->row,
+            'section' => $this->section,
+            'type' => $this->type,
+        ]);
     }
 }

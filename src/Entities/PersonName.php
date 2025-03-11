@@ -2,7 +2,9 @@
 
 namespace Spatie\LaravelMobilePass\Entities;
 
-class PersonName
+use Illuminate\Contracts\Support\Arrayable;
+
+class PersonName implements Arrayable
 {
     public function __construct(
         public ?string $familyName = null,
@@ -35,5 +37,17 @@ class PersonName
             nickname: $nickname,
             phoneticRepresentation: $phoneticRepresentation,
         );
+    }
+
+    public function toArray()
+    {
+        return array_filter([
+            'familyName' => $this->familyName,
+            'givenName' => $this->givenName,
+            'middleName' => $this->middleName,
+            'namePrefix' => $this->namePrefix,
+            'nickname' => $this->nickname,
+            'phoneticRepresentation' => $this->phoneticRepresentation,
+        ]);
     }
 }

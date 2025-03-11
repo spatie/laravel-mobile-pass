@@ -2,10 +2,11 @@
 
 namespace Spatie\LaravelMobilePass\Entities;
 
+use Illuminate\Contracts\Support\Arrayable;
 use Spatie\LaravelMobilePass\Enums\DataDetectorType;
 use Spatie\LaravelMobilePass\Enums\NumberStyleType;
 
-class FieldContent
+class FieldContent implements Arrayable
 {
     public ?string $value = null;
     public ?string $label = null;
