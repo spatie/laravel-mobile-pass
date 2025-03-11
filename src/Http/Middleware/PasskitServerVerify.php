@@ -1,6 +1,6 @@
 <?php
 
-namespace Spatie\LaravelMobileWallet\Http\Middleware;
+namespace Spatie\LaravelMobilePass\Http\Middleware;
 
 use Closure;
 use Illuminate\Auth\AuthenticationException;
