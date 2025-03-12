@@ -2,8 +2,6 @@
 
 use Spatie\LaravelMobilePass\Entities\FieldContent;
 
-use function PHPUnit\Framework\assertSame;
-
 it('builds a basic field content', function () {
     $pass = FieldContent::make(key: 'some-key');
 
