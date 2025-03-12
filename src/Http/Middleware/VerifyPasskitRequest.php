@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\Request;
 
-class PasskitServerVerify
+class VerifyPasskitRequest
 {
     protected const AUTH_PREFIX = 'ApplePass';
 

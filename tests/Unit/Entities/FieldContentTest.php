@@ -7,10 +7,7 @@ use function PHPUnit\Framework\assertSame;
 it('builds a basic field content', function () {
     $pass = FieldContent::make(key: 'some-key');
 
-    assertSame(
-        ['key' => 'some-key'],
-        $pass->toArray(),
-    );
+    expect($pass->toArray())->toBe(['key' => 'some-key']);
 });
 
 it('builds a field content with a label and value', function () {
@@ -18,9 +15,9 @@ it('builds a field content with a label and value', function () {
         ->withLabel('My label')
         ->withValue('My value');
 
-    assertSame([
+    expect($pass->toArray())->toBe([
         'key' => 'some-key',
         'label' => 'My label',
         'value' => 'My value',
-    ], $pass->toArray());
+    ]);
 });

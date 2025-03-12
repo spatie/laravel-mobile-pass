@@ -1,6 +1,5 @@
 <?php
 
-// config for Spatie/LaravelMobilePass
 return [
     'organisation_name' => env('MOBILE_PASS_ORGANISATION_NAME'),
     'type_identifier' => env('MOBILE_PASS_TYPE_IDENTIFIER'),
