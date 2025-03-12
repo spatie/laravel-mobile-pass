@@ -10,16 +10,13 @@ class Colour implements Stringable
         public int $red,
         public int $green,
         public int $blue
-    )
-    {
-    }
+    ) {}
 
     public static function make(
         int $red,
         int $green,
         int $blue
-    )
-    {
+    ) {
         return new static(
             red: $red,
             green: $green,

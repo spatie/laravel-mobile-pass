@@ -13,9 +13,7 @@ class Seat implements Arrayable
         public ?string $row,
         public ?string $section,
         public ?string $type,
-    )
-    {
-    }
+    ) {}
 
     public static function make(
         ?string $description = null,
@@ -24,8 +22,7 @@ class Seat implements Arrayable
         ?string $row = null,
         ?string $section = null,
         ?string $type = null,
-    )
-    {
+    ) {
         return new self(
             description: $description,
             identifier: $identifier,

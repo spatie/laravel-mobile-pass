@@ -9,7 +9,7 @@ use function Pest\testDirectory;
 
 it('builds a basic boarding pass', function () {
     $pass = AirlinePassBuilder::make()
-        ->setSerialNumber(rand(1,100)*100)
+        ->setSerialNumber(rand(1, 100) * 100)
         ->setDescription('Hello!')
         ->setHeaderFields(
             FieldContent::make('flight-no')
@@ -59,7 +59,7 @@ it('builds a basic boarding pass', function () {
         ->setSeats(Seat::make(
             number: '66F',
         ))
-        
+
         ->generate();
 
     // For the moment, we'll just store a file here

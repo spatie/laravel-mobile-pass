@@ -2,7 +2,6 @@
 
 namespace Spatie\LaravelMobilePass\Builders\BoardingPasses;
 
-use Spatie\LaravelMobilePass\Builders\BoardingPasses\BoardingPassBuilder;
 use Spatie\LaravelMobilePass\Enums\TransitType;
 
 class AirlinePassBuilder extends BoardingPassBuilder
@@ -10,19 +9,26 @@ class AirlinePassBuilder extends BoardingPassBuilder
     protected ?TransitType $transitType = TransitType::Air;
 
     protected ?string $airlineCode = null;
+
     protected ?string $flightCode = null;
+
     protected ?string $flightNumber = null;
 
     protected ?string $departureGate = null;
+
     protected ?string $departureTerminal = null;
+
     protected ?string $departureAirportCode = null;
+
     protected ?string $departureAirportName = null;
 
     protected ?string $destinationAirportName = null;
-    protected ?string $destinationAirportCode = null;
-    protected ?string $destinationGate = null;
-    protected ?string $destinationTerminal = null;
 
+    protected ?string $destinationAirportCode = null;
+
+    protected ?string $destinationGate = null;
+
+    protected ?string $destinationTerminal = null;
 
     /**
      * The IATA airline code, such as EX for flightCode EX123.
@@ -133,5 +139,4 @@ class AirlinePassBuilder extends BoardingPassBuilder
 
         return $this;
     }
-
 }

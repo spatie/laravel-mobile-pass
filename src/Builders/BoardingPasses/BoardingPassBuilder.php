@@ -17,41 +17,61 @@ use Spatie\LaravelMobilePass\Validators\PassValidator;
 abstract class BoardingPassBuilder extends PassBuilder
 {
     protected PassType $type = PassType::BoardingPass;
+
     protected ?TransitType $transitType = null;
 
     protected ?Carbon $currentArrivalDate = null;
+
     protected ?Carbon $currentBoardingDate = null;
+
     protected ?Carbon $currentDepartureDate = null;
 
     protected ?Carbon $originalArrivalDate = null;
+
     protected ?Carbon $originalBoardingDate = null;
+
     protected ?Carbon $originalDepartureDate = null;
 
     protected ?string $confirmationNumber = null;
+
     protected ?string $boardingGroup = null;
+
     protected ?string $boardingSequenceNumber = null;
 
     protected ?Location $departureLocation = null;
+
     protected ?string $departureLocationDescription = null;
 
     protected ?Location $destinationLocation = null;
+
     protected ?string $destinationLocationDescription = null;
 
     protected ?int $durationInSeconds = null;
 
     protected ?string $membershipProgramName = null;
+
     protected ?string $membershipProgramNumber = null;
 
     protected ?PersonName $passengerName = null;
+
     protected ?string $priorityStatus = null;
+
     protected ?Collection $seats = null;
+
     protected ?string $securityScreening = null;
+
     protected ?bool $silenceRequested = null;
+
     protected ?string $transitProvider = null;
+
     protected ?string $transitStatus = null;
+
     protected ?string $transitStatusReason = null;
+
     protected ?string $vehicleName = null;
+
     protected ?string $vehicleNumber = null;
+
     protected ?string $vehicleType = null;
 
     protected static function validator(): PassValidator
@@ -130,7 +150,7 @@ abstract class BoardingPassBuilder extends PassBuilder
     }
 
     /**
-     * A brief description of the departure location. For example, for a flight departing from an airport that has a code of LHR, an appropriate description might be London, Heathrow. 
+     * A brief description of the departure location. For example, for a flight departing from an airport that has a code of LHR, an appropriate description might be London, Heathrow.
      */
     public function setDepartureLocationDescription(string $departureLocationDescription): self
     {
@@ -180,7 +200,7 @@ abstract class BoardingPassBuilder extends PassBuilder
     }
 
     /**
-     * The ticketed passenger’s frequent flyer or loyalty number. 
+     * The ticketed passenger’s frequent flyer or loyalty number.
      */
     public function setMembershipProgramNumber(string $membershipProgramNumber): self
     {
@@ -200,7 +220,7 @@ abstract class BoardingPassBuilder extends PassBuilder
     }
 
     /**
-     * The originally scheduled date and time of boarding. 
+     * The originally scheduled date and time of boarding.
      */
     public function setOriginalBoardingDate(Carbon $originalBoardingDate): self
     {
@@ -310,7 +330,7 @@ abstract class BoardingPassBuilder extends PassBuilder
     }
 
     /**
-     * The identifier of the vehicle to board, such as the aircraft registration number or train number. 
+     * The identifier of the vehicle to board, such as the aircraft registration number or train number.
      */
     public function setVehicleNumber(string $vehicleNumber): self
     {

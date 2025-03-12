@@ -1,6 +1,7 @@
 <?php
 
 use Spatie\LaravelMobilePass\Entities\FieldContent;
+
 use function PHPUnit\Framework\assertSame;
 
 it('builds a basic field content', function () {
@@ -20,6 +21,6 @@ it('builds a field content with a label and value', function () {
     assertSame([
         'key' => 'some-key',
         'label' => 'My label',
-        'value' => 'My value'
+        'value' => 'My value',
     ], $pass->toArray());
 });

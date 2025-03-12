@@ -8,22 +8,19 @@ use Illuminate\Http\Request;
 
 class PasskitServerVerify
 {
-    protected const AUTH_PREFIX = "ApplePass";
+    protected const AUTH_PREFIX = 'ApplePass';
 
     /**
      * Gets what we expect the authorization header value to be.
-     *
-     * @return string
      */
     protected function getExpectedAuthorizationHeader(): string
     {
-        return self::AUTH_PREFIX . " " . config('mobile-pass.apple.webservice.secret');
+        return self::AUTH_PREFIX.' '.config('mobile-pass.apple.webservice.secret');
     }
 
     /**
      * Handle an incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @param  \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
      * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */

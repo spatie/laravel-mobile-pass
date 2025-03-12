@@ -14,9 +14,7 @@ class PersonName implements Arrayable
         public ?string $nameSuffix = null,
         public ?string $nickname = null,
         public ?string $phoneticRepresentation = null
-    )
-    {
-    }
+    ) {}
 
     public static function make(
         ?string $familyName = null,
@@ -26,8 +24,7 @@ class PersonName implements Arrayable
         ?string $nameSuffix = null,
         ?string $nickname = null,
         ?string $phoneticRepresentation = null
-    )
-    {
+    ) {
         return new self(
             familyName: $familyName,
             givenName: $givenName,

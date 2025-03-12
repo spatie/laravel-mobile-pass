@@ -6,8 +6,5 @@ use Illuminate\Routing\Controller;
 
 class LogController extends Controller
 {
-    public function __invoke()
-    {
-        
-    }
+    public function __invoke() {}
 }

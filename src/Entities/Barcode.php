@@ -13,9 +13,7 @@ class Barcode implements Arrayable
         public BarcodeType $format,
         public string $message,
         public string $messageEncoding
-    )
-    {
-    }
+    ) {}
 
     public static function make(BarcodeType $format, string $message, string $messageEncoding): static
     {
@@ -42,4 +40,4 @@ class Barcode implements Arrayable
             'altText' => $this->altText,
         ]);
     }
-}                   
+}

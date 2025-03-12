@@ -34,7 +34,7 @@ abstract class PassValidator
     }
 
     public function validate(array $compiledData): array
-{   
+    {
         return validator($compiledData, $this->rules())->validate();
     }
 }

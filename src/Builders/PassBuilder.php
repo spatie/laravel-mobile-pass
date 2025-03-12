@@ -16,27 +16,35 @@ abstract class PassBuilder
     protected PassType $type;
 
     protected ?string $serialNumber = null;
+
     protected ?string $organisationName = null;
+
     protected ?string $description = null;
+
     protected ?Price $totalPrice = null;
+
     protected ?Collection $wifiDetails = null;
 
     protected ?Collection $primaryFields = null;
+
     protected ?Collection $secondaryFields = null;
+
     protected ?Collection $auxiliaryFields = null;
+
     protected ?Collection $headerFields = null;
+
     protected ?Collection $backFields = null;
 
     protected array $images = [];
 
     protected static function validator()
     {
-        return new PassValidator();
+        return new PassValidator;
     }
 
     public static function make(): static
     {
-        return new static();
+        return new static;
     }
 
     public function setLogoImage(Image $image): self
@@ -143,8 +151,7 @@ abstract class PassBuilder
 
     protected function addImagesToFile(PKPass $pkPass): PKPass
     {
-        foreach ($this->images as $filename => $image)
-        {
+        foreach ($this->images as $filename => $image) {
             // The $image Image entity could contain up to three
             // images in different resolutions.
 
@@ -166,8 +173,8 @@ abstract class PassBuilder
 
     protected static function getCertificatePath(): string
     {
-        if (!empty(config('mobile-pass.apple.certificate_contents'))) {
-            $path = __DIR__ . '/../../tmp/Cert.12';
+        if (! empty(config('mobile-pass.apple.certificate_contents'))) {
+            $path = __DIR__.'/../../tmp/Cert.12';
 
             file_put_contents(
                 $path,
@@ -194,7 +201,7 @@ abstract class PassBuilder
         // TODO: do this recursively.
         $compiledData = array_filter(
             $this->compileData(),
-            fn ($value) => !empty($value)
+            fn ($value) => ! empty($value)
         );
 
         $data = $this->validator()->validate(
@@ -213,6 +220,6 @@ abstract class PassBuilder
 
         $this->addImagesToFile($pkPass);
 
-        return $pkPass->create(output: false);        
+        return $pkPass->create(output: false);
     }
 }

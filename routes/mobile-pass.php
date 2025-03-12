@@ -1,12 +1,12 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
 use Spatie\LaravelMobilePass\Http\Controllers\CheckForUpdatesController;
 use Spatie\LaravelMobilePass\Http\Controllers\GetAssociatedSerialsForDeviceController;
 use Spatie\LaravelMobilePass\Http\Controllers\LogController;
 use Spatie\LaravelMobilePass\Http\Controllers\RegisterDeviceController;
 use Spatie\LaravelMobilePass\Http\Controllers\UnregisterDeviceController;
 use Spatie\LaravelMobilePass\Http\Middleware\PasskitServerVerify;
-use Illuminate\Support\Facades\Route;
 
 Route::group([
     'prefix' => 'passkit/v1',
