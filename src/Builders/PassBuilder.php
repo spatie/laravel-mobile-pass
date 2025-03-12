@@ -164,8 +164,32 @@ abstract class PassBuilder
         return $pkPass;
     }
 
+    protected static function getCertificatePath(): string
+    {
+        if (!empty(config('mobile-pass.apple.certificate_contents'))) {
+            $path = __DIR__ . '/../../tmp/Cert.12';
+
+            file_put_contents(
+                $path,
+                base64_decode(
+                    config('mobile-pass.apple.certificate_contents')
+                )
+            );
+
+            return $path;
+        }
+
+        return config('mobile-pass.apple.certificate_path');
+    }
+
     public function generate()
     {
+        if (empty($this->organisationName)) {
+            $this->setOrganisationName(
+                config('mobile-pass.organisation_name')
+            );
+        }
+
         // Remove any null keys or keys where the value is an empty array.
         // TODO: do this recursively.
         $compiledData = array_filter(
@@ -181,7 +205,7 @@ abstract class PassBuilder
         // TODO: validate this.
 
         $pkPass = new PKPass(
-            config('mobile-pass.apple.certificate_path'),
+            self::getCertificatePath(),
             config('mobile-pass.apple.certificate_password'),
         );
 
