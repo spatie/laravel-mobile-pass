@@ -171,7 +171,7 @@ abstract class PassBuilder
     protected static function getCertificatePath(): string
     {
         if (! empty(config('mobile-pass.apple.certificate_contents'))) {
-            $path = __DIR__.'/../../tmp/Cert.12';
+            $path = __DIR__.'/../../tmp/Cert.p12';
 
             file_put_contents(
                 $path,
