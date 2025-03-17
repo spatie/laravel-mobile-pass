@@ -30,6 +30,25 @@ class FieldContent implements Arrayable
         public string $key
     ) {}
 
+    public static function fromArray(array $fields)
+    {
+        $fieldContent = new static(
+            $fields['key'],
+        );
+
+        $fieldContent->attributedValue = $fields['attributedValue'] ?? null;
+        $fieldContent->value = $fields['value'] ?? null;
+        $fieldContent->label = $fields['label'] ?? null;
+        $fieldContent->numberStyle = NumberStyleType::tryFrom($fields['numberStyle'] ?? null);
+        $fieldContent->changeMessage = $fields['changeMessage'] ?? null;
+        $fieldContent->currencyCode = $fields['currencyCode'] ?? null;
+        $fieldContent->dataType = DataDetectorType::tryFrom($fields['dataType'] ?? null);
+        $fieldContent->ignoresTimezone = $fields['ignoresTimezone'] ?? null;
+        $fieldContent->isRelative = $fields['isRelative'] ?? null;
+
+        return $fieldContent;
+    }
+
     public static function make(string $key): static
     {
         return new static(
