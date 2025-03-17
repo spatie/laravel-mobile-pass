@@ -37,7 +37,7 @@ abstract class PassBuilder
 
     protected array $images = [];
 
-    protected abstract static function validator(): PassValidator;
+    abstract protected static function validator(): PassValidator;
 
     public static function make(): static
     {
@@ -193,7 +193,6 @@ abstract class PassBuilder
                 config('mobile-pass.organisation_name')
             );
         }
-
 
         // Remove any null keys or keys where the value is an empty array.
         // TODO: do this recursively.
