@@ -28,4 +28,11 @@
             <directory suffix=".php">./src</directory>
         </include>
     </source>
+    <php>
+        <server name="MOBILE_PASS_ORGANISATION_NAME" value="Spatie"/>
+        <server name="MOBILE_PASS_TYPE_IDENTIFIER" value=""/>
+        <server name="MOBILE_PASS_TEAM_IDENTIFIER" value=""/>
+        <server name="MOBILE_PASS_APPLE_CERTIFICATE_CONTENTS" value=""/>
+        <server name="MOBILE_PASS_APPLE_CERTIFICATE_PASSWORD" value=""/>
+    </php>
 </phpunit>
