@@ -7,6 +7,7 @@ use ZipArchive;
 class PkPassReader
 {
     protected string $contentString;
+
     protected ZipArchive $contentZip;
 
     public static function loadFromFile(string $path): self
@@ -23,7 +24,7 @@ class PkPassReader
 
     protected function __construct(protected string $zipString)
     {
-        $this->contentZip = new ZipArchive();
+        $this->contentZip = new ZipArchive;
 
         $tempFile = tempnam(sys_get_temp_dir(), 'zip');
         file_put_contents($tempFile, $zipString); // Write the ZIP data
