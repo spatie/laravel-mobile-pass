@@ -9,6 +9,7 @@ use PKPass\PKPass;
 use Spatie\LaravelMobilePass\Entities\FieldContent;
 use Spatie\LaravelMobilePass\Entities\Image;
 use Spatie\LaravelMobilePass\Enums\TransitType;
+use Spatie\LaravelMobilePass\Events\MobilePassUpdated;
 
 class MobilePass extends Model
 {
@@ -26,6 +27,12 @@ class MobilePass extends Model
     public array $primaryFields = [];
     public array $secondaryFields = [];
     public array $auxiliaryFields = [];
+
+    public array $images = [];
+
+    protected $dispatchesEvents = [
+        'updated' => MobilePassUpdated::class,
+    ];
 
     public function registrations(): HasMany
     {
