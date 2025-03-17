@@ -4,7 +4,7 @@ namespace Spatie\LaravelMobilePass\Support;
 
 use ZipArchive;
 
-class PkPass
+class PkPassReader
 {
     protected string $contentString;
     protected ZipArchive $contentZip;
