@@ -84,7 +84,8 @@ class MobilePass extends Model
             'formatVersion' => 1,
             'organizationName' => $model->organisationName ?? config('mobile-pass.organisation_name'),
             'passTypeIdentifier' => $model->passTypeIdentifier ?? config('mobile-pass.type_identifier'),
-            // 'authenticationToken' => $model->authenticationToken,
+            'authenticationToken' => 'abcdefghijklmnopqrstuvwx', // TODO: config this. config('mobile-pass.apple.authentication_token'),
+            'webServiceURL' => 'https://re6tmnd7zs.sharedwithexpose.com', // TODO: Must be HTTPS. Point this to your server. config('app.url'),
             'teamIdentifier' => $model->teamIdentifier ?? config('mobile-pass.team_identifier'),
             'description' => $model->description,
             'serialNumber' => $model->getKey(),
@@ -103,7 +104,7 @@ class MobilePass extends Model
         ];
     }
 
-    protected static function getCertificatePath(): string
+    public static function getCertificatePath(): string
     {
         if (! empty(config('mobile-pass.apple.certificate_contents'))) {
             $path = __DIR__.'/../../tmp/Cert.p12';
@@ -121,7 +122,7 @@ class MobilePass extends Model
         return config('mobile-pass.apple.certificate_path');
     }
 
-    protected static function getCertificatePassword(): string
+    public static function getCertificatePassword(): string
     {
         return config('mobile-pass.apple.certificate_password');
     }
