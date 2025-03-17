@@ -9,6 +9,7 @@ use function Pest\testDirectory;
 
 it('builds a basic boarding pass', function () {
     $pass = AirlinePassBuilder::make()
+        ->setOrganisationName('My organisation')
         ->setSerialNumber(rand(1, 100) * 100)
         ->setDescription('Hello!')
         ->setHeaderFields(

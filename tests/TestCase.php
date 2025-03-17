@@ -13,6 +13,8 @@ class TestCase extends Orchestra
     {
         parent::setUp();
 
+        $this->setDefaultValuesInConfig();
+
         Factory::guessFactoryNamesUsing(
             fn (string $modelName) => 'Spatie\\LaravelMobilePass\\Database\\Factories\\'.class_basename($modelName).'Factory'
         );
@@ -37,5 +39,23 @@ class TestCase extends Orchestra
             (include $migration->getRealPath())->up();
          }
          */
+    }
+
+    protected function setDefaultValuesInConfig(): self
+    {
+        config()->set('mobile-pass', [
+            'organisation_name' => 'Organisation name',
+            'type_identifier' => 'Type identifier',
+            'team_identifier' => 'Team identifier',
+            'apple' => [
+                'certificate_path' => 'dummy path',
+                'certificate_contents' => 'dummy contents',
+                'certificate_password' => 'dummy password',
+            ],
+        ]);
+
+
+
+        return $this;
     }
 }
