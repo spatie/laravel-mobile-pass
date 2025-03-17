@@ -8,12 +8,23 @@ return new class extends Migration
 {
     public function up()
     {
-        Schema::create('laravel_mobile_pass_table', function (Blueprint $table) {
-            $table->id();
+        Schema::create('mobile_passes', function (Blueprint $table) {
+            $table->uuid('id')->primary();
 
             // add fields
-
+            $table->json('content')->default('{}');
+            $table->json('images')->default('{}');
+            $table->morphs('parent');
             $table->timestamps();
+        });
+
+        Schema::create('mobile_pass_registrations', function (Blueprint $table) {
+            $table->uuid('id')->primary();
+            $table->string('device_id');
+            $table->string('pass_type_id');
+            $table->uuid('pass_serial');
+            $table->string('push_token');
+            $table->softDeletes();
         });
     }
 };
