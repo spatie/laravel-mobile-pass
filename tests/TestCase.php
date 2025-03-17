@@ -54,8 +54,6 @@ class TestCase extends Orchestra
             ],
         ]);
 
-
-
         return $this;
     }
 }
