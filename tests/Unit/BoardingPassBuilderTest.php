@@ -5,6 +5,7 @@ use Spatie\LaravelMobilePass\Entities\FieldContent;
 use Spatie\LaravelMobilePass\Entities\Image;
 use Spatie\LaravelMobilePass\Entities\Seat;
 
+use Spatie\LaravelMobilePass\Support\PkPass;
 use function Pest\testDirectory;
 
 it('builds a basic boarding pass', function () {
@@ -66,4 +67,8 @@ it('builds a basic boarding pass', function () {
     // For the moment, we'll just store a file here
     // and manually open it to check it works.
     file_put_contents('test.pkpass', $pass);
+
+    $pkPass = PkPass::loadFromString($pass);
+
+    dd($pkPass->pass());
 });
