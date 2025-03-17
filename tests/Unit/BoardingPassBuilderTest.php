@@ -70,5 +70,5 @@ it('builds a basic boarding pass', function () {
 
     $pkPass = PkPass::loadFromString($pass);
 
-    dd($pkPass->pass());
+c    dd($pkPass->pass());
 });
