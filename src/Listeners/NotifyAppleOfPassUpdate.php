@@ -3,13 +3,13 @@
 namespace Spatie\LaravelMobilePass\Listeners;
 
 use GuzzleHttp\Client;
-use Spatie\LaravelMobilePass\Events\MobilePassUpdated;
+use Spatie\LaravelMobilePass\Events\MobilePassUpdatedEvent;
 use Spatie\LaravelMobilePass\Models\MobilePass;
 use Spatie\LaravelMobilePass\Models\Registration;
 
 class NotifyAppleOfPassUpdate
 {
-    public function handle(MobilePassUpdated $mobilePass): void
+    public function handle(MobilePassUpdatedEvent $mobilePass): void
     {
         $mobilePass->registrations->each(function (Registration $registration) {
             $this->notifyUpdate($registration);

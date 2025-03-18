@@ -16,6 +16,7 @@ class CheckForUpdatesController extends Controller
     public function __invoke(Request $request)
     {
         $pass = MobilePass::findOrFail($request->passSerial);
+
         $lastModifiedSince = $request->header('If-Modified-Since');
 
         if ($lastModifiedSince) {
