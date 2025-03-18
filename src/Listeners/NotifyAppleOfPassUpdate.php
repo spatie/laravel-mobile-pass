@@ -18,7 +18,7 @@ class NotifyAppleOfPassUpdate
 
     protected function notifyUpdate(Registration $registration): self
     {
-        $url = config('mobile-pass.apple.apple_push_base_url') . "/{$registration->push_token}";
+        $url = config('mobile-pass.apple.apple_push_base_url')."/{$registration->push_token}";
 
         app(Client::class)
             ->post($url, [
@@ -30,7 +30,7 @@ class NotifyAppleOfPassUpdate
                 'cert' => [
                     MobilePass::getCertificatePath(),
                     MobilePass::getCertificatePassword(),
-                ]
+                ],
             ]);
 
         return $this;

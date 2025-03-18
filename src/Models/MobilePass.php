@@ -18,14 +18,21 @@ class MobilePass extends Model
     public $table = 'mobile_passes';
 
     public ?string $organisationName = null;
+
     public ?string $passTypeIdentifier = null;
+
     public ?string $authenticationToken = null;
+
     public ?string $teamIdentifier = null;
+
     public ?string $description = null;
 
     public array $headerFields = [];
+
     public array $primaryFields = [];
+
     public array $secondaryFields = [];
+
     public array $auxiliaryFields = [];
 
     public array $images = [];
