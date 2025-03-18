@@ -2,12 +2,14 @@
 
 namespace Spatie\LaravelMobilePass\Support;
 
+use Illuminate\Support\Arr;
 use ZipArchive;
 
 class PkPassReader
 {
-    protected string $contentString;
     protected ZipArchive $contentZip;
+
+    protected string $tempFile;
 
     public static function loadFromFile(string $path): self
     {
@@ -25,30 +27,70 @@ class PkPassReader
     {
         $this->contentZip = new ZipArchive();
 
-        $tempFile = tempnam(sys_get_temp_dir(), 'zip');
-        file_put_contents($tempFile, $zipString); // Write the ZIP data
+        $this->tempFile = tempnam(sys_get_temp_dir(), 'zip');
 
-        $this->contentZip->open($tempFile);
+        file_put_contents($this->tempFile, $zipString);
+
+        $this->contentZip->open($this->tempFile);
     }
 
-    public function manifest(): array
+    public function containingFiles(): array
     {
-        $manifestJson = $this->contentZip->getFromName('manifest.json');
+        if ($this->contentZip->numFiles === 0) {
+            return [];
+        }
 
-        return json_decode($manifestJson, true);
+        $files = [];
+
+        foreach(range(0, $this->contentZip->numFiles - 1) as $i) {
+            $files[] = $this->contentZip->getNameIndex($i);
+        }
+
+        return $files;
     }
 
-    public function pass(): array
+    public function containsFile(string $fileName): bool
     {
-        $passJson = $this->contentZip->getFromName('pass.json');
+        return $this->contentZip->locateName($fileName) !== false;
+    }
 
-        return json_decode($passJson, true);
+    public function manifestProperties(?string $key = null): mixed
+    {
+        return $this->getJsonProperties('manifest.json', $key);
+    }
 
+    public function manifestProperty(string $key): mixed
+    {
+        return $this->manifestProperties($key);
+    }
+
+    public function passProperties(?string $key = null): mixed
+    {
+        return $this->getJsonProperties('pass.json', $key);
+    }
+
+    public function passProperty(string $key): mixed
+    {
+        return $this->passProperties($key);
+    }
+
+    protected function getJsonProperties(string $fileName, ?string $key = null): mixed
+    {
+        $json = $this->contentZip->getFromName($fileName);
+
+        $properties = json_decode($json, true);
+
+        if ($key) {
+            $properties = Arr::get($properties, $key);
+        }
+
+        return $properties;
     }
 
     public function __destruct()
     {
         $this->contentZip->close();
 
+        unlink($this->tempFile);
     }
 }

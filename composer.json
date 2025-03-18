@@ -13,18 +13,24 @@
             "name": "Dan Johnson",
             "email": "github@danjohnson.xyz",
             "role": "Developer"
+        },
+        {
+            "name": "Freek Van der Herten",
+            "email": "freek@spatie.be",
+            "role": "Developer"
         }
     ],
     "require": {
         "php": "^8.0",
+        "ext-zip": "*",
         "illuminate/contracts": "^12.0",
         "pkpass/pkpass": "^2.3.2",
         "spatie/laravel-package-tools": "^1.19"
     },
     "require-dev": {
+        "larastan/larastan": "^3.2",
         "laravel/pint": "^1.21.2",
         "nunomaduro/collision": "^8.7.0",
-        "larastan/larastan": "^3.2",
         "orchestra/testbench": "^10.1.0",
         "pestphp/pest": "^3.7.4",
         "pestphp/pest-plugin-arch": "^3.0",
@@ -32,7 +38,8 @@
         "phpstan/extension-installer": "^1.4.3",
         "phpstan/phpstan-deprecation-rules": "^2.0.1",
         "phpstan/phpstan-phpunit": "^2.0.4",
-        "spatie/laravel-ray": "^1.40.1"
+        "spatie/laravel-ray": "^1.40.1",
+        "spatie/temporary-directory": "^2.3"
     },
     "autoload": {
         "psr-4": {

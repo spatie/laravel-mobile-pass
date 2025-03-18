@@ -10,3 +10,13 @@ if (file_exists(__DIR__.'/../.env')) {
 
     $dotEnv->load();
 }
+
+function getTestSupportPath(string $path): string
+{
+    return __DIR__.'/TestSupport/'.$path;
+}
+
+function tempPath(string $path): string
+{
+    return test()->temporaryDirectory->path($path);
+}

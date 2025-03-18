@@ -76,7 +76,8 @@ Please review [our security policy](../../security/policy) on how to report secu
 
 ## Credits
 
-- [Dan Johnson](https://github.com/spatie)
+- [Dan Johnson](https://github.com/danjohnson95)
+- [Freek Van der Herten](https//github.com/freekmurze)
 - [All Contributors](../../contributors)
 
 ## License

@@ -33,6 +33,7 @@ testbench.yaml
 
 ## Dev
 .env
+tests/TestSupport/temp
 
 # Certificates
 *.p12
