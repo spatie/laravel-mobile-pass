@@ -25,7 +25,7 @@ class PkPassReader
 
     protected function __construct(protected string $zipString)
     {
-        $this->contentZip = new ZipArchive();
+        $this->contentZip = new ZipArchive;
 
         $this->tempFile = tempnam(sys_get_temp_dir(), 'zip');
 
@@ -42,7 +42,7 @@ class PkPassReader
 
         $files = [];
 
-        foreach(range(0, $this->contentZip->numFiles - 1) as $i) {
+        foreach (range(0, $this->contentZip->numFiles - 1) as $i) {
             $files[] = $this->contentZip->getNameIndex($i);
         }
 

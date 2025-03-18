@@ -68,7 +68,6 @@ it('builds a basic boarding pass', function () {
     // and manually open it to check it works.
     file_put_contents(tempPath('test.pkpass'), $pass);
 
-
     $pkPass = PkPassReader::loadFromString($pass);
 
     expect($pkPass->passProperties())->toBeGreaterThan(0);
