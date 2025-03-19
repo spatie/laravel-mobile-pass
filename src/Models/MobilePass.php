@@ -259,6 +259,8 @@ class MobilePass extends Model
 
         self::compileContent($this);
 
+        $this->save();
+
         $pkPass->setData(
             $this->content
         );
