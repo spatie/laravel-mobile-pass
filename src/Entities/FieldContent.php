@@ -4,7 +4,9 @@ namespace Spatie\LaravelMobilePass\Entities;
 
 use Illuminate\Contracts\Support\Arrayable;
 use Spatie\LaravelMobilePass\Enums\DataDetectorType;
+use Spatie\LaravelMobilePass\Enums\DateType;
 use Spatie\LaravelMobilePass\Enums\NumberStyleType;
+use Spatie\LaravelMobilePass\Enums\TimeStyleType;
 
 class FieldContent implements Arrayable
 {
@@ -20,7 +22,11 @@ class FieldContent implements Arrayable
 
     public ?string $currencyCode = null;
 
-    public ?DataDetectorType $dataType = null;
+    public ?DateType $dateStyle = null;
+
+    public ?TimeStyleType $timeStyle = null;
+
+    public ?DataDetectorType $dataDetectorType = null;
 
     public ?bool $ignoresTimezone = null;
 
@@ -39,10 +45,11 @@ class FieldContent implements Arrayable
         $fieldContent->attributedValue = $fields['attributedValue'] ?? null;
         $fieldContent->value = $fields['value'] ?? null;
         $fieldContent->label = $fields['label'] ?? null;
-        $fieldContent->numberStyle = NumberStyleType::tryFrom($fields['numberStyle'] ?? null);
+        $fieldContent->numberStyle = !empty($fields['numberStyle']) ? NumberStyleType::tryFrom($fields['numberStyle']) : null;
         $fieldContent->changeMessage = $fields['changeMessage'] ?? null;
         $fieldContent->currencyCode = $fields['currencyCode'] ?? null;
-        $fieldContent->dataType = DataDetectorType::tryFrom($fields['dataType'] ?? null);
+        $fieldContent->dataDetectorType = !empty($fieds['dataDetectorType']) ? DataDetectorType::tryFrom($fields['dataDetectorType']) : null;
+        $fieldContent->dateStyle = !empty($fields['dateStyle']) ? DateType::tryFrom($fields['dateStyle']) : null;
         $fieldContent->ignoresTimezone = $fields['ignoresTimezone'] ?? null;
         $fieldContent->isRelative = $fields['isRelative'] ?? null;
 
@@ -84,6 +91,20 @@ class FieldContent implements Arrayable
         return $this;
     }
 
+    public function usingDateType(DateType $dateType): self
+    {
+        $this->dateStyle = $dateType;
+
+        return $this;
+    }
+
+    public function usingTimeType(TimeStyleType $timeType): self
+    {
+        $this->timeStyle = $timeType;
+
+        return $this;
+    }
+
     public function showMessageWhenChanged(string $changeMessage): self
     {
         $this->changeMessage = $changeMessage;
@@ -100,7 +121,7 @@ class FieldContent implements Arrayable
 
     public function asDataType(DataDetectorType $dataType): self
     {
-        $this->dataType = $dataType;
+        $this->dataDetectorType = $dataType;
 
         return $this;
     }
@@ -125,6 +146,15 @@ class FieldContent implements Arrayable
             'key' => $this->key,
             'label' => $this->label,
             'value' => $this->value,
+            'attributedValue' => $this->attributedValue,
+            'numberStyle' => $this->numberStyle?->value,
+            'changeMessage' => $this->changeMessage,
+            'currencyCode' => $this->currencyCode,
+            'dateStyle' => $this->dateStyle?->value,
+            'timeStyle' => $this->timeStyle?->value,
+            'dataDetectorType' => $this->dataDetectorType?->value,
+            'ignoresTimezone' => $this->ignoresTimezone,
+            'isRelative' => $this->isRelative,
         ]);
     }
 }
