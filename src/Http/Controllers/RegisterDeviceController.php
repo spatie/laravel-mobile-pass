@@ -8,7 +8,7 @@ use Spatie\LaravelMobilePass\Models\MobilePass;
 
 /**
  * Registering a Device to Receive Push Notifications for a Pass
- * https://developer.apple.com/library/archive/documentation/PassKit/Reference/PassKit_WebService/WebService.html#//apple_ref/doc/uid/TP40011988-CH0-SW2
+ * https://developer.apple.com/documentation/walletpasses/register-a-pass-for-update-notifications
  */
 class RegisterDeviceController extends Controller
 {

@@ -9,7 +9,7 @@ use Spatie\LaravelMobilePass\Models\MobilePass;
 
 /**
  * Getting the Latest Version of a Pass
- * https://developer.apple.com/library/archive/documentation/PassKit/Reference/PassKit_WebService/WebService.html#//apple_ref/doc/uid/TP40011988-CH0-SW6
+ * https://developer.apple.com/documentation/walletpasses/send-an-updated-pass
  */
 class CheckForUpdatesController extends Controller
 {

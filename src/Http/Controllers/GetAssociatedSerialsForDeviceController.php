@@ -5,11 +5,12 @@ namespace Spatie\LaravelMobilePass\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Log;
 use Spatie\LaravelMobilePass\Models\MobilePassRegistration;
 
 /**
  * Getting the Serial Numbers for Passes Associated with a Device
- * https://developer.apple.com/library/archive/documentation/PassKit/Reference/PassKit_WebService/WebService.html#//apple_ref/doc/uid/TP40011988-CH0-SW4
+ * https://developer.apple.com/documentation/walletpasses/get-the-list-of-updatable-passes
  */
 class GetAssociatedSerialsForDeviceController extends Controller
 {
