@@ -145,12 +145,14 @@ class MobilePass extends Model
         if (! empty(config('mobile-pass.apple.certificate_contents'))) {
             $path = __DIR__.'/../../tmp/Cert.p12';
 
-            file_put_contents(
-                $path,
-                base64_decode(
-                    config('mobile-pass.apple.certificate_contents')
-                )
-            );
+            if (!file_exists($path)) {
+                file_put_contents(
+                    $path,
+                    base64_decode(
+                        config('mobile-pass.apple.certificate_contents')
+                    )
+                );
+            }
 
             return $path;
         }
