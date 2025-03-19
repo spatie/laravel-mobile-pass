@@ -5,7 +5,6 @@ namespace Spatie\LaravelMobilePass\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Log;
 use Spatie\LaravelMobilePass\Models\MobilePassRegistration;
 
 /**

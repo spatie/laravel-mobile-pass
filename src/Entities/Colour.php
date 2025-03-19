@@ -30,7 +30,7 @@ class Colour implements Stringable
             return null;
         }
 
-        [$red, $green, $blue] = sscanf($rgb, "rgb(%d, %d, %d)");
+        [$red, $green, $blue] = sscanf($rgb, 'rgb(%d, %d, %d)');
 
         return new static(
             red: (int) $red,
@@ -41,7 +41,7 @@ class Colour implements Stringable
 
     public static function makeFromHex(string $hex)
     {
-        [$red, $green, $blue] = sscanf($hex, "#%02x%02x%02x");
+        [$red, $green, $blue] = sscanf($hex, '#%02x%02x%02x');
 
         return new static(
             red: $red,

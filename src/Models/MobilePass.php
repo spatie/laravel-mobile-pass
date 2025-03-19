@@ -115,7 +115,7 @@ class MobilePass extends Model
             'organizationName' => $model->organisationName ?? config('mobile-pass.organisation_name'),
             'passTypeIdentifier' => $model->passTypeIdentifier ?? config('mobile-pass.type_identifier'),
             'authenticationToken' => config('mobile-pass.apple.webservice.secret'),
-            'webServiceURL' => config('app.url') . '/passkit/', // TODO: Must be HTTPS. Point this to your server. config('app.url'),
+            'webServiceURL' => config('app.url').'/passkit/', // TODO: Must be HTTPS. Point this to your server. config('app.url'),
             'teamIdentifier' => $model->teamIdentifier ?? config('mobile-pass.team_identifier'),
             'description' => $model->description,
             'serialNumber' => $model->getKey(),
@@ -145,7 +145,7 @@ class MobilePass extends Model
         if (! empty(config('mobile-pass.apple.certificate_contents'))) {
             $path = __DIR__.'/../../tmp/Cert.p12';
 
-            if (!file_exists($path)) {
+            if (! file_exists($path)) {
                 file_put_contents(
                     $path,
                     base64_decode(

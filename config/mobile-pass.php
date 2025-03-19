@@ -29,6 +29,6 @@ return [
         'certificate_password' => env('MOBILE_PASS_APPLE_CERTIFICATE_PASSWORD'),
         'webservice' => [
             'secret' => env('MOBILE_PASS_APPLE_WEBSERVICE_SECRET'),
-        ]
+        ],
     ],
 ];
