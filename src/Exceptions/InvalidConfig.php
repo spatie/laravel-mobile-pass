@@ -15,4 +15,9 @@ class InvalidConfig extends Exception
     {
         return new static("The `{$actionName}` action must be an instance of `{$shouldBeOrExtend}`. `{$actionClass}` does not extend {$shouldBeOrExtend}.");
     }
+
+    public static function invalidEvent(string $eventName, mixed $eventClass, string $shouldBeOrExtend): self
+    {
+        return new static("The `{$eventName}` event must be an instance of `{$shouldBeOrExtend}`. `{$eventClass}` does not extend {$shouldBeOrExtend}.");
+    }
 }

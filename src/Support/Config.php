@@ -45,4 +45,15 @@ class Config
 
         return $actionClass;
     }
+
+    public static function getEventClass(string $eventName, string $shouldBeOrExtend): string
+    {
+        $eventClass = config("mobile-pass.events.{$eventName}");
+
+        if (! is_a($eventClass, $shouldBeOrExtend, true)) {
+            throw InvalidConfig::invalidEvent($eventName, $eventClass, $shouldBeOrExtend);
+        }
+
+        return $eventClass;
+    }
 }
