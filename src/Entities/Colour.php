@@ -24,9 +24,30 @@ class Colour implements Stringable
         );
     }
 
+    public static function makeFromRgbString(?string $rgb): ?static
+    {
+        if (! $rgb) {
+            return null;
+        }
+
+        [$red, $green, $blue] = sscanf($rgb, "rgb(%d, %d, %d)");
+
+        return new static(
+            red: (int) $red,
+            green: (int) $green,
+            blue: (int) $blue
+        );
+    }
+
     public static function makeFromHex(string $hex)
     {
-        // TODO: implement this
+        [$red, $green, $blue] = sscanf($hex, "#%02x%02x%02x");
+
+        return new static(
+            red: $red,
+            green: $green,
+            blue: $blue
+        );
     }
 
     public function __toString()
