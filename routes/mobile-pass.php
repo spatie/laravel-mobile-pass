@@ -17,7 +17,7 @@ Route::group([
 
     $router
         ->get('/passes/{passTypeId}/{passSerial}', CheckForUpdatesController::class);
-        // ->middleware(VerifyPasskitRequest::class);
+    // ->middleware(VerifyPasskitRequest::class);
 
     $router
         ->delete('/devices/{deviceId}/registrations/{passTypeId}/{passSerial}', UnregisterDeviceController::class)
