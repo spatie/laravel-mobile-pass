@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use PKPass\PKPass;
 use Spatie\LaravelMobilePass\Actions\NotifyAppleOfPassUpdateAction;
+use Spatie\LaravelMobilePass\Entities\Barcode;
 use Spatie\LaravelMobilePass\Entities\Colour;
 use Spatie\LaravelMobilePass\Entities\FieldContent;
 use Spatie\LaravelMobilePass\Entities\Image;
@@ -43,6 +44,8 @@ class MobilePass extends Model
     public array $passImages = [];
 
     public PassType $passType = PassType::Generic;
+
+    public array $barcodes = [];
 
     public function setType(PassType $passType): self
     {
@@ -100,6 +103,7 @@ class MobilePass extends Model
 
         $model->passImages = array_map(fn ($image) => Image::fromArray($image), $model->images);
 
+        $model->barcodes = array_map(fn ($barcode) => Barcode::fromArray($barcode), $model->content['barcodes'] ?? []);
         $model->headerFields = array_map(fn ($field) => FieldContent::fromArray($field), $model->content[$passType->value]['headerFields'] ?? []);
         $model->primaryFields = array_map(fn ($field) => FieldContent::fromArray($field), $model->content[$passType->value]['primaryFields'] ?? []);
         $model->secondaryFields = array_map(fn ($field) => FieldContent::fromArray($field), $model->content[$passType->value]['secondaryFields'] ?? []);
@@ -121,6 +125,7 @@ class MobilePass extends Model
             'serialNumber' => $model->getKey(),
             'backgroundColor' => (string) $model->backgroundColour,
             'labelColor' => (string) $model->labelColour,
+            'barcodes' => array_map(fn ($barcode) => $barcode->toArray(), $model->barcodes),
             'userInfo' => [
                 'passType' => $model->passType->value,
             ],
@@ -196,6 +201,13 @@ class MobilePass extends Model
     public function setLabelColour(Colour $colour): self
     {
         $this->labelColour = $colour;
+
+        return $this;
+    }
+
+    public function addBarcodes(Barcode ...$barcodes)
+    {
+        $this->barcodes = $barcodes;
 
         return $this;
     }
