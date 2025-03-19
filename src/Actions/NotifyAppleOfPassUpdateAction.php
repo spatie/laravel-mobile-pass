@@ -40,18 +40,13 @@ class NotifyAppleOfPassUpdateAction
         return $registration->appleUpdateUrl();
     }
 
-    protected function updatePayload(MobilePassRegistration $registration): array
-    {
-        return $registration->appleUpdatePayload();
-    }
-
     protected function notifyUpdate(MobilePassRegistration $registration): self
     {
         Http::withHeaders($this->headers($registration))
             ->withOptions($this->options($registration))
             ->post(
                 url: $this->updateUrl($registration),
-                data: $this->updatePayload($registration),
+                data: '{}',
             );
 
         return $this;

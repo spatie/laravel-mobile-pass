@@ -25,9 +25,4 @@ class MobilePassRegistration extends Model
     {
         return config('mobile-pass.apple.apple_push_base_url')."/{$this->push_token}";
     }
-
-    public function appleUpdatePayload(): array
-    {
-        return [];
-    }
 }
