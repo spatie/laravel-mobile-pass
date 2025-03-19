@@ -10,7 +10,6 @@ use Spatie\LaravelMobilePass\Actions\NotifyAppleOfPassUpdateAction;
 use Spatie\LaravelMobilePass\Entities\FieldContent;
 use Spatie\LaravelMobilePass\Entities\Image;
 use Spatie\LaravelMobilePass\Enums\TransitType;
-use Spatie\LaravelMobilePass\Events\MobilePassUpdatedEvent;
 use Spatie\LaravelMobilePass\Support\Config;
 
 class MobilePass extends Model
@@ -45,8 +44,8 @@ class MobilePass extends Model
             self::uncompileContent($mobilePass);
         });
 
-        static::saved(function(MobilePass $mobilePass) {
-           $actionClass = Config::getActionClass('notify_apple_of_pass_update', NotifyAppleOfPassUpdateAction::class);
+        static::saved(function (MobilePass $mobilePass) {
+            $actionClass = Config::getActionClass('notify_apple_of_pass_update', NotifyAppleOfPassUpdateAction::class);
 
             app($actionClass)->execute($mobilePass);
         });
@@ -70,8 +69,6 @@ class MobilePass extends Model
             'images' => 'json',
         ];
     }
-
-
 
     protected static function uncompileContent(MobilePass $model)
     {

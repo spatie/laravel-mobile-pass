@@ -4,9 +4,6 @@ use Spatie\LaravelMobilePass\Builders\BoardingPasses\AirlinePassBuilder;
 use Spatie\LaravelMobilePass\Entities\FieldContent;
 use Spatie\LaravelMobilePass\Entities\Image;
 use Spatie\LaravelMobilePass\Entities\Seat;
-use Spatie\LaravelMobilePass\Support\PkPassReader;
-
-use function Pest\testDirectory;
 
 it('builds a basic boarding pass', function () {
     $pass = AirlinePassBuilder::make()

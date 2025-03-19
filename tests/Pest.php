@@ -32,7 +32,6 @@ expect()->extend('toMatchPasskeySnapshot', function () {
 
     $this->value = removeRandomMobilePassValues($this->value);
 
-
     return $this->toMatchSnapshot();
 });
 
@@ -40,7 +39,7 @@ function removeRandomMobilePassValues(array $values): array
 {
     $replacementString = '<random>';
 
-    foreach($values['manifest'] ?? [] as $key => $value) {
+    foreach ($values['manifest'] ?? [] as $key => $value) {
         $values['manifest'][$key] = $replacementString;
     }
 
@@ -53,20 +52,20 @@ function storePassInTemporaryDirectory(string $passkeyContent): void
 {
     $extension = '.pkpass';
 
-    $basePath = tempPath() . '/generated-passkeys/' . test()->name() .'/passkey';
+    $basePath = tempPath().'/generated-passkeys/'.test()->name().'/passkey';
 
     $temporaryPath = $basePath;
 
     $suffix = 2;
 
-    while(file_exists($temporaryPath . $extension)) {
-        $temporaryPath = $basePath . '-' . $suffix;
+    while (file_exists($temporaryPath.$extension)) {
+        $temporaryPath = $basePath.'-'.$suffix;
         $suffix++;
     }
 
-    $fullPath = $temporaryPath . $extension;
+    $fullPath = $temporaryPath.$extension;
 
-    if (!file_exists(dirname($fullPath))) {
+    if (! file_exists(dirname($fullPath))) {
         mkdir(dirname($fullPath), 0777, true);
     }
 

@@ -4,9 +4,7 @@ namespace Spatie\LaravelMobilePass\Tests\Feature;
 
 use Spatie\LaravelMobilePass\Entities\FieldContent;
 use Spatie\LaravelMobilePass\Entities\Image;
-
 use Spatie\LaravelMobilePass\Models\MobilePass;
-use function Pest\testDirectory;
 
 it('can create a mobile pass', function () {
     $pass = MobilePass::create()
