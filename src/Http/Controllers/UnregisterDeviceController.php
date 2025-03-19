@@ -4,23 +4,21 @@ namespace Spatie\LaravelMobilePass\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use Spatie\LaravelMobilePass\Models\MobilePass;
+use Spatie\LaravelMobilePass\Models\MobilePassRegistration;
 
 /**
  * Unregistering a Device
- * https://developer.apple.com/library/archive/documentation/PassKit/Reference/PassKit_WebService/WebService.html#//apple_ref/doc/uid/TP40011988-CH0-SW5
+ * https://developer.apple.com/documentation/walletpasses/unregister-a-pass-for-update-notifications
  */
 class UnregisterDeviceController extends Controller
 {
     public function __invoke(Request $request)
     {
-        $pass = MobilePass::findOrFail($request->passSerial);
+        $pass = MobilePassRegistration::where([
+            'device_id' => $request->deviceId,
+            'pass_serial' => $request->passSerial,
+        ])->first();
 
-        // Do we have a registration for this device?
-        $registration = $pass->registrations()->where('device_id', $request->deviceId)->first();
-
-        if ($registration) {
-            $registration->delete();
-        }
+        $pass->delete();
     }
 }

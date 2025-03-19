@@ -20,17 +20,18 @@ class GetAssociatedSerialsForDeviceController extends Controller
             'pass_type_id' => $request->passTypeId,
         ]);
 
-        if (request()->has('passesUpdatedSince')) {
-            $since = Carbon::createFromTimestamp(request()->get('passesUpdatedSince'));
+        if (request()->query('passesUpdatedSince')) {
+            $since = Carbon::parse($request->query('passesUpdatedSince'));
 
-            $registrations->whereHas('pass', fn ($q) => $q->where('updated_at', '>', $since));
+            $registrations->whereHas('pass', fn ($q) => $q->whereDate('updated_at', '>', $since));
         }
 
-        $lastUpdated = $registrations->max('pass.updated_at');
+        // For each registration, get the last updated time of each pass.
         $results = $registrations->get();
+        $lastUpdated = $results->map->pass->pluck('updated_at')->max();
 
         return response()->json([
-            'lastUpdated' => $lastUpdated->toIso8601String(),
+            'lastUpdated' => $lastUpdated?->toIso8601ZuluString() ?? null,
             'serialNumbers' => $results->pluck('pass_serial')->all(),
         ]);
     }
