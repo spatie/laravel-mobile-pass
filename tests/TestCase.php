@@ -3,9 +3,11 @@
 namespace Spatie\LaravelMobilePass\Tests;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Facades\Schema;
 use Orchestra\Testbench\TestCase as Orchestra;
 use Spatie\LaravelMobilePass\LaravelMobilePassServiceProvider;
 use Spatie\TemporaryDirectory\TemporaryDirectory;
+use Spatie\TestTime\TestTime;
 
 class TestCase extends Orchestra
 {
@@ -13,9 +15,9 @@ class TestCase extends Orchestra
     {
         parent::setUp();
 
-        $this->temporaryDirectory = new TemporaryDirectory(__DIR__.'/TestSupport/temp');
+        TestTime::freeze('Y-m-d H:i:s', '2025-01-01 00:00:00');
 
-        $this->temporaryDirectory->empty();
+        $this->temporaryDirectory = (new TemporaryDirectory(__DIR__.'/TestSupport/temp'))->empty();
 
         Factory::guessFactoryNamesUsing(
             fn (string $modelName) => 'Spatie\\LaravelMobilePass\\Database\\Factories\\'.class_basename($modelName).'Factory'
@@ -27,5 +29,13 @@ class TestCase extends Orchestra
         return [
             LaravelMobilePassServiceProvider::class,
         ];
+    }
+
+    protected function getEnvironmentSetUp($app)
+    {
+        Schema::dropAllTables();
+
+        $migration = include __DIR__.'/../database/migrations/create_mobile_pass_tables.php.stub';
+        $migration->up();
     }
 }

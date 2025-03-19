@@ -4,12 +4,12 @@ namespace Spatie\LaravelMobilePass\Tests\Feature;
 
 use Spatie\LaravelMobilePass\Entities\FieldContent;
 use Spatie\LaravelMobilePass\Entities\Image;
-use Spatie\LaravelMobilePass\Models\BoardingPasses\AirlinePass;
 
+use Spatie\LaravelMobilePass\Models\MobilePass;
 use function Pest\testDirectory;
 
-it('creates_record', function () {
-    $pass = AirlinePass::create()
+it('can create a mobile pass', function () {
+    $pass = MobilePass::create()
         ->setDescription('Hello!')
         ->addHeaderFields(
             FieldContent::make('flight-no')
@@ -38,12 +38,13 @@ it('creates_record', function () {
 
         ->setIconImage(
             Image::make(
-                x1Path: testDirectory('Helpers/Images/spatie-thumbnail.png')
+                x1Path: getTestSupportPath('images/spatie-thumbnail.png')
             )
         );
 
     $pass->save();
-    $file = $pass->generate();
 
-    file_put_contents('test.pkpass', $file);
+    $passkeyContent = $pass->generate();
+
+    expect($passkeyContent)->toMatchPasskeySnapshot();
 });

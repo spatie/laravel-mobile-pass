@@ -10,11 +10,9 @@ return new class extends Migration
     {
         Schema::create('mobile_passes', function (Blueprint $table) {
             $table->uuid('id')->primary();
-
-            // add fields
             $table->json('content')->default('{}');
             $table->json('images')->default('{}');
-            $table->morphs('parent');
+            $table->nullableMorphs('parent'); // TODO: make this non-nullable in the future
             $table->timestamps();
         });
 
@@ -24,7 +22,6 @@ return new class extends Migration
             $table->string('pass_type_id');
             $table->uuid('pass_serial');
             $table->string('push_token');
-            $table->softDeletes();
         });
     }
 };

@@ -13,6 +13,6 @@ class LaravelMobilePassServiceProvider extends PackageServiceProvider
             ->name('laravel-mobile-pass')
             ->hasConfigFile()
             ->hasViews()
-            ->hasMigration('create_mobile_pass_table');
+            ->hasMigration('create_mobile_pass_tables');
     }
 }

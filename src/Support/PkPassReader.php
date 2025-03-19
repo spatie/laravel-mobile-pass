@@ -2,10 +2,11 @@
 
 namespace Spatie\LaravelMobilePass\Support;
 
+use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\Arr;
 use ZipArchive;
 
-class PkPassReader
+class PkPassReader implements Arrayable
 {
     protected ZipArchive $contentZip;
 
@@ -92,5 +93,14 @@ class PkPassReader
         $this->contentZip->close();
 
         unlink($this->tempFile);
+    }
+
+    public function toArray(): array
+    {
+        return [
+            'files' => $this->containingFiles(),
+            'manifest' => $this->manifestProperties(),
+            'pass' => $this->passProperties(),
+        ];
     }
 }

@@ -4,7 +4,7 @@ namespace Spatie\LaravelMobilePass\Http\Controllers;
 
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Carbon;
-use Spatie\LaravelMobilePass\Models\Registration;
+use Spatie\LaravelMobilePass\Models\MobilePassRegistration;
 
 /**
  * Getting the Serial Numbers for Passes Associated with a Device
@@ -14,7 +14,7 @@ class GetAssociatedSerialsForDeviceController extends Controller
 {
     public function __invoke()
     {
-        $registrations = Registration::where([
+        $registrations = MobilePassRegistration::where([
             'device_id' => $request->deviceId,
             'pass_type_id' => $request->passId,
         ]);

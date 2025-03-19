@@ -6,16 +6,16 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use PKPass\PKPass;
+use Spatie\LaravelMobilePass\Actions\NotifyAppleOfPassUpdateAction;
 use Spatie\LaravelMobilePass\Entities\FieldContent;
 use Spatie\LaravelMobilePass\Entities\Image;
 use Spatie\LaravelMobilePass\Enums\TransitType;
 use Spatie\LaravelMobilePass\Events\MobilePassUpdatedEvent;
+use Spatie\LaravelMobilePass\Support\Config;
 
 class MobilePass extends Model
 {
     use HasUuids;
-
-    public $table = 'mobile_passes';
 
     public ?string $organisationName = null;
 
@@ -37,13 +37,30 @@ class MobilePass extends Model
 
     public array $images = [];
 
-    protected $dispatchesEvents = [
-        'updated' => MobilePassUpdatedEvent::class,
-    ];
+    public static function boot()
+    {
+        parent::boot();
+
+        static::retrieved(function (MobilePass $mobilePass) {
+            self::uncompileContent($mobilePass);
+        });
+
+        static::saved(function(MobilePass $mobilePass) {
+           $actionClass = Config::getActionClass('notify_apple_of_pass_update', NotifyAppleOfPassUpdateAction::class);
+
+            app($actionClass)->execute($mobilePass);
+        });
+
+        static::saving(function (MobilePass $mobilePass) {
+            self::compileContent($mobilePass);
+        });
+    }
 
     public function registrations(): HasMany
     {
-        return $this->hasMany(Registration::class, 'pass_serial');
+        $modelClass = Config::modelPassRegistrationModel();
+
+        return $this->hasMany($modelClass, 'pass_serial');
     }
 
     protected function casts()
@@ -54,18 +71,7 @@ class MobilePass extends Model
         ];
     }
 
-    public static function boot()
-    {
-        parent::boot();
 
-        static::retrieved(function (MobilePass $model) {
-            self::uncompileContent($model);
-        });
-
-        static::saving(function (MobilePass $model) {
-            self::compileContent($model);
-        });
-    }
 
     protected static function uncompileContent(MobilePass $model)
     {
@@ -104,10 +110,10 @@ class MobilePass extends Model
     {
         return [
             'transitType' => TransitType::Air, // todo: put this somewhere else
-            'headerFields' => array_map(fn ($field) => $field->toArray(), $model->headerFields),
-            'primaryFields' => array_map(fn ($field) => $field->toArray(), $model->primaryFields),
-            'secondaryFields' => array_map(fn ($field) => $field->toArray(), $model->secondaryFields),
-            'auxiliaryFields' => array_map(fn ($field) => $field->toArray(), $model->auxiliaryFields),
+            'headerFields' => array_map(fn ($field) => $field->toArray(), $model->headerFields ?? []),
+            'primaryFields' => array_map(fn ($field) => $field->toArray(), $model->primaryFields ?? []),
+            'secondaryFields' => array_map(fn ($field) => $field->toArray(), $model->secondaryFields ?? []),
+            'auxiliaryFields' => array_map(fn ($field) => $field->toArray(), $model->auxiliaryFields ?? []),
         ];
     }
 

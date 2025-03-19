@@ -11,7 +11,7 @@ use function Pest\testDirectory;
 it('builds a basic boarding pass', function () {
     $pass = AirlinePassBuilder::make()
         ->setOrganisationName('My organisation')
-        ->setSerialNumber(rand(1, 100) * 100)
+        ->setSerialNumber(123456)
         ->setDescription('Hello!')
         ->setHeaderFields(
             FieldContent::make('flight-no')
@@ -47,7 +47,7 @@ it('builds a basic boarding pass', function () {
         )
         ->setIconImage(
             Image::make(
-                x1Path: testDirectory('Helpers/Images/spatie-thumbnail.png')
+                x1Path: getTestSupportPath('images/spatie-thumbnail.png')
             )
         )
 
@@ -64,11 +64,5 @@ it('builds a basic boarding pass', function () {
 
         ->generate();
 
-    // For the moment, we'll just store a file here
-    // and manually open it to check it works.
-    file_put_contents(tempPath('test.pkpass'), $pass);
-
-    $pkPass = PkPassReader::loadFromString($pass);
-
-    expect($pkPass->passProperties())->toBeGreaterThan(0);
+    expect($pass)->toMatchPasskeySnapshot();
 });
