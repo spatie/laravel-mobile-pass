@@ -2,6 +2,7 @@
 
 namespace Spatie\LaravelMobilePass\Http\Controllers;
 
+use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Carbon;
 use Spatie\LaravelMobilePass\Models\MobilePassRegistration;
@@ -12,11 +13,11 @@ use Spatie\LaravelMobilePass\Models\MobilePassRegistration;
  */
 class GetAssociatedSerialsForDeviceController extends Controller
 {
-    public function __invoke()
+    public function __invoke(Request $request)
     {
         $registrations = MobilePassRegistration::where([
             'device_id' => $request->deviceId,
-            'pass_type_id' => $request->passId,
+            'pass_type_id' => $request->passTypeId,
         ]);
 
         if (request()->has('passesUpdatedSince')) {
