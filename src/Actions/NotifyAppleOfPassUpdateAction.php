@@ -13,7 +13,7 @@ class NotifyAppleOfPassUpdateAction
         $mobilePass
             ->registrations
             ->each(
-                fn(MobilePassRegistration $registration) => $this->notifyUpdate($registration)
+                fn (MobilePassRegistration $registration) => $this->notifyUpdate($registration)
             );
     }
 
