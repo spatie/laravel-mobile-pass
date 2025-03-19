@@ -61,5 +61,5 @@ it('builds a basic boarding pass', function () {
 
         ->generate();
 
-    expect($pass)->toMatchPasskeySnapshot();
+    expect($pass)->toMatchMobilePassSnapshot();
 });

@@ -44,5 +44,5 @@ it('can create a mobile pass', function () {
 
     $passkeyContent = $pass->generate();
 
-    expect($passkeyContent)->toMatchPasskeySnapshot();
+    expect($passkeyContent)->toMatchMobilePassSnapshot();
 });

@@ -23,7 +23,7 @@ function tempPath(string $path = ''): string
     return test()->temporaryDirectory->path($path);
 }
 
-expect()->extend('toMatchPasskeySnapshot', function () {
+expect()->extend('toMatchMobilePassSnapshot', function () {
     storePassInTemporaryDirectory($this->value);
 
     $passkeyReader = PkPassReader::loadFromString($this->value);
