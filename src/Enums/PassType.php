@@ -2,11 +2,11 @@
 
 namespace Spatie\LaravelMobilePass\Enums;
 
-enum PassType
+enum PassType: string
 {
-    case BoardingPass;
-    case Coupon;
-    case EventTicket;
-    case StoreCard;
-    case Generic;
+    case BoardingPass = 'boardingPass';
+    case Coupon = 'coupon';
+    case EventTicket = 'eventTicket';
+    case StoreCard = 'storeCard';
+    case Generic = 'generic';
 }
