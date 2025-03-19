@@ -12,9 +12,9 @@ class NotifyAppleOfPassUpdateAction
     {
         $mobilePass
             ->registrations
-            ->each(function (MobilePassRegistration $registration) {
-                $this->notifyUpdate($registration);
-            });
+            ->each(
+                fn(MobilePassRegistration $registration) => $this->notifyUpdate($registration)
+            );
     }
 
     protected function headers(MobilePassRegistration $registration): array
