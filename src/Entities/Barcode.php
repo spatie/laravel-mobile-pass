@@ -24,7 +24,7 @@ class Barcode implements Arrayable
         );
     }
 
-    public static function fromArray(array $fields)
+    public static function fromArray(array $fields): static
     {
         $barcode = new static(
             BarcodeType::tryFrom($fields['format']),
@@ -44,7 +44,7 @@ class Barcode implements Arrayable
         return $this;
     }
 
-    public function toArray()
+    public function toArray(): array
     {
         return array_filter([
             'format' => $this->format->value,

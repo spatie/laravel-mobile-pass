@@ -42,7 +42,7 @@ class FieldContent implements Arrayable
         public string $key
     ) {}
 
-    public static function fromArray(array $fields)
+    public static function fromArray(array $fields): static
     {
         $fieldContent = new static(
             $fields['key'],
