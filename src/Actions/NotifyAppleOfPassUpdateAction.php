@@ -46,7 +46,7 @@ class NotifyAppleOfPassUpdateAction
             ->withOptions($this->options($registration))
             ->post(
                 url: $this->updateUrl($registration),
-                data: '{}',
+                data: json_decode('{}'),
             );
 
         return $this;
