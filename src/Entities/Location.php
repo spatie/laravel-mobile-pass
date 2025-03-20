@@ -14,14 +14,14 @@ class Location implements Arrayable
     public static function make(
         float $latitude,
         float $longitude
-    ) {
+    ): static {
         return new self(
             latitude: $latitude,
             longitude: $longitude,
         );
     }
 
-    public function toArray()
+    public function toArray(): array
     {
         return [
             'latitude' => $this->latitude,

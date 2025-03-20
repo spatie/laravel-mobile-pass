@@ -22,7 +22,7 @@ class Seat implements Arrayable
         ?string $row = null,
         ?string $section = null,
         ?string $type = null,
-    ) {
+    ): static {
         return new self(
             description: $description,
             identifier: $identifier,
@@ -33,7 +33,7 @@ class Seat implements Arrayable
         );
     }
 
-    public function toArray()
+    public function toArray(): array
     {
         return array_filter([
             'description' => $this->description,

@@ -14,7 +14,7 @@ class Image
         string $x1Path,
         ?string $x2Path = null,
         ?string $x3Path = null,
-    ) {
+    ): static {
         return new self(
             x1Path: $x1Path,
             x2Path: $x2Path,
