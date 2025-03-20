@@ -2,6 +2,7 @@
 
 namespace Spatie\LaravelMobilePass\Models;
 
+use Exception;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -90,8 +91,6 @@ class MobilePass extends Model
 
     protected static function uncompileContent(MobilePass $model)
     {
-        $passType = PassType::tryFrom($model->content['userInfo']['passType'] ?? PassType::Generic);
-
         $model->organisationName = $model->content['organisationName'] ?? null;
         $model->passTypeIdentifier = $model->content['passTypeIdentifier'] ?? null;
         $model->authenticationToken = $model->content['authenticationToken'] ?? null;
@@ -99,15 +98,25 @@ class MobilePass extends Model
         $model->description = $model->content['description'] ?? null;
         $model->backgroundColour = Colour::makeFromRgbString($model->content['backgroundColor'] ?? null);
         $model->labelColour = Colour::makeFromRgbString($model->content['labelColor'] ?? null);
-        $model->passType = $passType;
+        $model->passType = PassType::tryFrom($model->content['userInfo']['passType'] ?? PassType::Generic);
 
         $model->passImages = array_map(fn ($image) => Image::fromArray($image), $model->images);
 
         $model->barcodes = array_map(fn ($barcode) => Barcode::fromArray($barcode), $model->content['barcodes'] ?? []);
-        $model->headerFields = array_map(fn ($field) => FieldContent::fromArray($field), $model->content[$passType->value]['headerFields'] ?? []);
-        $model->primaryFields = array_map(fn ($field) => FieldContent::fromArray($field), $model->content[$passType->value]['primaryFields'] ?? []);
-        $model->secondaryFields = array_map(fn ($field) => FieldContent::fromArray($field), $model->content[$passType->value]['secondaryFields'] ?? []);
-        $model->auxiliaryFields = array_map(fn ($field) => FieldContent::fromArray($field), $model->content[$passType->value]['auxiliaryFields'] ?? []);
+
+        self::uncompileFieldSet($model, 'headerFields');
+        self::uncompileFieldSet($model, 'primaryFields');
+        self::uncompileFieldSet($model, 'secondaryFields');
+        self::uncompileFieldSet($model, 'auxiliaryFields');
+    }
+
+    protected static function uncompileFieldSet(MobilePass $model, string $fieldSetName)
+    {
+        $model->$fieldSetName = [];
+
+        foreach ($model->content[$model->passType->value][$fieldSetName] ?? [] as $field) {
+            $model->$fieldSetName[$field['key']] = FieldContent::fromArray($field);
+        }
     }
 
     protected static function compileContent(MobilePass $model)
@@ -138,10 +147,10 @@ class MobilePass extends Model
     {
         return [
             'transitType' => TransitType::Air, // todo: put this somewhere else
-            'headerFields' => array_map(fn ($field) => $field->toArray(), $model->headerFields ?? []),
-            'primaryFields' => array_map(fn ($field) => $field->toArray(), $model->primaryFields ?? []),
-            'secondaryFields' => array_map(fn ($field) => $field->toArray(), $model->secondaryFields ?? []),
-            'auxiliaryFields' => array_map(fn ($field) => $field->toArray(), $model->auxiliaryFields ?? []),
+            'headerFields' => array_map(fn ($field) => $field->toArray(), array_values($model->headerFields ?? [])),
+            'primaryFields' => array_map(fn ($field) => $field->toArray(), array_values($model->primaryFields ?? [])),
+            'secondaryFields' => array_map(fn ($field) => $field->toArray(), array_values($model->secondaryFields ?? [])),
+            'auxiliaryFields' => array_map(fn ($field) => $field->toArray(), array_values($model->auxiliaryFields ?? [])),
         ];
     }
 
@@ -212,30 +221,52 @@ class MobilePass extends Model
         return $this;
     }
 
+    public function updateFieldValueByKey(string $key, string $value)
+    {
+        // Find the field by key and update it
+        $field = $this->headerFields[$key] ?? $this->primaryFields[$key] ?? $this->secondaryFields[$key] ?? $this->auxiliaryFields[$key] ?? null;
+
+        if (! $field) {
+            throw new Exception('Key not found');
+        }
+
+        $field->value = $value;
+
+        return $this;
+    }
+
     public function addHeaderFields(FieldContent ...$fieldContent)
     {
-        $this->headerFields = $fieldContent;
+        foreach ($fieldContent as $field) {
+            $this->headerFields[$field->key] = $field;
+        }
 
         return $this;
     }
 
     public function addPrimaryFields(FieldContent ...$fieldContent)
     {
-        $this->primaryFields = $fieldContent;
+        foreach ($fieldContent as $field) {
+            $this->primaryFields[$field->key] = $field;
+        }
 
         return $this;
     }
 
     public function addSecondaryFields(FieldContent ...$fieldContent)
     {
-        $this->secondaryFields = $fieldContent;
+        foreach ($fieldContent as $field) {
+            $this->secondaryFields[$field->key] = $field;
+        }
 
         return $this;
     }
 
     public function addAuxiliaryFields(FieldContent ...$fieldContent)
     {
-        $this->auxiliaryFields = $fieldContent;
+        foreach ($fieldContent as $field) {
+            $this->auxiliaryFields[$field->key] = $field;
+        }
 
         return $this;
     }
