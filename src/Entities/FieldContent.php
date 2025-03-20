@@ -6,8 +6,12 @@ use Illuminate\Contracts\Support\Arrayable;
 use Spatie\LaravelMobilePass\Enums\DataDetectorType;
 use Spatie\LaravelMobilePass\Enums\DateType;
 use Spatie\LaravelMobilePass\Enums\NumberStyleType;
+use Spatie\LaravelMobilePass\Enums\TextAlignmentType;
 use Spatie\LaravelMobilePass\Enums\TimeStyleType;
 
+/**
+ * https://developer.apple.com/documentation/walletpasses/passfieldcontent
+ */
 class FieldContent implements Arrayable
 {
     public ?string $attributedValue = null;
@@ -32,6 +36,8 @@ class FieldContent implements Arrayable
 
     public ?bool $isRelative = null;
 
+    public ?TextAlignmentType $textAlignment = null;
+
     public function __construct(
         public string $key
     ) {}
@@ -48,10 +54,11 @@ class FieldContent implements Arrayable
         $fieldContent->numberStyle = ! empty($fields['numberStyle']) ? NumberStyleType::tryFrom($fields['numberStyle']) : null;
         $fieldContent->changeMessage = $fields['changeMessage'] ?? null;
         $fieldContent->currencyCode = $fields['currencyCode'] ?? null;
-        $fieldContent->dataDetectorType = ! empty($fieds['dataDetectorType']) ? DataDetectorType::tryFrom($fields['dataDetectorType']) : null;
+        $fieldContent->dataDetectorType = ! empty($fieds['dataDetectorTypes']) ? DataDetectorType::tryFrom($fields['dataDetectorType']) : null;
         $fieldContent->dateStyle = ! empty($fields['dateStyle']) ? DateType::tryFrom($fields['dateStyle']) : null;
         $fieldContent->ignoresTimezone = $fields['ignoresTimezone'] ?? null;
         $fieldContent->isRelative = $fields['isRelative'] ?? null;
+        $fieldContent->textAlignment = ! empty($fields['textAlignment']) ? TextAlignmentType::tryFrom($fields['textAlignment']) : null;
 
         return $fieldContent;
     }
@@ -140,21 +147,22 @@ class FieldContent implements Arrayable
         return $this;
     }
 
-    public function toArray()
+    public function toArray(): array
     {
         return array_filter([
             'key' => $this->key,
             'label' => $this->label,
             'value' => $this->value,
             'attributedValue' => $this->attributedValue,
-            'numberStyle' => $this->numberStyle?->value,
             'changeMessage' => $this->changeMessage,
             'currencyCode' => $this->currencyCode,
+            'dataDetectorTypes' => $this->dataDetectorType?->value,
             'dateStyle' => $this->dateStyle?->value,
-            'timeStyle' => $this->timeStyle?->value,
-            'dataDetectorType' => $this->dataDetectorType?->value,
             'ignoresTimezone' => $this->ignoresTimezone,
             'isRelative' => $this->isRelative,
+            'numberStyle' => $this->numberStyle?->value,
+            'textAlignment' => $this->textAlignment?->value,
+            'timeStyle' => $this->timeStyle?->value,
         ]);
     }
 }
