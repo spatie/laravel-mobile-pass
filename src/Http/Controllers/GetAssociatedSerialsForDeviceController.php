@@ -23,7 +23,7 @@ class GetAssociatedSerialsForDeviceController extends Controller
         if (request()->query('passesUpdatedSince')) {
             $since = Carbon::parse($request->query('passesUpdatedSince'));
 
-            $registrations->whereHas('pass', fn ($q) => $q->whereDate('updated_at', '>', $since));
+            $registrations->whereHas('pass', fn ($q) => $q->where('updated_at', '>', $since));
         }
 
         // For each registration, get the last updated time of each pass.
@@ -31,7 +31,7 @@ class GetAssociatedSerialsForDeviceController extends Controller
         $lastUpdated = $results->map->pass->pluck('updated_at')->max();
 
         return response()->json([
-            'lastUpdated' => $lastUpdated?->toIso8601ZuluString() ?? null,
+            'lastUpdated' => $lastUpdated?->toIso8601ZuluString() ?? request()->query('passesUpdatedSince'),
             'serialNumbers' => $results->pluck('pass_serial')->all(),
         ]);
     }

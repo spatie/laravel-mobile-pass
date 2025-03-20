@@ -19,6 +19,6 @@ class UnregisterDeviceController extends Controller
             'pass_serial' => $request->passSerial,
         ])->first();
 
-        $pass->delete();
+        $pass?->delete();
     }
 }

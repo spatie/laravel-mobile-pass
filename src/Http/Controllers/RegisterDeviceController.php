@@ -16,11 +16,17 @@ class RegisterDeviceController extends Controller
     {
         $pass = MobilePass::findOrFail($request->passSerial);
 
-        return $pass->registrations()->create([
+        $registration = $pass->registrations()->updateOrCreate([
             'device_id' => $request->deviceId,
             'pass_type_id' => $request->passTypeId,
             'pass_serial' => $request->passSerial,
+        ], [
             'push_token' => $request->pushToken,
         ]);
+
+        return response(
+            null,
+            $registration->wasRecentlyCreated ? 201 : 200
+        );
     }
 }
