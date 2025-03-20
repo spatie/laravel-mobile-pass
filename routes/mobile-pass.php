@@ -13,15 +13,18 @@ Route::group([
 ], function ($router) {
     $router
         ->post('/devices/{deviceId}/registrations/{passTypeId}/{passSerial}', RegisterDeviceController::class)
-        ->middleware(VerifyPasskitRequest::class);
+        ->middleware(VerifyPasskitRequest::class)
+        ->name('mobile-pass.register-device');
 
     $router
-        ->get('/passes/{passTypeId}/{passSerial}', CheckForUpdatesController::class);
-    // ->middleware(VerifyPasskitRequest::class);
+        ->get('/passes/{passTypeId}/{passSerial}', CheckForUpdatesController::class)
+        ->middleware(VerifyPasskitRequest::class)
+        ->name('mobile-pass.check-for-updates');
 
     $router
         ->delete('/devices/{deviceId}/registrations/{passTypeId}/{passSerial}', UnregisterDeviceController::class)
-        ->middleware(VerifyPasskitRequest::class);
+        ->middleware(VerifyPasskitRequest::class)
+        ->name('mobile-pass.unregister-device');
 
     // According to Apple's docs, these endpoints should _not_ be authenticated.
     $router->get('/devices/{deviceId}/registrations/{passTypeId}', GetAssociatedSerialsForDeviceController::class);
