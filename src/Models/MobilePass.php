@@ -63,7 +63,7 @@ class MobilePass extends Model
             self::uncompileContent($mobilePass);
         });
 
-        static::saved(function (MobilePass $mobilePass) {
+        static::updated(function (MobilePass $mobilePass) {
             $actionClass = Config::getActionClass('notify_apple_of_pass_update', NotifyAppleOfPassUpdateAction::class);
 
             app($actionClass)->execute($mobilePass);
@@ -301,8 +301,6 @@ class MobilePass extends Model
         );
 
         self::compileContent($this);
-
-        $this->save();
 
         $pkPass->setData(
             $this->content
