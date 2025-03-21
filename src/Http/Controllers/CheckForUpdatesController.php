@@ -20,7 +20,7 @@ class CheckForUpdatesController extends Controller
             return $this->respondWithNewlyGeneratedPass($pass);
         }
 
-        return response()->setNotModified();
+        return response(null)->setNotModified();
     }
 
     protected function respondWithNewlyGeneratedPass(MobilePass $pass)
