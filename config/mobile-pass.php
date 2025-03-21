@@ -16,6 +16,7 @@ return [
     'models' => [
         'mobile_pass' => Spatie\LaravelMobilePass\Models\MobilePass::class,
         'mobile_pass_registration' => Spatie\LaravelMobilePass\Models\MobilePassRegistration::class,
+        'mobile_pass_device' => Spatie\LaravelMobilePass\Models\MobilePassDevice::class,
     ],
 
     /*

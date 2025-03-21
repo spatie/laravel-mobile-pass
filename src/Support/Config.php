@@ -4,6 +4,7 @@ namespace Spatie\LaravelMobilePass\Support;
 
 use Spatie\LaravelMobilePass\Exceptions\InvalidConfig;
 use Spatie\LaravelMobilePass\Models\MobilePass;
+use Spatie\LaravelMobilePass\Models\MobilePassDevice;
 use Spatie\LaravelMobilePass\Models\MobilePassRegistration;
 
 class Config
@@ -18,6 +19,12 @@ class Config
     public static function modelPassRegistrationModel(): string
     {
         return self::getModelClass('mobile_pass_registration', MobilePassRegistration::class);
+    }
+
+    /** @return class-string<\Spatie\LaravelMobilePass\Models\MobilePassDevice> */
+    public static function deviceModel(): string
+    {
+        return self::getModelClass('mobile_pass_device', MobilePassDevice::class);
     }
 
     protected static function getModelClass(string $modelName, string $defaultClass): string
