@@ -17,6 +17,21 @@ it('returns the generated pass', function () {
         ->assertSuccessful();
 });
 
+it('returns 304 if pass was not updated after given time', function () {
+    $pass = MobilePass::factory()->withIconImage()->create();
+
+    $this
+        ->withoutMiddleware()
+        ->withHeaders([
+            'If-Modified-Since' => $pass->updated_at->toRfc7231String(),
+        ])
+        ->getJson(route('mobile-pass.check-for-updates', [
+            'passSerial' => $pass->getKey(),
+            'passTypeId' => 'pass.com.example',
+        ]))
+        ->assertNotModified();
+});
+
 it('doesnt trigger an update to Apple', function () {
     $pass = MobilePass::factory()->withIconImage()->create();
 
