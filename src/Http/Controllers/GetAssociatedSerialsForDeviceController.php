@@ -28,10 +28,13 @@ class GetAssociatedSerialsForDeviceController extends Controller
 
         // For each registration, get the last updated time of each pass.
         $results = $registrations->get();
-        $lastUpdated = $results->map->pass->pluck('updated_at')->max();
+
+        if ($results->isEmpty()) {
+            return response([], 204);
+        }
 
         return response()->json([
-            'lastUpdated' => $lastUpdated?->toIso8601ZuluString() ?? request()->query('passesUpdatedSince'),
+            'lastUpdated' => $results->map->pass->pluck('updated_at')->max()->toIso8601ZuluString(),
             'serialNumbers' => $results->pluck('pass_serial')->all(),
         ]);
     }

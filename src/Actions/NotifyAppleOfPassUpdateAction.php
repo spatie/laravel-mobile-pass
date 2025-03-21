@@ -20,7 +20,7 @@ class NotifyAppleOfPassUpdateAction
     protected function headers(MobilePassRegistration $registration): array
     {
         return [
-            'apns-topic' => config('mobile-pass.type_identifier'),
+            'apns-topic' => $registration->pass_type_id,
         ];
     }
 
