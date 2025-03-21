@@ -19,7 +19,7 @@ class GetAssociatedSerialsForDeviceController extends Controller
         $registrations = $request
             ->registrationsQuery()
             ->when($request->passesUpdatedSince(), function (Builder $query) use ($request) {
-                $query->whereHas('pass', function (Builder $query) use($request) {
+                $query->whereHas('pass', function (Builder $query) use ($request) {
                     $query->where('updated_at', '>', $request->passesUpdatedSince());
                 });
             })
@@ -35,7 +35,7 @@ class GetAssociatedSerialsForDeviceController extends Controller
     protected function responseData(Collection $registrations): array
     {
         $lastUpdated = $registrations
-            ->map(fn(MobilePassRegistration $registration) => $registration->pass->updated_at)
+            ->map(fn (MobilePassRegistration $registration) => $registration->pass->updated_at)
             ->max()
             ->toIso8601ZuluString();
 
