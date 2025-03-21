@@ -53,6 +53,8 @@ class MobilePass extends Model
 
     public array $barcodes = [];
 
+    public ?bool $voided = null;
+
     public function setType(PassType $passType): self
     {
         $this->passType = $passType;
@@ -114,6 +116,7 @@ class MobilePass extends Model
         $model->foregroundColour = Colour::makeFromRgbString($model->content['foregroundColor'] ?? null);
         $model->labelColour = Colour::makeFromRgbString($model->content['labelColor'] ?? null);
         $model->passType = PassType::tryFrom($model->content['userInfo']['passType'] ?? PassType::Generic);
+        $model->voided = $model->content['voided'] ?? null;
 
         $model->passImages = array_map(fn ($image) => Image::fromArray($image), $model->images);
 
@@ -151,6 +154,7 @@ class MobilePass extends Model
             'foregroundColor' => (string) $model->foregroundColour,
             'labelColor' => (string) $model->labelColour,
             'barcodes' => array_map(fn ($barcode) => $barcode->toArray(), $model->barcodes),
+            'voided' => $model->voided,
             'userInfo' => [
                 'passType' => $model->passType->value,
             ],
@@ -254,6 +258,13 @@ class MobilePass extends Model
     public function addBarcodes(Barcode ...$barcodes)
     {
         $this->barcodes = $barcodes;
+
+        return $this;
+    }
+
+    public function void(bool $state = true)
+    {
+        $this->voided = $state;
 
         return $this;
     }
