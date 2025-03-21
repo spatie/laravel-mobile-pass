@@ -14,11 +14,20 @@ class Image
         string $x1Path,
         ?string $x2Path = null,
         ?string $x3Path = null,
-    ) {
+    ): static {
         return new self(
             x1Path: $x1Path,
             x2Path: $x2Path,
             x3Path: $x3Path,
+        );
+    }
+
+    public static function fromArray(array $image): self
+    {
+        return new self(
+            x1Path: $image['x1Path'],
+            x2Path: $image['x2Path'] ?? null,
+            x3Path: $image['x3Path'] ?? null,
         );
     }
 }

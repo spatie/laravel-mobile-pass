@@ -14,14 +14,14 @@ class Price implements Arrayable
     public static function make(
         ?string $amount = null,
         ?string $currencyCode = null
-    ) {
+    ): static {
         return new self(
             amount: $amount,
             currencyCode: $currencyCode,
         );
     }
 
-    public function toArray()
+    public function toArray(): array
     {
         return [
             'amount' => $this->amount,

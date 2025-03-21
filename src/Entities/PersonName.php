@@ -24,7 +24,7 @@ class PersonName implements Arrayable
         ?string $nameSuffix = null,
         ?string $nickname = null,
         ?string $phoneticRepresentation = null
-    ) {
+    ): static {
         return new self(
             familyName: $familyName,
             givenName: $givenName,
@@ -36,7 +36,7 @@ class PersonName implements Arrayable
         );
     }
 
-    public function toArray()
+    public function toArray(): array
     {
         return array_filter([
             'familyName' => $this->familyName,

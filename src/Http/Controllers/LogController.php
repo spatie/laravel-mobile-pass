@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Log;
 
 /**
  * Logging Errors
- * https://developer.apple.com/library/archive/documentation/PassKit/Reference/PassKit_WebService/WebService.html#//apple_ref/doc/uid/TP40011988-CH0-SW7
+ * https://developer.apple.com/documentation/walletpasses/log-a-message
  */
 class LogController extends Controller
 {

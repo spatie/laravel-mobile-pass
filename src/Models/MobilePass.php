@@ -2,19 +2,25 @@
 
 namespace Spatie\LaravelMobilePass\Models;
 
+use Exception;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use PKPass\PKPass;
 use Spatie\LaravelMobilePass\Actions\NotifyAppleOfPassUpdateAction;
+use Spatie\LaravelMobilePass\Entities\Barcode;
+use Spatie\LaravelMobilePass\Entities\Colour;
 use Spatie\LaravelMobilePass\Entities\FieldContent;
 use Spatie\LaravelMobilePass\Entities\Image;
+use Spatie\LaravelMobilePass\Enums\PassType;
 use Spatie\LaravelMobilePass\Enums\TransitType;
 use Spatie\LaravelMobilePass\Support\Config;
 
 class MobilePass extends Model
 {
-    use HasUuids;
+    use HasFactory, HasUuids;
 
     public ?string $organisationName = null;
 
@@ -34,7 +40,22 @@ class MobilePass extends Model
 
     public array $auxiliaryFields = [];
 
-    public array $images = [];
+    public ?Colour $backgroundColour = null;
+
+    public ?Colour $labelColour = null;
+
+    public array $passImages = [];
+
+    public PassType $passType = PassType::Generic;
+
+    public array $barcodes = [];
+
+    public function setType(PassType $passType): self
+    {
+        $this->passType = $passType;
+
+        return $this;
+    }
 
     public static function boot()
     {
@@ -44,7 +65,7 @@ class MobilePass extends Model
             self::uncompileContent($mobilePass);
         });
 
-        static::saved(function (MobilePass $mobilePass) {
+        static::updated(function (MobilePass $mobilePass) {
             $actionClass = Config::getActionClass('notify_apple_of_pass_update', NotifyAppleOfPassUpdateAction::class);
 
             app($actionClass)->execute($mobilePass);
@@ -62,6 +83,14 @@ class MobilePass extends Model
         return $this->hasMany($modelClass, 'pass_serial');
     }
 
+    public function devices(): HasManyThrough
+    {
+        $modelClass = Config::modelPassRegistrationModel();
+        $deviceModelClass = Config::deviceModel();
+
+        return $this->hasManyThrough($deviceModelClass, $modelClass, 'pass_serial', 'id', 'id', 'device_id');
+    }
+
     protected function casts()
     {
         return [
@@ -72,45 +101,66 @@ class MobilePass extends Model
 
     protected static function uncompileContent(MobilePass $model)
     {
-        $passType = 'boardingPass'; // TODO: make this dynamic
-
         $model->organisationName = $model->content['organisationName'] ?? null;
         $model->passTypeIdentifier = $model->content['passTypeIdentifier'] ?? null;
         $model->authenticationToken = $model->content['authenticationToken'] ?? null;
         $model->teamIdentifier = $model->content['teamIdentifier'] ?? null;
         $model->description = $model->content['description'] ?? null;
+        $model->backgroundColour = Colour::makeFromRgbString($model->content['backgroundColor'] ?? null);
+        $model->labelColour = Colour::makeFromRgbString($model->content['labelColor'] ?? null);
+        $model->passType = PassType::tryFrom($model->content['userInfo']['passType'] ?? PassType::Generic);
 
-        $model->headerFields = array_map(fn ($field) => FieldContent::fromArray($field), $model->content[$passType]['headerFields'] ?? []);
-        $model->primaryFields = array_map(fn ($field) => FieldContent::fromArray($field), $model->content[$passType]['primaryFields'] ?? []);
-        $model->secondaryFields = array_map(fn ($field) => FieldContent::fromArray($field), $model->content[$passType]['secondaryFields'] ?? []);
-        $model->auxiliaryFields = array_map(fn ($field) => FieldContent::fromArray($field), $model->content[$passType]['auxiliaryFields'] ?? []);
+        $model->passImages = array_map(fn ($image) => Image::fromArray($image), $model->images);
+
+        $model->barcodes = array_map(fn ($barcode) => Barcode::fromArray($barcode), $model->content['barcodes'] ?? []);
+
+        self::uncompileFieldSet($model, 'headerFields');
+        self::uncompileFieldSet($model, 'primaryFields');
+        self::uncompileFieldSet($model, 'secondaryFields');
+        self::uncompileFieldSet($model, 'auxiliaryFields');
+    }
+
+    protected static function uncompileFieldSet(MobilePass $model, string $fieldSetName)
+    {
+        $model->$fieldSetName = [];
+
+        foreach ($model->content[$model->passType->value][$fieldSetName] ?? [] as $field) {
+            $model->$fieldSetName[$field['key']] = FieldContent::fromArray($field);
+        }
     }
 
     protected static function compileContent(MobilePass $model)
     {
-        $passType = 'boardingPass'; // TODO: make this dynamic
+        $model->images = $model->passImages;
 
-        $model->content = [
+        $model->content = array_filter([
             'formatVersion' => 1,
             'organizationName' => $model->organisationName ?? config('mobile-pass.organisation_name'),
             'passTypeIdentifier' => $model->passTypeIdentifier ?? config('mobile-pass.type_identifier'),
-            'authenticationToken' => 'abcdefghijklmnopqrstuvwx', // TODO: config this. config('mobile-pass.apple.authentication_token'),
-            'webServiceURL' => 'https://re6tmnd7zs.sharedwithexpose.com', // TODO: Must be HTTPS. Point this to your server. config('app.url'),
+            'authenticationToken' => config('mobile-pass.apple.webservice.secret'),
+            'webServiceURL' => config('mobile-pass.apple.webservice.host').'/passkit/',
             'teamIdentifier' => $model->teamIdentifier ?? config('mobile-pass.team_identifier'),
             'description' => $model->description,
             'serialNumber' => $model->getKey(),
-            $passType => self::compileFields($model),
-        ];
+            'backgroundColor' => (string) $model->backgroundColour,
+            'labelColor' => (string) $model->labelColour,
+            'barcodes' => array_map(fn ($barcode) => $barcode->toArray(), $model->barcodes),
+            'userInfo' => [
+                'passType' => $model->passType->value,
+            ],
+
+            $model->passType->value => self::compileFields($model),
+        ]);
     }
 
     protected static function compileFields(MobilePass $model)
     {
         return [
             'transitType' => TransitType::Air, // todo: put this somewhere else
-            'headerFields' => array_map(fn ($field) => $field->toArray(), $model->headerFields ?? []),
-            'primaryFields' => array_map(fn ($field) => $field->toArray(), $model->primaryFields ?? []),
-            'secondaryFields' => array_map(fn ($field) => $field->toArray(), $model->secondaryFields ?? []),
-            'auxiliaryFields' => array_map(fn ($field) => $field->toArray(), $model->auxiliaryFields ?? []),
+            'headerFields' => array_map(fn ($field) => $field->toArray(), array_values($model->headerFields ?? [])),
+            'primaryFields' => array_map(fn ($field) => $field->toArray(), array_values($model->primaryFields ?? [])),
+            'secondaryFields' => array_map(fn ($field) => $field->toArray(), array_values($model->secondaryFields ?? [])),
+            'auxiliaryFields' => array_map(fn ($field) => $field->toArray(), array_values($model->auxiliaryFields ?? [])),
         ];
     }
 
@@ -119,12 +169,14 @@ class MobilePass extends Model
         if (! empty(config('mobile-pass.apple.certificate_contents'))) {
             $path = __DIR__.'/../../tmp/Cert.p12';
 
-            file_put_contents(
-                $path,
-                base64_decode(
-                    config('mobile-pass.apple.certificate_contents')
-                )
-            );
+            if (! file_exists($path)) {
+                file_put_contents(
+                    $path,
+                    base64_decode(
+                        config('mobile-pass.apple.certificate_contents')
+                    )
+                );
+            }
 
             return $path;
         }
@@ -146,42 +198,92 @@ class MobilePass extends Model
 
     public function setLogoImage(Image $image): self
     {
-        $this->images['logo'] = $image;
+        $this->passImages['logo'] = $image;
 
         return $this;
     }
 
     public function setIconImage(Image $image): self
     {
-        $this->images['icon'] = $image;
+        $this->passImages['icon'] = $image;
+
+        return $this;
+    }
+
+    public function setBackgroundColour(Colour $colour): self
+    {
+        $this->backgroundColour = $colour;
+
+        return $this;
+    }
+
+    public function setLabelColour(Colour $colour): self
+    {
+        $this->labelColour = $colour;
+
+        return $this;
+    }
+
+    public function addBarcodes(Barcode ...$barcodes)
+    {
+        $this->barcodes = $barcodes;
+
+        return $this;
+    }
+
+    public function updateFieldValueByKey(string $key, string $value)
+    {
+        // Find the field by key and update it
+        $field = $this->headerFields[$key] ?? $this->primaryFields[$key] ?? $this->secondaryFields[$key] ?? $this->auxiliaryFields[$key] ?? null;
+
+        if (! $field) {
+            throw new Exception('Key not found');
+        }
+
+        $field->value = $value;
 
         return $this;
     }
 
     public function addHeaderFields(FieldContent ...$fieldContent)
     {
-        $this->headerFields = $fieldContent;
+        foreach ($fieldContent as $field) {
+            $this->headerFields[$field->key] = $field;
+        }
 
         return $this;
     }
 
     public function addPrimaryFields(FieldContent ...$fieldContent)
     {
-        $this->primaryFields = $fieldContent;
+        foreach ($fieldContent as $field) {
+            $this->primaryFields[$field->key] = $field;
+        }
 
         return $this;
     }
 
     public function addSecondaryFields(FieldContent ...$fieldContent)
     {
-        $this->secondaryFields = $fieldContent;
+        foreach ($fieldContent as $field) {
+            $this->secondaryFields[$field->key] = $field;
+        }
+
+        return $this;
+    }
+
+    public function addAuxiliaryFields(FieldContent ...$fieldContent)
+    {
+        foreach ($fieldContent as $field) {
+            $this->auxiliaryFields[$field->key] = $field;
+        }
 
         return $this;
     }
 
     protected function addImagesToFile(PKPass $pkPass): PKPass
     {
-        foreach ($this->images as $filename => $image) {
+        foreach ($this->passImages as $filename => $image) {
             // The $image Image entity could contain up to three
             // images in different resolutions.
 
