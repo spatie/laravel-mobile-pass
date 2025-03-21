@@ -4,8 +4,10 @@ namespace Spatie\LaravelMobilePass\Models;
 
 use Exception;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use PKPass\PKPass;
 use Spatie\LaravelMobilePass\Actions\NotifyAppleOfPassUpdateAction;
 use Spatie\LaravelMobilePass\Entities\Barcode;
@@ -18,7 +20,7 @@ use Spatie\LaravelMobilePass\Support\Config;
 
 class MobilePass extends Model
 {
-    use HasUuids;
+    use HasUuids, HasFactory;
 
     public ?string $organisationName = null;
 
