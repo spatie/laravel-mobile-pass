@@ -365,6 +365,6 @@ class MobilePass extends Model
             return true;
         }
 
-        return $this->update_at > $since;
+        return $this->updated_at > $since;
     }
 }
