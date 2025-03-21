@@ -45,6 +45,8 @@ class MobilePass extends Model
 
     public ?Colour $labelColour = null;
 
+    public ?Colour $foregroundColour = null;
+
     public array $passImages = [];
 
     public PassType $passType = PassType::Generic;
@@ -109,6 +111,7 @@ class MobilePass extends Model
         $model->teamIdentifier = $model->content['teamIdentifier'] ?? null;
         $model->description = $model->content['description'] ?? null;
         $model->backgroundColour = Colour::makeFromRgbString($model->content['backgroundColor'] ?? null);
+        $model->foregroundColour = Colour::makeFromRgbString($model->content['foregroundColor'] ?? null);
         $model->labelColour = Colour::makeFromRgbString($model->content['labelColor'] ?? null);
         $model->passType = PassType::tryFrom($model->content['userInfo']['passType'] ?? PassType::Generic);
 
@@ -145,6 +148,7 @@ class MobilePass extends Model
             'description' => $model->description,
             'serialNumber' => $model->getKey(),
             'backgroundColor' => (string) $model->backgroundColour,
+            'foregroundColor' => (string) $model->foregroundColour,
             'labelColor' => (string) $model->labelColour,
             'barcodes' => array_map(fn ($barcode) => $barcode->toArray(), $model->barcodes),
             'userInfo' => [
@@ -215,6 +219,13 @@ class MobilePass extends Model
     public function setBackgroundColour(Colour $colour): self
     {
         $this->backgroundColour = $colour;
+
+        return $this;
+    }
+
+    public function setForegroundColour(Colour $colour): self
+    {
+        $this->foregroundColour = $colour;
 
         return $this;
     }
