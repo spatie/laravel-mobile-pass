@@ -15,6 +15,6 @@ class UnregisterDeviceAction
             ->where([
                 'device_id' => $deviceId,
                 'pass_serial' => $passSerial,
-            ])->each(fn(MobilePassRegistration $registration) => $registration->delete());
+            ])->each(fn (MobilePassRegistration $registration) => $registration->delete());
     }
 }

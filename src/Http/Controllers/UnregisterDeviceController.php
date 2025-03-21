@@ -5,7 +5,6 @@ namespace Spatie\LaravelMobilePass\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Spatie\LaravelMobilePass\Actions\UnregisterDeviceAction;
-use Spatie\LaravelMobilePass\Models\MobilePassRegistration;
 use Spatie\LaravelMobilePass\Support\Config;
 
 /**
