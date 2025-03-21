@@ -216,6 +216,20 @@ class MobilePass extends Model
         return $this;
     }
 
+    public function setFooterImage(Image $image): self
+    {
+        $this->passImages['footer'] = $image;
+
+        return $this;
+    }
+
+    public function setStripImage(Image $image): self
+    {
+        $this->passImages['strip'] = $image;
+
+        return $this;
+    }
+
     public function setBackgroundColour(Colour $colour): self
     {
         $this->backgroundColour = $colour;
