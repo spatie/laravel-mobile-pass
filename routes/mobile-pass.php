@@ -27,6 +27,8 @@ Route::group([
         ->name('mobile-pass.unregister-device');
 
     // According to Apple's docs, these endpoints should _not_ be authenticated.
-    $router->get('/devices/{deviceId}/registrations/{passTypeId}', GetAssociatedSerialsForDeviceController::class);
+    $router->get('/devices/{deviceId}/registrations/{passTypeId}', GetAssociatedSerialsForDeviceController::class)
+        ->name('mobile-pass.get-associated-serials-for-device');
+
     $router->post('/log', LogController::class);
 });
