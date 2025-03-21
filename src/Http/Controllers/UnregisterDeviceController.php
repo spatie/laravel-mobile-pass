@@ -4,7 +4,8 @@ namespace Spatie\LaravelMobilePass\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use Spatie\LaravelMobilePass\Models\MobilePassRegistration;
+use Spatie\LaravelMobilePass\Actions\UnregisterDeviceAction;
+use Spatie\LaravelMobilePass\Support\Config;
 
 /**
  * Unregistering a Device
@@ -14,11 +15,11 @@ class UnregisterDeviceController extends Controller
 {
     public function __invoke(Request $request)
     {
-        $pass = MobilePassRegistration::where([
-            'device_id' => $request->deviceId,
-            'pass_serial' => $request->passSerial,
-        ])->first();
+        /** @var class-string<UnregisterDeviceAction> $action */
+        $action = Config::getActionClass('unregister_device', UnregisterDeviceAction::class);
 
-        $pass?->delete();
+        (new $action)->execute($request->deviceId, $request->passSerial);
+
+        return response()->noContent();
     }
 }

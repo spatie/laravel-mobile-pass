@@ -16,7 +16,7 @@ class Config
     }
 
     /** @return class-string<\Spatie\LaravelMobilePass\Models\MobilePass> */
-    public static function modelPassRegistrationModel(): string
+    public static function mobilePassRegistrationModel(): string
     {
         return self::getModelClass('mobile_pass_registration', MobilePassRegistration::class);
     }

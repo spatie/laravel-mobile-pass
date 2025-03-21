@@ -67,9 +67,10 @@ class MobilePass extends Model
         });
 
         static::updated(function (MobilePass $mobilePass) {
-            $actionClass = Config::getActionClass('notify_apple_of_pass_update', NotifyAppleOfPassUpdateAction::class);
+            /** @var class-string<NotifyAppleOfPassUpdateAction> $action */
+            $action = Config::getActionClass('notify_apple_of_pass_update', NotifyAppleOfPassUpdateAction::class);
 
-            app($actionClass)->execute($mobilePass);
+            app($action)->execute($mobilePass);
         });
 
         static::saving(function (MobilePass $mobilePass) {
@@ -79,14 +80,14 @@ class MobilePass extends Model
 
     public function registrations(): HasMany
     {
-        $modelClass = Config::modelPassRegistrationModel();
+        $modelClass = Config::mobilePassRegistrationModel();
 
         return $this->hasMany($modelClass, 'pass_serial');
     }
 
     public function devices(): HasManyThrough
     {
-        $modelClass = Config::modelPassRegistrationModel();
+        $modelClass = Config::mobilePassRegistrationModel();
         $deviceModelClass = Config::deviceModel();
 
         return $this->hasManyThrough($deviceModelClass, $modelClass, 'pass_serial', 'id', 'id', 'device_id');

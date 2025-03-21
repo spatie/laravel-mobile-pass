@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Spatie\LaravelMobilePass\Http\Controllers\CheckForUpdatesController;
 use Spatie\LaravelMobilePass\Http\Controllers\GetAssociatedSerialsForDeviceController;
-use Spatie\LaravelMobilePass\Http\Controllers\LogController;
+use Spatie\LaravelMobilePass\Http\Controllers\MobilePassLogController;
 use Spatie\LaravelMobilePass\Http\Controllers\RegisterDeviceController;
 use Spatie\LaravelMobilePass\Http\Controllers\UnregisterDeviceController;
 use Spatie\LaravelMobilePass\Http\Middleware\VerifyPasskitRequest;
@@ -25,6 +25,6 @@ Route::macro('mobilePass', function (string $prefix = '') {
         Route::get('devices/{deviceId}/registrations/{passTypeId}', GetAssociatedSerialsForDeviceController::class)
             ->name('mobile-pass.get-associated-serials-for-device');
 
-        Route::post('log', LogController::class);
+        Route::post('log', MobilePassLogController::class);
     });
 });

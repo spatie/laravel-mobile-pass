@@ -4,8 +4,8 @@ namespace Spatie\LaravelMobilePass\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use Spatie\LaravelMobilePass\Models\MobilePass;
-use Spatie\LaravelMobilePass\Models\MobilePassDevice;
+use Spatie\LaravelMobilePass\Actions\RegisterDeviceAction;
+use Spatie\LaravelMobilePass\Support\Config;
 
 /**
  * Registering a Device to Receive Push Notifications for a Pass
@@ -15,24 +15,18 @@ class RegisterDeviceController extends Controller
 {
     public function __invoke(Request $request)
     {
-        $pass = MobilePass::findOrFail($request->passSerial);
+        /** @var class-string<RegisterDeviceAction> $actionClass */
+        $actionClass = Config::getActionClass('register_device', RegisterDeviceAction::class);
 
-        // Do we already have a device record?
-        $device = MobilePassDevice::updateOrCreate([
-            'id' => $request->deviceId,
-        ], [
-            'push_token' => $request->get('pushToken'),
-        ]);
-
-        $registration = $pass->registrations()->firstOrCreate([
-            'device_id' => $device->getKey(),
-            'pass_type_id' => $request->passTypeId,
-            'pass_serial' => $request->passSerial,
-        ]);
-
-        return response(
-            null,
-            $registration->wasRecentlyCreated ? 201 : 200
+        $registration = (new $actionClass)->execute(
+            $request->deviceId,
+            $request->get('pushToken'),
+            $request->passTypeId,
+            $request->passSerial,
         );
+
+        return response()
+            ->noContent()
+            ->setStatusCode($registration->wasRecentlyCreated ? 201 : 200);
     }
 }

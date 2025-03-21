@@ -2,9 +2,10 @@
 
 namespace Spatie\LaravelMobilePass\Http\Controllers;
 
-use Illuminate\Http\Request;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Routing\Controller;
-use Illuminate\Support\Carbon;
+use Illuminate\Support\Collection;
+use Spatie\LaravelMobilePass\Http\Requests\GetAssociatedSerialsForDeviceRequest;
 use Spatie\LaravelMobilePass\Models\MobilePassRegistration;
 
 /**
@@ -13,29 +14,34 @@ use Spatie\LaravelMobilePass\Models\MobilePassRegistration;
  */
 class GetAssociatedSerialsForDeviceController extends Controller
 {
-    public function __invoke(Request $request)
+    public function __invoke(GetAssociatedSerialsForDeviceRequest $request)
     {
-        $registrations = MobilePassRegistration::where([
-            'device_id' => $request->deviceId,
-            'pass_type_id' => $request->passTypeId,
-        ]);
+        $registrations = $request
+            ->registrationsQuery()
+            ->when($request->passesUpdatedSince(), function (Builder $query) use ($request) {
+                $query->whereHas('pass', function (Builder $query) use ($request) {
+                    $query->where('updated_at', '>', $request->passesUpdatedSince());
+                });
+            })
+            ->get();
 
-        if (request()->query('passesUpdatedSince')) {
-            $since = Carbon::parse($request->query('passesUpdatedSince'));
-
-            $registrations->whereHas('pass', fn ($q) => $q->where('updated_at', '>', $since));
+        if ($registrations->isEmpty()) {
+            return response()->noContent();
         }
 
-        // For each registration, get the last updated time of each pass.
-        $results = $registrations->get();
+        return response()->json($this->responseData($registrations));
+    }
 
-        if ($results->isEmpty()) {
-            return response([], 204);
-        }
+    protected function responseData(Collection $registrations): array
+    {
+        $lastUpdated = $registrations
+            ->map(fn (MobilePassRegistration $registration) => $registration->pass->updated_at)
+            ->max()
+            ->toIso8601ZuluString();
 
-        return response()->json([
-            'lastUpdated' => $results->map->pass->pluck('updated_at')->max()->toIso8601ZuluString(),
-            'serialNumbers' => $results->pluck('pass_serial')->all(),
-        ]);
+        return [
+            'lastUpdated' => $lastUpdated,
+            'serialNumbers' => $registrations->pluck('pass_serial')->all(),
+        ];
     }
 }
