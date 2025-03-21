@@ -1,20 +1,12 @@
 <?php
 
-namespace Spatie\LaravelMobilePass\Tests\Feature;
+namespace Spatie\LaravelMobilePass\Tests\Http;
 
 use Spatie\LaravelMobilePass\Actions\NotifyAppleOfPassUpdateAction;
-use Spatie\LaravelMobilePass\Entities\Image;
 use Spatie\LaravelMobilePass\Models\MobilePass;
 
 it('returns the generated pass', function () {
-    $pass = MobilePass::make()
-        ->setIconImage(
-            Image::make(
-                getTestSupportPath('images/spatie-thumbnail.png')
-            )
-        );
-
-    $pass->save();
+    $pass = MobilePass::factory()->withIconImage()->create();
 
     $this
         ->withoutMiddleware()
@@ -26,14 +18,7 @@ it('returns the generated pass', function () {
 });
 
 it('doesnt trigger an update to Apple', function () {
-    $pass = MobilePass::make()
-        ->setIconImage(
-            Image::make(
-                getTestSupportPath('images/spatie-thumbnail.png')
-            )
-        );
-
-    $pass->save();
+    $pass = MobilePass::factory()->withIconImage()->create();
 
     $this
         ->mock(NotifyAppleOfPassUpdateAction::class)

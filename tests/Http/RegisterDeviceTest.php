@@ -1,13 +1,16 @@
 <?php
 
-namespace Spatie\LaravelMobilePass\Tests\Feature;
+namespace Spatie\LaravelMobilePass\Tests\Http;
 
+use Illuminate\Support\Facades\Event;
 use Spatie\LaravelMobilePass\Actions\NotifyAppleOfPassUpdateAction;
+use Spatie\LaravelMobilePass\Events\MobilePassRegisteredEvent;
 use Spatie\LaravelMobilePass\Models\MobilePass;
+use Spatie\LaravelMobilePass\Models\MobilePassDevice;
 use Spatie\LaravelMobilePass\Models\MobilePassRegistration;
 
 it('stores the registration', function () {
-    $pass = MobilePass::create();
+    $pass = MobilePass::factory()->create();
 
     $this
         ->withoutMiddleware()
@@ -20,16 +23,21 @@ it('stores the registration', function () {
         ])
         ->assertCreated();
 
+    $this->assertModelExists(MobilePassDevice::class, [
+        'device_id' => '12345',
+        'pass_serial' => $pass->getKey(),
+        'push_token' => '12345',
+    ]);
+
     $this->assertModelExists(MobilePassRegistration::class, [
         'device_id' => '12345',
         'pass_serial' => $pass->getKey(),
         'pass_type_id' => 'pass.com.example',
-        'push_token' => '12345',
     ]);
 });
 
 it('doesnt trigger a change notification to Apple', function () {
-    $pass = MobilePass::create();
+    $pass = MobilePass::factory()->create();
 
     $this
         ->mock(NotifyAppleOfPassUpdateAction::class)
@@ -48,19 +56,13 @@ it('doesnt trigger a change notification to Apple', function () {
 });
 
 it('doesnt create duplicate entries for the same device', function () {
-    $pass = MobilePass::create();
-    $pass->registrations()->create([
-        'device_id' => '12345',
-        'pass_type_id' => 'pass.com.example',
-        'pass_serial' => $pass->getKey(),
-        'push_token' => '12345',
-    ]);
+    $registration = MobilePassRegistration::factory()->create();
 
     $this
         ->withoutMiddleware()
         ->postJson(route('mobile-pass.register-device', [
-            'passSerial' => $pass->getKey(),
-            'deviceId' => '12345',
+            'passSerial' => $registration->pass->getKey(),
+            'deviceId' => $registration->device->getKey(),
             'passTypeId' => 'pass.com.example',
         ]), [
             'pushToken' => '12345',
@@ -68,6 +70,7 @@ it('doesnt create duplicate entries for the same device', function () {
         ->assertStatus(200);
 
     $this->assertSame(1, MobilePassRegistration::count());
+    $this->assertSame(1, MobilePassDevice::count());
 });
 
 it('returns 404 if the pass doesnt exist', function () {
@@ -81,4 +84,25 @@ it('returns 404 if the pass doesnt exist', function () {
             'pushToken' => '12345',
         ])
         ->assertNotFound();
+});
+
+it('fires an event', function () {
+    $pass = MobilePass::factory()->create();
+
+    Event::fake([
+        MobilePassRegisteredEvent::class,
+    ]);
+
+    $this
+        ->withoutMiddleware()
+        ->postJson(route('mobile-pass.register-device', [
+            'passSerial' => $pass->getKey(),
+            'deviceId' => '12345',
+            'passTypeId' => 'pass.com.example',
+        ]), [
+            'pushToken' => '12345',
+        ])
+        ->assertCreated();
+
+    Event::assertDispatched(MobilePassRegisteredEvent::class);
 });
