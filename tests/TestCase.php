@@ -4,6 +4,7 @@ namespace Spatie\LaravelMobilePass\Tests;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Schema;
 use Orchestra\Testbench\TestCase as Orchestra;
 use Spatie\LaravelMobilePass\LaravelMobilePassServiceProvider;
@@ -20,6 +21,8 @@ class TestCase extends Orchestra
         Http::preventStrayRequests();
 
         $this->temporaryDirectory = (new TemporaryDirectory(__DIR__.'/TestSupport/temp'))->empty();
+
+        Route::mobilePass();
 
         Factory::guessFactoryNamesUsing(
             fn (string $modelName) => 'Spatie\\LaravelMobilePass\\Database\\Factories\\'.class_basename($modelName).'Factory'
