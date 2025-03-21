@@ -25,8 +25,7 @@ class CheckForUpdatesController extends Controller
 
     protected function respondWithNewlyGeneratedPass(MobilePass $pass)
     {
-        return response()
-            ->setContent($pass->generate())
+        return response($pass->generate())
             ->header('Content-Type', 'application/vnd.apple.pkpass')
             ->setLastModified($pass->updated_at);
     }
