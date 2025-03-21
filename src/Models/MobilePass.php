@@ -67,7 +67,7 @@ class MobilePass extends Model
         });
 
         static::updated(function (MobilePass $mobilePass) {
-            /** @var class-string<NotifyAppleOfPassUpdateAction>  $action */
+            /** @var class-string<NotifyAppleOfPassUpdateAction> $action */
             $action = Config::getActionClass('notify_apple_of_pass_update', NotifyAppleOfPassUpdateAction::class);
 
             app($action)->execute($mobilePass);
