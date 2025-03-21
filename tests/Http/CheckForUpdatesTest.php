@@ -5,11 +5,26 @@ namespace Spatie\LaravelMobilePass\Tests\Http;
 use Spatie\LaravelMobilePass\Actions\NotifyAppleOfPassUpdateAction;
 use Spatie\LaravelMobilePass\Models\MobilePass;
 
-it('returns the generated pass', function () {
+it('returns the generated pass when no If-Modified-Since header is passed', function () {
     $pass = MobilePass::factory()->withIconImage()->create();
 
     $this
         ->withoutMiddleware()
+        ->getJson(route('mobile-pass.check-for-updates', [
+            'passSerial' => $pass->getKey(),
+            'passTypeId' => 'pass.com.example',
+        ]))
+        ->assertSuccessful();
+});
+
+it('returns the generated pass if pass was updated after given time', function () {
+    $pass = MobilePass::factory()->withIconImage()->create();
+
+    $this
+        ->withoutMiddleware()
+        ->withHeaders([
+            'If-Modified-Since' => now()->subMinutes(5)->toRfc7231String(),
+        ])
         ->getJson(route('mobile-pass.check-for-updates', [
             'passSerial' => $pass->getKey(),
             'passTypeId' => 'pass.com.example',
