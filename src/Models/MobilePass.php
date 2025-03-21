@@ -67,9 +67,10 @@ class MobilePass extends Model
         });
 
         static::updated(function (MobilePass $mobilePass) {
-            $actionClass = Config::getActionClass('notify_apple_of_pass_update', NotifyAppleOfPassUpdateAction::class);
+            /** @var class-string<NotifyAppleOfPassUpdateAction>  $action */
+            $action = Config::getActionClass('notify_apple_of_pass_update', NotifyAppleOfPassUpdateAction::class);
 
-            app($actionClass)->execute($mobilePass);
+            app($action)->execute($mobilePass);
         });
 
         static::saving(function (MobilePass $mobilePass) {
