@@ -11,7 +11,7 @@ use Spatie\LaravelMobilePass\Http\Middleware\VerifyPasskitRequest;
 Route::macro('mobilePass', function (string $prefix = '') {
     Route::prefix("{$prefix}/passkit/v1")->group(function () {
 
-        Route::middleware(VerifyPasskitRequest::class)->group(function() {
+        Route::middleware(VerifyPasskitRequest::class)->group(function () {
             Route::post('devices/{deviceId}/registrations/{passTypeId}/{passSerial}', RegisterDeviceController::class)
                 ->name('mobile-pass.register-device');
 
