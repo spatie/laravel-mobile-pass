@@ -73,10 +73,7 @@
         "laravel": {
             "providers": [
                 "Spatie\\LaravelMobilePass\\LaravelMobilePassServiceProvider"
-            ],
-            "aliases": {
-                "LaravelMobilePass": "Spatie\\LaravelMobilePass\\Facades\\LaravelMobilePass"
-            }
+            ]
         }
     },
     "minimum-stability": "dev",
