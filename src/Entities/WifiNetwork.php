@@ -14,7 +14,7 @@ class WifiNetwork implements Arrayable
     public static function make(
         string $ssid,
         string $password,
-    ):static {
+    ): static {
         return new self(
             ssid: $ssid,
             password: $password,
