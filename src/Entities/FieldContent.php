@@ -54,7 +54,7 @@ class FieldContent implements Arrayable
         $fieldContent->numberStyle = ! empty($fields['numberStyle']) ? NumberStyleType::tryFrom($fields['numberStyle']) : null;
         $fieldContent->changeMessage = $fields['changeMessage'] ?? null;
         $fieldContent->currencyCode = $fields['currencyCode'] ?? null;
-        $fieldContent->dataDetectorType = ! empty($fieds['dataDetectorTypes']) ? DataDetectorType::tryFrom($fields['dataDetectorType']) : null;
+        $fieldContent->dataDetectorType = ! empty($fields['dataDetectorTypes']) ? DataDetectorType::tryFrom($fields['dataDetectorType']) : null;
         $fieldContent->dateStyle = ! empty($fields['dateStyle']) ? DateType::tryFrom($fields['dateStyle']) : null;
         $fieldContent->ignoresTimezone = $fields['ignoresTimezone'] ?? null;
         $fieldContent->isRelative = $fields['isRelative'] ?? null;
