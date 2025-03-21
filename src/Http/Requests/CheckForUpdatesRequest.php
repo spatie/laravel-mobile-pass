@@ -12,6 +12,7 @@ class CheckForUpdatesRequest extends FormRequest
     {
         return MobilePass::findOrFail($this->route('passSerial'));
     }
+
     public function lastModifiedSinceHeaderValue(): ?Carbon
     {
         $lastModifiedSince = $this->header('If-Modified-Since');
