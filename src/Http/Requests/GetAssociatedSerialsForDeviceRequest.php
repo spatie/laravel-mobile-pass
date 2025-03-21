@@ -3,8 +3,8 @@
 namespace Spatie\LaravelMobilePass\Http\Requests;
 
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Carbon;
 use Spatie\LaravelMobilePass\Support\Config;
 
 class GetAssociatedSerialsForDeviceRequest extends FormRequest
