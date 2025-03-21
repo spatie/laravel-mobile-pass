@@ -20,7 +20,7 @@ use Spatie\LaravelMobilePass\Support\Config;
 
 class MobilePass extends Model
 {
-    use HasUuids, HasFactory;
+    use HasFactory, HasUuids;
 
     public ?string $organisationName = null;
 

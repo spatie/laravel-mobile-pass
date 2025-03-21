@@ -16,9 +16,8 @@ it('sends a push notification to Apple', function () {
 
     $pushToken = $pass->devices->first()->push_token;
 
-    Http::assertSent(fn (Request $request) =>
-        $request->url() === "https://example.com/{$pushToken}" &&
-            $request->method() === "POST"
+    Http::assertSent(fn (Request $request) => $request->url() === "https://example.com/{$pushToken}" &&
+            $request->method() === 'POST'
     );
 });
 
@@ -26,8 +25,7 @@ it('contains an empty json dictionary as the payload', function () {
     $pass = MobilePass::factory()->hasRegistrations(1)->create();
     app(NotifyAppleOfPassUpdateAction::class)->execute($pass);
 
-    Http::assertSent(static fn (Request $request) =>
-        $request->body() === "{}"
+    Http::assertSent(static fn (Request $request) => $request->body() === '{}'
     );
 });
 
@@ -36,8 +34,7 @@ it('sends the pass type ID as the apns topic', function () {
         MobilePass::factory()->hasRegistrations(1)->create()
     );
 
-    Http::assertSent(static fn (Request $request) =>
-        $request->hasHeader('apns-topic', 'pass.com.example')
+    Http::assertSent(static fn (Request $request) => $request->hasHeader('apns-topic', 'pass.com.example')
     );
 });
 
@@ -46,8 +43,7 @@ it('uses HTTP/2', function () {
         MobilePass::factory()->hasRegistrations(1)->create()
     );
 
-    Http::assertSent(static fn (Request $request) =>
-        $request->toPsrRequest()->getProtocolVersion() === "2"
+    Http::assertSent(static fn (Request $request) => $request->toPsrRequest()->getProtocolVersion() === '2'
     );
 });
 

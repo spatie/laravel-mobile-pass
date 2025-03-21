@@ -2,7 +2,6 @@
 
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Exceptions;
 use Spatie\LaravelMobilePass\Http\Middleware\VerifyPasskitRequest;
 
 it('handles the request when a valid auth token is provided', function () {

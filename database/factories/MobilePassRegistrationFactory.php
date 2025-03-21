@@ -2,10 +2,10 @@
 
 namespace Spatie\LaravelMobilePass\Database\Factories;
 
+use Illuminate\Database\Eloquent\Factories\Factory;
 use Spatie\LaravelMobilePass\Models\MobilePass;
 use Spatie\LaravelMobilePass\Models\MobilePassDevice;
 use Spatie\LaravelMobilePass\Models\MobilePassRegistration;
-use Illuminate\Database\Eloquent\Factories\Factory;
 
 class MobilePassRegistrationFactory extends Factory
 {

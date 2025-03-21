@@ -13,7 +13,7 @@ use Spatie\LaravelMobilePass\Support\Config;
 
 class MobilePassRegistration extends Model
 {
-    use HasUuids, SoftDeletes, HasFactory;
+    use HasFactory, HasUuids, SoftDeletes;
 
     public $guarded = [];
 
