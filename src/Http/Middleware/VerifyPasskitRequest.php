@@ -19,6 +19,6 @@ class VerifyPasskitRequest
 
     protected function expectedAuthorizationValue(): string
     {
-        return 'ApplePass ' . config('mobile-pass.apple.webservice.secret');
+        return 'ApplePass '.config('mobile-pass.apple.webservice.secret');
     }
 }
