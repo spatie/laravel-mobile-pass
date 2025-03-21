@@ -2,6 +2,7 @@
 
 namespace Spatie\LaravelMobilePass\Models;
 
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -319,5 +320,14 @@ class MobilePass extends Model
         $this->addImagesToFile($pkPass);
 
         return $pkPass->create(output: false);
+    }
+
+    public function wasUpdatedAfter(?Carbon $since = null): bool
+    {
+        if (! $since) {
+            return true;
+        }
+
+        return $this->update_at > $since;
     }
 }

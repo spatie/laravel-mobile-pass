@@ -2,6 +2,8 @@
 
 namespace Spatie\LaravelMobilePass;
 
+use Illuminate\Support\Facades\Route;
+use Spatie\LaravelMobilePass\Models\MobilePass;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
@@ -14,5 +16,7 @@ class LaravelMobilePassServiceProvider extends PackageServiceProvider
             ->hasConfigFile()
             ->hasRoutes('mobile-pass')
             ->hasMigration('create_mobile_pass_tables');
+
+
     }
 }
