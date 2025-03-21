@@ -19,7 +19,7 @@ class RegisterDeviceController extends Controller
     public function __invoke(Request $request)
     {
         /** @var class-string<RegisterDeviceAction> $actionClass */
-        $actionClass = Config::getActionClass('register_device_action', RegisterDeviceAction::class);
+        $actionClass = Config::getActionClass('register_device', RegisterDeviceAction::class);
 
         $registration = (new $actionClass)->execute(
             $request->deviceId,

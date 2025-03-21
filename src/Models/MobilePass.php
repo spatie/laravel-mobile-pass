@@ -79,14 +79,14 @@ class MobilePass extends Model
 
     public function registrations(): HasMany
     {
-        $modelClass = Config::modelPassRegistrationModel();
+        $modelClass = Config::mobilePassRegistrationModel();
 
         return $this->hasMany($modelClass, 'pass_serial');
     }
 
     public function devices(): HasManyThrough
     {
-        $modelClass = Config::modelPassRegistrationModel();
+        $modelClass = Config::mobilePassRegistrationModel();
         $deviceModelClass = Config::deviceModel();
 
         return $this->hasManyThrough($deviceModelClass, $modelClass, 'pass_serial', 'id', 'id', 'device_id');

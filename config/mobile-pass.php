@@ -7,7 +7,8 @@ return [
      */
     'actions' => [
         'notify_apple_of_pass_update' => Spatie\LaravelMobilePass\Actions\NotifyAppleOfPassUpdateAction::class,
-        'register_device_action' => Spatie\LaravelMobilePass\Actions\RegisterDeviceAction::class,
+        'register_device' => Spatie\LaravelMobilePass\Actions\RegisterDeviceAction::class,
+        'unregister_device' => Spatie\LaravelMobilePass\Actions\UnregisterDeviceAction::class,
     ],
 
     /*
