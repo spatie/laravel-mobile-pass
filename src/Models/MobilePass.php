@@ -115,7 +115,7 @@ class MobilePass extends Model
         $model->backgroundColour = Colour::makeFromRgbString($model->content['backgroundColor'] ?? null);
         $model->foregroundColour = Colour::makeFromRgbString($model->content['foregroundColor'] ?? null);
         $model->labelColour = Colour::makeFromRgbString($model->content['labelColor'] ?? null);
-        $model->passType = PassType::tryFrom($model->content['userInfo']['passType'] ?? PassType::Generic);
+        $model->passType = PassType::tryFrom($model->content['userInfo']['passType'] ?? PassType::Generic->value);
         $model->voided = $model->content['voided'] ?? null;
 
         $model->passImages = array_map(fn ($image) => Image::fromArray($image), $model->images);
