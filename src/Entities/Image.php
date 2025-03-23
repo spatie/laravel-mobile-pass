@@ -8,7 +8,19 @@ class Image
         public string $x1Path,
         public ?string $x2Path = null,
         public ?string $x3Path = null
-    ) {}
+    ) {
+        if (!file_exists($x1Path)) {
+            throw new \InvalidArgumentException("File not found at path: {$x1Path}");
+        }
+
+        if ($x2Path && !file_exists($x2Path)) {
+            throw new \InvalidArgumentException("File not found at path: {$x2Path}");
+        }
+
+        if ($x3Path && !file_exists($x3Path)) {
+            throw new \InvalidArgumentException("File not found at path: {$x3Path}");
+        }
+    }
 
     public static function make(
         string $x1Path,
