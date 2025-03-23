@@ -33,6 +33,8 @@ return new class extends Migration
 
             $table->foreign('device_id')->references('id')->on('mobile_pass_devices');
             $table->foreign('pass_serial')->references('id')->on('mobile_passes');
+            $table->index(['device_id', 'pass_serial']);
+            $table->index(['device_id', 'pass_type_id']);
         });
     }
 };
