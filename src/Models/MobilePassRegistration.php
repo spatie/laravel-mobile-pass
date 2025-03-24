@@ -7,8 +7,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Spatie\LaravelMobilePass\Events\MobilePassRegisteredEvent;
-use Spatie\LaravelMobilePass\Events\MobilePassUnregisteredEvent;
 use Spatie\LaravelMobilePass\Support\Config;
 
 class MobilePassRegistration extends Model
