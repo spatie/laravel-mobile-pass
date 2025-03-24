@@ -2,8 +2,6 @@
 
 namespace Spatie\LaravelMobilePass\Tests\Http;
 
-use Illuminate\Support\Facades\Event;
-use Spatie\LaravelMobilePass\Events\MobilePassUnregisteredEvent;
 use Spatie\LaravelMobilePass\Models\MobilePassDevice;
 use Spatie\LaravelMobilePass\Models\MobilePassRegistration;
 

@@ -2,9 +2,7 @@
 
 namespace Spatie\LaravelMobilePass\Tests\Http;
 
-use Illuminate\Support\Facades\Event;
 use Spatie\LaravelMobilePass\Actions\NotifyAppleOfPassUpdateAction;
-use Spatie\LaravelMobilePass\Events\MobilePassRegisteredEvent;
 use Spatie\LaravelMobilePass\Models\MobilePass;
 use Spatie\LaravelMobilePass\Models\MobilePassDevice;
 use Spatie\LaravelMobilePass\Models\MobilePassRegistration;
