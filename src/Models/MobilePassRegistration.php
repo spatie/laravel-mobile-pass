@@ -17,23 +17,6 @@ class MobilePassRegistration extends Model
 
     public $guarded = [];
 
-    public static function boot()
-    {
-        parent::boot();
-
-        static::created(function (MobilePassRegistration $registration) {
-            $eventClass = Config::getEventClass('mobile_pass_registered', MobilePassRegisteredEvent::class);
-
-            event(new $eventClass($registration));
-        });
-
-        static::softDeleted(function (MobilePassRegistration $registration) {
-            $eventClass = Config::getEventClass('mobile_pass_unregistered', MobilePassUnregisteredEvent::class);
-
-            event(new $eventClass($registration));
-        });
-    }
-
     public function pass(): BelongsTo
     {
         $modelClass = Config::mobilePassModel();

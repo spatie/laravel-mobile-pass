@@ -53,24 +53,3 @@ it('returns success even if the registration wasnt found', function () {
         ]))
         ->assertSuccessful();
 });
-
-it('fires an event', function () {
-    $registration = MobilePassRegistration::factory()->create();
-
-    Event::fake([
-        MobilePassUnregisteredEvent::class,
-    ]);
-
-    $this
-        ->withoutMiddleware()
-        ->deleteJson(route('mobile-pass.unregister-device', [
-            'passSerial' => $registration->pass->getKey(),
-            'deviceId' => $registration->device->getKey(),
-            'passTypeId' => $registration->pass_type_id,
-        ]))
-        ->assertSuccessful();
-
-    Event::assertDispatched(function (MobilePassUnregisteredEvent $event) use ($registration) {
-        return $event->registration->getKey() === $registration->getKey();
-    });
-});

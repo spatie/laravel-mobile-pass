@@ -85,24 +85,3 @@ it('returns 404 if the pass doesnt exist', function () {
         ])
         ->assertNotFound();
 });
-
-it('fires an event', function () {
-    $pass = MobilePass::factory()->create();
-
-    Event::fake([
-        MobilePassRegisteredEvent::class,
-    ]);
-
-    $this
-        ->withoutMiddleware()
-        ->postJson(route('mobile-pass.register-device', [
-            'passSerial' => $pass->getKey(),
-            'deviceId' => '12345',
-            'passTypeId' => 'pass.com.example',
-        ]), [
-            'pushToken' => '12345',
-        ])
-        ->assertCreated();
-
-    Event::assertDispatched(MobilePassRegisteredEvent::class);
-});

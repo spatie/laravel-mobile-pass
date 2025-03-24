@@ -21,15 +21,6 @@ return [
         'mobile_pass_device' => Spatie\LaravelMobilePass\Models\MobilePassDevice::class,
     ],
 
-    /*
-     * These are the events fired by this package. You can replace them with
-     * your own events by extending the ones that ship with the package.
-     */
-    'events' => [
-        'mobile_pass_registered' => Spatie\LaravelMobilePass\Events\MobilePassRegisteredEvent::class,
-        'mobile_pass_unregistered' => Spatie\LaravelMobilePass\Events\MobilePassUnregisteredEvent::class,
-    ],
-
     'organisation_name' => env('MOBILE_PASS_ORGANISATION_NAME', 'Spatie'),
     'type_identifier' => env('MOBILE_PASS_TYPE_IDENTIFIER'),
     'team_identifier' => env('MOBILE_PASS_TEAM_IDENTIFIER'),
