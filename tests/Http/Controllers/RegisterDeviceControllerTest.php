@@ -2,9 +2,7 @@
 
 namespace Spatie\LaravelMobilePass\Tests\Http;
 
-use Illuminate\Support\Facades\Event;
 use Spatie\LaravelMobilePass\Actions\NotifyAppleOfPassUpdateAction;
-use Spatie\LaravelMobilePass\Events\MobilePassRegisteredEvent;
 use Spatie\LaravelMobilePass\Models\MobilePass;
 use Spatie\LaravelMobilePass\Models\MobilePassDevice;
 use Spatie\LaravelMobilePass\Models\MobilePassRegistration;
@@ -84,25 +82,4 @@ it('returns 404 if the pass doesnt exist', function () {
             'pushToken' => '12345',
         ])
         ->assertNotFound();
-});
-
-it('fires an event', function () {
-    $pass = MobilePass::factory()->create();
-
-    Event::fake([
-        MobilePassRegisteredEvent::class,
-    ]);
-
-    $this
-        ->withoutMiddleware()
-        ->postJson(route('mobile-pass.register-device', [
-            'passSerial' => $pass->getKey(),
-            'deviceId' => '12345',
-            'passTypeId' => 'pass.com.example',
-        ]), [
-            'pushToken' => '12345',
-        ])
-        ->assertCreated();
-
-    Event::assertDispatched(MobilePassRegisteredEvent::class);
 });

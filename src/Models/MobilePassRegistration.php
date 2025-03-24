@@ -7,8 +7,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Spatie\LaravelMobilePass\Events\MobilePassRegisteredEvent;
-use Spatie\LaravelMobilePass\Events\MobilePassUnregisteredEvent;
 use Spatie\LaravelMobilePass\Support\Config;
 
 class MobilePassRegistration extends Model
@@ -16,23 +14,6 @@ class MobilePassRegistration extends Model
     use HasFactory, HasUuids, SoftDeletes;
 
     public $guarded = [];
-
-    public static function boot()
-    {
-        parent::boot();
-
-        static::created(function (MobilePassRegistration $registration) {
-            $eventClass = Config::getEventClass('mobile_pass_registered', MobilePassRegisteredEvent::class);
-
-            event(new $eventClass($registration));
-        });
-
-        static::softDeleted(function (MobilePassRegistration $registration) {
-            $eventClass = Config::getEventClass('mobile_pass_unregistered', MobilePassUnregisteredEvent::class);
-
-            event(new $eventClass($registration));
-        });
-    }
 
     public function pass(): BelongsTo
     {

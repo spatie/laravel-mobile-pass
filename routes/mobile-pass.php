@@ -25,6 +25,7 @@ Route::macro('mobilePass', function (string $prefix = '') {
         Route::get('devices/{deviceId}/registrations/{passTypeId}', GetAssociatedSerialsForDeviceController::class)
             ->name('mobile-pass.get-associated-serials-for-device');
 
-        Route::post('log', MobilePassLogController::class);
+        Route::post('log', MobilePassLogController::class)
+            ->name('mobile-pass.logs');
     });
 });
