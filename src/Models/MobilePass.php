@@ -17,7 +17,7 @@ use Spatie\LaravelMobilePass\Support\DownloadableMobilePass;
 
 class MobilePass extends Model
 {
-    use HasFactory, HasUuids, HasPassData;
+    use HasFactory, HasPassData, HasUuids;
 
     public static function boot()
     {

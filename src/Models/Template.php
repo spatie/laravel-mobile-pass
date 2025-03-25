@@ -4,17 +4,11 @@ namespace Spatie\LaravelMobilePass\Models;
 
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
-use Spatie\LaravelMobilePass\Entities\Barcode;
-use Spatie\LaravelMobilePass\Entities\Colour;
-use Spatie\LaravelMobilePass\Entities\FieldContent;
-use Spatie\LaravelMobilePass\Entities\Image;
-use Spatie\LaravelMobilePass\Enums\PassType;
-use Spatie\LaravelMobilePass\Enums\TransitType;
 use Spatie\LaravelMobilePass\Models\Traits\HasPassData;
 
 class Template extends Model
 {
-    use HasUuids, HasPassData;
+    use HasPassData, HasUuids;
 
     public $table = 'mobile_pass_templates';
 

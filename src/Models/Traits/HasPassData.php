@@ -10,7 +10,6 @@ use Spatie\LaravelMobilePass\Entities\Image;
 use Spatie\LaravelMobilePass\Enums\PassType;
 use Spatie\LaravelMobilePass\Enums\TransitType;
 
-
 trait HasPassData
 {
     public ?string $organisationName = null;
