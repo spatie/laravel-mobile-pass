@@ -27,7 +27,6 @@ it('inherits background colour from template', function () {
     expect($pass->generate())->toMatchMobilePassSnapshot();
 });
 
-
 // it('triggers change for all passes using template when template is modified', function () {
 //     $template = Template::make()
 //         ->setBackgroundColour(
