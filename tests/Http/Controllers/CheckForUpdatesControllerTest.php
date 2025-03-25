@@ -6,7 +6,7 @@ use Spatie\LaravelMobilePass\Actions\NotifyAppleOfPassUpdateAction;
 use Spatie\LaravelMobilePass\Models\MobilePass;
 
 it('returns the generated pass when no If-Modified-Since header is passed', function () {
-    $pass = MobilePass::factory()->withIconImage()->create();
+    $pass = MobilePass::factory()->create();
 
     $this
         ->withoutMiddleware()
@@ -18,7 +18,7 @@ it('returns the generated pass when no If-Modified-Since header is passed', func
 });
 
 it('returns the generated pass if pass was updated after given time', function () {
-    $pass = MobilePass::factory()->withIconImage()->create();
+    $pass = MobilePass::factory()->create();
 
     $this
         ->withoutMiddleware()
@@ -33,7 +33,7 @@ it('returns the generated pass if pass was updated after given time', function (
 });
 
 it('returns 304 if pass was not updated after given time', function () {
-    $pass = MobilePass::factory()->withIconImage()->create();
+    $pass = MobilePass::factory()->create();
 
     $this
         ->withoutMiddleware()
@@ -48,7 +48,7 @@ it('returns 304 if pass was not updated after given time', function () {
 });
 
 it('doesnt trigger an update to Apple', function () {
-    $pass = MobilePass::factory()->withIconImage()->create();
+    $pass = MobilePass::factory()->create();
 
     $this
         ->mock(NotifyAppleOfPassUpdateAction::class)

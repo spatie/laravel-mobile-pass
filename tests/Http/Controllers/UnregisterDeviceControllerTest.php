@@ -5,7 +5,7 @@ namespace Spatie\LaravelMobilePass\Tests\Http;
 use Spatie\LaravelMobilePass\Models\MobilePassDevice;
 use Spatie\LaravelMobilePass\Models\MobilePassRegistration;
 
-it('soft deletes the registration', function () {
+it('deletes the registration', function () {
     $registration = MobilePassRegistration::factory()->create();
 
     $this
@@ -17,11 +17,7 @@ it('soft deletes the registration', function () {
         ]))
         ->assertSuccessful();
 
-    $this->assertSoftDeleted(MobilePassRegistration::class, [
-        'device_id' => $registration->device->getKey(),
-        'pass_serial' => $registration->pass->getKey(),
-        'pass_type_id' => $registration->pass_type_id,
-    ]);
+    expect($registration->fresh())->toBeNull();
 });
 
 it('doesnt delete the device', function () {
