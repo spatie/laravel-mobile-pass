@@ -38,6 +38,11 @@ class MobilePass extends Model
         });
     }
 
+    public function template(): BelongsTo
+    {
+        return $this->belongsTo(Template::class);
+    }
+
     public function registrations(): HasMany
     {
         $modelClass = Config::mobilePassRegistrationModel();
