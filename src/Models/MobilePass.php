@@ -3,23 +3,13 @@
 namespace Spatie\LaravelMobilePass\Models;
 
 use Carbon\Carbon;
-use Exception;
-use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
-use PKPass\PKPass;
 use Spatie\LaravelMobilePass\Actions\NotifyAppleOfPassUpdateAction;
-use Spatie\LaravelMobilePass\Builders\BoardingPasses\AirlinePassBuilder;
 use Spatie\LaravelMobilePass\Builders\PassBuilder;
-use Spatie\LaravelMobilePass\Entities\Barcode;
-use Spatie\LaravelMobilePass\Entities\Colour;
-use Spatie\LaravelMobilePass\Entities\FieldContent;
-use Spatie\LaravelMobilePass\Entities\Image;
-use Spatie\LaravelMobilePass\Enums\PassType;
-use Spatie\LaravelMobilePass\Enums\TransitType;
 use Spatie\LaravelMobilePass\Support\Config;
 use Spatie\LaravelMobilePass\Support\DownloadableMobilePass;
 
@@ -70,7 +60,6 @@ class MobilePass extends Model
     }
 
     // add other builder methods here
-
 
     public function builder(): PassBuilder
     {

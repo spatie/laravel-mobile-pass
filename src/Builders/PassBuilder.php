@@ -161,8 +161,8 @@ abstract class PassBuilder
             // The $image Image entity could contain up to three
             // images in different resolutions.
 
-            if (! $image instanceof  Image) {
-               $image = Image::make($image['x1Path'], $image['x2Path'], $image['x3Path']);
+            if (! $image instanceof Image) {
+                $image = Image::make($image['x1Path'], $image['x2Path'], $image['x3Path']);
             }
 
             if ($image->x1Path) {
@@ -232,7 +232,6 @@ abstract class PassBuilder
             fn ($value) => ! empty($value)
         );
 
-
         $data = $this->validator()->validate(
             $compiledData
         );
@@ -245,7 +244,6 @@ abstract class PassBuilder
 
     public function generate()
     {
-
 
         $pkPass = new PKPass(
             self::getCertificatePath(),

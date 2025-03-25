@@ -73,7 +73,5 @@ it('builds a basic boarding pass', function () {
         number: '123DAN',
     ))->save();
 
-    $mobilePass->generate();
-
     expect($mobilePass->generate())->toMatchMobilePassSnapshot();
 });
