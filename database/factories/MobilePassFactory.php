@@ -3,6 +3,7 @@
 namespace Spatie\LaravelMobilePass\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Spatie\LaravelMobilePass\Builders\GenericPassBuilder;
 use Spatie\LaravelMobilePass\Entities\Image;
 use Spatie\LaravelMobilePass\Models\MobilePass;
 use Spatie\LaravelMobilePass\Models\MobilePassDevice;
@@ -14,6 +15,12 @@ class MobilePassFactory extends Factory
     public function definition()
     {
         return [
+            'builder_class' => GenericPassBuilder::class,
+            'images' => [
+                'icon' => Image::make(
+                    getTestSupportPath('images/spatie-thumbnail.png')
+                )
+            ],
             'content' => [
                 'formatVersion' => 1,
                 'organizationName' => 'Laravel King',
@@ -40,16 +47,18 @@ class MobilePassFactory extends Factory
         ];
     }
 
-    public function configure(): static
-    {
-        return $this->afterMaking(function (MobilePass $mobilePass) {
-            $mobilePass->setIconImage(
-                Image::make(
-                    getTestSupportPath('images/spatie-thumbnail.png')
-                )
-            );
-        });
-    }
+    // public function configure(): static
+    // {
+    //     return $this->afterMaking(function (MobilePass $mobilePass) {
+    //         $mobilePass
+    //             ->builder()
+    //             ->setIconImage(
+    //                 Image::make(
+    //                     getTestSupportPath('images/spatie-thumbnail.png')
+    //                 )
+    //             );
+    //     });
+    // }
 
     public function hasRegistrationForDevice(MobilePassDevice $device): static
     {
