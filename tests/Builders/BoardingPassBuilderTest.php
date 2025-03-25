@@ -6,7 +6,7 @@ use Spatie\LaravelMobilePass\Entities\Image;
 use Spatie\LaravelMobilePass\Entities\Seat;
 
 it('builds a basic boarding pass', function () {
-    $pass = AirlinePassBuilder::make()
+    $airlinePassBuilder = AirlinePassBuilder::make()
         ->setOrganisationName('My organisation')
         ->setSerialNumber(123456)
         ->setDescription('Hello!')
@@ -59,12 +59,12 @@ it('builds a basic boarding pass', function () {
             number: '66F',
         ));
 
-   $generatedPass = $pass->generate();
+   $generatedPass = $airlinePassBuilder->generate();
 
    expect($generatedPass)->toMatchMobilePassSnapshot();
 
    // first save, model gets created
-    $mobilePass = $pass->save();
+    $mobilePass = $airlinePassBuilder->save();
 
     // second save, model gets updated
     $mobilePass
