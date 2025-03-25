@@ -16,8 +16,8 @@ it('can get all associated mobile passes', function () {
     expect($this->testModel->mobilePasses)->toHaveCount(1);
 });
 
-it('can get the first pass of a given type', function() {
-    //expect($this->testModel->firstMobilePassOfType(PassType::Coupon))->toBeNull();
+it('can get the first pass of a given type', function () {
+    // expect($this->testModel->firstMobilePassOfType(PassType::Coupon))->toBeNull();
 
     $mobilePass = MobilePass::factory()->create();
     $this->testModel->addMobilePass($mobilePass);

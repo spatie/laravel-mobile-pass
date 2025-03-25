@@ -22,7 +22,7 @@ trait HasMobilePasses
         $this->mobilePasses()->save($mobilePass);
     }
 
-    public function firstMobilePass(callable $callable = null): ?MobilePass
+    public function firstMobilePass(?callable $callable = null): ?MobilePass
     {
         $query = $this->mobilePasses();
 
@@ -31,7 +31,7 @@ trait HasMobilePasses
         return $query->first();
     }
 
-    public function firstMobilePassOfType(PassType $passType, callable $callable = null): ?MobilePass
+    public function firstMobilePassOfType(PassType $passType, ?callable $callable = null): ?MobilePass
     {
         return $this->firstMobilePass(function ($query) use ($passType, $callable) {
             $query->where('passType', $passType->value);
