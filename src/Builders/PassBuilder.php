@@ -184,14 +184,16 @@ abstract class PassBuilder
     public static function getCertificatePath(): string
     {
         if (! empty(config('mobile-pass.apple.certificate_contents'))) {
-            $path = __DIR__.'/../../tmp/Cert.p12';
+            $path = sys_get_temp_dir() .'/LaravelMobilePass.p12';
 
-            file_put_contents(
-                $path,
-                base64_decode(
-                    config('mobile-pass.apple.certificate_contents')
-                )
-            );
+            if (! file_exists($path)) {
+                file_put_contents(
+                    $path,
+                    base64_decode(
+                        config('mobile-pass.apple.certificate_contents')
+                    )
+                );
+            }
 
             return $path;
         }
