@@ -59,12 +59,13 @@ it('builds a basic boarding pass', function () {
             number: '66F',
         ));
 
-   // $generatedPass = $pass->generate();
+   $generatedPass = $pass->generate();
 
-//    expect($generatedPass)->toMatchMobilePassSnapshot();
+   expect($generatedPass)->toMatchMobilePassSnapshot();
 
     $mobilePass = $pass->create();
-//dd($mobilePass->content);
 
     $mobilePass->generate();
+
+    expect($mobilePass->generate())->toMatchMobilePassSnapshot();
 });
