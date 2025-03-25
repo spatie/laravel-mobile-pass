@@ -42,12 +42,12 @@ abstract class PassBuilder
 
     abstract protected static function validator(): PassValidator;
 
-    public static function make(array $data = [], array $images = []): static
+    public static function make(array $data = [], array $images = [], ?MobilePass $model = null): static
     {
-        return new static($data, $images);
+        return new static($data, $images, $model);
     }
 
-    public function __construct(array $data = [], array $images = [])
+    public function __construct(array $data = [], array $images = [], protected ?MobilePass $model = null)
     {
         $this->data = $data;
         $this->images = $images;
@@ -199,8 +199,17 @@ abstract class PassBuilder
         return config('mobile-pass.apple.certificate_path');
     }
 
-    public function create(): MobilePass
+    public function save(): MobilePass
     {
+        if ($this->model) {
+            $this->model->update([
+                'content' => $this->data(),
+                'images' => $this->images,
+            ]);
+
+            return $this->model;
+        }
+
         return MobilePass::create([
             'builder_class' => static::class,
             'content' => $this->data(),

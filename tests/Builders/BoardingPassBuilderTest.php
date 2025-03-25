@@ -63,7 +63,15 @@ it('builds a basic boarding pass', function () {
 
    expect($generatedPass)->toMatchMobilePassSnapshot();
 
-    $mobilePass = $pass->create();
+   // first save, model gets created
+    $mobilePass = $pass->save();
+
+    // second save, model gets updated
+    $mobilePass
+        ->airlinePassBuilder()
+        ->setSeats(Seat::make(
+        number: '123DAN',
+    ))->save();
 
     $mobilePass->generate();
 

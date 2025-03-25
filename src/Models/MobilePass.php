@@ -64,13 +64,20 @@ class MobilePass extends Model
         ];
     }
 
+    public function airlinePassBuilder(): AirlinePassBuilder
+    {
+        return $this->builder();
+    }
+
+    // add other builder methods here
+
 
     public function builder(): PassBuilder
     {
         /** @var class-string<PassBuilder> $builderClass */
         $builderClass = $this->builder_class;
 
-        return $builderClass::make($this->content, $this->images);
+        return $builderClass::make($this->content, $this->images, $this->model);
     }
 
     public function generate(): string
