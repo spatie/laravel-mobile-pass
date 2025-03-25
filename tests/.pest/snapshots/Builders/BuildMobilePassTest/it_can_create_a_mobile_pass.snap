@@ -13,12 +13,14 @@
         "formatVersion": 1,
         "organizationName": "Spatie",
         "passTypeIdentifier": "pass.app.gowallet",
-        "authenticationToken": "abcdefghijklmnopqrstuvwx",
-        "webServiceURL": "https:\/\/re6tmnd7zs.sharedwithexpose.com",
+        "webServiceURL": "\/passkit\/",
         "teamIdentifier": "2SQU7LWHMY",
         "description": "Hello!",
         "serialNumber": "<random>",
-        "boardingPass": {
+        "userInfo": {
+            "passType": "generic"
+        },
+        "generic": {
             "transitType": "PKTransitTypeAir",
             "headerFields": [
                 {

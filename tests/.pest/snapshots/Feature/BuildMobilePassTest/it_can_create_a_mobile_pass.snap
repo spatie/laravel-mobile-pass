@@ -10,21 +10,15 @@
         "icon.png": "<random>"
     },
     "pass": {
-        "description": "Hello!",
         "formatVersion": 1,
         "organizationName": "Spatie",
         "passTypeIdentifier": "pass.app.gowallet",
-        "serialNumber": "<random>",
+        "authenticationToken": "abcdefghijklmnopqrstuvwx",
+        "webServiceURL": "https:\/\/re6tmnd7zs.sharedwithexpose.com",
         "teamIdentifier": "2SQU7LWHMY",
-        "semantics": {
-            "departureLocationDescription": "Abu Dhabi Intl",
-            "destinationLocationDescription": "Abu Dhabi Intl",
-            "seats": [
-                {
-                    "number": "66F"
-                }
-            ]
-        },
+        "description": "Hello!",
+        "serialNumber": "<random>",
+        "backgroundColor": "rgb(255, 51, 68)",
         "boardingPass": {
             "transitType": "PKTransitTypeAir",
             "headerFields": [
@@ -63,18 +57,7 @@
                     "value": "D68"
                 }
             ],
-            "auxiliaryFields": [
-                {
-                    "key": "departs",
-                    "label": "Departs",
-                    "value": "2025-01-01T00:00:00+00:00"
-                },
-                {
-                    "key": "class",
-                    "label": "Class",
-                    "value": "Economy"
-                }
-            ]
+            "auxiliaryFields": []
         }
     }
 }
