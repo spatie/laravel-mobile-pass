@@ -58,62 +58,24 @@ class MobilePass extends Model
         return $this->hasManyThrough($deviceModelClass, $modelClass, 'pass_serial', 'id', 'id', 'device_id');
     }
 
-    protected function casts()
-    {
-        return [
-            'content' => 'json',
-            'images' => 'json',
-        ];
-    }
-
-    protected static function uncompileContent(MobilePass $model)
-    {
-        $model->organisationName = $model->content['organisationName'] ?? null;
-        $model->passTypeIdentifier = $model->content['passTypeIdentifier'] ?? null;
-        $model->authenticationToken = $model->content['authenticationToken'] ?? null;
-        $model->teamIdentifier = $model->content['teamIdentifier'] ?? null;
-        $model->description = $model->content['description'] ?? null;
-        $model->backgroundColour = Colour::makeFromRgbString($model->content['backgroundColor'] ?? null);
-        $model->foregroundColour = Colour::makeFromRgbString($model->content['foregroundColor'] ?? null);
-        $model->labelColour = Colour::makeFromRgbString($model->content['labelColor'] ?? null);
-        $model->passType = PassType::tryFrom($model->content['userInfo']['passType'] ?? PassType::Generic->value);
-        $model->voided = $model->content['voided'] ?? null;
-
-        $model->passImages = array_map(fn ($image) => Image::fromArray($image), $model->images);
-
-        $model->barcodes = array_map(fn ($barcode) => Barcode::fromArray($barcode), $model->content['barcodes'] ?? []);
-
-        self::uncompileFieldSet($model, 'headerFields');
-        self::uncompileFieldSet($model, 'primaryFields');
-        self::uncompileFieldSet($model, 'secondaryFields');
-        self::uncompileFieldSet($model, 'auxiliaryFields');
-    }
-
-    protected static function uncompileFieldSet(MobilePass $model, string $fieldSetName)
-    {
-        $model->$fieldSetName = [];
-
-        foreach ($model->content[$model->passType->value][$fieldSetName] ?? [] as $field) {
-            $model->$fieldSetName[$field['key']] = FieldContent::fromArray($field);
-        }
-    }
-
     protected static function compileContent(MobilePass $model)
     {
         $model->images = $model->passImages;
 
+        $model->load('template');
+
         $model->content = array_filter([
             'formatVersion' => 1,
-            'organizationName' => $model->organisationName ?? config('mobile-pass.organisation_name'),
+            'organizationName' => $model->organisationName ?? $model->template?->organisationName ?? config('mobile-pass.organisation_name'),
             'passTypeIdentifier' => $model->passTypeIdentifier ?? config('mobile-pass.type_identifier'),
             'authenticationToken' => config('mobile-pass.apple.webservice.secret'),
             'webServiceURL' => config('mobile-pass.apple.webservice.host').'/passkit/',
             'teamIdentifier' => $model->teamIdentifier ?? config('mobile-pass.team_identifier'),
             'description' => $model->description,
             'serialNumber' => $model->getKey(),
-            'backgroundColor' => (string) $model->backgroundColour,
-            'foregroundColor' => (string) $model->foregroundColour,
-            'labelColor' => (string) $model->labelColour,
+            'backgroundColor' => (string) ($model->backgroundColour ?? $model->template?->backgroundColour),
+            'foregroundColor' => (string) ($model->foregroundColour ?? $model->template?->foregroundColour),
+            'labelColor' => (string) ($model->labelColour ?? $model->template?->labelColour),
             'barcodes' => array_map(fn ($barcode) => $barcode->toArray(), $model->barcodes),
             'voided' => $model->voided,
             'userInfo' => [
