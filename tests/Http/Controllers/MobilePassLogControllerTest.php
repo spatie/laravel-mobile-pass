@@ -16,7 +16,7 @@ it('will fire an event when logs are received', function () {
         ->postJson(route('mobile-pass.logs'), ['logs' => $logEntries])
         ->assertSuccessful();
 
-    Event::assertDispatched(ReceivedMobilePassLogEntriesEvent::class, function (ReceivedMobilePassLogEntriesEvent $event) use ($logEntries) {
+    Event::assertDispatched(function (ReceivedMobilePassLogEntriesEvent $event) use ($logEntries) {
         expect($event->logEntries)->toBe($logEntries);
 
         return true;

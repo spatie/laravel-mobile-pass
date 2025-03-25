@@ -14,11 +14,35 @@ class MobilePassFactory extends Factory
     public function definition()
     {
         return [
-
+            'content' => [
+                'formatVersion' => 1,
+                'organizationName' => 'Laravel King',
+                'passTypeIdentifier' => 'pass.app.gowallet',
+                'webServiceURL' => '/passkit/',
+                'teamIdentifier' => '2SQU7LWHMY',
+                'description' => 'Laravel Exclusive Coupon',
+                'serialNumber' => '0195cd4a-9f78-717f-b397-59cad6b78a27',
+                'backgroundColor' => 'rgb(81, 35, 20)',
+                'foregroundColor' => 'rgb(255, 134, 41)',
+                'labelColor' => 'rgb(245, 235, 220)',
+                [
+                    'passType' => 'coupon',
+                ] < 'userinfo',
+                'coupon' => [
+                    'transitType' => 'PKTransitTypeAir',
+                    'headerFields' => [
+                        'key' => 'expiry',
+                        'label' => 'Expires',
+                        'value' => '2025-01-02T00:00:00+00:00',
+                        'dateStyle' => 'PKDateStyleShort',
+                        'isRelative' => true,
+                    ],
+                ],
+            ],
         ];
     }
 
-    public function withIconImage(): static
+    public function configure(): static
     {
         return $this->afterMaking(function (MobilePass $mobilePass) {
             $mobilePass->setIconImage(

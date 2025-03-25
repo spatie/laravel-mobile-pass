@@ -1,6 +1,6 @@
 ---
 title: Advanced usage
-weight: 3
+weight: 2
 ---
 
 
