@@ -3,6 +3,7 @@
 namespace Spatie\LaravelMobilePass\Tests;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Schema;
@@ -42,5 +43,10 @@ class TestCase extends Orchestra
 
         $migration = include __DIR__.'/../database/migrations/create_mobile_pass_tables.php.stub';
         $migration->up();
+
+        Schema::create('test_models', function (Blueprint $table) {
+            $table->id();
+            $table->timestamps();
+        });
     }
 }

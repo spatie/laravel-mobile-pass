@@ -13,6 +13,7 @@ use PKPass\PKPass;
 use Spatie\LaravelMobilePass\Actions\NotifyAppleOfPassUpdateAction;
 use Spatie\LaravelMobilePass\Models\Traits\HasPassData;
 use Spatie\LaravelMobilePass\Support\Config;
+use Spatie\LaravelMobilePass\Support\DownloadableMobilePass;
 
 class MobilePass extends Model
 {
@@ -114,9 +115,6 @@ class MobilePass extends Model
     protected function addImagesToFile(PKPass $pkPass): PKPass
     {
         foreach ($this->passImages as $filename => $image) {
-            // The $image Image entity could contain up to three
-            // images in different resolutions.
-
             if ($image->x1Path) {
                 $pkPass->addFile($image->x1Path, "$filename.png");
             }
@@ -149,6 +147,11 @@ class MobilePass extends Model
         $this->addImagesToFile($pkPass);
 
         return $pkPass->create(output: false);
+    }
+
+    public function download(string $name = 'pass'): DownloadableMobilePass
+    {
+        return new DownloadableMobilePass($this->generate(), $name);
     }
 
     public function wasUpdatedAfter(?Carbon $since = null): bool
