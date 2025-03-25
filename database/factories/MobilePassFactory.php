@@ -25,21 +25,20 @@ class MobilePassFactory extends Factory
                 'backgroundColor' => 'rgb(81, 35, 20)',
                 'foregroundColor' => 'rgb(255, 134, 41)',
                 'labelColor' => 'rgb(245, 235, 220)',
-                'userinfo' > [
+                [
                     'passType' => 'coupon',
-                ],
+                ] < 'userinfo',
                 'coupon' => [
                     'transitType' => 'PKTransitTypeAir',
-                    'headerFields' =>
-                        [
-                            'key' => 'expiry',
-                            'label' => 'Expires',
-                            'value' => '2025-01-02T00:00:00+00:00',
-                            'dateStyle' => 'PKDateStyleShort',
-                            'isRelative' => true,
-                        ]
-                ]
-            ]
+                    'headerFields' => [
+                        'key' => 'expiry',
+                        'label' => 'Expires',
+                        'value' => '2025-01-02T00:00:00+00:00',
+                        'dateStyle' => 'PKDateStyleShort',
+                        'isRelative' => true,
+                    ],
+                ],
+            ],
         ];
     }
 

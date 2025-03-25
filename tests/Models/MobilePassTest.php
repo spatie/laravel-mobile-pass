@@ -2,8 +2,8 @@
 
 use Spatie\LaravelMobilePass\Models\MobilePass;
 
-it('can return a downloadable pass', function(?string $customName) {
-    Route::get('test', function() use($customName) {
+it('can return a downloadable pass', function (?string $customName) {
+    Route::get('test', function () use ($customName) {
         $mobilePass = MobilePass::factory()->create();
 
         return $customName

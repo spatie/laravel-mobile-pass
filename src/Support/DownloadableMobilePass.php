@@ -10,8 +10,7 @@ class DownloadableMobilePass implements Responsable
     public function __construct(
         protected string $passContent,
         protected string $downloadName = 'pass'
-    )
-    {
+    ) {
         $this->downloadName = Str::beforeLast($this->downloadName, '.pkpass');
     }
 
