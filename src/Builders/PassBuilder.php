@@ -9,10 +9,13 @@ use Spatie\LaravelMobilePass\Entities\Image;
 use Spatie\LaravelMobilePass\Entities\Price;
 use Spatie\LaravelMobilePass\Entities\WifiNetwork;
 use Spatie\LaravelMobilePass\Enums\PassType;
+use Spatie\LaravelMobilePass\Models\MobilePass;
 use Spatie\LaravelMobilePass\Validators\PassValidator;
 
 abstract class PassBuilder
 {
+    protected ?array $data = null;
+
     protected PassType $type;
 
     protected ?string $serialNumber = null;
@@ -39,9 +42,15 @@ abstract class PassBuilder
 
     abstract protected static function validator(): PassValidator;
 
-    public static function make(): static
+    public static function make(array $data = [], array $images = []): static
     {
-        return new static;
+        return new static($data, $images);
+    }
+
+    public function __construct(array $data = [], array $images = [])
+    {
+        $this->data = $data;
+        $this->images = $images;
     }
 
     public function setLogoImage(Image $image): self
@@ -134,7 +143,7 @@ abstract class PassBuilder
 
     protected function compileData(): array
     {
-        return [
+        return array_merge($this->data ?? [], array_filter([
             'formatVersion' => 1,
             'organizationName' => $this->organisationName,
             'passTypeIdentifier' => config('mobile-pass.type_identifier'),
@@ -143,7 +152,7 @@ abstract class PassBuilder
             'teamIdentifier' => config('mobile-pass.team_identifier'),
             'description' => $this->description,
             'semantics' => $this->compileSemantics(),
-        ];
+        ]));
     }
 
     protected function addImagesToFile(PKPass $pkPass): PKPass
@@ -151,6 +160,10 @@ abstract class PassBuilder
         foreach ($this->images as $filename => $image) {
             // The $image Image entity could contain up to three
             // images in different resolutions.
+
+            if (! $image instanceof  Image) {
+               $image = Image::make($image['x1Path'], $image['x2Path'], $image['x3Path']);
+            }
 
             if ($image->x1Path) {
                 $pkPass->addFile($image->x1Path, "$filename.png");
@@ -186,7 +199,16 @@ abstract class PassBuilder
         return config('mobile-pass.apple.certificate_path');
     }
 
-    public function generate()
+    public function create(): MobilePass
+    {
+        return MobilePass::create([
+            'builder_class' => static::class,
+            'content' => $this->data(),
+            'images' => $this->images,
+        ]);
+    }
+
+    public function data(): array
     {
         if (empty($this->organisationName)) {
             $this->setOrganisationName(
@@ -201,6 +223,7 @@ abstract class PassBuilder
             fn ($value) => ! empty($value)
         );
 
+
         $data = $this->validator()->validate(
             $compiledData
         );
@@ -208,12 +231,19 @@ abstract class PassBuilder
         // The icon image is always required.
         // TODO: validate this.
 
+        return $data;
+    }
+
+    public function generate()
+    {
+
+
         $pkPass = new PKPass(
             self::getCertificatePath(),
             config('mobile-pass.apple.certificate_password'),
         );
 
-        $pkPass->setData($data);
+        $pkPass->setData($this->data());
 
         $this->addImagesToFile($pkPass);
 
