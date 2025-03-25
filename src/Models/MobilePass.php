@@ -4,6 +4,7 @@ namespace Spatie\LaravelMobilePass\Models;
 
 use Carbon\Carbon;
 use Exception;
+use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;

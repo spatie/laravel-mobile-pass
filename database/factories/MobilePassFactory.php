@@ -25,9 +25,7 @@ class MobilePassFactory extends Factory
                 'backgroundColor' => 'rgb(81, 35, 20)',
                 'foregroundColor' => 'rgb(255, 134, 41)',
                 'labelColor' => 'rgb(245, 235, 220)',
-                [
-                    'passType' => 'coupon',
-                ] < 'userinfo',
+                'passType' => 'coupon',
                 'coupon' => [
                     'transitType' => 'PKTransitTypeAir',
                     'headerFields' => [
