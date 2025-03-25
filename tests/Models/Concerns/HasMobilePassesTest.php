@@ -4,12 +4,12 @@ use Spatie\LaravelMobilePass\Enums\PassType;
 use Spatie\LaravelMobilePass\Models\MobilePass;
 use Spatie\LaravelMobilePass\Tests\TestSupport\Models\TestModel;
 
-beforeEach(function() {
+beforeEach(function () {
     /** @var TestModel testModel */
-   $this->testModel = TestModel::create();
+    $this->testModel = TestModel::create();
 });
 
-it('can get all associated mobile passes', function() {
+it('can get all associated mobile passes', function () {
     $mobilePass = MobilePass::factory()->create();
     $this->testModel->addMobilePass($mobilePass);
 
