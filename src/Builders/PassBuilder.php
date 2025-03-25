@@ -181,7 +181,7 @@ abstract class PassBuilder
         return $pkPass;
     }
 
-    protected static function getCertificatePath(): string
+    public static function getCertificatePath(): string
     {
         if (! empty(config('mobile-pass.apple.certificate_contents'))) {
             $path = __DIR__.'/../../tmp/Cert.p12';
@@ -197,6 +197,11 @@ abstract class PassBuilder
         }
 
         return config('mobile-pass.apple.certificate_path');
+    }
+
+    public static function getCertificatePassword(): string
+    {
+        return config('mobile-pass.apple.certificate_password');
     }
 
     public function save(): MobilePass
@@ -247,7 +252,7 @@ abstract class PassBuilder
 
         $pkPass = new PKPass(
             self::getCertificatePath(),
-            config('mobile-pass.apple.certificate_password'),
+            self::getCertificatePassword(),
         );
 
         $pkPass->setData($this->data());

@@ -29,8 +29,8 @@ class NotifyAppleOfPassUpdateAction
         return [
             'version' => 2.0,
             'cert' => [
-                MobilePass::getCertificatePath(),
-                MobilePass::getCertificatePassword(),
+                $registration->pass->builder()->getCertificatePath(),
+                $registration->pass->builder()->getCertificatePassword(),
             ],
         ];
     }
