@@ -4,6 +4,7 @@ namespace Spatie\LaravelMobilePass\Builders;
 
 use Illuminate\Support\Collection;
 use PKPass\PKPass;
+use Spatie\LaravelMobilePass\Entities\Colour;
 use Spatie\LaravelMobilePass\Entities\FieldContent;
 use Spatie\LaravelMobilePass\Entities\Image;
 use Spatie\LaravelMobilePass\Entities\Price;
@@ -21,6 +22,20 @@ abstract class PassBuilder
     protected ?string $serialNumber = null;
 
     protected ?string $organisationName = null;
+
+    protected ?string $passTypeIdentifier = null;
+
+    protected ?string $authenticationToken = null;
+
+    protected ?string $teamIdentifier = null;
+
+    protected ?Colour $backgroundColour = null;
+
+    protected ?Colour $foregroundColour = null;
+
+    protected ?Colour $labelColour = null;
+
+    protected ?PassType $passType = null;
 
     protected ?string $description = null;
 
@@ -51,6 +66,39 @@ abstract class PassBuilder
     {
         $this->data = $data;
         $this->images = $images;
+
+        $this->uncompileContent();
+    }
+
+    protected function uncompileContent()
+    {
+        $this->organisationName = $this->data['organisationName'] ?? null;
+        $this->passTypeIdentifier = $this->data['passTypeIdentifier'] ?? null;
+        $this->authenticationToken = $this->data['authenticationToken'] ?? null;
+        $this->teamIdentifier = $this->data['teamIdentifier'] ?? null;
+        $this->description = $this->data['description'] ?? null;
+        $this->backgroundColour = Colour::makeFromRgbString($this->data['backgroundColor'] ?? null);
+        $this->foregroundColour = Colour::makeFromRgbString($this->data['foregroundColor'] ?? null);
+        $this->labelColour = Colour::makeFromRgbString($this->data['labelColor'] ?? null);
+        $this->passType = PassType::tryFrom($this->data['userInfo']['passType'] ?? PassType::Generic->value);
+
+        // $model->passImages = array_map(fn ($image) => Image::fromArray($image), $model->images);
+        // $model->barcodes = array_map(fn ($barcode) => Barcode::fromArray($barcode), $model->content['barcodes'] ?? []);
+
+        $this->uncompileFieldSet('headerFields');
+        $this->uncompileFieldSet('primaryFields');
+        $this->uncompileFieldSet('secondaryFields');
+        $this->uncompileFieldSet('auxiliaryFields');
+        $this->uncompileFieldSet('backFields');
+    }
+
+    protected function uncompileFieldSet(string $fieldSetName)
+    {
+        $this->$fieldSetName = collect();
+
+        foreach ($this->data[$this->passType->value][$fieldSetName] ?? [] as $field) {
+            $this->$fieldSetName[$field['key']] = FieldContent::fromArray($field);
+        }
     }
 
     public function setLogoImage(Image $image): self
@@ -91,6 +139,34 @@ abstract class PassBuilder
     public function setHeaderFields(FieldContent ...$headerField): self
     {
         $this->headerFields = collect($headerField);
+
+        return $this;
+    }
+
+    public function setBackFields(FieldContent ...$backField): self
+    {
+        $this->backFields = collect($backField);
+
+        return $this;
+    }
+
+    public function updateField(string $key, string $value)
+    {
+        $fieldTypes = [
+            'headerFields',
+            'primaryFields',
+            'secondaryFields',
+            'auxiliaryFields',
+            'backFields'
+        ];
+
+        foreach ($fieldTypes as $fieldType) {
+            $this->$fieldType = $this->$fieldType->map(function ($field) use ($key, $value) {
+                if ($field->key === $key) {
+                    $field->value = $value;
+                }
+            });
+        }
 
         return $this;
     }
