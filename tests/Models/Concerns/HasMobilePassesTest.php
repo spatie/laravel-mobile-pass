@@ -30,14 +30,13 @@ it('can get the first pass of a given type', function () {
         ->toBeNull();
 });
 
-it('accepts a callable to filter the first pass', function() {
+it('accepts a callable to filter the first pass', function () {
     $mobilePass = MobilePass::factory()->create();
     $this->testModel->addMobilePass($mobilePass);
 
-
-    expect($this->testModel->refresh()->firstMobilePass(filter: fn($query) => $query->where('type', PassType::Generic)))
+    expect($this->testModel->refresh()->firstMobilePass(filter: fn ($query) => $query->where('type', PassType::Generic)))
         ->not()->toBeNull();
 
-    expect($this->testModel->refresh()->firstMobilePass(filter: fn($query) => $query->where('type', PassType::BoardingPass)))
+    expect($this->testModel->refresh()->firstMobilePass(filter: fn ($query) => $query->where('type', PassType::BoardingPass)))
         ->toBeNull();
 });
