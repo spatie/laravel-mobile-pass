@@ -21,10 +21,10 @@ class StoreCardPassBuilder extends PassBuilder
             parent::compileData(),
             [
                 'storeCard' => array_filter([
-                    'primaryFields' => $this->primaryFields?->toArray(),
-                    'secondaryFields' => $this->secondaryFields?->toArray(),
-                    'headerFields' => $this->headerFields?->toArray(),
-                    'auxiliaryFields' => $this->auxiliaryFields?->toArray(),
+                    'primaryFields' => $this->primaryFields?->values()->toArray(),
+                    'secondaryFields' => $this->secondaryFields?->values()->toArray(),
+                    'headerFields' => $this->headerFields?->values()->toArray(),
+                    'auxiliaryFields' => $this->auxiliaryFields?->values()->toArray(),
                 ]),
             ],
         );
