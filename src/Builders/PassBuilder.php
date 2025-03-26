@@ -98,14 +98,14 @@ abstract class PassBuilder
             'semantics' => $this->compileSemantics(),
             'userInfo' => [
                 'passType' => $this->type->value,
-            ]
+            ],
         ]));
     }
 
     protected function uncompileSemantics()
     {
-        $this->totalPrice = !empty($this->data['semantics']['totalPrice']) ? Price::fromArray($this->data['semantics']['totalPrice']) : null;
-        $this->wifiDetails = !empty($this->data['semantics']['wifiAccess']) ? collect(
+        $this->totalPrice = ! empty($this->data['semantics']['totalPrice']) ? Price::fromArray($this->data['semantics']['totalPrice']) : null;
+        $this->wifiDetails = ! empty($this->data['semantics']['wifiAccess']) ? collect(
             array_map(fn ($wifi) => WifiNetwork::fromArray($wifi), $this->data['semantics']['wifiAccess'])
         ) : null;
     }
@@ -348,7 +348,6 @@ abstract class PassBuilder
 
     public function generate()
     {
-
         $pkPass = new PKPass(
             self::getCertificatePath(),
             self::getCertificatePassword(),

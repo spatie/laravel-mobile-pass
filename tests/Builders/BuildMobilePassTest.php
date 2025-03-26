@@ -71,8 +71,7 @@ it('updates a field', function () {
     // We should be able to update a field
     $pass
         ->builder()
-        ->updateField('flight-no', fn (FieldContent $field) =>
-            $field->withValue('UPDATED')
+        ->updateField('flight-no', fn (FieldContent $field) => $field->withValue('UPDATED')
         )
         ->save();
 
