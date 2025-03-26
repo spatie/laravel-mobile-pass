@@ -26,7 +26,7 @@ function tempPath(string $path = ''): string
 expect()->extend('toMatchMobilePassSnapshot', function () {
     storePassInTemporaryDirectory($this->value);
 
-    $passkeyReader = PkPassReader::loadFromString($this->value);
+    $passkeyReader = PkPassReader::fromString($this->value);
 
     $this->value = $passkeyReader->toArray();
 
