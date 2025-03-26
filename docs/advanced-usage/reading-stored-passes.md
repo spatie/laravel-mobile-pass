@@ -8,7 +8,7 @@ The package contains a `PkPassReader` class that can be used to read passes from
 Here's how you can instantiate the `PkPassReader` class:
 
 ```php
-use Spatie\LaravelMobilePass\Support\PkPassReader
+use Spatie\LaravelMobilePass\Support\PkPassReader;
 
 // from file
 $reader = PkPassReader::fromFile('path/to/pass.pkpass');

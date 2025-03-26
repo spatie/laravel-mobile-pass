@@ -10,7 +10,7 @@ This package offers methods to associate mobile passes with models. This can be 
 You can associate a mobile pass with any model. First you need to add the `HasMobilePasses` trait to the model:
 
 ```php
-use Spatie\LaravelMobilePass\HasMobilePasses;
+use Spatie\LaravelMobilePass\Models\Concerns\HasMobilePasses;
 
 class User extends Model
 {

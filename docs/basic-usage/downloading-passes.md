@@ -3,7 +3,7 @@ title: Available pass types
 weight: 3
 ---
 
-The easiest way to download a pass by calling `download` on a `MobilePass` model and return it from a controller. 
+The easiest way to download a pass is by calling `download` on a `MobilePass` model and return it from a controller. 
 
 ```php
 class YourController

@@ -18,10 +18,10 @@ class CustomMobilePass extends MobilePass
 }
 ```
 
-You must then update the `mobile_pass` config file to use the new model:
+You must then update the `mobile-pass` config file to use the new model:
 
 ```php
-// config/mobile_pass.php
+// config/mobile-pass.php
 
 return [
     'models' => [

@@ -12,7 +12,7 @@ class PkPassReader implements Arrayable
 
     protected string $tempFile;
 
-    public static function FromFile(string $path): self
+    public static function fromFile(string $path): self
     {
         $content = file_get_contents($path);
 
