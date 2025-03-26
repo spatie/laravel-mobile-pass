@@ -77,6 +77,39 @@ abstract class PassBuilder
         $this->uncompileContent();
     }
 
+    protected function compileSemantics(): ?array
+    {
+        return array_filter([
+            'totalPrice' => $this->totalPrice?->toArray(),
+            'wifiAccess' => $this->wifiDetails?->toArray(),
+        ]);
+    }
+
+    protected function compileData(): array
+    {
+        return array_merge($this->data ?? [], array_filter([
+            'formatVersion' => 1,
+            'organizationName' => $this->organisationName,
+            'passTypeIdentifier' => config('mobile-pass.type_identifier'),
+            'serialNumber' => $this->serialNumber,
+            'authenticationToken' => config('mobile-pass.webservice_secret'),
+            'teamIdentifier' => config('mobile-pass.team_identifier'),
+            'description' => $this->description,
+            'semantics' => $this->compileSemantics(),
+            'userInfo' => [
+                'passType' => $this->type->value,
+            ]
+        ]));
+    }
+
+    protected function uncompileSemantics()
+    {
+        $this->totalPrice = !empty($this->data['semantics']['totalPrice']) ? Price::fromArray($this->data['semantics']['totalPrice']) : null;
+        $this->wifiDetails = !empty($this->data['semantics']['wifiAccess']) ? collect(
+            array_map(fn ($wifi) => WifiNetwork::fromArray($wifi), $this->data['semantics']['wifiAccess'])
+        ) : null;
+    }
+
     protected function uncompileContent()
     {
         $this->organisationName = $this->data['organisationName'] ?? null;
@@ -88,6 +121,7 @@ abstract class PassBuilder
         $this->foregroundColour = Colour::makeFromRgbString($this->data['foregroundColor'] ?? null);
         $this->labelColour = Colour::makeFromRgbString($this->data['labelColor'] ?? null);
 
+        $this->uncompileSemantics();
         // $model->passImages = array_map(fn ($image) => Image::fromArray($image), $model->images);
         // $model->barcodes = array_map(fn ($barcode) => Barcode::fromArray($barcode), $model->content['barcodes'] ?? []);
 
@@ -215,28 +249,6 @@ abstract class PassBuilder
         $this->wifiDetails = collect($wifiNetwork);
 
         return $this;
-    }
-
-    protected function compileSemantics(): ?array
-    {
-        return array_filter([
-            'totalPrice' => $this->totalPrice?->toArray(),
-            'wifiAccess' => $this->wifiDetails?->toArray(),
-        ]);
-    }
-
-    protected function compileData(): array
-    {
-        return array_merge($this->data ?? [], array_filter([
-            'formatVersion' => 1,
-            'organizationName' => $this->organisationName,
-            'passTypeIdentifier' => config('mobile-pass.type_identifier'),
-            'serialNumber' => $this->serialNumber,
-            'authenticationToken' => config('mobile-pass.webservice_secret'),
-            'teamIdentifier' => config('mobile-pass.team_identifier'),
-            'description' => $this->description,
-            'semantics' => $this->compileSemantics(),
-        ]));
     }
 
     protected function addImagesToFile(PKPass $pkPass): PKPass
