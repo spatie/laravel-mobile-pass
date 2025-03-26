@@ -66,7 +66,7 @@ class MobilePass extends Model
     {
         $builderClass = Config::getPassBuilderClass($this->builder_name);
 
-        return $builderClass::make($this->content, $this->images, $this->model);
+        return $builderClass::make($this->content, $this->images, $this);
     }
 
     public function generate(): string
