@@ -2,6 +2,7 @@
 
 namespace Spatie\LaravelMobilePass\Tests\Feature;
 
+use Spatie\LaravelMobilePass\Builders\GenericPassBuilder;
 use Spatie\LaravelMobilePass\Entities\FieldContent;
 use Spatie\LaravelMobilePass\Entities\Image;
 use Spatie\LaravelMobilePass\Models\MobilePass;
@@ -46,3 +47,32 @@ it('can create a mobile pass', function () {
 
     expect($passkeyContent)->toMatchMobilePassSnapshot();
 })->skip('few random elements in there now');
+
+it('updates a field', function () {
+    $pass = GenericPassBuilder::make()
+        ->setOrganisationName('My organisation')
+        ->setSerialNumber(123456)
+        ->setDescription('Hello!')
+        ->setIconImage(
+            Image::make(
+                x1Path: getTestSupportPath('images/spatie-thumbnail.png')
+            )
+        )
+        ->setHeaderFields(
+            FieldContent::make('flight-no')
+                ->withLabel('Flight')
+                ->withValue('EY066'),
+            FieldContent::make('seat')
+                ->withLabel('Seat')
+                ->withValue('66F')
+        )
+        ->save();
+
+    // We should be able to update a field
+    $pass
+        ->builder()
+        ->updateField('flight-no', 'UPDATED')
+        ->save();
+
+    expect($pass->generate())->toMatchMobilePassSnapshot();
+});
