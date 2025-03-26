@@ -173,6 +173,8 @@ abstract class PassBuilder
                 if ($field->key === $key) {
                     $field->value = $value;
                 }
+
+                return $field;
             });
         }
 
