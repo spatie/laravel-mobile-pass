@@ -71,7 +71,9 @@ it('updates a field', function () {
     // We should be able to update a field
     $pass
         ->builder()
-        ->updateField('flight-no', 'UPDATED')
+        ->updateField('flight-no', fn (FieldContent $field) =>
+            $field->withValue('UPDATED')
+        )
         ->save();
 
     expect($pass->generate())->toMatchMobilePassSnapshot();

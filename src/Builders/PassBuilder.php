@@ -2,6 +2,7 @@
 
 namespace Spatie\LaravelMobilePass\Builders;
 
+use Closure;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use PKPass\PKPass;
@@ -158,7 +159,7 @@ abstract class PassBuilder
         return $this;
     }
 
-    public function updateField(string $key, string $value)
+    public function updateField(string $key, Closure $fieldContent)
     {
         $fieldTypes = [
             'headerFields',
@@ -169,12 +170,12 @@ abstract class PassBuilder
         ];
 
         foreach ($fieldTypes as $fieldType) {
-            $this->$fieldType = $this->$fieldType->map(function ($field) use ($key, $value) {
-                if ($field->key === $key) {
-                    $field->value = $value;
+            $this->$fieldType = $this->$fieldType->map(function ($existingField) use ($key, $fieldContent) {
+                if ($existingField->key === $key) {
+                    return $fieldContent($existingField);
                 }
 
-                return $field;
+                return $existingField;
             });
         }
 
