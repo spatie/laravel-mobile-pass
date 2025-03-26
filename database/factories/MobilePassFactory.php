@@ -16,6 +16,7 @@ class MobilePassFactory extends Factory
     {
         return [
             'builder_name' => 'generic',
+            'type' => 'generic',
             'images' => [
                 'icon' => Image::make(
                     getTestSupportPath('images/spatie-thumbnail.png')

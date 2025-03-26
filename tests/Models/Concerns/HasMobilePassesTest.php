@@ -17,10 +17,27 @@ it('can get all associated mobile passes', function () {
 });
 
 it('can get the first pass of a given type', function () {
-    // expect($this->testModel->firstMobilePassOfType(PassType::Coupon))->toBeNull();
+    expect($this->testModel->refresh()->firstMobilePass())
+        ->toBeNull();
 
     $mobilePass = MobilePass::factory()->create();
     $this->testModel->addMobilePass($mobilePass);
 
-    expect($this->testModel->refresh()->firstMobilePassOfType(PassType::Coupon))->not()->toBeNull();
+    expect($this->testModel->refresh()->firstMobilePass(PassType::Generic))
+        ->not()->toBeNull();
+
+    expect($this->testModel->refresh()->firstMobilePass(PassType::BoardingPass))
+        ->toBeNull();
+});
+
+it('accepts a callable to filter the first pass', function() {
+    $mobilePass = MobilePass::factory()->create();
+    $this->testModel->addMobilePass($mobilePass);
+
+
+    expect($this->testModel->refresh()->firstMobilePass(filter: fn($query) => $query->where('type', PassType::Generic)))
+        ->not()->toBeNull();
+
+    expect($this->testModel->refresh()->firstMobilePass(filter: fn($query) => $query->where('type', PassType::BoardingPass)))
+        ->toBeNull();
 });

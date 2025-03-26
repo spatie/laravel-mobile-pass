@@ -302,6 +302,7 @@ abstract class PassBuilder
         }
 
         return MobilePass::create([
+            'type' => $this->type->value,
             'builder_name' => static::name(),
             'content' => $this->data(),
             'images' => $this->images,
