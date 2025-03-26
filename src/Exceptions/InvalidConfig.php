@@ -35,6 +35,4 @@ class InvalidConfig extends Exception
     {
         return new static("The pass builder `{$passBuilderName}` must be an instance of `Spatie\LaravelMobilePass\Builders\PassBuilder`. `{$passBuilderClass}` does not extend `Spatie\LaravelMobilePass\Builders\PassBuilder`.");
     }
-
-
 }
