@@ -15,7 +15,7 @@ class MobilePassFactory extends Factory
     public function definition()
     {
         return [
-            'builder_class' => GenericPassBuilder::class,
+            'builder_name' => 'generic',
             'images' => [
                 'icon' => Image::make(
                     getTestSupportPath('images/spatie-thumbnail.png')

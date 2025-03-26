@@ -21,6 +21,14 @@ return [
         'mobile_pass_device' => Spatie\LaravelMobilePass\Models\MobilePassDevice::class,
     ],
 
+    'builders' => [
+        'airline' => Spatie\LaravelMobilePass\Builders\AirlinePassBuilder::class,
+        'boarding' => Spatie\LaravelMobilePass\Builders\BoardingPassBuilder::class,
+        'coupon' => Spatie\LaravelMobilePass\Builders\CouponPassBuilder::class,
+        'generic' => Spatie\LaravelMobilePass\Builders\GenericPassBuilder::class,
+        'store_card' => Spatie\LaravelMobilePass\Builders\StoreCardPassBuilder::class,
+    ],
+
     'organisation_name' => env('MOBILE_PASS_ORGANISATION_NAME', 'Spatie'),
     'type_identifier' => env('MOBILE_PASS_TYPE_IDENTIFIER'),
     'team_identifier' => env('MOBILE_PASS_TEAM_IDENTIFIER'),

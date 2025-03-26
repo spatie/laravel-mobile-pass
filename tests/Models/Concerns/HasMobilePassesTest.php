@@ -23,4 +23,4 @@ it('can get the first pass of a given type', function () {
     $this->testModel->addMobilePass($mobilePass);
 
     expect($this->testModel->refresh()->firstMobilePassOfType(PassType::Coupon))->not()->toBeNull();
-})->skip();
+});

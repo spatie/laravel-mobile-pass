@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Spatie\LaravelMobilePass\Actions\NotifyAppleOfPassUpdateAction;
-use Spatie\LaravelMobilePass\Builders\BoardingPasses\AirlinePassBuilder;
+use Spatie\LaravelMobilePass\Builders\AirlinePassBuilder;
 use Spatie\LaravelMobilePass\Builders\PassBuilder;
 use Spatie\LaravelMobilePass\Support\Config;
 use Spatie\LaravelMobilePass\Support\DownloadableMobilePass;
@@ -64,8 +64,7 @@ class MobilePass extends Model
 
     public function builder(): PassBuilder
     {
-        /** @var class-string<PassBuilder> $builderClass */
-        $builderClass = $this->builder_class;
+        $builderClass = Config::getPassBuilderClass($this->builder_name);
 
         return $builderClass::make($this->content, $this->images, $this->model);
     }

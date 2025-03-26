@@ -1,6 +1,7 @@
 <?php
 
-use Spatie\LaravelMobilePass\Builders\BoardingPasses\AirlinePassBuilder;
+use Spatie\LaravelMobilePass\Builders\AirlinePassBuilder;
+use Spatie\LaravelMobilePass\Builders\BoardingPassBuilder;
 use Spatie\LaravelMobilePass\Entities\FieldContent;
 use Spatie\LaravelMobilePass\Entities\Image;
 use Spatie\LaravelMobilePass\Entities\Seat;
@@ -74,4 +75,8 @@ it('builds a basic boarding pass', function () {
         ))->save();
 
     expect($mobilePass->generate())->toMatchMobilePassSnapshot();
+});
+
+it('has a name', function() {
+   expect(BoardingPassBuilder::name())->toBe('boarding');
 });

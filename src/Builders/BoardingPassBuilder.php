@@ -1,10 +1,9 @@
 <?php
 
-namespace Spatie\LaravelMobilePass\Builders\BoardingPasses;
+namespace Spatie\LaravelMobilePass\Builders;
 
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
-use Spatie\LaravelMobilePass\Builders\PassBuilder;
 use Spatie\LaravelMobilePass\Entities\Image;
 use Spatie\LaravelMobilePass\Entities\Location;
 use Spatie\LaravelMobilePass\Entities\PersonName;

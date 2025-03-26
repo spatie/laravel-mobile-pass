@@ -3,6 +3,7 @@
 namespace Spatie\LaravelMobilePass\Builders;
 
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 use PKPass\PKPass;
 use Spatie\LaravelMobilePass\Entities\Colour;
 use Spatie\LaravelMobilePass\Entities\FieldContent;
@@ -60,6 +61,13 @@ abstract class PassBuilder
     public static function make(array $data = [], array $images = [], ?MobilePass $model = null): static
     {
         return new static($data, $images, $model);
+    }
+
+    public static function name(): string
+    {
+        return Str::snake(
+            Str::replaceLast('PassBuilder', '', class_basename(static::class))
+        );
     }
 
     public function __construct(array $data = [], array $images = [], protected ?MobilePass $model = null)
@@ -294,7 +302,7 @@ abstract class PassBuilder
         }
 
         return MobilePass::create([
-            'builder_class' => static::class,
+            'builder_name' => static::name(),
             'content' => $this->data(),
             'images' => $this->images,
         ]);
