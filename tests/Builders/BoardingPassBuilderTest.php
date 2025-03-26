@@ -77,6 +77,6 @@ it('builds a basic boarding pass', function () {
     expect($mobilePass->generate())->toMatchMobilePassSnapshot();
 });
 
-it('has a name', function() {
-   expect(BoardingPassBuilder::name())->toBe('boarding');
+it('has a name', function () {
+    expect(BoardingPassBuilder::name())->toBe('boarding');
 });
