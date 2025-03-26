@@ -19,7 +19,7 @@ class MobilePassFactory extends Factory
             'images' => [
                 'icon' => Image::make(
                     getTestSupportPath('images/spatie-thumbnail.png')
-                )
+                ),
             ],
             'content' => [
                 'formatVersion' => 1,
