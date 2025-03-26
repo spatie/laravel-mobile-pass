@@ -21,12 +21,60 @@
             "destinationLocationDescription": "Abu Dhabi Intl",
             "seats": [
                 {
-                    "number": "66F"
+                    "number": "123DAN"
                 }
             ]
         },
         "boardingPass": {
-            "transitType": "PKTransitTypeAir"
+            "transitType": "PKTransitTypeAir",
+            "headerFields": [
+                {
+                    "key": "flight-no",
+                    "label": "Flight",
+                    "value": "EY066"
+                },
+                {
+                    "key": "seat",
+                    "label": "Seat",
+                    "value": "66F"
+                }
+            ],
+            "primaryFields": [
+                {
+                    "key": "departure",
+                    "label": "Abu Dhabi International",
+                    "value": "ABU"
+                },
+                {
+                    "key": "destination",
+                    "label": "London Heathrow",
+                    "value": "LHR"
+                }
+            ],
+            "secondaryFields": [
+                {
+                    "key": "name",
+                    "label": "Name",
+                    "value": "Dan Johnson"
+                },
+                {
+                    "key": "gate",
+                    "label": "Gate",
+                    "value": "D68"
+                }
+            ],
+            "auxiliaryFields": [
+                {
+                    "key": "departs",
+                    "label": "Departs",
+                    "value": "2025-01-01T00:00:00+00:00"
+                },
+                {
+                    "key": "class",
+                    "label": "Class",
+                    "value": "Economy"
+                }
+            ]
         }
     }
 }
