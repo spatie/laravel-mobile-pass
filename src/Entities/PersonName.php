@@ -36,6 +36,19 @@ class PersonName implements Arrayable
         );
     }
 
+    public static function fromArray(array $values): static
+    {
+        return new self(
+            familyName: $values['familyName'] ?? null,
+            givenName: $values['givenName'] ?? null,
+            middleName: $values['middleName'] ?? null,
+            namePrefix: $values['namePrefix'] ?? null,
+            nameSuffix: $values['nameSuffix'] ?? null,
+            nickname: $values['nickname'] ?? null,
+            phoneticRepresentation: $values['phoneticRepresentation'] ?? null,
+        );
+    }
+
     public function toArray(): array
     {
         return array_filter([

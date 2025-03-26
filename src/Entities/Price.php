@@ -21,6 +21,14 @@ class Price implements Arrayable
         );
     }
 
+    public static function fromArray(array $values): static
+    {
+        return new self(
+            amount: $values['amount'] ?? null,
+            currencyCode: $values['currencyCode'] ?? null,
+        );
+    }
+
     public function toArray(): array
     {
         return [

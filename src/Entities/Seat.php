@@ -33,6 +33,18 @@ class Seat implements Arrayable
         );
     }
 
+    public static function fromArray(array $values): static
+    {
+        return new self(
+            description: $values['description'] ?? null,
+            identifier: $values['identifier'] ?? null,
+            number: $values['number'] ?? null,
+            row: $values['row'] ?? null,
+            section: $values['section'] ?? null,
+            type: $values['type'] ?? null,
+        );
+    }
+
     public function toArray(): array
     {
         return array_filter([

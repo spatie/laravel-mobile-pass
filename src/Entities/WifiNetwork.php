@@ -21,6 +21,14 @@ class WifiNetwork implements Arrayable
         );
     }
 
+    public static function fromArray(array $values): static
+    {
+        return new self(
+            ssid: $values['ssid'],
+            password: $values['password'],
+        );
+    }
+
     public function toArray(): array
     {
         return [
