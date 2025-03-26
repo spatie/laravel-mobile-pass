@@ -22,7 +22,7 @@ trait HasMobilePasses
         return $this->morphMany($mobilePassModel, 'model');
     }
 
-    public function firstMobilePass(PassType $passType = null, ?callable $filter = null): ?MobilePass
+    public function firstMobilePass(?PassType $passType = null, ?callable $filter = null): ?MobilePass
     {
         $query = $this->mobilePasses();
 
