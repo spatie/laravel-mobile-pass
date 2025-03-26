@@ -5,7 +5,7 @@ use Spatie\LaravelMobilePass\Support\PkPassReader;
 beforeEach(function () {
     $this->passkeyFile = getTestSupportPath('passes/PkPassReader/valid.pkpass');
 
-    $this->reader = PkPassReader::loadFromFile($this->passkeyFile);
+    $this->reader = PkPassReader::FromFile($this->passkeyFile);
 });
 
 it('can read a pass key from a file', function () {
@@ -15,7 +15,7 @@ it('can read a pass key from a file', function () {
 it('can read a pass key from a string', function () {
     $passkeyContent = file_get_contents($this->passkeyFile);
 
-    $reader = PkPassReader::loadFromString($passkeyContent);
+    $reader = PkPassReader::fromString($passkeyContent);
 
     expect($reader->containsFile('pass.json'))->toBeTrue();
 });
