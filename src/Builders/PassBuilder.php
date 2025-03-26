@@ -37,8 +37,6 @@ abstract class PassBuilder
 
     protected ?Colour $labelColour = null;
 
-    protected ?PassType $passType = null;
-
     protected ?string $description = null;
 
     protected ?Price $totalPrice = null;
@@ -89,7 +87,6 @@ abstract class PassBuilder
         $this->backgroundColour = Colour::makeFromRgbString($this->data['backgroundColor'] ?? null);
         $this->foregroundColour = Colour::makeFromRgbString($this->data['foregroundColor'] ?? null);
         $this->labelColour = Colour::makeFromRgbString($this->data['labelColor'] ?? null);
-        $this->passType = PassType::tryFrom($this->data['userInfo']['passType'] ?? PassType::Generic->value);
 
         // $model->passImages = array_map(fn ($image) => Image::fromArray($image), $model->images);
         // $model->barcodes = array_map(fn ($barcode) => Barcode::fromArray($barcode), $model->content['barcodes'] ?? []);
@@ -105,7 +102,7 @@ abstract class PassBuilder
     {
         $this->$fieldSetName = collect();
 
-        foreach ($this->data[$this->passType->value][$fieldSetName] ?? [] as $field) {
+        foreach ($this->data[$this->type->value][$fieldSetName] ?? [] as $field) {
             $this->$fieldSetName[$field['key']] = FieldContent::fromArray($field);
         }
     }
