@@ -73,7 +73,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Spatie\\LaravelMobilePass\\LaravelMobilePassServiceProvider"
+                "Spatie\\LaravelMobilePass\\MobilePassServiceProvider"
             ]
         }
     },

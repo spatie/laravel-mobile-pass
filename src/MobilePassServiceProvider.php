@@ -5,7 +5,7 @@ namespace Spatie\LaravelMobilePass;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
-class LaravelMobilePassServiceProvider extends PackageServiceProvider
+class MobilePassServiceProvider extends PackageServiceProvider
 {
     public function configurePackage(Package $package): void
     {

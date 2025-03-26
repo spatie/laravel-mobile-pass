@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Schema;
 use Orchestra\Testbench\TestCase as Orchestra;
-use Spatie\LaravelMobilePass\LaravelMobilePassServiceProvider;
+use Spatie\LaravelMobilePass\MobilePassServiceProvider;
 use Spatie\TemporaryDirectory\TemporaryDirectory;
 use Spatie\TestTime\TestTime;
 
@@ -33,7 +33,7 @@ class TestCase extends Orchestra
     protected function getPackageProviders($app)
     {
         return [
-            LaravelMobilePassServiceProvider::class,
+            MobilePassServiceProvider::class,
         ];
     }
 
