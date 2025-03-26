@@ -14,6 +14,13 @@ class MobilePassFactory extends Factory
     public function definition()
     {
         return [
+            'builder_name' => 'generic',
+            'type' => 'generic',
+            'images' => [
+                'icon' => Image::make(
+                    getTestSupportPath('images/spatie-thumbnail.png')
+                ),
+            ],
             'content' => [
                 'formatVersion' => 1,
                 'organizationName' => 'Laravel King',
@@ -25,9 +32,7 @@ class MobilePassFactory extends Factory
                 'backgroundColor' => 'rgb(81, 35, 20)',
                 'foregroundColor' => 'rgb(255, 134, 41)',
                 'labelColor' => 'rgb(245, 235, 220)',
-                [
-                    'passType' => 'coupon',
-                ] < 'userinfo',
+                'passType' => 'coupon',
                 'coupon' => [
                     'transitType' => 'PKTransitTypeAir',
                     'headerFields' => [
@@ -42,16 +47,18 @@ class MobilePassFactory extends Factory
         ];
     }
 
-    public function configure(): static
-    {
-        return $this->afterMaking(function (MobilePass $mobilePass) {
-            $mobilePass->setIconImage(
-                Image::make(
-                    getTestSupportPath('images/spatie-thumbnail.png')
-                )
-            );
-        });
-    }
+    // public function configure(): static
+    // {
+    //     return $this->afterMaking(function (MobilePass $mobilePass) {
+    //         $mobilePass
+    //             ->builder()
+    //             ->setIconImage(
+    //                 Image::make(
+    //                     getTestSupportPath('images/spatie-thumbnail.png')
+    //                 )
+    //             );
+    //     });
+    // }
 
     public function hasRegistrationForDevice(MobilePassDevice $device): static
     {

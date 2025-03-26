@@ -1,6 +1,6 @@
 <?php
 
-namespace Spatie\LaravelMobilePass\Builders\BoardingPasses;
+namespace Spatie\LaravelMobilePass\Builders;
 
 use Spatie\LaravelMobilePass\Enums\TransitType;
 

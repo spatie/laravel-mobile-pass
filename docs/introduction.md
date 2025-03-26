@@ -3,6 +3,15 @@ title: Introduction
 weight: 1
 ---
 
-Using this package you can generate mobile passes for Apple Wallet. Possible use cases are boarding passes, event tickets, coupons, store cards, etc. You can even push out updates to issued passes, make sure that they are always up-to-date on your users devices.
+Using this package you can generate mobile passes for Apple Wallet. Possible use cases are boarding passes, event tickets, coupons, store cards, etc. 
 
-TODO: include screenshots of a couple of cool passes
+You can even push out updates to issued passes, make sure that they are always up-to-date on your users devices.
+
+Here's an example of a boarding pass that you can generate with this package.
+
+![boarding pass](/docs/laravel-mobile-pass/v1/images/boarding.jpg)
+
+And here's an example of a coupon.
+
+![coupon](/docs/laravel-mobile-pass/v1/images/coupon.jpg)
+

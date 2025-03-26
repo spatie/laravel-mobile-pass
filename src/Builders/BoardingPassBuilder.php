@@ -1,10 +1,9 @@
 <?php
 
-namespace Spatie\LaravelMobilePass\Builders\BoardingPasses;
+namespace Spatie\LaravelMobilePass\Builders;
 
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
-use Spatie\LaravelMobilePass\Builders\PassBuilder;
 use Spatie\LaravelMobilePass\Entities\Image;
 use Spatie\LaravelMobilePass\Entities\Location;
 use Spatie\LaravelMobilePass\Entities\PersonName;
@@ -399,10 +398,11 @@ abstract class BoardingPassBuilder extends PassBuilder
             [
                 'boardingPass' => array_filter([
                     'transitType' => $this->transitType?->value,
-                    'primaryFields' => $this->primaryFields?->toArray(),
-                    'secondaryFields' => $this->secondaryFields?->toArray(),
-                    'headerFields' => $this->headerFields?->toArray(),
-                    'auxiliaryFields' => $this->auxiliaryFields?->toArray(),
+                    'primaryFields' => $this->primaryFields?->values()->toArray(),
+                    'secondaryFields' => $this->secondaryFields?->values()->toArray(),
+                    'headerFields' => $this->headerFields?->values()->toArray(),
+                    'auxiliaryFields' => $this->auxiliaryFields?->values()->toArray(),
+                    'backFields' => $this->backFields?->values()->toArray(),
                 ]),
             ],
         );

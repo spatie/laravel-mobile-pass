@@ -2,6 +2,7 @@
 
 namespace Spatie\LaravelMobilePass\Support;
 
+use Spatie\LaravelMobilePass\Builders\PassBuilder;
 use Spatie\LaravelMobilePass\Exceptions\InvalidConfig;
 use Spatie\LaravelMobilePass\Models\MobilePass;
 use Spatie\LaravelMobilePass\Models\MobilePassDevice;
@@ -53,14 +54,23 @@ class Config
         return $actionClass;
     }
 
-    public static function getEventClass(string $eventName, string $shouldBeOrExtend): string
+    /** @return class-string<\Spatie\LaravelMobilePass\Builders\PassBuilder> */
+    public static function getPassBuilderClass(string $passBuilderName): string
     {
-        $eventClass = config("mobile-pass.events.{$eventName}");
+        $passBuilderClass = config("mobile-pass.builders.{$passBuilderName}");
 
-        if (! is_a($eventClass, $shouldBeOrExtend, true)) {
-            throw InvalidConfig::invalidEvent($eventName, $eventClass, $shouldBeOrExtend);
+        if (! $passBuilderClass) {
+            throw InvalidConfig::passBuilderNotRegistered($passBuilderName);
         }
 
-        return $eventClass;
+        if (! class_exists($passBuilderClass)) {
+            throw InvalidConfig::passBuilderNotFound($passBuilderName, $passBuilderClass);
+        }
+
+        if (! is_a($passBuilderClass, PassBuilder::class, true)) {
+            throw InvalidConfig::invalidPassBuilderClass($passBuilderName, $passBuilderClass);
+        }
+
+        return $passBuilderClass;
     }
 }

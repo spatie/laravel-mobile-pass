@@ -16,4 +16,4 @@ it('throws an exception when the image does not exist', function () {
     Image::make(
         getTestSupportPath('images/non-existing.png')
     );
-})->throws(InvalidArgumentException::class, 'File not found at path: ' . getTestSupportPath('images/non-existing.png'));
+})->throws(InvalidArgumentException::class, 'File not found at path: '.getTestSupportPath('images/non-existing.png'));
