@@ -15,7 +15,7 @@ TODO: provide instructions
 
 ## Publishing the config file
 
-Optionally, you can publish the `mobile-health` config file with this command.
+Optionally, you can publish the `laravel-mobile-pass` config file with this command.
 
 ```bash
 php artisan vendor:publish --tag="mobile-pass-config"
