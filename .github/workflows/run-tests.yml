@@ -52,3 +52,8 @@ jobs:
 
       - name: Execute tests
         run: vendor/bin/pest --ci
+        env:
+          MOBILE_PASS_APPLE_CERTIFICATE_CONTENTS: ${{ secrets.MOBILE_PASS_APPLE_CERTIFICATE_CONTENTS }}
+          MOBILE_PASS_APPLE_CERTIFICATE_PASSWORD: ${{ secrets.MOBILE_PASS_APPLE_CERTIFICATE_PASSWORD }}
+          MOBILE_PASS_TEAM_IDENTIFIER: ${{ secrets.MOBILE_PASS_TEAM_IDENTIFIER }}
+          MOBILE_PASS_TYPE_IDENTIFIER: ${{ secrets.MOBILE_PASS_TYPE_IDENTIFIER }}
