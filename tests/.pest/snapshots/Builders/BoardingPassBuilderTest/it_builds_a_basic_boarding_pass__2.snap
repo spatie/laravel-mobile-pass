@@ -12,7 +12,7 @@
     "pass": {
         "description": "Hello!",
         "formatVersion": 1,
-        "organizationName": "Spatie",
+        "organizationName": "My organisation",
         "passTypeIdentifier": "pass.app.gowallet",
         "serialNumber": "<random>",
         "teamIdentifier": "2SQU7LWHMY",

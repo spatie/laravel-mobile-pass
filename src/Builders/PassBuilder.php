@@ -112,7 +112,7 @@ abstract class PassBuilder
 
     protected function uncompileContent()
     {
-        $this->organisationName = $this->data['organisationName'] ?? null;
+        $this->organisationName = $this->data['organizationName'] ?? null;
         $this->passTypeIdentifier = $this->data['passTypeIdentifier'] ?? null;
         $this->authenticationToken = $this->data['authenticationToken'] ?? null;
         $this->teamIdentifier = $this->data['teamIdentifier'] ?? null;
