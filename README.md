@@ -1,4 +1,4 @@
-** IN DEVELOPMENT: DO NOT USE IN PRODUCTION (YET) **
+**IN DEVELOPMENT: DO NOT USE IN PRODUCTION (YET)**
 
 # Generate mobile passes for iOS and Android
 
