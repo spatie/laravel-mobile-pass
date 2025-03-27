@@ -27,7 +27,7 @@ Then, follow these steps to request a certificate from Apple:
 
 8. Export your keys to a `.p12` file. Open Keychain Access and search for your certificate by the identifier you provided earlier. Expand the item to reveal the private key, then select both items. Right-click the items and select Export. Choose a password and save the file.
 
-![Exporting the certificate](/images/exporting-key.gif)
+![Exporting the certificate](/docs/laravel-mobile-pass/v1/images/exporting-key.gif)
 
 You can now set the `mobile-pass.apple.certificate_path` config variable to point to this `.p12` file, or by setting the `MOBILE_PASS_APPLE_CERTIFICATE_PATH` environment variable. 
 
