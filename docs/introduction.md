@@ -15,3 +15,5 @@ And here's an example of a coupon.
 
 ![coupon](/docs/laravel-mobile-pass/v1/images/coupon.jpg)
 
+This package has been made in collaboration with [Dan Johnson](DanJohnson.xyz).
+
