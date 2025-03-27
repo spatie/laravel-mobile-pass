@@ -1,6 +1,6 @@
 ---
-title: Available pass types
-weight: 3
+title: Downloading passes
+weight: 6
 ---
 
 The easiest way to download a pass is by calling `download` on a `MobilePass` model and return it from a controller. 
