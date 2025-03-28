@@ -11,7 +11,7 @@ composer require spatie/laravel-mobile-pass
 
 ## Register your application at Apple
 
-TODO: provide instructions
+You'll find the necessary information [on this page in our docs](https://spatie.be/docs/laravel-mobile-pass/v1/basic-usage/getting-credentials-from-apple).
 
 ## Publishing the config file
 

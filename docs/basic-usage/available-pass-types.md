@@ -1,6 +1,6 @@
 ---
 title: Available pass types
-weight: 5
+weight: 7
 ---
 
 Coming soon...

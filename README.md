@@ -1,4 +1,4 @@
-** IN DEVELOPMENT: DO NOT USE IN PRODUCTION (YET) **
+**IN DEVELOPMENT: DO NOT USE IN PRODUCTION (YET)**
 
 # Generate mobile passes for iOS and Android
 
@@ -7,7 +7,19 @@
 [![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/spatie/laravel-mobile-pass/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/spatie/laravel-mobile-pass/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
 [![Total Downloads](https://img.shields.io/packagist/dt/spatie/laravel-mobile-pass.svg?style=flat-square)](https://packagist.org/packages/spatie/laravel-mobile-pass)
 
-This is where your description should go. Limit it to a paragraph or two. Consider adding a small example.
+Using this package you can generate mobile passes for Apple Wallet. Possible use cases are boarding passes, event tickets, coupons, store cards, membership cards, gift cards etc.
+
+You can even push out updates to issued passes, making sure that they are always up-to-date on your users devices.
+
+Here's an example of a boarding pass that you can generate with this package.
+
+![boarding pass](https://github.com/spatie/laravel-mobile-pass/blob/main/docs/images/boarding.jpg?raw=true)
+
+And here's an example of a coupon.
+
+![coupon](https://github.com/spatie/laravel-mobile-pass/blob/main/docs/images/coupon.jpg?raw=true)
+
+This package has been made in collaboration with [Dan Johnson](DanJohnson.xyz).
 
 ## Support us
 
@@ -17,46 +29,9 @@ We invest a lot of resources into creating [best in class open source packages](
 
 We highly appreciate you sending us a postcard from your hometown, mentioning which of our package(s) you are using. You'll find our address on [our contact page](https://spatie.be/about-us). We publish all received postcards on [our virtual postcard wall](https://spatie.be/open-source/postcards).
 
-## Installation
+## Documentation
 
-You can install the package via composer:
-
-```bash
-composer require spatie/laravel-mobile-pass
-```
-
-You can publish and run the migrations with:
-
-```bash
-php artisan vendor:publish --tag="laravel-mobile-pass-migrations"
-php artisan migrate
-```
-
-You can publish the config file with:
-
-```bash
-php artisan vendor:publish --tag="laravel-mobile-pass-config"
-```
-
-This is the contents of the published config file:
-
-```php
-return [
-];
-```
-
-Optionally, you can publish the views using
-
-```bash
-php artisan vendor:publish --tag="laravel-mobile-pass-views"
-```
-
-## Usage
-
-```php
-$laravelMobilePass = new Spatie\LaravelMobilePass();
-echo $laravelMobilePass->echoPhrase('Hello, Spatie!');
-```
+You can find the full documentation on how to use this package on [our documentation site](https://spatie.be/docs/laravel-mobile-pass).
 
 ## Testing
 
