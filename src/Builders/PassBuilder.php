@@ -337,7 +337,7 @@ abstract class PassBuilder
 
                     // TODO: and we'll need to transform all the other bits.
                 ],
-            ]
+            ],
         ];
     }
 

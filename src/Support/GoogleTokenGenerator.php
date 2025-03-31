@@ -8,7 +8,9 @@ use Spatie\LaravelMobilePass\Models\MobilePass;
 class GoogleTokenGenerator
 {
     protected const TOKEN_AUDIENCE = 'google';
+
     protected const TOKEN_TYPE = 'savetowallet';
+
     protected const ENCODE_ALGORITHM = 'RS256';
 
     public function generate(MobilePass $mobilePass): string
