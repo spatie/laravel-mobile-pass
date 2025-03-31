@@ -1,6 +1,7 @@
 <?php
 
 use Spatie\LaravelMobilePass\Models\MobilePass;
+use Spatie\LaravelMobilePass\Tests\TestSupport\Mailables\TestMail;
 
 it('can return a downloadable pass', function (?string $customName) {
     Route::get('test', function () use ($customName) {
@@ -41,3 +42,21 @@ it('implements responsible and uses download_name as the download name', functio
     null,
     'customName',
 ]);
+
+it('can be used as an attachment', function(?string $customName) {
+    $mobilePass = MobilePass::factory(['download_name' => $customName])->create();
+
+    $mailable = new TestMail($mobilePass);
+
+    $expectedName = $customName ?? 'pass';
+
+    $mailable->assertHasAttachedFileName(
+        name: "{$expectedName}.pkpass",
+        options: [
+            'mime' => 'application/vnd.apple.pkpass',
+        ]
+    );
+})->with([
+    null,
+    'customName',
+]);;

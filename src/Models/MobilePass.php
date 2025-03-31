@@ -3,19 +3,22 @@
 namespace Spatie\LaravelMobilePass\Models;
 
 use Carbon\Carbon;
+use Illuminate\Contracts\Mail\Attachable;
 use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Mail\Attachment;
+use Illuminate\Support\Str;
 use Spatie\LaravelMobilePass\Actions\NotifyAppleOfPassUpdateAction;
 use Spatie\LaravelMobilePass\Builders\AirlinePassBuilder;
 use Spatie\LaravelMobilePass\Builders\PassBuilder;
 use Spatie\LaravelMobilePass\Support\Config;
 use Spatie\LaravelMobilePass\Support\DownloadableMobilePass;
 
-class MobilePass extends Model implements Responsable
+class MobilePass extends Model implements Responsable, Attachable
 {
     use HasFactory;
     use HasUuids;
@@ -78,9 +81,7 @@ class MobilePass extends Model implements Responsable
 
     public function download(?string $name = null): DownloadableMobilePass
     {
-        $name = $name ?? $this->download_name ?? 'pass';
-
-        return new DownloadableMobilePass($this->generate(), $name);
+        return new DownloadableMobilePass($this->generate(), $this->downloadName($name));
     }
 
     public function wasUpdatedAfter(?Carbon $since = null): bool
@@ -95,5 +96,19 @@ class MobilePass extends Model implements Responsable
     public function toResponse($request)
     {
         return $this->download($this->download_name)->toResponse($request);
+    }
+
+    public function toMailAttachment()
+    {
+        return Attachment::fromData(fn() => $this->generate(), $this->downloadName() . '.pkpass')
+            ->withMime('application/vnd.apple.pkpass');
+    }
+
+    protected function downloadName(?string $name = null): string
+    {
+        $name =  $name ?? $this->download_name ?? 'pass';
+
+        return Str::beforeLast($name, '.pkpass');
+
     }
 }
