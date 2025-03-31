@@ -3,6 +3,7 @@
 namespace Spatie\LaravelMobilePass\Models;
 
 use Carbon\Carbon;
+use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -14,9 +15,10 @@ use Spatie\LaravelMobilePass\Builders\PassBuilder;
 use Spatie\LaravelMobilePass\Support\Config;
 use Spatie\LaravelMobilePass\Support\DownloadableMobilePass;
 
-class MobilePass extends Model
+class MobilePass extends Model implements Responsable
 {
-    use HasFactory, HasUuids;
+    use HasFactory;
+    use HasUuids;
 
     public $guarded = [];
 
@@ -74,8 +76,10 @@ class MobilePass extends Model
         return $this->builder()->generate();
     }
 
-    public function download(string $name = 'pass'): DownloadableMobilePass
+    public function download(?string $name = null): DownloadableMobilePass
     {
+        $name = $name ?? $this->download_name ?? 'pass';
+
         return new DownloadableMobilePass($this->generate(), $name);
     }
 
@@ -86,5 +90,10 @@ class MobilePass extends Model
         }
 
         return $this->updated_at > $since;
+    }
+
+    public function toResponse($request)
+    {
+        return $this->download($this->download_name)->toResponse($request);
     }
 }

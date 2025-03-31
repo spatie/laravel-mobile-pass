@@ -55,6 +55,8 @@ abstract class PassBuilder
 
     protected array $images = [];
 
+    protected ?string $downloadName = null;
+
     abstract protected static function validator(): PassValidator;
 
     public static function make(array $data = [], array $images = [], ?MobilePass $model = null): static
@@ -73,8 +75,16 @@ abstract class PassBuilder
     {
         $this->data = $data;
         $this->images = $images;
+        $this->downloadName = $model?->download_name;
 
         $this->uncompileContent();
+    }
+
+    public function setDownloadName(string $downloadName): self
+    {
+        $this->downloadName = $downloadName;
+
+        return $this;
     }
 
     public function setLogoImage(Image $image): self
@@ -244,6 +254,7 @@ abstract class PassBuilder
             $this->model->update([
                 'content' => $this->data(),
                 'images' => $this->images,
+                'download_name' => $this->downloadName,
             ]);
 
             return $this->model;
@@ -254,6 +265,7 @@ abstract class PassBuilder
             'builder_name' => static::name(),
             'content' => $this->data(),
             'images' => $this->images,
+            'download_name' => $this->downloadName,
         ]);
     }
 
