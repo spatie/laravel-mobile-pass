@@ -8,14 +8,10 @@ use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Support\Collection;
 use PHPUnit\Framework\Assert as PHPUnit;
 use Spatie\LaravelMobilePass\Models\MobilePass;
-use function Laravel\Prompts\text;
 
 class TestMail extends Mailable
 {
-    public function __construct(protected MobilePass $pass)
-    {
-
-    }
+    public function __construct(protected MobilePass $pass) {}
 
     public function envelope()
     {
@@ -52,7 +48,6 @@ class TestMail extends Mailable
             ),
             'Did not find an attachment with the expected name.'
         );
-
 
         return $this;
     }

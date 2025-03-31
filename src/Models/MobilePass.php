@@ -18,7 +18,7 @@ use Spatie\LaravelMobilePass\Builders\PassBuilder;
 use Spatie\LaravelMobilePass\Support\Config;
 use Spatie\LaravelMobilePass\Support\DownloadableMobilePass;
 
-class MobilePass extends Model implements Responsable, Attachable
+class MobilePass extends Model implements Attachable, Responsable
 {
     use HasFactory;
     use HasUuids;
@@ -100,13 +100,13 @@ class MobilePass extends Model implements Responsable, Attachable
 
     public function toMailAttachment()
     {
-        return Attachment::fromData(fn() => $this->generate(), $this->downloadName() . '.pkpass')
+        return Attachment::fromData(fn () => $this->generate(), $this->downloadName().'.pkpass')
             ->withMime('application/vnd.apple.pkpass');
     }
 
     protected function downloadName(?string $name = null): string
     {
-        $name =  $name ?? $this->download_name ?? 'pass';
+        $name = $name ?? $this->download_name ?? 'pass';
 
         return Str::beforeLast($name, '.pkpass');
 

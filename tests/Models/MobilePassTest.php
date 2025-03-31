@@ -24,7 +24,7 @@ it('can return a downloadable pass', function (?string $customName) {
     'customName',
 ]);
 
-it('implements responsible and uses download_name as the download name', function(?string $customName) {
+it('implements responsible and uses download_name as the download name', function (?string $customName) {
     Route::get('test', function () use ($customName) {
         $mobilePass = MobilePass::factory(['download_name' => $customName])->create();
 
@@ -43,7 +43,7 @@ it('implements responsible and uses download_name as the download name', functio
     'customName',
 ]);
 
-it('can be used as an attachment', function(?string $customName) {
+it('can be used as an attachment', function (?string $customName) {
     $mobilePass = MobilePass::factory(['download_name' => $customName])->create();
 
     $mailable = new TestMail($mobilePass);
@@ -59,4 +59,4 @@ it('can be used as an attachment', function(?string $customName) {
 })->with([
     null,
     'customName',
-]);;
+]);
