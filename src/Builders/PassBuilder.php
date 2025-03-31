@@ -6,6 +6,7 @@ use Closure;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use PKPass\PKPass;
+use Spatie\LaravelMobilePass\Actions\CreateGooglePassClass;
 use Spatie\LaravelMobilePass\Entities\Colour;
 use Spatie\LaravelMobilePass\Entities\FieldContent;
 use Spatie\LaravelMobilePass\Entities\Image;
@@ -294,6 +295,50 @@ abstract class PassBuilder
         $this->addImagesToFile($pkPass);
 
         return $pkPass->create(output: false);
+    }
+
+    public function compileObjectForGoogle()
+    {
+        $issuerId = config('mobile-pass.google.issuer_id');
+
+        // TODO: this depends on the type of class, but it doesn't
+        // match up exactly to Apple's pass types.
+        $objectType = 'loyaltyObjects';
+
+        // TODO: what should the classId be?
+        // It needs to be unique to the type of pass we're generating,
+        // like a template. But _not_ unique to each pass we generate.
+        $classId = app(CreateGooglePassClass::class)->execute($this->model);
+
+        return [
+            $objectType => [
+                [
+                    'id' => "{$issuerId}.{$this->serialNumber}",
+                    'classId' => "{$classId}",
+                    'accountId' => $this->serialNumber,
+
+                    // TODO: We'll need to transform the Barcode object
+                    // from Apple syntax to Googe.
+                    'barcode' => [
+                        'type' => 'QR_CODE',
+                        'value' => '123_test',
+                        'alternateText' => 'test!',
+                    ],
+                    'state' => 'active',
+
+                    // TODO: We'll need to transform the fields
+                    // from Apple syntax to Google.
+                    'textModulesData' => [
+                        [
+                            'header' => 'Name',
+                            'body' => 'Dan Johnson',
+                        ],
+                    ],
+
+                    // TODO: and we'll need to transform all the other bits.
+                ],
+            ]
+        ];
     }
 
     protected function compileSemantics(): ?array
