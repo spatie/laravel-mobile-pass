@@ -49,4 +49,13 @@ return [
             'host' => env('MOBILE_PASS_APPLE_WEBSERVICE_HOST'),
         ],
     ],
+
+    'google' => [
+        'auth' => env('MOBILE_PASS_GOOGLE_AUTH'),
+        'pass_issuer' => env('MOBILE_PASS_GOOGLE_ISSUER'),
+        'issuer_id' => env('MOBILE_PASS_GOOGLE_ISSUER_ID'),
+        'download_origins' => [
+            config('app.url'),
+        ],
+    ],
 ];
