@@ -5,6 +5,7 @@ namespace Spatie\LaravelMobilePass\Actions;
 use Google\Client;
 use GuzzleHttp\ClientInterface;
 use Spatie\LaravelMobilePass\Models\MobilePass;
+use Illuminate\Support\Str;
 
 class CreateGooglePassClass
 {
@@ -30,8 +31,13 @@ class CreateGooglePassClass
         $this->issuerId = config('mobile-pass.google.issuer_id');
     }
 
-    public function execute(MobilePass $mobilePass, string $classId)
+    public function execute(MobilePass $mobilePass)
     {
+        // TODO: what should the classId be?
+        // It needs to be unique to the type of pass we're generating,
+        // like a template. But _not_ unique to each pass we generate.
+        $classId = (string) Str::uuid();
+
         $payload = [
             'json' => [
                 'id' => $classId,
