@@ -25,11 +25,13 @@ return [
      * The builders are responsible for creating the pass that will be stored in the `mobile_passes` table.
      */
     'builders' => [
-        'airline' => Spatie\LaravelMobilePass\Builders\Apple\AirlinePassBuilder::class,
-        'boarding' => Spatie\LaravelMobilePass\Builders\Apple\BoardingPassBuilder::class,
-        'coupon' => Spatie\LaravelMobilePass\Builders\Apple\CouponPassBuilder::class,
-        'generic' => Spatie\LaravelMobilePass\Builders\Apple\GenericPassBuilder::class,
-        'store_card' => Spatie\LaravelMobilePass\Builders\Apple\StoreCardPassBuilder::class,
+        'apple' => [
+            'airline' => Spatie\LaravelMobilePass\Builders\Apple\AirlinePassBuilder::class,
+            'boarding' => Spatie\LaravelMobilePass\Builders\Apple\BoardingPassBuilder::class,
+            'coupon' => Spatie\LaravelMobilePass\Builders\Apple\CouponPassBuilder::class,
+            'generic' => Spatie\LaravelMobilePass\Builders\Apple\GenericPassBuilder::class,
+            'store_card' => Spatie\LaravelMobilePass\Builders\Apple\StoreCardPassBuilder::class,
+        ],
     ],
 
     'organisation_name' => env('MOBILE_PASS_ORGANISATION_NAME', 'Spatie'),

@@ -58,7 +58,7 @@ class Config
     /** @return class-string<\Spatie\LaravelMobilePass\Builders\Apple\PassBuilder> */
     public static function getApplePassBuilderClass(string $passBuilderName): string
     {
-        $passBuilderClass = config("mobile-pass.builders.{$passBuilderName}");
+        $passBuilderClass = config("mobile-pass.builders.apple.{$passBuilderName}");
 
         if (! $passBuilderClass) {
             throw InvalidConfig::passBuilderNotRegistered($passBuilderName);
@@ -70,6 +70,26 @@ class Config
 
         if (! is_a($passBuilderClass, PassBuilder::class, true)) {
             throw InvalidConfig::invalidPassBuilderClass($passBuilderName, $passBuilderClass, Platform::Apple);
+        }
+
+        return $passBuilderClass;
+    }
+
+    /** @return class-string<\Spatie\LaravelMobilePass\Builders\Google\PassBuilder> */
+    public static function getGooglePassBuilderClass(string $passBuilderName): string
+    {
+        $passBuilderClass = config("mobile-pass.builders.google.{$passBuilderName}");
+
+        if (! $passBuilderClass) {
+            throw InvalidConfig::passBuilderNotRegistered($passBuilderName);
+        }
+
+        if (! class_exists($passBuilderClass)) {
+            throw InvalidConfig::passBuilderNotFound($passBuilderName, $passBuilderClass);
+        }
+
+        if (! is_a($passBuilderClass, PassBuilder::class, true)) {
+            throw InvalidConfig::invalidPassBuilderClass($passBuilderName, $passBuilderClass, Platform::Google);
         }
 
         return $passBuilderClass;
