@@ -48,7 +48,7 @@ $mobilePass = User::first()->firstMobilePass();
 The `firstMobilePass` accept a parameter to retrieve the first mobile pass of a specific type:
 
 ```php
-use Spatie\LaravelMobilePass\Enums\PassType::Coupon;
+use Spatie\LaravelMobilePass\Enums\PassType;
 
 $couponPass = User::first()->firstMobilePass(PassType::Coupon);
 ```
@@ -57,7 +57,7 @@ There's also a parameter `filter` that accepts a closure to modify the query:
 
 ```php
 $couponPass = User::first()->firstMobilePass(filter: function ($query) {
-    $query->where('type', PassType::Coupon->value);
+    $query->where('type', PassType::Coupon);
 });
 ```
 
