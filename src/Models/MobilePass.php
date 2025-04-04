@@ -15,6 +15,7 @@ use Illuminate\Support\Str;
 use Spatie\LaravelMobilePass\Actions\NotifyAppleOfPassUpdateAction;
 use Spatie\LaravelMobilePass\Builders\Apple\AirlinePassBuilder;
 use Spatie\LaravelMobilePass\Builders\Apple\PassBuilder;
+use Spatie\LaravelMobilePass\Enums\Platform;
 use Spatie\LaravelMobilePass\Support\Config;
 use Spatie\LaravelMobilePass\Support\DownloadableMobilePass;
 
@@ -69,7 +70,7 @@ class MobilePass extends Model implements Attachable, Responsable
 
     public function builder(): PassBuilder
     {
-        $builderClass = Config::getApplePassBuilderClass($this->builder_name);
+        $builderClass = Config::getPassBuilderClass($this->builder_name, Platform::Apple);
 
         return $builderClass::make($this->content, $this->images, $this);
     }

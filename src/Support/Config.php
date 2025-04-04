@@ -2,7 +2,8 @@
 
 namespace Spatie\LaravelMobilePass\Support;
 
-use Spatie\LaravelMobilePass\Builders\Apple\PassBuilder;
+use Spatie\LaravelMobilePass\Builders\Apple\PassBuilder as ApplePassBuilder;
+use Spatie\LaravelMobilePass\Builders\Google\PassBuilder as GooglePassBuilder;
 use Spatie\LaravelMobilePass\Enums\Platform;
 use Spatie\LaravelMobilePass\Exceptions\InvalidConfig;
 use Spatie\LaravelMobilePass\Models\MobilePass;
@@ -55,10 +56,15 @@ class Config
         return $actionClass;
     }
 
-    /** @return class-string<\Spatie\LaravelMobilePass\Builders\Apple\PassBuilder> */
-    public static function getApplePassBuilderClass(string $passBuilderName): string
+    /** @return class-string<\Spatie\LaravelMobilePass\Builders\Apple\PassBuilder|\Spatie\LaravelMobilePass\Builders\Google\PassBuilder> */
+    public static function getPassBuilderClass(string $passBuilderName, Platform $platform): string
     {
-        $passBuilderClass = config("mobile-pass.builders.apple.{$passBuilderName}");
+        $passBuilderClass = config("mobile-pass.builders.{$platform->value}.{$passBuilderName}");
+
+        $classToExtend = match ($platform) {
+            Platform::Apple => ApplePassBuilder::class,
+            Platform::Google => GooglePassBuilder::class,
+        };
 
         if (! $passBuilderClass) {
             throw InvalidConfig::passBuilderNotRegistered($passBuilderName);
@@ -68,28 +74,8 @@ class Config
             throw InvalidConfig::passBuilderNotFound($passBuilderName, $passBuilderClass);
         }
 
-        if (! is_a($passBuilderClass, PassBuilder::class, true)) {
-            throw InvalidConfig::invalidPassBuilderClass($passBuilderName, $passBuilderClass, Platform::Apple);
-        }
-
-        return $passBuilderClass;
-    }
-
-    /** @return class-string<\Spatie\LaravelMobilePass\Builders\Google\PassBuilder> */
-    public static function getGooglePassBuilderClass(string $passBuilderName): string
-    {
-        $passBuilderClass = config("mobile-pass.builders.google.{$passBuilderName}");
-
-        if (! $passBuilderClass) {
-            throw InvalidConfig::passBuilderNotRegistered($passBuilderName);
-        }
-
-        if (! class_exists($passBuilderClass)) {
-            throw InvalidConfig::passBuilderNotFound($passBuilderName, $passBuilderClass);
-        }
-
-        if (! is_a($passBuilderClass, PassBuilder::class, true)) {
-            throw InvalidConfig::invalidPassBuilderClass($passBuilderName, $passBuilderClass, Platform::Google);
+        if (! is_a($passBuilderClass, $classToExtend, true)) {
+            throw InvalidConfig::invalidPassBuilderClass($passBuilderName, $passBuilderClass, $platform);
         }
 
         return $passBuilderClass;
