@@ -3,7 +3,7 @@
 namespace Spatie\LaravelMobilePass\Support;
 
 use Illuminate\Contracts\Support\Responsable;
-use Str;
+use Illuminate\Support\Str;
 
 class DownloadableMobilePass implements Responsable
 {
