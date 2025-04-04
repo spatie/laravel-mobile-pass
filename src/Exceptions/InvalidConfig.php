@@ -31,8 +31,8 @@ class InvalidConfig extends Exception
         return new static("The pass builder `{$passBuilderName}` was not found. Make sure the class `{$passBuilderClass}` exists.");
     }
 
-    public static function invalidPassBuilderClass(string $passBuilderName, mixed $passBuilderClass)
+    public static function invalidApplePassBuilderClass(string $passBuilderName, mixed $passBuilderClass)
     {
-        return new static("The pass builder `{$passBuilderName}` must be an instance of `Spatie\LaravelMobilePass\Builders\PassBuilder`. `{$passBuilderClass}` does not extend `Spatie\LaravelMobilePass\Builders\PassBuilder`.");
+        return new static("The pass builder `{$passBuilderName}` must be an instance of `Spatie\LaravelMobilePass\Builders\Apple\PassBuilder`. `{$passBuilderClass}` does not extend `Spatie\LaravelMobilePass\Builders\Apple\PassBuilder`.");
     }
 }

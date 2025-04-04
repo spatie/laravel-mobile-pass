@@ -1,12 +1,11 @@
 <?php
 
-use Spatie\LaravelMobilePass\Builders\AirlinePassBuilder;
-use Spatie\LaravelMobilePass\Builders\BoardingPassBuilder;
+use Spatie\LaravelMobilePass\Builders\Apple\AirlinePassBuilder;
 use Spatie\LaravelMobilePass\Entities\FieldContent;
 use Spatie\LaravelMobilePass\Entities\Image;
 use Spatie\LaravelMobilePass\Entities\Seat;
 
-it('builds a basic boarding pass', function () {
+it('builds a basic airline boarding pass', function () {
     $airlinePassBuilder = AirlinePassBuilder::make()
         ->setOrganisationName('My organisation')
         ->setSerialNumber(123456)
@@ -78,5 +77,5 @@ it('builds a basic boarding pass', function () {
 });
 
 it('has a name', function () {
-    expect(BoardingPassBuilder::name())->toBe('boarding');
+    expect(AirlinePassBuilder::name())->toBe('airline');
 });

@@ -2,7 +2,7 @@
 
 namespace Spatie\LaravelMobilePass\Tests\Feature;
 
-use Spatie\LaravelMobilePass\Builders\GenericPassBuilder;
+use Spatie\LaravelMobilePass\Builders\Apple\GenericPassBuilder;
 use Spatie\LaravelMobilePass\Entities\FieldContent;
 use Spatie\LaravelMobilePass\Entities\Image;
 use Spatie\LaravelMobilePass\Models\MobilePass;

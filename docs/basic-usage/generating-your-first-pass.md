@@ -8,7 +8,7 @@ The package offers [various builder classes](TODO: add link) that you can use to
 Here's an example of how you can generate a basic boarding pass:
 
 ```php
-use Spatie\LaravelMobilePass\Builders\AirlinePassBuilder;
+use Spatie\LaravelMobilePass\Builders\Apple\AirlinePassBuilder;
 
 $mobilePass = AirlinePassBuilder::make()
     ->setOrganisationName('My organisation')
