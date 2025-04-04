@@ -3,6 +3,7 @@
 namespace Spatie\LaravelMobilePass\Exceptions;
 
 use Exception;
+use Spatie\LaravelMobilePass\Enums\Platform;
 
 class InvalidConfig extends Exception
 {
@@ -31,8 +32,13 @@ class InvalidConfig extends Exception
         return new static("The pass builder `{$passBuilderName}` was not found. Make sure the class `{$passBuilderClass}` exists.");
     }
 
-    public static function invalidApplePassBuilderClass(string $passBuilderName, mixed $passBuilderClass)
+    public static function invalidPassBuilderClass(string $passBuilderName, mixed $passBuilderClass, Platform $platform)
     {
-        return new static("The pass builder `{$passBuilderName}` must be an instance of `Spatie\LaravelMobilePass\Builders\Apple\PassBuilder`. `{$passBuilderClass}` does not extend `Spatie\LaravelMobilePass\Builders\Apple\PassBuilder`.");
+        $expectedNamespace = match ($platform) {
+            Platform::Apple => 'Spatie\LaravelMobilePass\Builders\Apple',
+            Platform::Google => 'Spatie\LaravelMobilePass\Builders\Google',
+        };
+
+        return new static("The pass builder `{$passBuilderName}` must be an instance of `{$expectedNamespace}\PassBuilder`. `{$passBuilderClass}` does not extend `{$expectedNamespace}\PassBuilder`.");
     }
 }

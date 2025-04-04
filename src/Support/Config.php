@@ -3,6 +3,7 @@
 namespace Spatie\LaravelMobilePass\Support;
 
 use Spatie\LaravelMobilePass\Builders\Apple\PassBuilder;
+use Spatie\LaravelMobilePass\Enums\Platform;
 use Spatie\LaravelMobilePass\Exceptions\InvalidConfig;
 use Spatie\LaravelMobilePass\Models\MobilePass;
 use Spatie\LaravelMobilePass\Models\MobilePassDevice;
@@ -68,7 +69,7 @@ class Config
         }
 
         if (! is_a($passBuilderClass, PassBuilder::class, true)) {
-            throw InvalidConfig::invalidApplePassBuilderClass($passBuilderName, $passBuilderClass);
+            throw InvalidConfig::invalidPassBuilderClass($passBuilderName, $passBuilderClass, Platform::Apple);
         }
 
         return $passBuilderClass;
