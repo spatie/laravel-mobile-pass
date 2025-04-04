@@ -1,0 +1,80 @@
+{
+    "files": [
+        "signature",
+        "manifest.json",
+        "pass.json",
+        "icon.png"
+    ],
+    "manifest": {
+        "pass.json": "<random>",
+        "icon.png": "<random>"
+    },
+    "pass": {
+        "description": "Hello!",
+        "formatVersion": 1,
+        "organizationName": "My organisation",
+        "passTypeIdentifier": "pass.app.gowallet",
+        "serialNumber": "<random>",
+        "teamIdentifier": "2SQU7LWHMY",
+        "semantics": {
+            "departureLocationDescription": "Abu Dhabi Intl",
+            "destinationLocationDescription": "Abu Dhabi Intl",
+            "seats": [
+                {
+                    "number": "123DAN"
+                }
+            ]
+        },
+        "boardingPass": {
+            "transitType": "PKTransitTypeAir",
+            "headerFields": [
+                {
+                    "key": "flight-no",
+                    "label": "Flight",
+                    "value": "EY066"
+                },
+                {
+                    "key": "seat",
+                    "label": "Seat",
+                    "value": "66F"
+                }
+            ],
+            "primaryFields": [
+                {
+                    "key": "departure",
+                    "label": "Abu Dhabi International",
+                    "value": "ABU"
+                },
+                {
+                    "key": "destination",
+                    "label": "London Heathrow",
+                    "value": "LHR"
+                }
+            ],
+            "secondaryFields": [
+                {
+                    "key": "name",
+                    "label": "Name",
+                    "value": "Dan Johnson"
+                },
+                {
+                    "key": "gate",
+                    "label": "Gate",
+                    "value": "D68"
+                }
+            ],
+            "auxiliaryFields": [
+                {
+                    "key": "departs",
+                    "label": "Departs",
+                    "value": "2025-01-01T00:00:00+00:00"
+                },
+                {
+                    "key": "class",
+                    "label": "Class",
+                    "value": "Economy"
+                }
+            ]
+        }
+    }
+}
