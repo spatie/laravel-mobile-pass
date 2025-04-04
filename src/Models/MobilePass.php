@@ -82,6 +82,13 @@ class MobilePass extends Model implements Attachable, Responsable
 
     public function download(?string $name = null): DownloadableMobilePass
     {
+        // TODO: store platform.
+        $platform = Platform::Apple;
+
+        if ($platform !== Platform::Apple) {
+            throw new \Exception('Only Apple passes can be downloaded');
+        }
+
         return new DownloadableMobilePass($this->generate(), $this->downloadName($name));
     }
 
