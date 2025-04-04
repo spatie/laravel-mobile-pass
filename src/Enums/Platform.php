@@ -2,8 +2,8 @@
 
 namespace Spatie\LaravelMobilePass\Enums;
 
-enum Platform
+enum Platform: string
 {
-    case Apple;
-    case Google;
+    case Apple = 'apple';
+    case Google = 'google';
 }
