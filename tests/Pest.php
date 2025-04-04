@@ -2,7 +2,7 @@
 
 use Dotenv\Dotenv;
 use Illuminate\Support\Arr;
-use Spatie\LaravelMobilePass\Support\PkPassReader;
+use Spatie\LaravelMobilePass\Support\Apple\PkPassReader;
 use Spatie\LaravelMobilePass\Tests\TestCase;
 
 uses(TestCase::class)->in(__DIR__);

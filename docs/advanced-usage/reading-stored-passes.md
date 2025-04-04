@@ -3,12 +3,12 @@ title: Reading stored passes
 weight: 3
 ---
 
-The package contains a `PkPassReader` class that can be used to read passes from a file or a string. 
+The package contains a `PkPassReader` class that can be used to read Apple passes from a file or a string. 
 
 Here's how you can instantiate the `PkPassReader` class:
 
 ```php
-use Spatie\LaravelMobilePass\Support\PkPassReader;
+use Spatie\LaravelMobilePass\Support\Apple\PkPassReader;
 
 // from file
 $reader = PkPassReader::fromFile('path/to/pass.pkpass');
