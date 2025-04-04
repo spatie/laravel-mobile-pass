@@ -321,10 +321,10 @@ abstract class PassBuilder
         return array_merge($this->data ?? [], array_filter([
             'formatVersion' => 1,
             'organizationName' => $this->organisationName,
-            'passTypeIdentifier' => config('mobile-pass.type_identifier'),
+            'passTypeIdentifier' => config('mobile-pass.apple.type_identifier'),
             'serialNumber' => $this->serialNumber,
             'authenticationToken' => config('mobile-pass.webservice_secret'),
-            'teamIdentifier' => config('mobile-pass.team_identifier'),
+            'teamIdentifier' => config('mobile-pass.apple.team_identifier'),
             'description' => $this->description,
             'semantics' => $this->compileSemantics(),
             'userInfo' => [
