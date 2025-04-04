@@ -16,8 +16,8 @@ use Spatie\LaravelMobilePass\Actions\NotifyAppleOfPassUpdateAction;
 use Spatie\LaravelMobilePass\Builders\Apple\AirlinePassBuilder;
 use Spatie\LaravelMobilePass\Builders\Apple\PassBuilder;
 use Spatie\LaravelMobilePass\Enums\Platform;
-use Spatie\LaravelMobilePass\Support\Config;
 use Spatie\LaravelMobilePass\Support\Apple\DownloadableMobilePass;
+use Spatie\LaravelMobilePass\Support\Config;
 
 class MobilePass extends Model implements Attachable, Responsable
 {
