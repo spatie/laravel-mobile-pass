@@ -22,9 +22,9 @@ class InvalidConfig extends Exception
         return new static("The `{$eventName}` event must be an instance of `{$shouldBeOrExtend}`. `{$eventClass}` does not extend {$shouldBeOrExtend}.");
     }
 
-    public static function passBuilderNotRegistered(string $passBuilderName)
+    public static function passBuilderNotRegistered(string $passBuilderName, Platform $platform)
     {
-        return new static("The pass builder `{$passBuilderName}` is not registered. Make sure you have registered it in the `builders` key of the  `mobile-pass` config file.");
+        return new static("The pass builder `{$passBuilderName}` is not registered. Make sure you have registered it in the `builders.{$platform->value}` key of the  `mobile-pass` config file.");
     }
 
     public static function passBuilderNotFound(string $passBuilderName, mixed $passBuilderClass)

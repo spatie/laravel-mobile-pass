@@ -67,7 +67,7 @@ class Config
         };
 
         if (! $passBuilderClass) {
-            throw InvalidConfig::passBuilderNotRegistered($passBuilderName);
+            throw InvalidConfig::passBuilderNotRegistered($passBuilderName, $platform);
         }
 
         if (! class_exists($passBuilderClass)) {
