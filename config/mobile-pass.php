@@ -38,8 +38,8 @@ return [
      * The values are used to ensure a secure communication with Apple.
      */
     'apple' => [
-        'type_identifier' => env('MOBILE_PASS_TYPE_IDENTIFIER'),
-        'team_identifier' => env('MOBILE_PASS_TEAM_IDENTIFIER'),
+        'type_identifier' => env('MOBILE_PASS_APPLE_TYPE_IDENTIFIER'),
+        'team_identifier' => env('MOBILE_PASS_APPLE_TEAM_IDENTIFIER'),
         'apple_push_base_url' => 'https://api.push.apple.com/3/device',
         'certificate_path' => env('MOBILE_PASS_APPLE_CERTIFICATE_PATH'),
         'certificate_contents' => env('MOBILE_PASS_APPLE_CERTIFICATE_CONTENTS'),
