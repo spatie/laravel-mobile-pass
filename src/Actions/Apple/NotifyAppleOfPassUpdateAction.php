@@ -1,6 +1,6 @@
 <?php
 
-namespace Spatie\LaravelMobilePass\Actions;
+namespace Spatie\LaravelMobilePass\Actions\Apple;
 
 use Illuminate\Support\Facades\Http;
 use Spatie\LaravelMobilePass\Models\MobilePass;

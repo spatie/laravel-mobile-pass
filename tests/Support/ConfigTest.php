@@ -3,8 +3,8 @@
 namespace Spatie\LaravelMobilePass\Tests\Support;
 
 use Illuminate\Database\Eloquent\Model;
-use Spatie\LaravelMobilePass\Actions\NotifyAppleOfPassUpdateAction;
-use Spatie\LaravelMobilePass\Builders\AirlinePassBuilder;
+use Spatie\LaravelMobilePass\Actions\Apple\NotifyAppleOfPassUpdateAction;
+use Spatie\LaravelMobilePass\Builders\Apple\AirlinePassBuilder;
 use Spatie\LaravelMobilePass\Exceptions\InvalidConfig;
 use Spatie\LaravelMobilePass\Support\Config;
 

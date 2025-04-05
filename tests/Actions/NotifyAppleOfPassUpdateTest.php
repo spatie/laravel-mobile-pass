@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Client\Request;
 use Illuminate\Support\Facades\Http;
-use Spatie\LaravelMobilePass\Actions\NotifyAppleOfPassUpdateAction;
+use Spatie\LaravelMobilePass\Actions\Apple\NotifyAppleOfPassUpdateAction;
 use Spatie\LaravelMobilePass\Models\MobilePass;
 
 beforeEach(function () {

@@ -1,18 +1,18 @@
 <?php
 
-namespace Spatie\LaravelMobilePass\Builders;
+namespace Spatie\LaravelMobilePass\Builders\Apple;
 
 use Spatie\LaravelMobilePass\Enums\PassType;
+use Spatie\LaravelMobilePass\Validators\GenericPassValidator;
 use Spatie\LaravelMobilePass\Validators\PassValidator;
-use Spatie\LaravelMobilePass\Validators\StoreCardPassValidator;
 
-class StoreCardPassBuilder extends PassBuilder
+class GenericPassBuilder extends PassBuilder
 {
-    protected PassType $type = PassType::StoreCard;
+    protected PassType $type = PassType::Generic;
 
     protected static function validator(): PassValidator
     {
-        return new StoreCardPassValidator;
+        return new GenericPassValidator;
     }
 
     protected function compileData(): array
@@ -20,7 +20,7 @@ class StoreCardPassBuilder extends PassBuilder
         return array_merge(
             parent::compileData(),
             [
-                'storeCard' => array_filter([
+                'generic' => array_filter([
                     'primaryFields' => $this->primaryFields?->values()->toArray(),
                     'secondaryFields' => $this->secondaryFields?->values()->toArray(),
                     'headerFields' => $this->headerFields?->values()->toArray(),

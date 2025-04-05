@@ -1,13 +1,13 @@
 <?php
 
-namespace Spatie\LaravelMobilePass\Builders;
+namespace Spatie\LaravelMobilePass\Builders\Apple;
 
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
-use Spatie\LaravelMobilePass\Entities\Image;
-use Spatie\LaravelMobilePass\Entities\Location;
-use Spatie\LaravelMobilePass\Entities\PersonName;
-use Spatie\LaravelMobilePass\Entities\Seat;
+use Spatie\LaravelMobilePass\Builders\Apple\Entities\Image;
+use Spatie\LaravelMobilePass\Builders\Apple\Entities\Location;
+use Spatie\LaravelMobilePass\Builders\Apple\Entities\PersonName;
+use Spatie\LaravelMobilePass\Builders\Apple\Entities\Seat;
 use Spatie\LaravelMobilePass\Enums\PassType;
 use Spatie\LaravelMobilePass\Enums\TransitType;
 use Spatie\LaravelMobilePass\Validators\BoardingPassValidator;

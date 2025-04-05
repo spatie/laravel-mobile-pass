@@ -2,7 +2,7 @@
 
 namespace Spatie\LaravelMobilePass\Tests\Http;
 
-use Spatie\LaravelMobilePass\Actions\NotifyAppleOfPassUpdateAction;
+use Spatie\LaravelMobilePass\Actions\Apple\NotifyAppleOfPassUpdateAction;
 use Spatie\LaravelMobilePass\Models\MobilePass;
 
 it('returns the generated pass when no If-Modified-Since header is passed', function () {

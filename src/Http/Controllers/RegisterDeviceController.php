@@ -4,7 +4,7 @@ namespace Spatie\LaravelMobilePass\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use Spatie\LaravelMobilePass\Actions\RegisterDeviceAction;
+use Spatie\LaravelMobilePass\Actions\Apple\RegisterDeviceAction;
 use Spatie\LaravelMobilePass\Support\Config;
 
 /**

@@ -8,9 +8,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
-use Spatie\LaravelMobilePass\Actions\NotifyAppleOfPassUpdateAction;
-use Spatie\LaravelMobilePass\Builders\AirlinePassBuilder;
-use Spatie\LaravelMobilePass\Builders\PassBuilder;
+use Spatie\LaravelMobilePass\Actions\Apple\NotifyAppleOfPassUpdateAction;
+use Spatie\LaravelMobilePass\Builders\Apple\AirlinePassBuilder;
+use Spatie\LaravelMobilePass\Builders\Apple\PassBuilder;
 use Spatie\LaravelMobilePass\Support\Config;
 use Spatie\LaravelMobilePass\Support\DownloadableMobilePass;
 

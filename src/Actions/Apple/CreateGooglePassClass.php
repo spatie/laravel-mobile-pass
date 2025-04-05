@@ -1,7 +1,8 @@
 <?php
 
-namespace Spatie\LaravelMobilePass\Actions;
+namespace Spatie\LaravelMobilePass\Actions\Apple;
 
+use Exception;
 use Google\Client;
 use GuzzleHttp\ClientInterface;
 use Illuminate\Support\Str;
@@ -39,6 +40,8 @@ class CreateGooglePassClass
         // TODO: what should the classId be?
         // It needs to be unique to the type of pass we're generating,
         // like a template. But _not_ unique to each pass we generate.
+
+        // Freek: maybe an md5 of (certain pieces of the content?)
         $classId = (string) Str::uuid();
 
         $payload = [
@@ -57,7 +60,7 @@ class CreateGooglePassClass
         $response = json_decode($response->getBody());
 
         if (! empty($response->error)) {
-            throw new \Exception($response->error->message);
+            throw new Exception($response->error->message);
         }
 
         return $classId;

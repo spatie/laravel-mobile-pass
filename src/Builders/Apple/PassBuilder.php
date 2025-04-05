@@ -1,17 +1,17 @@
 <?php
 
-namespace Spatie\LaravelMobilePass\Builders;
+namespace Spatie\LaravelMobilePass\Builders\Apple;
 
 use Closure;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use PKPass\PKPass;
-use Spatie\LaravelMobilePass\Actions\CreateGooglePassClass;
-use Spatie\LaravelMobilePass\Entities\Colour;
-use Spatie\LaravelMobilePass\Entities\FieldContent;
-use Spatie\LaravelMobilePass\Entities\Image;
-use Spatie\LaravelMobilePass\Entities\Price;
-use Spatie\LaravelMobilePass\Entities\WifiNetwork;
+use Spatie\LaravelMobilePass\Actions\Apple\CreateGooglePassClass;
+use Spatie\LaravelMobilePass\Builders\Apple\Entities\Colour;
+use Spatie\LaravelMobilePass\Builders\Apple\Entities\FieldContent;
+use Spatie\LaravelMobilePass\Builders\Apple\Entities\Image;
+use Spatie\LaravelMobilePass\Builders\Apple\Entities\Price;
+use Spatie\LaravelMobilePass\Builders\Apple\Entities\WifiNetwork;
 use Spatie\LaravelMobilePass\Enums\PassType;
 use Spatie\LaravelMobilePass\Models\MobilePass;
 use Spatie\LaravelMobilePass\Validators\PassValidator;

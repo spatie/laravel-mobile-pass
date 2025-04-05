@@ -1,6 +1,6 @@
 <?php
 
-namespace Spatie\LaravelMobilePass\Builders;
+namespace Spatie\LaravelMobilePass\Builders\Apple;
 
 use Spatie\LaravelMobilePass\Enums\TransitType;
 

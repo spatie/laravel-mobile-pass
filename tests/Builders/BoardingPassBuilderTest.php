@@ -1,10 +1,10 @@
 <?php
 
-use Spatie\LaravelMobilePass\Builders\AirlinePassBuilder;
-use Spatie\LaravelMobilePass\Builders\BoardingPassBuilder;
-use Spatie\LaravelMobilePass\Entities\FieldContent;
-use Spatie\LaravelMobilePass\Entities\Image;
-use Spatie\LaravelMobilePass\Entities\Seat;
+use Spatie\LaravelMobilePass\Builders\Apple\AirlinePassBuilder;
+use Spatie\LaravelMobilePass\Builders\Apple\BoardingPassBuilder;
+use Spatie\LaravelMobilePass\Builders\Apple\Entities\FieldContent;
+use Spatie\LaravelMobilePass\Builders\Apple\Entities\Image;
+use Spatie\LaravelMobilePass\Builders\Apple\Entities\Seat;
 
 it('builds a basic boarding pass', function () {
     $airlinePassBuilder = AirlinePassBuilder::make()
