@@ -6,7 +6,7 @@ use Spatie\LaravelMobilePass\Enums\PassType;
 use Spatie\LaravelMobilePass\Validators\PassValidator;
 use Spatie\LaravelMobilePass\Validators\StoreCardPassValidator;
 
-class StoreCardPassBuilder extends PassBuilder
+class StoreCardApplePassBuilder extends ApplePassBuilder
 {
     protected PassType $type = PassType::StoreCard;
 

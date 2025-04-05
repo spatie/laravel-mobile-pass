@@ -16,7 +16,7 @@ use Spatie\LaravelMobilePass\Enums\Platform;
 use Spatie\LaravelMobilePass\Models\MobilePass;
 use Spatie\LaravelMobilePass\Validators\PassValidator;
 
-abstract class PassBuilder
+abstract class ApplePassBuilder
 {
     protected ?array $data = null;
 

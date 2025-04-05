@@ -13,7 +13,7 @@ use Spatie\LaravelMobilePass\Enums\TransitType;
 use Spatie\LaravelMobilePass\Validators\BoardingPassValidator;
 use Spatie\LaravelMobilePass\Validators\PassValidator;
 
-abstract class BoardingPassBuilder extends PassBuilder
+abstract class BoardingApplePassBuilder extends ApplePassBuilder
 {
     protected PassType $type = PassType::BoardingPass;
 

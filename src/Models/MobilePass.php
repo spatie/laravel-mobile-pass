@@ -15,7 +15,7 @@ use Illuminate\Mail\Attachment;
 use Illuminate\Support\Str;
 use Spatie\LaravelMobilePass\Actions\Apple\NotifyAppleOfPassUpdateAction;
 use Spatie\LaravelMobilePass\Builders\Apple\AirlinePassBuilder;
-use Spatie\LaravelMobilePass\Builders\Apple\PassBuilder;
+use Spatie\LaravelMobilePass\Builders\Apple\ApplePassBuilder;
 use Spatie\LaravelMobilePass\Enums\Platform;
 use Spatie\LaravelMobilePass\Exceptions\CannotDownload;
 use Spatie\LaravelMobilePass\Support\Apple\DownloadableMobilePass;
@@ -71,7 +71,7 @@ class MobilePass extends Model implements Attachable, Responsable
 
     // add other builder methods here
 
-    public function builder(): PassBuilder
+    public function builder(): ApplePassBuilder
     {
         $builderClass = Config::getPassBuilderClass($this->builder_name, $this->platform);
 

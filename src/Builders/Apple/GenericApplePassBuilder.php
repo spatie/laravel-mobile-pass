@@ -6,7 +6,7 @@ use Spatie\LaravelMobilePass\Enums\PassType;
 use Spatie\LaravelMobilePass\Validators\GenericPassValidator;
 use Spatie\LaravelMobilePass\Validators\PassValidator;
 
-class GenericPassBuilder extends PassBuilder
+class GenericApplePassBuilder extends ApplePassBuilder
 {
     protected PassType $type = PassType::Generic;
 

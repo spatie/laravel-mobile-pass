@@ -2,8 +2,8 @@
 
 namespace Spatie\LaravelMobilePass\Support;
 
-use Spatie\LaravelMobilePass\Builders\Apple\PassBuilder as ApplePassBuilder;
-use Spatie\LaravelMobilePass\Builders\Google\PassBuilder as GooglePassBuilder;
+use Spatie\LaravelMobilePass\Builders\Apple\ApplePassBuilder as ApplePassBuilder;
+use Spatie\LaravelMobilePass\Builders\Google\GooglePassBuilder as GooglePassBuilder;
 use Spatie\LaravelMobilePass\Enums\Platform;
 use Spatie\LaravelMobilePass\Exceptions\InvalidConfig;
 use Spatie\LaravelMobilePass\Models\Apple\AppleMobilePassDevice;
@@ -56,7 +56,7 @@ class Config
         return $actionClass;
     }
 
-    /** @return class-string<\Spatie\LaravelMobilePass\Builders\Apple\PassBuilder|\Spatie\LaravelMobilePass\Builders\Google\PassBuilder> */
+    /** @return class-string<\Spatie\LaravelMobilePass\Builders\Apple\ApplePassBuilder|\Spatie\LaravelMobilePass\Builders\Google\GooglePassBuilder> */
     public static function getPassBuilderClass(string $passBuilderName, Platform $platform): string
     {
         $passBuilderClass = config("mobile-pass.builders.{$platform->value}.{$passBuilderName}");

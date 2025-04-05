@@ -27,10 +27,10 @@ return [
     'builders' => [
         'apple' => [
             'airline' => Spatie\LaravelMobilePass\Builders\Apple\AirlinePassBuilder::class,
-            'boarding' => Spatie\LaravelMobilePass\Builders\Apple\BoardingPassBuilder::class,
-            'coupon' => Spatie\LaravelMobilePass\Builders\Apple\CouponPassBuilder::class,
-            'generic' => Spatie\LaravelMobilePass\Builders\Apple\GenericPassBuilder::class,
-            'store_card' => Spatie\LaravelMobilePass\Builders\Apple\StoreCardPassBuilder::class,
+            'boarding' => Spatie\LaravelMobilePass\Builders\Apple\BoardingApplePassBuilder::class,
+            'coupon' => Spatie\LaravelMobilePass\Builders\Apple\CouponApplePassBuilder::class,
+            'generic' => Spatie\LaravelMobilePass\Builders\Apple\GenericApplePassBuilder::class,
+            'store_card' => Spatie\LaravelMobilePass\Builders\Apple\StoreCardApplePassBuilder::class,
         ],
     ],
 

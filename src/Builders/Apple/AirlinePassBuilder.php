@@ -4,7 +4,7 @@ namespace Spatie\LaravelMobilePass\Builders\Apple;
 
 use Spatie\LaravelMobilePass\Enums\TransitType;
 
-class AirlinePassBuilder extends BoardingPassBuilder
+class AirlinePassBuilder extends BoardingApplePassBuilder
 {
     protected ?TransitType $transitType = TransitType::Air;
 

@@ -6,7 +6,7 @@ use Spatie\LaravelMobilePass\Enums\PassType;
 use Spatie\LaravelMobilePass\Validators\CouponPassValidator;
 use Spatie\LaravelMobilePass\Validators\PassValidator;
 
-class CouponPassBuilder extends PassBuilder
+class CouponApplePassBuilder extends ApplePassBuilder
 {
     protected PassType $type = PassType::Coupon;
 
