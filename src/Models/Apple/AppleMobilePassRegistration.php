@@ -24,7 +24,7 @@ class AppleMobilePassRegistration extends Model
 
     public function device(): BelongsTo
     {
-        $modelClass = Config::deviceModel();
+        $modelClass = Config::appleDeviceModel();
 
         return $this->belongsTo($modelClass, 'device_id');
     }

@@ -11,7 +11,7 @@ class GetAssociatedSerialsForDeviceRequest extends FormRequest
 {
     public function registrationsQuery(): Builder
     {
-        $registrationsModel = Config::mobilePassRegistrationModel();
+        $registrationsModel = Config::appleMobilePassRegistrationModel();
 
         return $registrationsModel::where([
             'device_id' => $this->route('deviceId'),

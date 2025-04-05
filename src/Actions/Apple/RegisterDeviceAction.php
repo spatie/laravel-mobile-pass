@@ -34,7 +34,7 @@ class RegisterDeviceAction
 
     protected function device(string $deviceId, string $pushToken): AppleMobilePassDevice
     {
-        $mobilePassDeviceModel = Config::deviceModel();
+        $mobilePassDeviceModel = Config::appleDeviceModel();
 
         return $mobilePassDeviceModel::updateOrCreate(
             ['id' => $deviceId],

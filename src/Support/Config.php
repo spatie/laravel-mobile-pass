@@ -19,15 +19,15 @@ class Config
     }
 
     /** @return class-string<\Spatie\LaravelMobilePass\Models\MobilePass> */
-    public static function mobilePassRegistrationModel(): string
+    public static function appleMobilePassRegistrationModel(): string
     {
-        return self::getModelClass('mobile_pass_registration', AppleMobilePassRegistration::class);
+        return self::getModelClass('apple_mobile_pass_registration', AppleMobilePassRegistration::class);
     }
 
     /** @return class-string<\Spatie\LaravelMobilePass\Models\Apple\AppleMobilePassDevice> */
-    public static function deviceModel(): string
+    public static function appleDeviceModel(): string
     {
-        return self::getModelClass('mobile_pass_device', AppleMobilePassDevice::class);
+        return self::getModelClass('apple_mobile_pass_device', AppleMobilePassDevice::class);
     }
 
     protected static function getModelClass(string $modelName, string $defaultClass): string

@@ -9,7 +9,7 @@ class UnregisterDeviceAction
 {
     public function execute(string $deviceId, string $passSerial)
     {
-        $mobilePassRegistrationModel = Config::mobilePassRegistrationModel();
+        $mobilePassRegistrationModel = Config::appleMobilePassRegistrationModel();
 
         $mobilePassRegistrationModel::query()
             ->where([

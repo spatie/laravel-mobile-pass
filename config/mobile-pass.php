@@ -17,8 +17,8 @@ return [
      */
     'models' => [
         'mobile_pass' => Spatie\LaravelMobilePass\Models\MobilePass::class,
-        'mobile_pass_registration' => \Spatie\LaravelMobilePass\Models\Apple\AppleMobilePassRegistration::class,
-        'mobile_pass_device' => \Spatie\LaravelMobilePass\Models\Apple\AppleMobilePassDevice::class,
+        'apple_mobile_pass_registration' => \Spatie\LaravelMobilePass\Models\Apple\AppleMobilePassRegistration::class,
+        'apple_mobile_pass_device' => \Spatie\LaravelMobilePass\Models\Apple\AppleMobilePassDevice::class,
     ],
 
     /*
