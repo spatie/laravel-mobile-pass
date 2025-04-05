@@ -1,11 +1,11 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Spatie\LaravelMobilePass\Http\Controllers\CheckForUpdatesController;
-use Spatie\LaravelMobilePass\Http\Controllers\GetAssociatedSerialsForDeviceController;
-use Spatie\LaravelMobilePass\Http\Controllers\MobilePassLogController;
-use Spatie\LaravelMobilePass\Http\Controllers\RegisterDeviceController;
-use Spatie\LaravelMobilePass\Http\Controllers\UnregisterDeviceController;
+use Spatie\LaravelMobilePass\Http\Controllers\Apple\CheckForUpdatesController;
+use Spatie\LaravelMobilePass\Http\Controllers\Apple\GetAssociatedSerialsForDeviceController;
+use Spatie\LaravelMobilePass\Http\Controllers\Apple\MobilePassLogController;
+use Spatie\LaravelMobilePass\Http\Controllers\Apple\RegisterDeviceController;
+use Spatie\LaravelMobilePass\Http\Controllers\Apple\UnregisterDeviceController;
 use Spatie\LaravelMobilePass\Http\Middleware\VerifyPasskitRequest;
 
 Route::macro('mobilePass', function (string $prefix = '') {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Spatie\LaravelMobilePass\Http\Controllers;
+namespace Spatie\LaravelMobilePass\Http\Controllers\Apple;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Routing\Controller;

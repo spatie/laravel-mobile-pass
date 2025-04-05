@@ -1,6 +1,6 @@
 <?php
 
-namespace Spatie\LaravelMobilePass\Http\Controllers;
+namespace Spatie\LaravelMobilePass\Http\Controllers\Apple;
 
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
