@@ -2,8 +2,8 @@
 
 namespace Spatie\LaravelMobilePass\Support;
 
-use Spatie\LaravelMobilePass\Builders\Apple\ApplePassBuilder as ApplePassBuilder;
-use Spatie\LaravelMobilePass\Builders\Google\GooglePassBuilder as GooglePassBuilder;
+use Spatie\LaravelMobilePass\Builders\Apple\ApplePassBuilder;
+use Spatie\LaravelMobilePass\Builders\Google\GooglePassBuilder;
 use Spatie\LaravelMobilePass\Enums\Platform;
 use Spatie\LaravelMobilePass\Exceptions\InvalidConfig;
 use Spatie\LaravelMobilePass\Models\Apple\AppleMobilePassDevice;
