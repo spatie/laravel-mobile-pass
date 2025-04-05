@@ -56,6 +56,7 @@ class MobilePass extends Model implements Attachable, Responsable
     protected function casts()
     {
         return [
+            'platform' => Platform::class,
             'content' => 'json',
             'images' => 'json',
         ];

@@ -4,6 +4,7 @@ namespace Spatie\LaravelMobilePass\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Spatie\LaravelMobilePass\Entities\Image;
+use Spatie\LaravelMobilePass\Enums\Platform;
 use Spatie\LaravelMobilePass\Models\MobilePass;
 use Spatie\LaravelMobilePass\Models\MobilePassDevice;
 
@@ -16,6 +17,7 @@ class MobilePassFactory extends Factory
         return [
             'builder_name' => 'generic',
             'type' => 'generic',
+            'platform' => Platform::Apple,
             'images' => [
                 'icon' => Image::make(
                     getTestSupportPath('images/spatie-thumbnail.png')

@@ -12,6 +12,7 @@ use Spatie\LaravelMobilePass\Entities\Image;
 use Spatie\LaravelMobilePass\Entities\Price;
 use Spatie\LaravelMobilePass\Entities\WifiNetwork;
 use Spatie\LaravelMobilePass\Enums\PassType;
+use Spatie\LaravelMobilePass\Enums\Platform;
 use Spatie\LaravelMobilePass\Models\MobilePass;
 use Spatie\LaravelMobilePass\Validators\PassValidator;
 
@@ -69,6 +70,11 @@ abstract class PassBuilder
         return Str::snake(
             Str::replaceLast('PassBuilder', '', class_basename(static::class))
         );
+    }
+
+    public function platform(): Platform
+    {
+        return Platform::Apple;
     }
 
     public function __construct(array $data = [], array $images = [], protected ?MobilePass $model = null)
@@ -262,6 +268,7 @@ abstract class PassBuilder
 
         return MobilePass::create([
             'type' => $this->type->value,
+            'platform' => static::platform(),
             'builder_name' => static::name(),
             'content' => $this->data(),
             'images' => $this->images,
