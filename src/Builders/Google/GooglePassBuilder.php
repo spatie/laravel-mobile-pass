@@ -2,7 +2,4 @@
 
 namespace Spatie\LaravelMobilePass\Builders\Google;
 
-abstract class GooglePassBuilder
-{
-
-}
+abstract class GooglePassBuilder {}
