@@ -3,7 +3,6 @@
 namespace Spatie\LaravelMobilePass\Models;
 
 use Carbon\Carbon;
-use Exception;
 use Illuminate\Contracts\Mail\Attachable;
 use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
