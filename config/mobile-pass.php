@@ -6,9 +6,9 @@ return [
      * by creating your own action class that extend the one that ships with the package.
      */
     'actions' => [
-        'notify_apple_of_pass_update' => Spatie\LaravelMobilePass\Actions\NotifyAppleOfPassUpdateAction::class,
-        'register_device' => Spatie\LaravelMobilePass\Actions\RegisterDeviceAction::class,
-        'unregister_device' => Spatie\LaravelMobilePass\Actions\UnregisterDeviceAction::class,
+        'notify_apple_of_pass_update' => \Spatie\LaravelMobilePass\Actions\Apple\NotifyAppleOfPassUpdateAction::class,
+        'register_device' => \Spatie\LaravelMobilePass\Actions\Apple\RegisterDeviceAction::class,
+        'unregister_device' => \Spatie\LaravelMobilePass\Actions\Apple\UnregisterDeviceAction::class,
     ],
 
     /*

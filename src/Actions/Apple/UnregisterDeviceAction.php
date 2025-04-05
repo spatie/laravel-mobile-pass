@@ -1,6 +1,6 @@
 <?php
 
-namespace Spatie\LaravelMobilePass\Actions;
+namespace Spatie\LaravelMobilePass\Actions\Apple;
 
 use Spatie\LaravelMobilePass\Models\MobilePassRegistration;
 use Spatie\LaravelMobilePass\Support\Config;

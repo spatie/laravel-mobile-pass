@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Mail\Attachment;
 use Illuminate\Support\Str;
-use Spatie\LaravelMobilePass\Actions\NotifyAppleOfPassUpdateAction;
+use Spatie\LaravelMobilePass\Actions\Apple\NotifyAppleOfPassUpdateAction;
 use Spatie\LaravelMobilePass\Builders\Apple\AirlinePassBuilder;
 use Spatie\LaravelMobilePass\Builders\Apple\PassBuilder;
 use Spatie\LaravelMobilePass\Enums\Platform;

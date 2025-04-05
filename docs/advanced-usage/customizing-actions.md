@@ -10,8 +10,7 @@ Let's assume that you want to execute some code before the package sends a notif
 ```php
 namespace App\Actions;
 
-use Spatie\LaravelMobilePass\Actions\NotifyAppleOfPassUpdateAction;
-use Spatie\LaravelMobilePass\Models\MobilePass;
+use Spatie\LaravelMobilePass\Actions\Apple\NotifyAppleOfPassUpdateAction;use Spatie\LaravelMobilePass\Models\MobilePass;
 
 class CustomNotifyAppleOfPassUpdateAction extends NotifyAppleOfPassUpdateAction
 {
