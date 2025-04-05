@@ -2,9 +2,9 @@
 
 namespace Spatie\LaravelMobilePass\Builders\Apple;
 
+use Spatie\LaravelMobilePass\Builders\Apple\Validators\CouponPassValidator;
+use Spatie\LaravelMobilePass\Builders\Apple\Validators\PassValidator;
 use Spatie\LaravelMobilePass\Enums\PassType;
-use Spatie\LaravelMobilePass\Validators\CouponPassValidator;
-use Spatie\LaravelMobilePass\Validators\PassValidator;
 
 class CouponApplePassBuilder extends ApplePassBuilder
 {

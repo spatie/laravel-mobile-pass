@@ -6,12 +6,12 @@ use Spatie\LaravelMobilePass\Http\Controllers\Apple\GetAssociatedSerialsForDevic
 use Spatie\LaravelMobilePass\Http\Controllers\Apple\MobilePassLogController;
 use Spatie\LaravelMobilePass\Http\Controllers\Apple\RegisterDeviceController;
 use Spatie\LaravelMobilePass\Http\Controllers\Apple\UnregisterDeviceController;
-use Spatie\LaravelMobilePass\Http\Middleware\VerifyPasskitRequest;
+use Spatie\LaravelMobilePass\Http\Middleware\VerifyApplePasskitRequest;
 
 Route::macro('mobilePass', function (string $prefix = '') {
     Route::prefix("{$prefix}/passkit/v1")->group(function () {
 
-        Route::middleware(VerifyPasskitRequest::class)->group(function () {
+        Route::middleware(VerifyApplePasskitRequest::class)->group(function () {
             Route::post('devices/{deviceId}/registrations/{passTypeId}/{passSerial}', RegisterDeviceController::class)
                 ->name('mobile-pass.register-device');
 

@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\Request;
 
-class VerifyPasskitRequest
+class VerifyApplePasskitRequest
 {
     public function handle(Request $request, Closure $next)
     {

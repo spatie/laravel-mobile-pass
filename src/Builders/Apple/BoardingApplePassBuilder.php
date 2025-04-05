@@ -8,10 +8,10 @@ use Spatie\LaravelMobilePass\Builders\Apple\Entities\Image;
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\Location;
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\PersonName;
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\Seat;
+use Spatie\LaravelMobilePass\Builders\Apple\Validators\BoardingPassValidator;
+use Spatie\LaravelMobilePass\Builders\Apple\Validators\PassValidator;
 use Spatie\LaravelMobilePass\Enums\PassType;
 use Spatie\LaravelMobilePass\Enums\TransitType;
-use Spatie\LaravelMobilePass\Validators\BoardingPassValidator;
-use Spatie\LaravelMobilePass\Validators\PassValidator;
 
 abstract class BoardingApplePassBuilder extends ApplePassBuilder
 {

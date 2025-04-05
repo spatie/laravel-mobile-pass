@@ -11,10 +11,10 @@ use Spatie\LaravelMobilePass\Builders\Apple\Entities\FieldContent;
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\Image;
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\Price;
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\WifiNetwork;
+use Spatie\LaravelMobilePass\Builders\Apple\Validators\PassValidator;
 use Spatie\LaravelMobilePass\Enums\PassType;
 use Spatie\LaravelMobilePass\Enums\Platform;
 use Spatie\LaravelMobilePass\Models\MobilePass;
-use Spatie\LaravelMobilePass\Validators\PassValidator;
 
 abstract class ApplePassBuilder
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Spatie\LaravelMobilePass\Validators;
+namespace Spatie\LaravelMobilePass\Builders\Apple\Validators;
 
 class StoreCardPassValidator extends PassValidator
 {
