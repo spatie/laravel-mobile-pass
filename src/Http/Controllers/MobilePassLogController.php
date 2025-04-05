@@ -5,7 +5,7 @@ namespace Spatie\LaravelMobilePass\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Log;
-use Spatie\LaravelMobilePass\Events\ReceivedMobilePassLogEntriesEvent;
+use Spatie\LaravelMobilePass\Events\ReceivedAppleMobilePassLogEntriesEvent;
 
 /**
  * Logging Errors
@@ -15,6 +15,6 @@ class MobilePassLogController extends Controller
 {
     public function __invoke(Request $request)
     {
-        event(new ReceivedMobilePassLogEntriesEvent($request->json('logs')));
+        event(new ReceivedAppleMobilePassLogEntriesEvent($request->json('logs')));
     }
 }

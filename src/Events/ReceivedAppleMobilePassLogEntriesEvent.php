@@ -2,7 +2,7 @@
 
 namespace Spatie\LaravelMobilePass\Events;
 
-class ReceivedMobilePassLogEntriesEvent
+class ReceivedAppleMobilePassLogEntriesEvent
 {
     /**
      * @param  array<string>  $logEntries
