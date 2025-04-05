@@ -2,11 +2,11 @@
 
 namespace Spatie\LaravelMobilePass\Tests\Http;
 
-use Spatie\LaravelMobilePass\Models\MobilePassDevice;
-use Spatie\LaravelMobilePass\Models\MobilePassRegistration;
+use Spatie\LaravelMobilePass\Models\Apple\AppleMobilePassDevice;
+use Spatie\LaravelMobilePass\Models\Apple\AppleMobilePassRegistration;
 
 it('deletes the registration', function () {
-    $registration = MobilePassRegistration::factory()->create();
+    $registration = AppleMobilePassRegistration::factory()->create();
 
     $this
         ->withoutMiddleware()
@@ -21,7 +21,7 @@ it('deletes the registration', function () {
 });
 
 it('doesnt delete the device', function () {
-    $registration = MobilePassRegistration::factory()->create();
+    $registration = AppleMobilePassRegistration::factory()->create();
 
     $this
         ->withoutMiddleware()
@@ -32,7 +32,7 @@ it('doesnt delete the device', function () {
         ]))
         ->assertSuccessful();
 
-    $this->assertModelExists(MobilePassDevice::class, [
+    $this->assertModelExists(AppleMobilePassDevice::class, [
         'device_id' => $registration->device->getKey(),
     ]);
 });

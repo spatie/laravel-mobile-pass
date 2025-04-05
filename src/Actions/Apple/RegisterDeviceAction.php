@@ -2,8 +2,8 @@
 
 namespace Spatie\LaravelMobilePass\Actions\Apple;
 
+use Spatie\LaravelMobilePass\Models\Apple\AppleMobilePassDevice;
 use Spatie\LaravelMobilePass\Models\MobilePass;
-use Spatie\LaravelMobilePass\Models\MobilePassDevice;
 use Spatie\LaravelMobilePass\Support\Config;
 
 class RegisterDeviceAction
@@ -32,7 +32,7 @@ class RegisterDeviceAction
         return $mobilePassModel::findOrFail($passSerial);
     }
 
-    protected function device(string $deviceId, string $pushToken): MobilePassDevice
+    protected function device(string $deviceId, string $pushToken): AppleMobilePassDevice
     {
         $mobilePassDeviceModel = Config::deviceModel();
 
@@ -42,7 +42,7 @@ class RegisterDeviceAction
         );
     }
 
-    protected function registrationProperties(MobilePassDevice $device, string $passTypeId, string $passSerial): array
+    protected function registrationProperties(AppleMobilePassDevice $device, string $passTypeId, string $passSerial): array
     {
         return [
             'device_id' => $device->getKey(),

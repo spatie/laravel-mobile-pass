@@ -1,13 +1,13 @@
 <?php
 
-namespace Spatie\LaravelMobilePass\Models;
+namespace Spatie\LaravelMobilePass\Models\Apple;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\LaravelMobilePass\Support\Config;
 
-class MobilePassDevice extends Model
+class AppleMobilePassDevice extends Model
 {
     use HasFactory;
 

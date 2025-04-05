@@ -3,9 +3,9 @@
 namespace Spatie\LaravelMobilePass\Tests\Http;
 
 use Spatie\LaravelMobilePass\Actions\Apple\NotifyAppleOfPassUpdateAction;
+use Spatie\LaravelMobilePass\Models\Apple\AppleMobilePassDevice;
+use Spatie\LaravelMobilePass\Models\Apple\AppleMobilePassRegistration;
 use Spatie\LaravelMobilePass\Models\MobilePass;
-use Spatie\LaravelMobilePass\Models\MobilePassDevice;
-use Spatie\LaravelMobilePass\Models\MobilePassRegistration;
 
 it('stores the registration', function () {
     $pass = MobilePass::factory()->create();
@@ -21,13 +21,13 @@ it('stores the registration', function () {
         ])
         ->assertCreated();
 
-    $this->assertModelExists(MobilePassDevice::class, [
+    $this->assertModelExists(AppleMobilePassDevice::class, [
         'device_id' => '12345',
         'pass_serial' => $pass->getKey(),
         'push_token' => '12345',
     ]);
 
-    $this->assertModelExists(MobilePassRegistration::class, [
+    $this->assertModelExists(AppleMobilePassRegistration::class, [
         'device_id' => '12345',
         'pass_serial' => $pass->getKey(),
         'pass_type_id' => 'pass.com.example',
@@ -54,7 +54,7 @@ it('doesnt trigger a change notification to Apple', function () {
 });
 
 it('doesnt create duplicate entries for the same device', function () {
-    $registration = MobilePassRegistration::factory()->create();
+    $registration = AppleMobilePassRegistration::factory()->create();
 
     $this
         ->withoutMiddleware()
@@ -67,8 +67,8 @@ it('doesnt create duplicate entries for the same device', function () {
         ])
         ->assertStatus(200);
 
-    $this->assertSame(1, MobilePassRegistration::count());
-    $this->assertSame(1, MobilePassDevice::count());
+    $this->assertSame(1, AppleMobilePassRegistration::count());
+    $this->assertSame(1, AppleMobilePassDevice::count());
 });
 
 it('returns 404 if the pass doesnt exist', function () {

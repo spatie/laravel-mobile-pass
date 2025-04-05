@@ -3,18 +3,18 @@
 namespace Spatie\LaravelMobilePass\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Spatie\LaravelMobilePass\Models\Apple\AppleMobilePassDevice;
+use Spatie\LaravelMobilePass\Models\Apple\AppleMobilePassRegistration;
 use Spatie\LaravelMobilePass\Models\MobilePass;
-use Spatie\LaravelMobilePass\Models\MobilePassDevice;
-use Spatie\LaravelMobilePass\Models\MobilePassRegistration;
 
-class MobilePassRegistrationFactory extends Factory
+class AppleMobilePassRegistrationFactory extends Factory
 {
-    protected $model = MobilePassRegistration::class;
+    protected $model = AppleMobilePassRegistration::class;
 
     public function definition()
     {
         return [
-            'device_id' => MobilePassDevice::factory(),
+            'device_id' => AppleMobilePassDevice::factory(),
             'pass_type_id' => 'pass.com.example',
             'pass_serial' => MobilePass::factory(),
         ];

@@ -1,6 +1,6 @@
 <?php
 
-namespace Spatie\LaravelMobilePass\Models;
+namespace Spatie\LaravelMobilePass\Models\Apple;
 
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Spatie\LaravelMobilePass\Support\Config;
 
-class MobilePassRegistration extends Model
+class AppleMobilePassRegistration extends Model
 {
     use HasFactory;
     use HasUuids;

@@ -2,13 +2,13 @@
 
 namespace Spatie\LaravelMobilePass\Tests\Http;
 
+use Spatie\LaravelMobilePass\Models\Apple\AppleMobilePassDevice;
+use Spatie\LaravelMobilePass\Models\Apple\AppleMobilePassRegistration;
 use Spatie\LaravelMobilePass\Models\MobilePass;
-use Spatie\LaravelMobilePass\Models\MobilePassDevice;
-use Spatie\LaravelMobilePass\Models\MobilePassRegistration;
 use Spatie\TestTime\TestTime;
 
 it('returns pass serials associated with a device', function () {
-    $registration = MobilePassRegistration::factory()->create();
+    $registration = AppleMobilePassRegistration::factory()->create();
 
     $this
         ->withoutMiddleware()
@@ -28,7 +28,7 @@ it('returns pass serials associated with a device', function () {
 });
 
 it('returns the timestamp of the last update', function () {
-    $registration = MobilePassRegistration::factory()->create();
+    $registration = AppleMobilePassRegistration::factory()->create();
 
     $this
         ->withoutMiddleware()
@@ -46,7 +46,7 @@ it('returns the timestamp of the last update', function () {
 });
 
 it('only returns passes that have been updated since the given timestamp', function () {
-    $device = MobilePassDevice::factory()->create();
+    $device = AppleMobilePassDevice::factory()->create();
 
     $firstPass = MobilePass::factory()
         ->hasRegistrationForDevice($device)
@@ -77,7 +77,7 @@ it('only returns passes that have been updated since the given timestamp', funct
 });
 
 it('returns the timestamp of the most recently updated pass', function () {
-    $device = MobilePassDevice::factory()->create();
+    $device = AppleMobilePassDevice::factory()->create();
 
     $firstPass = MobilePass::factory()
         ->hasRegistrationForDevice($device)
@@ -120,7 +120,7 @@ it('returns 204 if no passes available', function () {
 });
 
 it('returns 204 if no passes have been updated since the given timestamp', function () {
-    $registration = MobilePassRegistration::factory()->create();
+    $registration = AppleMobilePassRegistration::factory()->create();
 
     TestTime::addMinutes(5);
 

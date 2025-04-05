@@ -3,8 +3,8 @@
 namespace Spatie\LaravelMobilePass\Actions\Apple;
 
 use Illuminate\Support\Facades\Http;
+use Spatie\LaravelMobilePass\Models\Apple\AppleMobilePassRegistration;
 use Spatie\LaravelMobilePass\Models\MobilePass;
-use Spatie\LaravelMobilePass\Models\MobilePassRegistration;
 
 class NotifyAppleOfPassUpdateAction
 {
@@ -13,18 +13,18 @@ class NotifyAppleOfPassUpdateAction
         $mobilePass
             ->registrations
             ->each(
-                fn (MobilePassRegistration $registration) => $this->notifyUpdate($registration)
+                fn (AppleMobilePassRegistration $registration) => $this->notifyUpdate($registration)
             );
     }
 
-    protected function headers(MobilePassRegistration $registration): array
+    protected function headers(AppleMobilePassRegistration $registration): array
     {
         return [
             'apns-topic' => $registration->pass_type_id,
         ];
     }
 
-    protected function options(MobilePassRegistration $registration): array
+    protected function options(AppleMobilePassRegistration $registration): array
     {
         return [
             'version' => 2.0,
@@ -35,12 +35,12 @@ class NotifyAppleOfPassUpdateAction
         ];
     }
 
-    protected function updateUrl(MobilePassRegistration $registration): string
+    protected function updateUrl(AppleMobilePassRegistration $registration): string
     {
         return $registration->appleUpdateUrl();
     }
 
-    protected function notifyUpdate(MobilePassRegistration $registration): self
+    protected function notifyUpdate(AppleMobilePassRegistration $registration): self
     {
         Http::withHeaders($this->headers($registration))
             ->withOptions($this->options($registration))

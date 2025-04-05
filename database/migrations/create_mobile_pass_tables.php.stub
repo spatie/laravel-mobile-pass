@@ -22,7 +22,7 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        Schema::create('mobile_pass_devices', function (Blueprint $table) {
+        Schema::create('apple_mobile_pass_devices', function (Blueprint $table) {
             $table->string('id')->primary();
 
             $table->string('push_token');
@@ -30,7 +30,7 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        Schema::create('mobile_pass_registrations', function (Blueprint $table) {
+        Schema::create('apple_mobile_pass_registrations', function (Blueprint $table) {
             $table->uuid('id')->primary();
 
             $table->string('device_id');

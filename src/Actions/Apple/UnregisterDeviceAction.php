@@ -2,7 +2,7 @@
 
 namespace Spatie\LaravelMobilePass\Actions\Apple;
 
-use Spatie\LaravelMobilePass\Models\MobilePassRegistration;
+use Spatie\LaravelMobilePass\Models\Apple\AppleMobilePassRegistration;
 use Spatie\LaravelMobilePass\Support\Config;
 
 class UnregisterDeviceAction
@@ -15,6 +15,6 @@ class UnregisterDeviceAction
             ->where([
                 'device_id' => $deviceId,
                 'pass_serial' => $passSerial,
-            ])->each(fn (MobilePassRegistration $registration) => $registration->delete());
+            ])->each(fn (AppleMobilePassRegistration $registration) => $registration->delete());
     }
 }

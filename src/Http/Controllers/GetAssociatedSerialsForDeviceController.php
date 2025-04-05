@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Collection;
 use Spatie\LaravelMobilePass\Http\Requests\GetAssociatedSerialsForDeviceRequest;
-use Spatie\LaravelMobilePass\Models\MobilePassRegistration;
+use Spatie\LaravelMobilePass\Models\Apple\AppleMobilePassRegistration;
 
 /**
  * Getting the Serial Numbers for Passes Associated with a Device
@@ -35,7 +35,7 @@ class GetAssociatedSerialsForDeviceController extends Controller
     protected function responseData(Collection $registrations): array
     {
         $lastUpdated = $registrations
-            ->map(fn (MobilePassRegistration $registration) => $registration->pass->updated_at)
+            ->map(fn (AppleMobilePassRegistration $registration) => $registration->pass->updated_at)
             ->max()
             ->toIso8601ZuluString();
 
