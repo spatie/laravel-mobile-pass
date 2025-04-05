@@ -3,6 +3,7 @@
 namespace Spatie\LaravelMobilePass\Models;
 
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Contracts\Mail\Attachable;
 use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
@@ -16,6 +17,7 @@ use Spatie\LaravelMobilePass\Actions\Apple\NotifyAppleOfPassUpdateAction;
 use Spatie\LaravelMobilePass\Builders\Apple\AirlinePassBuilder;
 use Spatie\LaravelMobilePass\Builders\Apple\PassBuilder;
 use Spatie\LaravelMobilePass\Enums\Platform;
+use Spatie\LaravelMobilePass\Exceptions\CannotDownload;
 use Spatie\LaravelMobilePass\Support\Apple\DownloadableMobilePass;
 use Spatie\LaravelMobilePass\Support\Config;
 
@@ -71,7 +73,7 @@ class MobilePass extends Model implements Attachable, Responsable
 
     public function builder(): PassBuilder
     {
-        $builderClass = Config::getPassBuilderClass($this->builder_name, Platform::Apple);
+        $builderClass = Config::getPassBuilderClass($this->builder_name, $this->platform);
 
         return $builderClass::make($this->content, $this->images, $this);
     }
@@ -83,11 +85,8 @@ class MobilePass extends Model implements Attachable, Responsable
 
     public function download(?string $name = null): DownloadableMobilePass
     {
-        // TODO: store platform.
-        $platform = Platform::Apple;
-
-        if ($platform !== Platform::Apple) {
-            throw new \Exception('Only Apple passes can be downloaded');
+        if ($this->platform !== Platform::Apple) {
+            throw CannotDownload::wrongPlatform($this);
         }
 
         return new DownloadableMobilePass($this->generate(), $this->downloadName($name));
