@@ -1,6 +1,6 @@
 <?php
 
-use Spatie\LaravelMobilePass\Entities\FieldContent;
+use Spatie\LaravelMobilePass\Builders\Apple\Entities\FieldContent;
 
 it('builds a basic field content', function () {
     $pass = FieldContent::make(key: 'some-key');

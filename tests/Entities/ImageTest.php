@@ -1,6 +1,6 @@
 <?php
 
-use Spatie\LaravelMobilePass\Entities\Image;
+use Spatie\LaravelMobilePass\Builders\Apple\Entities\Image;
 
 it('builds a basic Image entity', function () {
     $image = Image::make(

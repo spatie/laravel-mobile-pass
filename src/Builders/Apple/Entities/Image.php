@@ -1,6 +1,6 @@
 <?php
 
-namespace Spatie\LaravelMobilePass\Entities;
+namespace Spatie\LaravelMobilePass\Builders\Apple\Entities;
 
 class Image
 {
