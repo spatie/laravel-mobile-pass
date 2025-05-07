@@ -1,6 +1,6 @@
 <?php
 
-namespace Spatie\LaravelMobilePass\Http\Requests;
+namespace Spatie\LaravelMobilePass\Http\Requests\Apple;
 
 use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;

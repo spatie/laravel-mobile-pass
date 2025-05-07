@@ -3,7 +3,7 @@
 namespace Spatie\LaravelMobilePass\Http\Controllers\Apple;
 
 use Illuminate\Routing\Controller;
-use Spatie\LaravelMobilePass\Http\Requests\CheckForUpdatesRequest;
+use Spatie\LaravelMobilePass\Http\Requests\Apple\CheckForUpdatesRequest;
 use Spatie\LaravelMobilePass\Models\MobilePass;
 
 /**

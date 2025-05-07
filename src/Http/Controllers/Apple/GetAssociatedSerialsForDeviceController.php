@@ -5,7 +5,7 @@ namespace Spatie\LaravelMobilePass\Http\Controllers\Apple;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Collection;
-use Spatie\LaravelMobilePass\Http\Requests\GetAssociatedSerialsForDeviceRequest;
+use Spatie\LaravelMobilePass\Http\Requests\Apple\GetAssociatedSerialsForDeviceRequest;
 use Spatie\LaravelMobilePass\Models\Apple\AppleMobilePassRegistration;
 
 /**
