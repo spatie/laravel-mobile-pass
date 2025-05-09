@@ -34,7 +34,6 @@ return [
         ],
     ],
 
-
     /*
      * The values are used to ensure a secure communication with Apple.
      */
