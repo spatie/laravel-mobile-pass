@@ -8,8 +8,8 @@ use Spatie\LaravelMobilePass\Builders\Apple\Entities\Image;
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\Location;
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\PersonName;
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\Seat;
-use Spatie\LaravelMobilePass\Builders\Apple\Validators\BoardingApplePassValidator;
 use Spatie\LaravelMobilePass\Builders\Apple\Validators\ApplePassValidator;
+use Spatie\LaravelMobilePass\Builders\Apple\Validators\BoardingApplePassValidator;
 use Spatie\LaravelMobilePass\Enums\PassType;
 use Spatie\LaravelMobilePass\Enums\TransitType;
 
