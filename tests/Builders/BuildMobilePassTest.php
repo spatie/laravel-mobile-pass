@@ -4,7 +4,7 @@ namespace Spatie\LaravelMobilePass\Tests\Feature;
 
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\FieldContent;
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\Image;
-use Spatie\LaravelMobilePass\Builders\Apple\GenericApplePassBuilder;
+use Spatie\LaravelMobilePass\Builders\Apple\GenericPassBuilder;
 use Spatie\LaravelMobilePass\Models\MobilePass;
 
 it('can create a mobile pass', function () {
@@ -49,7 +49,7 @@ it('can create a mobile pass', function () {
 })->skip('few random elements in there now');
 
 it('updates a field', function () {
-    $pass = GenericApplePassBuilder::make()
+    $pass = GenericPassBuilder::make()
         ->setOrganisationName('My organisation')
         ->setSerialNumber(123456)
         ->setDescription('Hello!')

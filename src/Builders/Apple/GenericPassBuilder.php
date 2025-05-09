@@ -2,17 +2,17 @@
 
 namespace Spatie\LaravelMobilePass\Builders\Apple;
 
-use Spatie\LaravelMobilePass\Builders\Apple\Validators\GenericPassValidator;
-use Spatie\LaravelMobilePass\Builders\Apple\Validators\PassValidator;
+use Spatie\LaravelMobilePass\Builders\Apple\Validators\GenericApplePassValidator;
+use Spatie\LaravelMobilePass\Builders\Apple\Validators\ApplePassValidator;
 use Spatie\LaravelMobilePass\Enums\PassType;
 
-class GenericApplePassBuilder extends ApplePassBuilder
+class GenericPassBuilder extends ApplePassBuilder
 {
     protected PassType $type = PassType::Generic;
 
-    protected static function validator(): PassValidator
+    protected static function validator(): ApplePassValidator
     {
-        return new GenericPassValidator;
+        return new GenericApplePassValidator;
     }
 
     protected function compileData(): array

@@ -5,7 +5,7 @@ namespace Spatie\LaravelMobilePass\Builders\Apple\Validators;
 use Illuminate\Validation\Rule;
 use Spatie\LaravelMobilePass\Enums\TransitType;
 
-class BoardingPassValidator extends PassValidator
+class BoardingApplePassValidator extends ApplePassValidator
 {
     protected function rules(): array
     {

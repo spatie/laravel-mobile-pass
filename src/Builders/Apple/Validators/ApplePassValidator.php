@@ -2,7 +2,7 @@
 
 namespace Spatie\LaravelMobilePass\Builders\Apple\Validators;
 
-abstract class PassValidator
+abstract class ApplePassValidator
 {
     protected function rules(): array
     {

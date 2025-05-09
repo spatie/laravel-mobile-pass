@@ -11,7 +11,7 @@ use Spatie\LaravelMobilePass\Builders\Apple\Entities\FieldContent;
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\Image;
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\Price;
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\WifiNetwork;
-use Spatie\LaravelMobilePass\Builders\Apple\Validators\PassValidator;
+use Spatie\LaravelMobilePass\Builders\Apple\Validators\ApplePassValidator;
 use Spatie\LaravelMobilePass\Enums\PassType;
 use Spatie\LaravelMobilePass\Enums\Platform;
 use Spatie\LaravelMobilePass\Models\MobilePass;
@@ -58,7 +58,7 @@ abstract class ApplePassBuilder
 
     protected ?string $downloadName = null;
 
-    abstract protected static function validator(): PassValidator;
+    abstract protected static function validator(): ApplePassValidator;
 
     public static function make(array $data = [], array $images = [], ?MobilePass $model = null): static
     {
@@ -280,7 +280,7 @@ abstract class ApplePassBuilder
     {
         if (empty($this->organisationName)) {
             $this->setOrganisationName(
-                config('mobile-pass.organisation_name')
+                config('mobile-pass.apple.organisation_name')
             );
         }
 

@@ -2,7 +2,7 @@
 
 namespace Spatie\LaravelMobilePass\Builders\Apple\Validators;
 
-class GenericPassValidator extends PassValidator
+class GenericApplePassValidator extends ApplePassValidator
 {
     protected function rules(): array
     {

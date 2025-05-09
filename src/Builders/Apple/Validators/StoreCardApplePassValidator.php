@@ -2,7 +2,7 @@
 
 namespace Spatie\LaravelMobilePass\Builders\Apple\Validators;
 
-class StoreCardPassValidator extends PassValidator
+class StoreCardApplePassValidator extends ApplePassValidator
 {
     protected function rules(): array
     {

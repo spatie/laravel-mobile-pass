@@ -8,12 +8,12 @@ use Spatie\LaravelMobilePass\Builders\Apple\Entities\Image;
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\Location;
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\PersonName;
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\Seat;
-use Spatie\LaravelMobilePass\Builders\Apple\Validators\BoardingPassValidator;
-use Spatie\LaravelMobilePass\Builders\Apple\Validators\PassValidator;
+use Spatie\LaravelMobilePass\Builders\Apple\Validators\BoardingApplePassValidator;
+use Spatie\LaravelMobilePass\Builders\Apple\Validators\ApplePassValidator;
 use Spatie\LaravelMobilePass\Enums\PassType;
 use Spatie\LaravelMobilePass\Enums\TransitType;
 
-abstract class BoardingApplePassBuilder extends ApplePassBuilder
+abstract class BoardingPassBuilder extends ApplePassBuilder
 {
     protected PassType $type = PassType::BoardingPass;
 
@@ -73,9 +73,9 @@ abstract class BoardingApplePassBuilder extends ApplePassBuilder
 
     protected ?string $vehicleType = null;
 
-    protected static function validator(): PassValidator
+    protected static function validator(): ApplePassValidator
     {
-        return new BoardingPassValidator;
+        return new BoardingApplePassValidator;
     }
 
     /**

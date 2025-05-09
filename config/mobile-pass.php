@@ -27,19 +27,19 @@ return [
     'builders' => [
         'apple' => [
             'airline' => Spatie\LaravelMobilePass\Builders\Apple\AirlinePassBuilder::class,
-            'boarding' => Spatie\LaravelMobilePass\Builders\Apple\BoardingApplePassBuilder::class,
-            'coupon' => Spatie\LaravelMobilePass\Builders\Apple\CouponApplePassBuilder::class,
-            'generic' => Spatie\LaravelMobilePass\Builders\Apple\GenericApplePassBuilder::class,
-            'store_card' => Spatie\LaravelMobilePass\Builders\Apple\StoreCardApplePassBuilder::class,
+            'boarding' => Spatie\LaravelMobilePass\Builders\Apple\BoardingPassBuilder::class,
+            'coupon' => Spatie\LaravelMobilePass\Builders\Apple\CouponPassBuilder::class,
+            'generic' => Spatie\LaravelMobilePass\Builders\Apple\GenericPassBuilder::class,
+            'store_card' => Spatie\LaravelMobilePass\Builders\Apple\StoreCardPassBuilder::class,
         ],
     ],
 
-    'organisation_name' => env('MOBILE_PASS_ORGANISATION_NAME', 'Spatie'),
 
     /*
      * The values are used to ensure a secure communication with Apple.
      */
     'apple' => [
+        'organisation_name' => env('MOBILE_PASS_APPLE_ORGANISATION_NAME', 'Spatie'),
         'type_identifier' => env('MOBILE_PASS_APPLE_TYPE_IDENTIFIER'),
         'team_identifier' => env('MOBILE_PASS_APPLE_TEAM_IDENTIFIER'),
         'apple_push_base_url' => 'https://api.push.apple.com/3/device',
