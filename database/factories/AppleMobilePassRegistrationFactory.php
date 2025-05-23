@@ -11,7 +11,7 @@ class AppleMobilePassRegistrationFactory extends Factory
 {
     protected $model = AppleMobilePassRegistration::class;
 
-    public function definition()
+    public function definition(): array
     {
         return [
             'device_id' => AppleMobilePassDevice::factory(),
