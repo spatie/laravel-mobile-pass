@@ -5,7 +5,6 @@ namespace Spatie\LaravelMobilePass\Tests\Feature;
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\FieldContent;
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\Image;
 use Spatie\LaravelMobilePass\Builders\Apple\GenericPassBuilder;
-use Spatie\LaravelMobilePass\Models\MobilePass;
 
 it('can create a mobile pass', function () {
     $pass = GenericPassBuilder::make()
