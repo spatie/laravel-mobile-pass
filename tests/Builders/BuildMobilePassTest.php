@@ -8,9 +8,11 @@ use Spatie\LaravelMobilePass\Builders\Apple\GenericPassBuilder;
 use Spatie\LaravelMobilePass\Models\MobilePass;
 
 it('can create a mobile pass', function () {
-    $pass = MobilePass::create()
+    $pass = GenericPassBuilder::make()
         ->setDescription('Hello!')
-        ->addHeaderFields(
+        ->setSerialNumber(123456)
+
+        ->setHeaderFields(
             FieldContent::make('flight-no')
                 ->withLabel('Flight')
                 ->withValue('EY066'),
@@ -18,7 +20,7 @@ it('can create a mobile pass', function () {
                 ->withLabel('Seat')
                 ->withValue('66F')
         )
-        ->addPrimaryFields(
+        ->setPrimaryFields(
             FieldContent::make('departure')
                 ->withLabel('Abu Dhabi International')
                 ->withValue('ABU'),
@@ -26,7 +28,7 @@ it('can create a mobile pass', function () {
                 ->withLabel('London Heathrow')
                 ->withValue('LHR'),
         )
-        ->addSecondaryFields(
+        ->setSecondaryFields(
             FieldContent::make('name')
                 ->withLabel('Name')
                 ->withValue('Dan Johnson'),
@@ -46,7 +48,7 @@ it('can create a mobile pass', function () {
     $passkeyContent = $pass->generate();
 
     expect($passkeyContent)->toMatchMobilePassSnapshot();
-})->skip('few random elements in there now');
+});
 
 it('updates a field', function () {
     $pass = GenericPassBuilder::make()

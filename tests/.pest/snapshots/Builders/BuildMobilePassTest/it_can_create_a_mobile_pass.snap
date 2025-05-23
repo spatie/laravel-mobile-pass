@@ -10,16 +10,13 @@
         "icon.png": "<random>"
     },
     "pass": {
+        "description": "Hello!",
         "formatVersion": 1,
         "organizationName": "Spatie",
         "passTypeIdentifier": "pass.app.gowallet",
-        "authenticationToken": "abcdefghijklmnopqrstuvwx",
-        "webServiceURL": "https:\/\/re6tmnd7zs.sharedwithexpose.com",
-        "teamIdentifier": "2SQU7LWHMY",
-        "description": "Hello!",
         "serialNumber": "<random>",
-        "boardingPass": {
-            "transitType": "PKTransitTypeAir",
+        "teamIdentifier": "2SQU7LWHMY",
+        "generic": {
             "headerFields": [
                 {
                     "key": "flight-no",
@@ -55,8 +52,7 @@
                     "label": "Gate",
                     "value": "D68"
                 }
-            ],
-            "auxiliaryFields": []
+            ]
         }
     }
 }
