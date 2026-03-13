@@ -7,6 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\LaravelMobilePass\Support\Config;
 
+/**
+ * @property string $push_token
+ */
 class AppleMobilePassDevice extends Model
 {
     use HasFactory;

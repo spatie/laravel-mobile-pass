@@ -14,14 +14,14 @@ class WifiNetwork implements Arrayable
     public static function make(
         string $ssid,
         string $password,
-    ): static {
+    ): self {
         return new self(
             ssid: $ssid,
             password: $password,
         );
     }
 
-    public static function fromArray(array $values): static
+    public static function fromArray(array $values): self
     {
         return new self(
             ssid: $values['ssid'],

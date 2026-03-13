@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\Image;
 use Spatie\LaravelMobilePass\Enums\Platform;
 use Spatie\LaravelMobilePass\Models\Apple\AppleMobilePassDevice;
+use Spatie\LaravelMobilePass\Models\Apple\AppleMobilePassRegistration;
 use Spatie\LaravelMobilePass\Models\MobilePass;
 
 class MobilePassFactory extends Factory
@@ -64,6 +65,9 @@ class MobilePassFactory extends Factory
 
     public function hasRegistrationForDevice(AppleMobilePassDevice $device): static
     {
-        return $this->hasRegistrations(1, ['device_id' => $device->getKey()]);
+        return $this->has(
+            AppleMobilePassRegistration::factory()->state(['device_id' => $device->getKey()]),
+            'registrations'
+        );
     }
 }

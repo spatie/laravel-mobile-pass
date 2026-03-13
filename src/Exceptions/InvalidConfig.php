@@ -9,27 +9,27 @@ class InvalidConfig extends Exception
 {
     public static function invalidModel(string $modelName, string $modelClass, string $defaultClass): self
     {
-        return new static("The `{$modelName}` model must be an instance of `{$defaultClass}`. `{$modelClass}` does not extend {$defaultClass}.");
+        return new self("The `{$modelName}` model must be an instance of `{$defaultClass}`. `{$modelClass}` does not extend {$defaultClass}.");
     }
 
     public static function invalidAction(string $actionName, mixed $actionClass, string $shouldBeOrExtend): self
     {
-        return new static("The `{$actionName}` action must be an instance of `{$shouldBeOrExtend}`. `{$actionClass}` does not extend {$shouldBeOrExtend}.");
+        return new self("The `{$actionName}` action must be an instance of `{$shouldBeOrExtend}`. `{$actionClass}` does not extend {$shouldBeOrExtend}.");
     }
 
     public static function invalidEvent(string $eventName, mixed $eventClass, string $shouldBeOrExtend): self
     {
-        return new static("The `{$eventName}` event must be an instance of `{$shouldBeOrExtend}`. `{$eventClass}` does not extend {$shouldBeOrExtend}.");
+        return new self("The `{$eventName}` event must be an instance of `{$shouldBeOrExtend}`. `{$eventClass}` does not extend {$shouldBeOrExtend}.");
     }
 
     public static function passBuilderNotRegistered(string $passBuilderName, Platform $platform): self
     {
-        return new static("The pass builder `{$passBuilderName}` is not registered. Make sure you have registered it in the `builders.{$platform->value}` key of the  `mobile-pass` config file.");
+        return new self("The pass builder `{$passBuilderName}` is not registered. Make sure you have registered it in the `builders.{$platform->value}` key of the  `mobile-pass` config file.");
     }
 
     public static function passBuilderNotFound(string $passBuilderName, mixed $passBuilderClass): self
     {
-        return new static("The pass builder `{$passBuilderName}` was not found. Make sure the class `{$passBuilderClass}` exists.");
+        return new self("The pass builder `{$passBuilderName}` was not found. Make sure the class `{$passBuilderClass}` exists.");
     }
 
     public static function invalidPassBuilderClass(string $passBuilderName, mixed $passBuilderClass, Platform $platform): self
@@ -39,6 +39,6 @@ class InvalidConfig extends Exception
             Platform::Google => 'Spatie\LaravelMobilePass\Builders\Google',
         };
 
-        return new static("The pass builder `{$passBuilderName}` must be an instance of `{$expectedNamespace}\PassBuilder`. `{$passBuilderClass}` does not extend `{$expectedNamespace}\PassBuilder`.");
+        return new self("The pass builder `{$passBuilderName}` must be an instance of `{$expectedNamespace}\PassBuilder`. `{$passBuilderClass}` does not extend `{$expectedNamespace}\PassBuilder`.");
     }
 }

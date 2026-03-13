@@ -18,7 +18,7 @@ class Config
         return self::getModelClass('mobile_pass', MobilePass::class);
     }
 
-    /** @return class-string<MobilePass> */
+    /** @return class-string<AppleMobilePassRegistration> */
     public static function appleMobilePassRegistrationModel(): string
     {
         return self::getModelClass('apple_mobile_pass_registration', AppleMobilePassRegistration::class);

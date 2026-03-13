@@ -21,6 +21,14 @@ use Spatie\LaravelMobilePass\Exceptions\CannotDownload;
 use Spatie\LaravelMobilePass\Support\Apple\DownloadableMobilePass;
 use Spatie\LaravelMobilePass\Support\Config;
 
+/**
+ * @property string $builder_name
+ * @property \Spatie\LaravelMobilePass\Enums\Platform $platform
+ * @property array $images
+ * @property array $content
+ * @property string|null $download_name
+ * @property \Carbon\Carbon $updated_at
+ */
 class MobilePass extends Model implements Attachable, Responsable
 {
     use HasFactory;

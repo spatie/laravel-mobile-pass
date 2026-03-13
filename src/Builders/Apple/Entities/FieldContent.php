@@ -42,9 +42,9 @@ class FieldContent implements Arrayable
         public string $key
     ) {}
 
-    public static function fromArray(array $fields): static
+    public static function fromArray(array $fields): self
     {
-        $fieldContent = new static(
+        $fieldContent = new self(
             $fields['key'],
         );
 
@@ -63,9 +63,9 @@ class FieldContent implements Arrayable
         return $fieldContent;
     }
 
-    public static function make(string $key): static
+    public static function make(string $key): self
     {
-        return new static(
+        return new self(
             key: $key,
         );
     }

@@ -7,14 +7,14 @@ use Illuminate\Contracts\Support\Arrayable;
 class Location implements Arrayable
 {
     public function __construct(
-        public string $latitude,
-        public string $longitude
+        public float $latitude,
+        public float $longitude
     ) {}
 
     public static function make(
         float $latitude,
         float $longitude
-    ): static {
+    ): self {
         return new self(
             latitude: $latitude,
             longitude: $longitude,
@@ -24,8 +24,8 @@ class Location implements Arrayable
     public static function fromArray(array $values): self
     {
         return new self(
-            latitude: $values['latitude'],
-            longitude: $values['longitude'],
+            latitude: (float) $values['latitude'],
+            longitude: (float) $values['longitude'],
         );
     }
 

@@ -46,6 +46,7 @@ class NotifyAppleOfPassUpdateAction
             ->withOptions($this->options($registration))
             ->post(
                 url: $this->updateUrl($registration),
+                // @phpstan-ignore-next-line
                 data: json_decode('{}'),
             );
 
