@@ -186,6 +186,27 @@ abstract class ApplePassBuilder
         return $this;
     }
 
+    public function setBackgroundColour(Colour $backgroundColour): self
+    {
+        $this->backgroundColour = $backgroundColour;
+
+        return $this;
+    }
+
+    public function setForegroundColour(Colour $foregroundColour): self
+    {
+        $this->foregroundColour = $foregroundColour;
+
+        return $this;
+    }
+
+    public function setLabelColour(Colour $labelColour): self
+    {
+        $this->labelColour = $labelColour;
+
+        return $this;
+    }
+
     /**
      * The total price for the pass.
      */
@@ -334,6 +355,9 @@ abstract class ApplePassBuilder
             'teamIdentifier' => config('mobile-pass.apple.team_identifier'),
             'description' => $this->description,
             'semantics' => $this->compileSemantics(),
+            'backgroundColor' => (string) $this->backgroundColour,
+            'foregroundColor' => (string) $this->foregroundColour,
+            'labelColor' => (string) $this->labelColour,
             'userInfo' => [
                 'passType' => $this->type->value,
             ],
