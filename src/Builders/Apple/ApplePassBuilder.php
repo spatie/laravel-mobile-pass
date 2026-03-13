@@ -299,7 +299,7 @@ abstract class ApplePassBuilder
 
     public function data(): array
     {
-        if (empty($this->organisationName)) {
+        if (empty($this->organisationName) && ! empty(config('mobile-pass.apple.organisation_name'))) {
             $this->setOrganisationName(
                 config('mobile-pass.apple.organisation_name')
             );

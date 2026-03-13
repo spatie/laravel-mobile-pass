@@ -52,6 +52,7 @@ it('can create a mobile pass', function () {
 
 it('throws a validation exception when a required field is missing', function () {
     GenericPassBuilder::make()
+        ->setOrganisationName('Test Org')
         ->setSerialNumber(123456)
         // description intentionally omitted
         ->data();
