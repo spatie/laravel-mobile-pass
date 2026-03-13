@@ -142,7 +142,7 @@ abstract class ApplePassBuilder
         return $this;
     }
 
-    public function updateField(string $key, Closure $fieldContent)
+    public function updateField(string $key, Closure $fieldContent): self
     {
         $fieldTypes = [
             'headerFields',
@@ -182,6 +182,27 @@ abstract class ApplePassBuilder
     public function setDescription(string $description): self
     {
         $this->description = $description;
+
+        return $this;
+    }
+
+    public function setBackgroundColour(Colour $backgroundColour): self
+    {
+        $this->backgroundColour = $backgroundColour;
+
+        return $this;
+    }
+
+    public function setForegroundColour(Colour $foregroundColour): self
+    {
+        $this->foregroundColour = $foregroundColour;
+
+        return $this;
+    }
+
+    public function setLabelColour(Colour $labelColour): self
+    {
+        $this->labelColour = $labelColour;
 
         return $this;
     }
@@ -266,7 +287,7 @@ abstract class ApplePassBuilder
             return $this->model;
         }
 
-        return MobilePass::create([
+        return MobilePass::query()->create([
             'type' => $this->type->value,
             'platform' => static::platform(),
             'builder_name' => static::name(),
@@ -301,7 +322,7 @@ abstract class ApplePassBuilder
         return $data;
     }
 
-    public function generate()
+    public function generate(): string
     {
         $pkPass = new PKPass(
             self::getCertificatePath(),
@@ -334,13 +355,16 @@ abstract class ApplePassBuilder
             'teamIdentifier' => config('mobile-pass.apple.team_identifier'),
             'description' => $this->description,
             'semantics' => $this->compileSemantics(),
+            'backgroundColor' => (string) $this->backgroundColour,
+            'foregroundColor' => (string) $this->foregroundColour,
+            'labelColor' => (string) $this->labelColour,
             'userInfo' => [
                 'passType' => $this->type->value,
             ],
         ]));
     }
 
-    protected function uncompileSemantics()
+    protected function uncompileSemantics(): void
     {
         $this->totalPrice = ! empty($this->data['semantics']['totalPrice']) ? Price::fromArray($this->data['semantics']['totalPrice']) : null;
         $this->wifiDetails = ! empty($this->data['semantics']['wifiAccess']) ? collect(

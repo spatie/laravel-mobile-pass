@@ -7,7 +7,7 @@ use Spatie\LaravelMobilePass\Support\Config;
 
 class UnregisterDeviceAction
 {
-    public function execute(string $deviceId, string $passSerial)
+    public function execute(string $deviceId, string $passSerial): void
     {
         $mobilePassRegistrationModel = Config::appleMobilePassRegistrationModel();
 

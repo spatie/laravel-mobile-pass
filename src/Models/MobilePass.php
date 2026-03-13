@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Http\Response;
 use Illuminate\Mail\Attachment;
 use Illuminate\Support\Str;
 use Spatie\LaravelMobilePass\Actions\Apple\NotifyAppleOfPassUpdateAction;
@@ -27,7 +28,7 @@ class MobilePass extends Model implements Attachable, Responsable
 
     public $guarded = [];
 
-    public static function boot()
+    public static function boot(): void
     {
         parent::boot();
 
@@ -54,7 +55,7 @@ class MobilePass extends Model implements Attachable, Responsable
         return $this->hasManyThrough($deviceModelClass, $modelClass, 'pass_serial', 'id', 'id', 'device_id');
     }
 
-    protected function casts()
+    protected function casts(): array
     {
         return [
             'platform' => Platform::class,
@@ -100,12 +101,12 @@ class MobilePass extends Model implements Attachable, Responsable
         return $this->updated_at > $since;
     }
 
-    public function toResponse($request)
+    public function toResponse($request): Response
     {
         return $this->download($this->download_name)->toResponse($request);
     }
 
-    public function toMailAttachment()
+    public function toMailAttachment(): Attachment
     {
         return Attachment::fromData(fn () => $this->generate(), $this->downloadName().'.pkpass')
             ->withMime('application/vnd.apple.pkpass');

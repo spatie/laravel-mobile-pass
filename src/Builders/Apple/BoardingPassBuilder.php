@@ -101,7 +101,7 @@ abstract class BoardingPassBuilder extends ApplePassBuilder
     /**
      * A booking or reservation confirmation number.
      */
-    public function setConfirmationNumber(string $confirmationNumber)
+    public function setConfirmationNumber(string $confirmationNumber): self
     {
         $this->confirmationNumber = $confirmationNumber;
 
@@ -355,7 +355,7 @@ abstract class BoardingPassBuilder extends ApplePassBuilder
         return $this;
     }
 
-    protected function uncompileSemantics()
+    protected function uncompileSemantics(): void
     {
         parent::uncompileSemantics();
 

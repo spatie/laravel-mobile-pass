@@ -7,7 +7,7 @@ use Spatie\LaravelMobilePass\Enums\Platform;
 
 class InvalidConfig extends Exception
 {
-    public static function invalidModel($modelName, $modelClass, $defaultClass): self
+    public static function invalidModel(string $modelName, string $modelClass, string $defaultClass): self
     {
         return new static("The `{$modelName}` model must be an instance of `{$defaultClass}`. `{$modelClass}` does not extend {$defaultClass}.");
     }
@@ -22,17 +22,17 @@ class InvalidConfig extends Exception
         return new static("The `{$eventName}` event must be an instance of `{$shouldBeOrExtend}`. `{$eventClass}` does not extend {$shouldBeOrExtend}.");
     }
 
-    public static function passBuilderNotRegistered(string $passBuilderName, Platform $platform)
+    public static function passBuilderNotRegistered(string $passBuilderName, Platform $platform): self
     {
         return new static("The pass builder `{$passBuilderName}` is not registered. Make sure you have registered it in the `builders.{$platform->value}` key of the  `mobile-pass` config file.");
     }
 
-    public static function passBuilderNotFound(string $passBuilderName, mixed $passBuilderClass)
+    public static function passBuilderNotFound(string $passBuilderName, mixed $passBuilderClass): self
     {
         return new static("The pass builder `{$passBuilderName}` was not found. Make sure the class `{$passBuilderClass}` exists.");
     }
 
-    public static function invalidPassBuilderClass(string $passBuilderName, mixed $passBuilderClass, Platform $platform)
+    public static function invalidPassBuilderClass(string $passBuilderName, mixed $passBuilderClass, Platform $platform): self
     {
         $expectedNamespace = match ($platform) {
             Platform::Apple => 'Spatie\LaravelMobilePass\Builders\Apple',

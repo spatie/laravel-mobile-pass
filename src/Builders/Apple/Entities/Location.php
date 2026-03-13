@@ -21,7 +21,7 @@ class Location implements Arrayable
         );
     }
 
-    public static function fromArray(array $values)
+    public static function fromArray(array $values): self
     {
         return new self(
             latitude: $values['latitude'],
