@@ -5,7 +5,7 @@ weight: 3
 
 The package offers [various builder classes](TODO: add link) that you can use to build passes.  These builders all have specialized methods to build their specific passes.
 
-Here's an example of how you can generate a basic boarding pass:
+Here's an example of how you can generate a basic airline boarding pass:
 
 ```php
 use Spatie\LaravelMobilePass\Builders\Apple\AirlinePassBuilder;
