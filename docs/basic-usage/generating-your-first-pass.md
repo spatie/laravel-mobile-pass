@@ -9,6 +9,9 @@ Here's an example of how you can generate a basic boarding pass:
 
 ```php
 use Spatie\LaravelMobilePass\Builders\Apple\AirlinePassBuilder;
+use Spatie\LaravelMobilePass\Builders\Apple\Entities\FieldContent;
+use Spatie\LaravelMobilePass\Builders\Apple\Entities\Image;
+use Spatie\LaravelMobilePass\Builders\Apple\Entities\Seat;
 
 $mobilePass = AirlinePassBuilder::make()
     ->setOrganisationName('My organisation')
@@ -48,7 +51,7 @@ $mobilePass = AirlinePassBuilder::make()
     )
     ->setIconImage(
         Image::make(
-            x1Path: getTestSupportPath('images/your-thumbnail.png')
+            x1Path: public_path('images/your-thumbnail.png')
         )
     )
 
