@@ -12,19 +12,19 @@ use Spatie\LaravelMobilePass\Models\MobilePass;
 
 class Config
 {
-    /** @return class-string<\Spatie\LaravelMobilePass\Models\MobilePass> */
+    /** @return class-string<MobilePass> */
     public static function mobilePassModel(): string
     {
         return self::getModelClass('mobile_pass', MobilePass::class);
     }
 
-    /** @return class-string<\Spatie\LaravelMobilePass\Models\MobilePass> */
+    /** @return class-string<MobilePass> */
     public static function appleMobilePassRegistrationModel(): string
     {
         return self::getModelClass('apple_mobile_pass_registration', AppleMobilePassRegistration::class);
     }
 
-    /** @return class-string<\Spatie\LaravelMobilePass\Models\Apple\AppleMobilePassDevice> */
+    /** @return class-string<AppleMobilePassDevice> */
     public static function appleDeviceModel(): string
     {
         return self::getModelClass('apple_mobile_pass_device', AppleMobilePassDevice::class);
@@ -56,7 +56,7 @@ class Config
         return $actionClass;
     }
 
-    /** @return class-string<\Spatie\LaravelMobilePass\Builders\Apple\ApplePassBuilder|\Spatie\LaravelMobilePass\Builders\Google\GooglePassBuilder> */
+    /** @return class-string<ApplePassBuilder|GooglePassBuilder> */
     public static function getPassBuilderClass(string $passBuilderName, Platform $platform): string
     {
         $passBuilderClass = config("mobile-pass.builders.{$platform->value}.{$passBuilderName}");
