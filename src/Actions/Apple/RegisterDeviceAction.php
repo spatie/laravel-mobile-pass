@@ -3,6 +3,7 @@
 namespace Spatie\LaravelMobilePass\Actions\Apple;
 
 use Spatie\LaravelMobilePass\Models\Apple\AppleMobilePassDevice;
+use Spatie\LaravelMobilePass\Models\Apple\AppleMobilePassRegistration;
 use Spatie\LaravelMobilePass\Models\MobilePass;
 use Spatie\LaravelMobilePass\Support\Config;
 
@@ -13,7 +14,7 @@ class RegisterDeviceAction
         string $pushToken,
         string $passTypeId,
         string $passSerial,
-    ) {
+    ): AppleMobilePassRegistration {
         $pass = $this->mobilePass($passSerial);
 
         $device = $this->device($deviceId, $pushToken);
@@ -29,14 +30,14 @@ class RegisterDeviceAction
     {
         $mobilePassModel = Config::mobilePassModel();
 
-        return $mobilePassModel::findOrFail($passSerial);
+        return $mobilePassModel::query()->findOrFail($passSerial);
     }
 
     protected function device(string $deviceId, string $pushToken): AppleMobilePassDevice
     {
         $mobilePassDeviceModel = Config::appleDeviceModel();
 
-        return $mobilePassDeviceModel::updateOrCreate(
+        return $mobilePassDeviceModel::query()->updateOrCreate(
             ['id' => $deviceId],
             ['push_token' => $pushToken],
         );

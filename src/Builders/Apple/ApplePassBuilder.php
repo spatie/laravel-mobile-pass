@@ -142,7 +142,7 @@ abstract class ApplePassBuilder
         return $this;
     }
 
-    public function updateField(string $key, Closure $fieldContent)
+    public function updateField(string $key, Closure $fieldContent): self
     {
         $fieldTypes = [
             'headerFields',
@@ -266,7 +266,7 @@ abstract class ApplePassBuilder
             return $this->model;
         }
 
-        return MobilePass::create([
+        return MobilePass::query()->create([
             'type' => $this->type->value,
             'platform' => static::platform(),
             'builder_name' => static::name(),
@@ -301,7 +301,7 @@ abstract class ApplePassBuilder
         return $data;
     }
 
-    public function generate()
+    public function generate(): string
     {
         $pkPass = new PKPass(
             self::getCertificatePath(),
@@ -340,7 +340,7 @@ abstract class ApplePassBuilder
         ]));
     }
 
-    protected function uncompileSemantics()
+    protected function uncompileSemantics(): void
     {
         $this->totalPrice = ! empty($this->data['semantics']['totalPrice']) ? Price::fromArray($this->data['semantics']['totalPrice']) : null;
         $this->wifiDetails = ! empty($this->data['semantics']['wifiAccess']) ? collect(
