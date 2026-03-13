@@ -1,5 +1,17 @@
 <?php
 
+use Spatie\LaravelMobilePass\Actions\Apple\NotifyAppleOfPassUpdateAction;
+use Spatie\LaravelMobilePass\Actions\Apple\RegisterDeviceAction;
+use Spatie\LaravelMobilePass\Actions\Apple\UnregisterDeviceAction;
+use Spatie\LaravelMobilePass\Builders\Apple\AirlinePassBuilder;
+use Spatie\LaravelMobilePass\Builders\Apple\BoardingPassBuilder;
+use Spatie\LaravelMobilePass\Builders\Apple\CouponPassBuilder;
+use Spatie\LaravelMobilePass\Builders\Apple\GenericPassBuilder;
+use Spatie\LaravelMobilePass\Builders\Apple\StoreCardPassBuilder;
+use Spatie\LaravelMobilePass\Models\Apple\AppleMobilePassDevice;
+use Spatie\LaravelMobilePass\Models\Apple\AppleMobilePassRegistration;
+use Spatie\LaravelMobilePass\Models\MobilePass;
+
 return [
     /*
     * Read the "Getting credentials from Apple" section in the documentation
@@ -28,9 +40,9 @@ return [
     * by creating your own action class that extend the one that ships with the package.
     */
     'actions' => [
-        'notify_apple_of_pass_update' => Spatie\LaravelMobilePass\Actions\Apple\NotifyAppleOfPassUpdateAction::class,
-        'register_device' => Spatie\LaravelMobilePass\Actions\Apple\RegisterDeviceAction::class,
-        'unregister_device' => Spatie\LaravelMobilePass\Actions\Apple\UnregisterDeviceAction::class,
+        'notify_apple_of_pass_update' => NotifyAppleOfPassUpdateAction::class,
+        'register_device' => RegisterDeviceAction::class,
+        'unregister_device' => UnregisterDeviceAction::class,
     ],
 
     /*
@@ -38,9 +50,9 @@ return [
     * your own models by extending the ones that ship with the package.
     */
     'models' => [
-        'mobile_pass' => Spatie\LaravelMobilePass\Models\MobilePass::class,
-        'apple_mobile_pass_registration' => Spatie\LaravelMobilePass\Models\Apple\AppleMobilePassRegistration::class,
-        'apple_mobile_pass_device' => Spatie\LaravelMobilePass\Models\Apple\AppleMobilePassDevice::class,
+        'mobile_pass' => MobilePass::class,
+        'apple_mobile_pass_registration' => AppleMobilePassRegistration::class,
+        'apple_mobile_pass_device' => AppleMobilePassDevice::class,
     ],
 
     /*
@@ -48,11 +60,11 @@ return [
     */
     'builders' => [
         'apple' => [
-            'airline' => Spatie\LaravelMobilePass\Builders\Apple\AirlinePassBuilder::class,
-            'boarding' => Spatie\LaravelMobilePass\Builders\Apple\BoardingPassBuilder::class,
-            'coupon' => Spatie\LaravelMobilePass\Builders\Apple\CouponPassBuilder::class,
-            'generic' => Spatie\LaravelMobilePass\Builders\Apple\GenericPassBuilder::class,
-            'store_card' => Spatie\LaravelMobilePass\Builders\Apple\StoreCardPassBuilder::class,
+            'airline' => AirlinePassBuilder::class,
+            'boarding' => BoardingPassBuilder::class,
+            'coupon' => CouponPassBuilder::class,
+            'generic' => GenericPassBuilder::class,
+            'store_card' => StoreCardPassBuilder::class,
         ],
     ],
 ];
