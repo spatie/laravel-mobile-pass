@@ -2,6 +2,7 @@
 
 namespace Spatie\LaravelMobilePass\Tests\Feature;
 
+use Illuminate\Validation\ValidationException;
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\FieldContent;
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\Image;
 use Spatie\LaravelMobilePass\Builders\Apple\GenericPassBuilder;
@@ -48,6 +49,13 @@ it('can create a mobile pass', function () {
 
     expect($passkeyContent)->toMatchMobilePassSnapshot();
 });
+
+it('throws a validation exception when a required field is missing', function () {
+    GenericPassBuilder::make()
+        ->setSerialNumber(123456)
+        // description intentionally omitted
+        ->data();
+})->throws(ValidationException::class);
 
 it('updates a field', function () {
     $pass = GenericPassBuilder::make()
