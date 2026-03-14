@@ -5,6 +5,7 @@ namespace Spatie\LaravelMobilePass\Models;
 use Carbon\Carbon;
 use Illuminate\Contracts\Mail\Attachable;
 use Illuminate\Contracts\Support\Responsable;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -22,17 +23,18 @@ use Spatie\LaravelMobilePass\Builders\Apple\GenericPassBuilder;
 use Spatie\LaravelMobilePass\Builders\Apple\StoreCardPassBuilder;
 use Spatie\LaravelMobilePass\Enums\Platform;
 use Spatie\LaravelMobilePass\Exceptions\CannotDownload;
+use Spatie\LaravelMobilePass\Models\Apple\AppleMobilePassRegistration;
 use Spatie\LaravelMobilePass\Support\Apple\DownloadableMobilePass;
 use Spatie\LaravelMobilePass\Support\Config;
 
 /**
  * @property string $builder_name
- * @property \Spatie\LaravelMobilePass\Enums\Platform $platform
+ * @property Platform $platform
  * @property array $images
  * @property array $content
  * @property string|null $download_name
- * @property \Carbon\Carbon $updated_at
- * @property \Illuminate\Database\Eloquent\Collection<int, \Spatie\LaravelMobilePass\Models\Apple\AppleMobilePassRegistration> $registrations
+ * @property Carbon $updated_at
+ * @property Collection<int, AppleMobilePassRegistration> $registrations
  */
 class MobilePass extends Model implements Attachable, Responsable
 {
@@ -53,7 +55,7 @@ class MobilePass extends Model implements Attachable, Responsable
         });
     }
 
-    /** @return HasMany<\Spatie\LaravelMobilePass\Models\Apple\AppleMobilePassRegistration, $this> */
+    /** @return HasMany<AppleMobilePassRegistration, $this> */
     public function registrations(): HasMany
     {
         $modelClass = Config::appleMobilePassRegistrationModel();

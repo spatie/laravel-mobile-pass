@@ -6,14 +6,15 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Spatie\LaravelMobilePass\Models\MobilePass;
 use Spatie\LaravelMobilePass\Support\Config;
 
 /**
  * @property string $pass_type_id
  * @property string $pass_serial
  * @property string $device_id
- * @property \Spatie\LaravelMobilePass\Models\MobilePass $pass
- * @property \Spatie\LaravelMobilePass\Models\Apple\AppleMobilePassDevice $device
+ * @property MobilePass $pass
+ * @property AppleMobilePassDevice $device
  */
 class AppleMobilePassRegistration extends Model
 {
