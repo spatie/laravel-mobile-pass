@@ -16,6 +16,9 @@ use Spatie\LaravelMobilePass\Enums\PassType;
 use Spatie\LaravelMobilePass\Enums\Platform;
 use Spatie\LaravelMobilePass\Models\MobilePass;
 
+/**
+ * @phpstan-consistent-constructor
+ */
 abstract class ApplePassBuilder
 {
     protected ?array $data = null;

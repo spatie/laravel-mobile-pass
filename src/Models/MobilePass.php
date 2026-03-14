@@ -16,6 +16,10 @@ use Illuminate\Support\Str;
 use Spatie\LaravelMobilePass\Actions\Apple\NotifyAppleOfPassUpdateAction;
 use Spatie\LaravelMobilePass\Builders\Apple\AirlinePassBuilder;
 use Spatie\LaravelMobilePass\Builders\Apple\ApplePassBuilder;
+use Spatie\LaravelMobilePass\Builders\Apple\BoardingPassBuilder;
+use Spatie\LaravelMobilePass\Builders\Apple\CouponPassBuilder;
+use Spatie\LaravelMobilePass\Builders\Apple\GenericPassBuilder;
+use Spatie\LaravelMobilePass\Builders\Apple\StoreCardPassBuilder;
 use Spatie\LaravelMobilePass\Enums\Platform;
 use Spatie\LaravelMobilePass\Exceptions\CannotDownload;
 use Spatie\LaravelMobilePass\Support\Apple\DownloadableMobilePass;
@@ -28,6 +32,7 @@ use Spatie\LaravelMobilePass\Support\Config;
  * @property array $content
  * @property string|null $download_name
  * @property \Carbon\Carbon $updated_at
+ * @property \Illuminate\Database\Eloquent\Collection<int, \Spatie\LaravelMobilePass\Models\Apple\AppleMobilePassRegistration> $registrations
  */
 class MobilePass extends Model implements Attachable, Responsable
 {
@@ -48,6 +53,7 @@ class MobilePass extends Model implements Attachable, Responsable
         });
     }
 
+    /** @return HasMany<\Spatie\LaravelMobilePass\Models\Apple\AppleMobilePassRegistration, $this> */
     public function registrations(): HasMany
     {
         $modelClass = Config::appleMobilePassRegistrationModel();
@@ -74,13 +80,54 @@ class MobilePass extends Model implements Attachable, Responsable
 
     public function airlinePassBuilder(): AirlinePassBuilder
     {
+        $this->assertBuilderName(AirlinePassBuilder::name());
+
+        /** @var AirlinePassBuilder */
         return $this->builder();
     }
 
-    // add other builder methods here
+    public function boardingPassBuilder(): BoardingPassBuilder
+    {
+        $this->assertBuilderName(BoardingPassBuilder::name());
+
+        /** @var BoardingPassBuilder */
+        return $this->builder();
+    }
+
+    public function couponPassBuilder(): CouponPassBuilder
+    {
+        $this->assertBuilderName(CouponPassBuilder::name());
+
+        /** @var CouponPassBuilder */
+        return $this->builder();
+    }
+
+    public function genericPassBuilder(): GenericPassBuilder
+    {
+        $this->assertBuilderName(GenericPassBuilder::name());
+
+        /** @var GenericPassBuilder */
+        return $this->builder();
+    }
+
+    public function storeCardPassBuilder(): StoreCardPassBuilder
+    {
+        $this->assertBuilderName(StoreCardPassBuilder::name());
+
+        /** @var StoreCardPassBuilder */
+        return $this->builder();
+    }
+
+    protected function assertBuilderName(string $expected): void
+    {
+        if ($this->builder_name !== $expected) {
+            throw new \RuntimeException("Expected pass builder [{$expected}], but this pass uses [{$this->builder_name}].");
+        }
+    }
 
     public function builder(): ApplePassBuilder
     {
+        /** @var class-string<ApplePassBuilder> $builderClass */
         $builderClass = Config::getPassBuilderClass($this->builder_name, $this->platform);
 
         return $builderClass::make($this->content, $this->images, $this);
