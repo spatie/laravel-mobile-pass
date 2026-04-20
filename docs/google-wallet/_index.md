@@ -1,4 +1,4 @@
 ---
 title: Google Wallet
-weight: 4
+weight: 3
 ---

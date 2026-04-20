@@ -23,10 +23,10 @@ Building both is straightforward. The `MobilePass` model is shared across platfo
 
 Apple and Google approach passes differently, and the package exposes those differences where they matter.
 
-Google has the concept of a **Class** (a shared template for a batch of passes) and an **Object** (one pass for one user). Apple has no equivalent: every Apple pass is standalone. Read [Declaring Google pass classes](google/declaring-google-pass-classes) for the details.
+Google has the concept of a **Class** (a shared template for a batch of passes) and an **Object** (one pass for one user). Apple has no equivalent: every Apple pass is standalone. Read [Declaring Google pass classes](/docs/laravel-mobile-pass/v1/google-wallet/declaring-google-pass-classes) for the details.
 
 Apple pushes updates through APNs, and the device then hits your server for the new pass content. That means you host a web service that Apple talks to. Google does the push itself: you PATCH the object on Google's servers and Google notifies the device.
 
-Apple expects the `.pkpass` file to be signed with a certificate from the Apple Developer Program. Google expects a service account with an `iam.gserviceaccount.com` key. See [Getting credentials from Apple](apple/getting-credentials-from-apple) and [Getting credentials from Google](google/getting-credentials-from-google).
+Apple expects the `.pkpass` file to be signed with a certificate from the Apple Developer Program. Google expects a service account with an `iam.gserviceaccount.com` key. See [Getting credentials from Apple](/docs/laravel-mobile-pass/v1/apple-wallet/getting-credentials-from-apple) and [Getting credentials from Google](/docs/laravel-mobile-pass/v1/google-wallet/getting-credentials-from-google).
 
 Once both platforms are set up, the rest of the package works the same for both. `$pass->addToWalletUrl()` returns the right link, `$pass->expire()` does the right thing, and updates to the `MobilePass` model are pushed out automatically.

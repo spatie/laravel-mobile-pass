@@ -11,11 +11,11 @@ composer require spatie/laravel-mobile-pass
 
 ## Register your application at Apple
 
-You'll find the necessary information [on this page in our docs](https://spatie.be/docs/laravel-mobile-pass/v1/basic-usage/apple/getting-credentials-from-apple).
+You'll find the necessary information [on this page in our docs](https://spatie.be/docs/laravel-mobile-pass/v1/apple-wallet/getting-credentials-from-apple).
 
 ## Google side setup
 
-If you also want to publish passes to Google Wallet, you'll need a Google Cloud service account and an issuer ID from the Google Pay & Wallet Business Console. Follow the walkthrough on [Getting credentials from Google](https://spatie.be/docs/laravel-mobile-pass/v1/basic-usage/google/getting-credentials-from-google).
+If you also want to publish passes to Google Wallet, you'll need a Google Cloud service account and an issuer ID from the Google Pay & Wallet Business Console. Follow the walkthrough on [Getting credentials from Google](https://spatie.be/docs/laravel-mobile-pass/v1/google-wallet/getting-credentials-from-google).
 
 Once you have the credentials, set these environment variables:
 
