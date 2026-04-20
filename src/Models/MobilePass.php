@@ -27,6 +27,7 @@ use Spatie\LaravelMobilePass\Enums\Platform;
 use Spatie\LaravelMobilePass\Exceptions\CannotDownload;
 use Spatie\LaravelMobilePass\Jobs\PushPassUpdateJob;
 use Spatie\LaravelMobilePass\Models\Apple\AppleMobilePassRegistration;
+use Spatie\LaravelMobilePass\Models\Google\GoogleMobilePassEvent;
 use Spatie\LaravelMobilePass\Support\Apple\DownloadableMobilePass;
 use Spatie\LaravelMobilePass\Support\Config;
 use Spatie\LaravelMobilePass\Support\Google\GoogleJwtSigner;
@@ -40,6 +41,7 @@ use Spatie\LaravelMobilePass\Support\Google\GoogleJwtSigner;
  * @property Carbon $updated_at
  * @property Carbon|null $expired_at
  * @property Collection<int, AppleMobilePassRegistration> $registrations
+ * @property Collection<int, GoogleMobilePassEvent> $googleEvents
  */
 class MobilePass extends Model implements Attachable, Responsable
 {
@@ -79,6 +81,21 @@ class MobilePass extends Model implements Attachable, Responsable
         $deviceModelClass = Config::appleDeviceModel();
 
         return $this->hasManyThrough($deviceModelClass, $modelClass, 'pass_serial', 'id', 'id', 'device_id');
+    }
+
+    /** @return HasMany<GoogleMobilePassEvent, $this> */
+    public function googleEvents(): HasMany
+    {
+        $modelClass = Config::googleMobilePassEventModel();
+
+        return $this->hasMany($modelClass, 'mobile_pass_id');
+    }
+
+    public function isCurrentlySavedToGoogleWallet(): bool
+    {
+        $latest = $this->googleEvents()->orderByDesc('received_at')->first();
+
+        return $latest !== null && $latest->event_type === 'save';
     }
 
     protected function casts(): array

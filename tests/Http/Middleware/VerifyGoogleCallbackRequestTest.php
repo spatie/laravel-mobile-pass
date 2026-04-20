@@ -1,6 +1,7 @@
 <?php
 
 use Firebase\JWT\JWT;
+use Illuminate\Auth\AuthenticationException;
 use Spatie\LaravelMobilePass\Http\Middleware\VerifyGoogleCallbackRequest;
 use Spatie\LaravelMobilePass\Tests\TestSupport\Google\GoogleFixtures;
 
@@ -13,7 +14,7 @@ it('rejects a request with no Authorization header', function () {
     $request = request();
 
     $middleware->handle($request, fn ($request) => response('ok'));
-})->throws(Illuminate\Auth\AuthenticationException::class);
+})->throws(AuthenticationException::class);
 
 it('accepts a request with a valid signed JWT', function () {
     $jwt = JWT::encode(
