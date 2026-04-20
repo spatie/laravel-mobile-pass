@@ -8,6 +8,11 @@ use Spatie\LaravelMobilePass\Builders\Apple\BoardingPassBuilder;
 use Spatie\LaravelMobilePass\Builders\Apple\CouponPassBuilder;
 use Spatie\LaravelMobilePass\Builders\Apple\GenericPassBuilder;
 use Spatie\LaravelMobilePass\Builders\Apple\StoreCardPassBuilder;
+use Spatie\LaravelMobilePass\Builders\Google\BoardingPassBuilder as GoogleBoardingPassBuilder;
+use Spatie\LaravelMobilePass\Builders\Google\EventTicketPassBuilder as GoogleEventTicketPassBuilder;
+use Spatie\LaravelMobilePass\Builders\Google\GenericPassBuilder as GoogleGenericPassBuilder;
+use Spatie\LaravelMobilePass\Builders\Google\LoyaltyPassBuilder as GoogleLoyaltyPassBuilder;
+use Spatie\LaravelMobilePass\Builders\Google\OfferPassBuilder as GoogleOfferPassBuilder;
 use Spatie\LaravelMobilePass\Models\Apple\AppleMobilePassDevice;
 use Spatie\LaravelMobilePass\Models\Apple\AppleMobilePassRegistration;
 use Spatie\LaravelMobilePass\Models\MobilePass;
@@ -84,6 +89,13 @@ return [
             'coupon' => CouponPassBuilder::class,
             'generic' => GenericPassBuilder::class,
             'store_card' => StoreCardPassBuilder::class,
+        ],
+        'google' => [
+            'boarding' => GoogleBoardingPassBuilder::class,
+            'event_ticket' => GoogleEventTicketPassBuilder::class,
+            'generic' => GoogleGenericPassBuilder::class,
+            'loyalty' => GoogleLoyaltyPassBuilder::class,
+            'offer' => GoogleOfferPassBuilder::class,
         ],
     ],
 
