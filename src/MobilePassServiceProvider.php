@@ -2,6 +2,8 @@
 
 namespace Spatie\LaravelMobilePass;
 
+use Spatie\LaravelMobilePass\Support\Google\GoogleJwtSigner;
+use Spatie\LaravelMobilePass\Support\Google\GoogleWalletClient;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
@@ -14,6 +16,11 @@ class MobilePassServiceProvider extends PackageServiceProvider
             ->hasConfigFile()
             ->hasRoutes('mobile-pass')
             ->hasMigration('create_mobile_pass_tables');
+    }
 
+    public function registeringPackage(): void
+    {
+        $this->app->singleton(GoogleJwtSigner::class);
+        $this->app->singleton(GoogleWalletClient::class);
     }
 }
