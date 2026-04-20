@@ -1,6 +1,6 @@
 ---
 title: Storing mobile passes
-weight: 5
+weight: 9
 ---
 
 Typically, you don't need to store mobile passes as they will be generated on the fly when a user tries to download it.

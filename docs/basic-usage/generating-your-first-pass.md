@@ -1,6 +1,6 @@
 ---
 title: Generating your first pass
-weight: 3
+weight: 5
 ---
 
 The package offers [various builder classes](TODO: add link) that you can use to build passes.  These builders all have specialized methods to build their specific passes.

@@ -15,8 +15,6 @@ class GenericPassClass extends GooglePassClass
 
     protected ?LocalizedString $header = null;
 
-    protected ?string $backgroundColor = null;
-
     protected ?Image $logo = null;
 
     protected ?Image $hero = null;
@@ -53,13 +51,6 @@ class GenericPassClass extends GooglePassClass
     public function setHeader(string $value, string $language = 'en-US'): self
     {
         $this->header = LocalizedString::of($value, $language);
-
-        return $this;
-    }
-
-    public function setBackgroundColor(string $hex): self
-    {
-        $this->backgroundColor = $hex;
 
         return $this;
     }
@@ -117,10 +108,6 @@ class GenericPassClass extends GooglePassClass
                 (string) $payload['header']['defaultValue']['value'],
                 (string) ($payload['header']['defaultValue']['language'] ?? 'en-US'),
             );
-        }
-
-        if (isset($payload['hexBackgroundColor'])) {
-            $this->backgroundColor = (string) $payload['hexBackgroundColor'];
         }
 
         if (isset($payload['logo']['sourceUri']['uri'])) {

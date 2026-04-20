@@ -1,6 +1,6 @@
 ---
 title: Getting credentials from Apple
-weight: 2
+weight: 3
 ---
 
 In order to generate passes for Apple Wallet, you first need to request a certificate from Apple. This certificate is used to sign the passes you generate.

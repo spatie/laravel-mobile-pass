@@ -20,8 +20,6 @@ class LoyaltyPassClass extends GooglePassClass
 
     protected ?string $accountIdLabel = null;
 
-    protected ?string $backgroundColor = null;
-
     protected static function resourceName(): string
     {
         return 'loyaltyClass';
@@ -79,13 +77,6 @@ class LoyaltyPassClass extends GooglePassClass
         return $this;
     }
 
-    public function setBackgroundColor(string $hex): self
-    {
-        $this->backgroundColor = $hex;
-
-        return $this;
-    }
-
     /** @return array<string, mixed> */
     protected function compileData(): array
     {
@@ -129,10 +120,6 @@ class LoyaltyPassClass extends GooglePassClass
 
         if (isset($payload['accountIdLabel'])) {
             $this->accountIdLabel = (string) $payload['accountIdLabel'];
-        }
-
-        if (isset($payload['hexBackgroundColor'])) {
-            $this->backgroundColor = (string) $payload['hexBackgroundColor'];
         }
     }
 }

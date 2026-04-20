@@ -1,6 +1,6 @@
 ---
 title: Updating Google passes
-weight: 5
+weight: 11
 ---
 
 To update a Google pass, update its `MobilePass` model. The package notices and pushes the change to Google, which then pushes the update to the user's device. Google handles the device notification for us.

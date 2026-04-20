@@ -1,6 +1,6 @@
 ---
 title: Handing out passes
-weight: 6
+weight: 12
 ---
 
 Whether a pass is for Apple Wallet or Google Wallet, you hand it to the user the same way: call `addToWalletUrl()` on the `MobilePass` model. The model knows its platform and returns the correct link for that platform.

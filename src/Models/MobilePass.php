@@ -15,6 +15,7 @@ use Illuminate\Http\Response;
 use Illuminate\Mail\Attachment;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
+use RuntimeException;
 use Spatie\LaravelMobilePass\Actions\Apple\NotifyAppleOfPassUpdateAction;
 use Spatie\LaravelMobilePass\Actions\Google\NotifyGoogleOfPassUpdateAction;
 use Spatie\LaravelMobilePass\Builders\Apple\AirlinePassBuilder;
@@ -209,7 +210,7 @@ class MobilePass extends Model implements Attachable, Responsable
     protected function assertBuilderName(string $expected): void
     {
         if ($this->builder_name !== $expected) {
-            throw new \RuntimeException("Expected pass builder [{$expected}], but this pass uses [{$this->builder_name}].");
+            throw new RuntimeException("Expected pass builder [{$expected}], but this pass uses [{$this->builder_name}].");
         }
     }
 

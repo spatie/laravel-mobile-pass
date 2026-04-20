@@ -18,6 +18,8 @@ abstract class GooglePassClass
 
     protected ?string $issuerName = null;
 
+    protected ?string $backgroundColor = null;
+
     abstract protected static function resourceName(): string;
 
     abstract protected static function validator(): GooglePassClassValidator;
@@ -38,6 +40,13 @@ abstract class GooglePassClass
     public function setIssuerName(string $issuerName): static
     {
         $this->issuerName = $issuerName;
+
+        return $this;
+    }
+
+    public function setBackgroundColor(string $hex): static
+    {
+        $this->backgroundColor = $hex;
 
         return $this;
     }
@@ -124,6 +133,10 @@ abstract class GooglePassClass
 
         if (isset($payload['reviewStatus'])) {
             $this->reviewStatus = (string) $payload['reviewStatus'];
+        }
+
+        if (isset($payload['hexBackgroundColor'])) {
+            $this->backgroundColor = (string) $payload['hexBackgroundColor'];
         }
     }
 }

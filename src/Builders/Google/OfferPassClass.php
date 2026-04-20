@@ -20,8 +20,6 @@ class OfferPassClass extends GooglePassClass
 
     protected ?Image $logo = null;
 
-    protected ?string $backgroundColor = null;
-
     protected static function resourceName(): string
     {
         return 'offerClass';
@@ -79,13 +77,6 @@ class OfferPassClass extends GooglePassClass
         return $this;
     }
 
-    public function setBackgroundColor(string $hex): self
-    {
-        $this->backgroundColor = $hex;
-
-        return $this;
-    }
-
     /** @return array<string, mixed> */
     protected function compileData(): array
     {
@@ -129,10 +120,6 @@ class OfferPassClass extends GooglePassClass
 
         if (isset($payload['logo']['sourceUri']['uri'])) {
             $this->logo = Image::fromUrl((string) $payload['logo']['sourceUri']['uri']);
-        }
-
-        if (isset($payload['hexBackgroundColor'])) {
-            $this->backgroundColor = (string) $payload['hexBackgroundColor'];
         }
     }
 }

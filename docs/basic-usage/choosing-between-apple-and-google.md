@@ -1,6 +1,6 @@
 ---
 title: Choosing between Apple and Google
-weight: 1
+weight: 2
 ---
 
 This package lets you generate passes for both Apple Wallet and Google Wallet. Most apps should publish to both platforms, because your users are split across iOS and Android devices.

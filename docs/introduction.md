@@ -17,8 +17,6 @@ And here's an example of a coupon.
 
 Google Wallet is supported too. The same `MobilePass` model backs both platforms, so most of the API is identical regardless of where the pass is headed.
 
-![google wallet pass](/docs/laravel-mobile-pass/v1/images/google-wallet-placeholder.jpg)
-
 ## Credits
 
 This package has been made in collaboration with [Dan Johnson](DanJohnson.xyz).

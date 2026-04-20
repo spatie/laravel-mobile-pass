@@ -22,8 +22,6 @@ class EventTicketPassClass extends GooglePassClass
 
     protected ?Image $hero = null;
 
-    protected ?string $backgroundColor = null;
-
     protected static function resourceName(): string
     {
         return 'eventTicketClass';
@@ -81,13 +79,6 @@ class EventTicketPassClass extends GooglePassClass
         return $this;
     }
 
-    public function setBackgroundColor(string $hex): self
-    {
-        $this->backgroundColor = $hex;
-
-        return $this;
-    }
-
     /** @return array<string, mixed> */
     protected function compileData(): array
     {
@@ -138,10 +129,6 @@ class EventTicketPassClass extends GooglePassClass
 
         if (isset($payload['heroImage']['sourceUri']['uri'])) {
             $this->hero = Image::fromUrl((string) $payload['heroImage']['sourceUri']['uri']);
-        }
-
-        if (isset($payload['hexBackgroundColor'])) {
-            $this->backgroundColor = (string) $payload['hexBackgroundColor'];
         }
     }
 }
