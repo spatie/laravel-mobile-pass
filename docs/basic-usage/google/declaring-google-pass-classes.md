@@ -1,6 +1,6 @@
 ---
 title: Declaring Google pass classes
-weight: 7
+weight: 2
 ---
 
 Google Wallet separates a pass into two pieces: a **Class** and an **Object**. A Class is a shared template (the event itself, the loyalty program, the flight). An Object is one pass for one user, built on top of a Class.

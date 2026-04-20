@@ -1,6 +1,6 @@
 ---
 title: Associating passes with models
-weight: 8
+weight: 5
 ---
 
 This package offers methods to associate mobile passes with models. This can be useful if you want to associate a mobile pass with a user, a product, or any other model.

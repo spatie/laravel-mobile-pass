@@ -1,6 +1,6 @@
 ---
 title: Generating your first Google pass
-weight: 6
+weight: 3
 ---
 
 Once you have a [Google pass class](declaring-google-pass-classes) declared, generating an individual pass for a user takes one builder call. The builder creates the Object on Google's servers and returns a `MobilePass` model you can store or hand to a controller.

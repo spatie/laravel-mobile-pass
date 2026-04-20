@@ -1,6 +1,6 @@
 ---
 title: Using passes as mail attachments
-weight: 13
+weight: 4
 ---
 
 In your mail templates, you can attach passes to your emails. This is useful when you want to send a pass to a user after a purchase or when you want to send a pass to a user after they have signed up for a service.

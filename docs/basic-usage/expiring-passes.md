@@ -1,6 +1,6 @@
 ---
 title: Expiring passes
-weight: 14
+weight: 8
 ---
 
 Sometimes a pass should no longer be valid. A concert has ended, a coupon was redeemed, a gift card was spent. Call `expire()` on the `MobilePass` model and the package handles the platform specifics for you.

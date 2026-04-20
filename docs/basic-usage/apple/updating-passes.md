@@ -1,6 +1,6 @@
 ---
 title: Updating passes
-weight: 10
+weight: 3
 ---
 
 When your user downloads a pass and adds it to their Wallet, Apple will send a request to confirm that the pass has been registered.
