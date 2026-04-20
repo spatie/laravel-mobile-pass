@@ -22,6 +22,8 @@ $mobilePass = EventTicketPassBuilder::make()
     ->save();
 ```
 
+The `Barcode` entity is imported from the `Apple\Entities` namespace because it is shared across both platforms. The Google builders translate it into Google's barcode payload shape (`QR_CODE`, `PDF_417`, `AZTEC`, `CODE_128`) for you.
+
 `save()` does three things:
 
 1. Validates the payload.

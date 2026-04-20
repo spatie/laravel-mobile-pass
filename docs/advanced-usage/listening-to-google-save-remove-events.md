@@ -7,7 +7,18 @@ When a user saves a Google pass to their wallet (or removes one), Google calls b
 
 ## Configure the callback endpoint
 
-The package mounts the callback endpoint at `{prefix}/passkit/v1/google/callbacks`, wherever you called `Route::mobilePass()`. Go to your Google Pay & Wallet Business Console and set the **Callback URL** to this full URL (for example `https://your-app.com/passkit/v1/google/callbacks`).
+The package mounts the callback endpoint inside the `Route::mobilePass()` macro. If you've called `Route::mobilePass()` with no argument, the full path is `/passkit/v1/google/callbacks`. If you passed a prefix, that prefix sits in front.
+
+```php
+// in your routes file
+Route::mobilePass();
+// endpoint is at: https://your-app.com/passkit/v1/google/callbacks
+
+Route::mobilePass('api');
+// endpoint is at: https://your-app.com/api/passkit/v1/google/callbacks
+```
+
+Whichever URL you ended up with, head to the [Google Pay & Wallet Business Console](https://pay.google.com/business/console), find the **Callback URL** field, and paste it in.
 
 Google signs the callback with an RS256 JWT. Set the signing key:
 

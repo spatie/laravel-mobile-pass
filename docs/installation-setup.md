@@ -61,11 +61,34 @@ return [
     ],
 
     /*
+     * Read the "Getting credentials from Google" section in the documentation
+     * to learn how to get these values.
+     */
+    'google' => [
+        'issuer_id' => env('MOBILE_PASS_GOOGLE_ISSUER_ID'),
+
+        'service_account_key_base64' => env('MOBILE_PASS_GOOGLE_KEY_BASE64'),
+        'service_account_key_contents' => env('MOBILE_PASS_GOOGLE_KEY_CONTENTS'),
+        'service_account_key_path' => env('MOBILE_PASS_GOOGLE_KEY_PATH'),
+
+        'origins' => [env('APP_URL')],
+
+        'api_base_url' => env(
+            'MOBILE_PASS_GOOGLE_API_BASE_URL',
+            'https://walletobjects.googleapis.com/walletobjects/v1'
+        ),
+
+        'callback_signing_key' => env('MOBILE_PASS_GOOGLE_CALLBACK_SIGNING_KEY'),
+    ],
+
+    /*
      * The actions perform core tasks offered by this package. You can customize the behaviour
      * by creating your own action class that extend the one that ships with the package.
      */
     'actions' => [
+        'handle_google_callback' => Spatie\LaravelMobilePass\Actions\Google\HandleGoogleCallbackAction::class,
         'notify_apple_of_pass_update' => Spatie\LaravelMobilePass\Actions\Apple\NotifyAppleOfPassUpdateAction::class,
+        'notify_google_of_pass_update' => Spatie\LaravelMobilePass\Actions\Google\NotifyGoogleOfPassUpdateAction::class,
         'register_device' => Spatie\LaravelMobilePass\Actions\Apple\RegisterDeviceAction::class,
         'unregister_device' => Spatie\LaravelMobilePass\Actions\Apple\UnregisterDeviceAction::class,
     ],
@@ -78,6 +101,7 @@ return [
         'mobile_pass' => Spatie\LaravelMobilePass\Models\MobilePass::class,
         'apple_mobile_pass_registration' => Spatie\LaravelMobilePass\Models\Apple\AppleMobilePassRegistration::class,
         'apple_mobile_pass_device' => Spatie\LaravelMobilePass\Models\Apple\AppleMobilePassDevice::class,
+        'google_mobile_pass_event' => Spatie\LaravelMobilePass\Models\Google\GoogleMobilePassEvent::class,
     ],
 
     /*
@@ -88,21 +112,47 @@ return [
             'airline' => Spatie\LaravelMobilePass\Builders\Apple\AirlinePassBuilder::class,
             'boarding' => Spatie\LaravelMobilePass\Builders\Apple\BoardingPassBuilder::class,
             'coupon' => Spatie\LaravelMobilePass\Builders\Apple\CouponPassBuilder::class,
+            'event_ticket' => Spatie\LaravelMobilePass\Builders\Apple\EventTicketPassBuilder::class,
             'generic' => Spatie\LaravelMobilePass\Builders\Apple\GenericPassBuilder::class,
             'store_card' => Spatie\LaravelMobilePass\Builders\Apple\StoreCardPassBuilder::class,
         ],
+        'google' => [
+            'boarding' => Spatie\LaravelMobilePass\Builders\Google\BoardingPassBuilder::class,
+            'event_ticket' => Spatie\LaravelMobilePass\Builders\Google\EventTicketPassBuilder::class,
+            'generic' => Spatie\LaravelMobilePass\Builders\Google\GenericPassBuilder::class,
+            'loyalty' => Spatie\LaravelMobilePass\Builders\Google\LoyaltyPassBuilder::class,
+            'offer' => Spatie\LaravelMobilePass\Builders\Google\OfferPassBuilder::class,
+        ],
+    ],
+
+    /*
+     * The queue connection and name used for pushing pass updates to the Apple and Google
+     * wallet APIs. When the connection is `null`, updates will run synchronously.
+     */
+    'queue' => [
+        'connection' => env('MOBILE_PASS_QUEUE_CONNECTION'),
+        'name' => env('MOBILE_PASS_QUEUE_NAME', 'default'),
     ],
 ];
 ```
 
 ## Migrating the database
 
-The package uses the database to track generate passes and registrations. You can publish and run the included migration to create the necessary tables.
+The package uses the database to track generated passes, Apple device registrations, and Google save/remove events. Publish and run the included migrations:
 
 ```bash
 php artisan vendor:publish --tag="mobile-pass-migrations"
 php artisan migrate
 ```
+
+Two migrations are published:
+
+- `create_mobile_pass_tables` creates the `mobile_passes`, `apple_mobile_pass_devices`, and `apple_mobile_pass_registrations` tables.
+- `add_google_wallet_support` adds the `expired_at` column to `mobile_passes` (used by `$pass->expire()`) and creates the `mobile_pass_google_events` table (used by save and remove callbacks).
+
+### Upgrading an existing install
+
+If you already had `create_mobile_pass_tables` applied before upgrading to the Google-aware release, only the second migration runs. The `expired_at` column is added conditionally (it checks if the column exists), so repeat migrations are safe.
 
 ## Registering the routes
 
