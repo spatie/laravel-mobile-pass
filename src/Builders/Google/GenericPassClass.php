@@ -1,0 +1,149 @@
+<?php
+
+namespace Spatie\LaravelMobilePass\Builders\Google;
+
+use Spatie\LaravelMobilePass\Builders\Google\Entities\Image;
+use Spatie\LaravelMobilePass\Builders\Google\Entities\LocalizedString;
+use Spatie\LaravelMobilePass\Builders\Google\Validators\GenericClassValidator;
+use Spatie\LaravelMobilePass\Builders\Google\Validators\GooglePassClassValidator;
+
+class GenericPassClass extends GooglePassClass
+{
+    protected ?string $issuerName = null;
+
+    protected ?LocalizedString $cardTitle = null;
+
+    protected ?LocalizedString $subheader = null;
+
+    protected ?LocalizedString $header = null;
+
+    protected ?string $backgroundColor = null;
+
+    protected ?Image $logo = null;
+
+    protected ?Image $hero = null;
+
+    protected static function resourceName(): string
+    {
+        return 'genericClass';
+    }
+
+    protected static function validator(): GooglePassClassValidator
+    {
+        return new GenericClassValidator;
+    }
+
+    public function setIssuerName(string $issuerName): self
+    {
+        $this->issuerName = $issuerName;
+
+        return $this;
+    }
+
+    public function setCardTitle(string $value, string $language = 'en-US'): self
+    {
+        $this->cardTitle = LocalizedString::of($value, $language);
+
+        return $this;
+    }
+
+    public function getCardTitle(): ?string
+    {
+        return $this->cardTitle?->defaultValue;
+    }
+
+    public function setSubheader(string $value, string $language = 'en-US'): self
+    {
+        $this->subheader = LocalizedString::of($value, $language);
+
+        return $this;
+    }
+
+    public function setHeader(string $value, string $language = 'en-US'): self
+    {
+        $this->header = LocalizedString::of($value, $language);
+
+        return $this;
+    }
+
+    public function setBackgroundColor(string $hex): self
+    {
+        $this->backgroundColor = $hex;
+
+        return $this;
+    }
+
+    public function setLogoUrl(string $url): self
+    {
+        $this->logo = Image::fromUrl($url);
+
+        return $this;
+    }
+
+    public function setHeroImageUrl(string $url): self
+    {
+        $this->hero = Image::fromUrl($url);
+
+        return $this;
+    }
+
+    /** @return array<string, mixed> */
+    protected function compileData(): array
+    {
+        return array_filter([
+            'issuerName' => $this->issuerName,
+            'cardTitle' => $this->cardTitle?->toArray(),
+            'subheader' => $this->subheader?->toArray(),
+            'header' => $this->header?->toArray(),
+            'hexBackgroundColor' => $this->backgroundColor,
+            'logo' => $this->logo?->toArray(),
+            'heroImage' => $this->hero?->toArray(),
+            'reviewStatus' => $this->reviewStatus,
+        ], fn ($value) => $value !== null && $value !== []);
+    }
+
+    /** @param array<string, mixed> $payload */
+    protected function applyHydratedPayload(array $payload): void
+    {
+        if (isset($payload['issuerName'])) {
+            $this->issuerName = (string) $payload['issuerName'];
+        }
+
+        if (isset($payload['cardTitle']['defaultValue']['value'])) {
+            $this->cardTitle = LocalizedString::of(
+                (string) $payload['cardTitle']['defaultValue']['value'],
+                (string) ($payload['cardTitle']['defaultValue']['language'] ?? 'en-US'),
+            );
+        }
+
+        if (isset($payload['subheader']['defaultValue']['value'])) {
+            $this->subheader = LocalizedString::of(
+                (string) $payload['subheader']['defaultValue']['value'],
+                (string) ($payload['subheader']['defaultValue']['language'] ?? 'en-US'),
+            );
+        }
+
+        if (isset($payload['header']['defaultValue']['value'])) {
+            $this->header = LocalizedString::of(
+                (string) $payload['header']['defaultValue']['value'],
+                (string) ($payload['header']['defaultValue']['language'] ?? 'en-US'),
+            );
+        }
+
+        if (isset($payload['hexBackgroundColor'])) {
+            $this->backgroundColor = (string) $payload['hexBackgroundColor'];
+        }
+
+        if (isset($payload['logo']['sourceUri']['uri'])) {
+            $this->logo = Image::fromUrl((string) $payload['logo']['sourceUri']['uri']);
+        }
+
+        if (isset($payload['heroImage']['sourceUri']['uri'])) {
+            $this->hero = Image::fromUrl((string) $payload['heroImage']['sourceUri']['uri']);
+        }
+
+        if (isset($payload['reviewStatus'])) {
+            $this->reviewStatus = (string) $payload['reviewStatus'];
+        }
+    }
+}
