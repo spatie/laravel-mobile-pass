@@ -8,8 +8,6 @@ use Spatie\LaravelMobilePass\Builders\Google\Validators\LoyaltyClassValidator;
 
 class LoyaltyPassClass extends GooglePassClass
 {
-    protected ?string $issuerName = null;
-
     protected ?string $programName = null;
 
     protected ?Image $programLogo = null;
@@ -32,13 +30,6 @@ class LoyaltyPassClass extends GooglePassClass
     protected static function validator(): GooglePassClassValidator
     {
         return new LoyaltyClassValidator;
-    }
-
-    public function setIssuerName(string $issuerName): self
-    {
-        $this->issuerName = $issuerName;
-
-        return $this;
     }
 
     public function setProgramName(string $programName): self
@@ -98,7 +89,7 @@ class LoyaltyPassClass extends GooglePassClass
     /** @return array<string, mixed> */
     protected function compileData(): array
     {
-        return array_filter([
+        return $this->filterEmpty([
             'issuerName' => $this->issuerName,
             'programName' => $this->programName,
             'programLogo' => $this->programLogo?->toArray(),
@@ -108,15 +99,13 @@ class LoyaltyPassClass extends GooglePassClass
             'accountIdLabel' => $this->accountIdLabel,
             'hexBackgroundColor' => $this->backgroundColor,
             'reviewStatus' => $this->reviewStatus,
-        ], fn ($value) => $value !== null && $value !== []);
+        ]);
     }
 
     /** @param array<string, mixed> $payload */
     protected function applyHydratedPayload(array $payload): void
     {
-        if (isset($payload['issuerName'])) {
-            $this->issuerName = (string) $payload['issuerName'];
-        }
+        $this->hydrateCommonFields($payload);
 
         if (isset($payload['programName'])) {
             $this->programName = (string) $payload['programName'];
@@ -144,10 +133,6 @@ class LoyaltyPassClass extends GooglePassClass
 
         if (isset($payload['hexBackgroundColor'])) {
             $this->backgroundColor = (string) $payload['hexBackgroundColor'];
-        }
-
-        if (isset($payload['reviewStatus'])) {
-            $this->reviewStatus = (string) $payload['reviewStatus'];
         }
     }
 }

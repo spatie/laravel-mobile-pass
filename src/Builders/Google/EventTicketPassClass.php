@@ -10,8 +10,6 @@ use Spatie\LaravelMobilePass\Builders\Google\Validators\GooglePassClassValidator
 
 class EventTicketPassClass extends GooglePassClass
 {
-    protected ?string $issuerName = null;
-
     protected ?LocalizedString $eventName = null;
 
     protected ?LocalizedString $venueName = null;
@@ -34,13 +32,6 @@ class EventTicketPassClass extends GooglePassClass
     protected static function validator(): GooglePassClassValidator
     {
         return new EventTicketClassValidator;
-    }
-
-    public function setIssuerName(string $issuerName): self
-    {
-        $this->issuerName = $issuerName;
-
-        return $this;
     }
 
     public function setEventName(string $value, string $language = 'en-US'): self
@@ -100,29 +91,27 @@ class EventTicketPassClass extends GooglePassClass
     /** @return array<string, mixed> */
     protected function compileData(): array
     {
-        $venue = array_filter([
+        $venue = $this->filterEmpty([
             'name' => $this->venueName?->toArray(),
             'address' => $this->venueAddress?->toArray(),
         ]);
 
-        return array_filter([
+        return $this->filterEmpty([
             'issuerName' => $this->issuerName,
             'eventName' => $this->eventName?->toArray(),
-            'venue' => $venue !== [] ? $venue : null,
+            'venue' => $venue,
             'dateTime' => $this->startDate ? ['start' => $this->startDate->toIso8601String()] : null,
             'logo' => $this->logo?->toArray(),
             'heroImage' => $this->hero?->toArray(),
             'hexBackgroundColor' => $this->backgroundColor,
             'reviewStatus' => $this->reviewStatus,
-        ], fn ($value) => $value !== null && $value !== []);
+        ]);
     }
 
     /** @param array<string, mixed> $payload */
     protected function applyHydratedPayload(array $payload): void
     {
-        if (isset($payload['issuerName'])) {
-            $this->issuerName = (string) $payload['issuerName'];
-        }
+        $this->hydrateCommonFields($payload);
 
         if (isset($payload['eventName']['defaultValue']['value'])) {
             $this->eventName = LocalizedString::of(
@@ -153,10 +142,6 @@ class EventTicketPassClass extends GooglePassClass
 
         if (isset($payload['hexBackgroundColor'])) {
             $this->backgroundColor = (string) $payload['hexBackgroundColor'];
-        }
-
-        if (isset($payload['reviewStatus'])) {
-            $this->reviewStatus = (string) $payload['reviewStatus'];
         }
     }
 }

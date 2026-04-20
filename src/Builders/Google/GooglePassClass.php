@@ -16,6 +16,8 @@ abstract class GooglePassClass
 {
     protected string $reviewStatus = 'UNDER_REVIEW';
 
+    protected ?string $issuerName = null;
+
     abstract protected static function resourceName(): string;
 
     abstract protected static function validator(): GooglePassClassValidator;
@@ -31,6 +33,13 @@ abstract class GooglePassClass
     public static function make(string $suffix): static
     {
         return new static($suffix);
+    }
+
+    public function setIssuerName(string $issuerName): static
+    {
+        $this->issuerName = $issuerName;
+
+        return $this;
     }
 
     public function id(): string
@@ -95,5 +104,26 @@ abstract class GooglePassClass
         $class->applyHydratedPayload($payload);
 
         return $class;
+    }
+
+    /**
+     * @param  array<string, mixed>  $payload
+     * @return array<string, mixed>
+     */
+    protected function filterEmpty(array $payload): array
+    {
+        return array_filter($payload, fn ($value) => $value !== null && $value !== []);
+    }
+
+    /** @param array<string, mixed> $payload */
+    protected function hydrateCommonFields(array $payload): void
+    {
+        if (isset($payload['issuerName'])) {
+            $this->issuerName = (string) $payload['issuerName'];
+        }
+
+        if (isset($payload['reviewStatus'])) {
+            $this->reviewStatus = (string) $payload['reviewStatus'];
+        }
     }
 }

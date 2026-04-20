@@ -8,8 +8,6 @@ use Spatie\LaravelMobilePass\Builders\Google\Validators\OfferClassValidator;
 
 class OfferPassClass extends GooglePassClass
 {
-    protected ?string $issuerName = null;
-
     protected ?string $title = null;
 
     protected ?string $redemptionChannel = null;
@@ -32,13 +30,6 @@ class OfferPassClass extends GooglePassClass
     protected static function validator(): GooglePassClassValidator
     {
         return new OfferClassValidator;
-    }
-
-    public function setIssuerName(string $issuerName): self
-    {
-        $this->issuerName = $issuerName;
-
-        return $this;
     }
 
     public function setTitle(string $title): self
@@ -98,7 +89,7 @@ class OfferPassClass extends GooglePassClass
     /** @return array<string, mixed> */
     protected function compileData(): array
     {
-        return array_filter([
+        return $this->filterEmpty([
             'issuerName' => $this->issuerName,
             'title' => $this->title,
             'redemptionChannel' => $this->redemptionChannel,
@@ -108,15 +99,13 @@ class OfferPassClass extends GooglePassClass
             'logo' => $this->logo?->toArray(),
             'hexBackgroundColor' => $this->backgroundColor,
             'reviewStatus' => $this->reviewStatus,
-        ], fn ($value) => $value !== null && $value !== []);
+        ]);
     }
 
     /** @param array<string, mixed> $payload */
     protected function applyHydratedPayload(array $payload): void
     {
-        if (isset($payload['issuerName'])) {
-            $this->issuerName = (string) $payload['issuerName'];
-        }
+        $this->hydrateCommonFields($payload);
 
         if (isset($payload['title'])) {
             $this->title = (string) $payload['title'];
@@ -144,10 +133,6 @@ class OfferPassClass extends GooglePassClass
 
         if (isset($payload['hexBackgroundColor'])) {
             $this->backgroundColor = (string) $payload['hexBackgroundColor'];
-        }
-
-        if (isset($payload['reviewStatus'])) {
-            $this->reviewStatus = (string) $payload['reviewStatus'];
         }
     }
 }

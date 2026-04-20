@@ -9,8 +9,6 @@ use Spatie\LaravelMobilePass\Builders\Google\Validators\GooglePassClassValidator
 
 class BoardingPassClass extends GooglePassClass
 {
-    protected ?string $issuerName = null;
-
     protected ?Carbon $localScheduledDepartureDateTime = null;
 
     protected ?string $airlineCode = null;
@@ -35,13 +33,6 @@ class BoardingPassClass extends GooglePassClass
     protected static function validator(): GooglePassClassValidator
     {
         return new BoardingClassValidator;
-    }
-
-    public function setIssuerName(string $issuerName): self
-    {
-        $this->issuerName = $issuerName;
-
-        return $this;
     }
 
     public function setLocalScheduledDepartureDateTime(Carbon $dateTime): self
@@ -108,42 +99,28 @@ class BoardingPassClass extends GooglePassClass
     /** @return array<string, mixed> */
     protected function compileData(): array
     {
-        $carrier = array_filter([
-            'airlineCode' => $this->airlineCode,
-        ]);
-
-        $flightHeader = array_filter([
-            'carrier' => $carrier !== [] ? $carrier : null,
+        $flightHeader = $this->filterEmpty([
+            'carrier' => $this->airlineCode ? ['airlineCode' => $this->airlineCode] : null,
             'flightNumber' => $this->flightNumber,
         ]);
 
-        $origin = array_filter([
-            'airportIataCode' => $this->originAirportCode,
-        ]);
-
-        $destination = array_filter([
-            'airportIataCode' => $this->destinationAirportCode,
-        ]);
-
-        return array_filter([
+        return $this->filterEmpty([
             'issuerName' => $this->issuerName,
             'localScheduledDepartureDateTime' => $this->localScheduledDepartureDateTime?->toIso8601String(),
-            'flightHeader' => $flightHeader !== [] ? $flightHeader : null,
-            'origin' => $origin !== [] ? $origin : null,
-            'destination' => $destination !== [] ? $destination : null,
+            'flightHeader' => $flightHeader,
+            'origin' => $this->originAirportCode ? ['airportIataCode' => $this->originAirportCode] : null,
+            'destination' => $this->destinationAirportCode ? ['airportIataCode' => $this->destinationAirportCode] : null,
             'logo' => $this->logo?->toArray(),
             'heroImage' => $this->hero?->toArray(),
             'hexBackgroundColor' => $this->backgroundColor,
             'reviewStatus' => $this->reviewStatus,
-        ], fn ($value) => $value !== null && $value !== []);
+        ]);
     }
 
     /** @param array<string, mixed> $payload */
     protected function applyHydratedPayload(array $payload): void
     {
-        if (isset($payload['issuerName'])) {
-            $this->issuerName = (string) $payload['issuerName'];
-        }
+        $this->hydrateCommonFields($payload);
 
         if (isset($payload['localScheduledDepartureDateTime'])) {
             $this->localScheduledDepartureDateTime = Carbon::parse((string) $payload['localScheduledDepartureDateTime']);
@@ -175,10 +152,6 @@ class BoardingPassClass extends GooglePassClass
 
         if (isset($payload['hexBackgroundColor'])) {
             $this->backgroundColor = (string) $payload['hexBackgroundColor'];
-        }
-
-        if (isset($payload['reviewStatus'])) {
-            $this->reviewStatus = (string) $payload['reviewStatus'];
         }
     }
 }

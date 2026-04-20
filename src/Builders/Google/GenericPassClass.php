@@ -9,8 +9,6 @@ use Spatie\LaravelMobilePass\Builders\Google\Validators\GooglePassClassValidator
 
 class GenericPassClass extends GooglePassClass
 {
-    protected ?string $issuerName = null;
-
     protected ?LocalizedString $cardTitle = null;
 
     protected ?LocalizedString $subheader = null;
@@ -31,13 +29,6 @@ class GenericPassClass extends GooglePassClass
     protected static function validator(): GooglePassClassValidator
     {
         return new GenericClassValidator;
-    }
-
-    public function setIssuerName(string $issuerName): self
-    {
-        $this->issuerName = $issuerName;
-
-        return $this;
     }
 
     public function setCardTitle(string $value, string $language = 'en-US'): self
@@ -90,7 +81,7 @@ class GenericPassClass extends GooglePassClass
     /** @return array<string, mixed> */
     protected function compileData(): array
     {
-        return array_filter([
+        return $this->filterEmpty([
             'issuerName' => $this->issuerName,
             'cardTitle' => $this->cardTitle?->toArray(),
             'subheader' => $this->subheader?->toArray(),
@@ -99,15 +90,13 @@ class GenericPassClass extends GooglePassClass
             'logo' => $this->logo?->toArray(),
             'heroImage' => $this->hero?->toArray(),
             'reviewStatus' => $this->reviewStatus,
-        ], fn ($value) => $value !== null && $value !== []);
+        ]);
     }
 
     /** @param array<string, mixed> $payload */
     protected function applyHydratedPayload(array $payload): void
     {
-        if (isset($payload['issuerName'])) {
-            $this->issuerName = (string) $payload['issuerName'];
-        }
+        $this->hydrateCommonFields($payload);
 
         if (isset($payload['cardTitle']['defaultValue']['value'])) {
             $this->cardTitle = LocalizedString::of(
@@ -140,10 +129,6 @@ class GenericPassClass extends GooglePassClass
 
         if (isset($payload['heroImage']['sourceUri']['uri'])) {
             $this->hero = Image::fromUrl((string) $payload['heroImage']['sourceUri']['uri']);
-        }
-
-        if (isset($payload['reviewStatus'])) {
-            $this->reviewStatus = (string) $payload['reviewStatus'];
         }
     }
 }
