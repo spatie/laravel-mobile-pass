@@ -36,7 +36,7 @@ class PushPassUpdateJob implements ShouldQueue
             return self::dispatchSync(...$arguments);
         }
 
-        return static::newPendingDispatch(new static(...$arguments));
+        return self::newPendingDispatch(new self(...$arguments));
     }
 
     public function handle(): void
