@@ -36,4 +36,13 @@ class InvalidConfig extends Exception
 
         return new self("The pass builder `{$passBuilderName}` must be an instance of `{$expectedNamespace}\PassBuilder`. `{$passBuilderClass}` does not extend `{$expectedNamespace}\PassBuilder`.");
     }
+
+    public static function missingGoogleCredentials(): self
+    {
+        return new self(
+            'No Google service account key is configured. Set one of '
+            .'MOBILE_PASS_GOOGLE_KEY_BASE64, MOBILE_PASS_GOOGLE_KEY_CONTENTS, '
+            .'or MOBILE_PASS_GOOGLE_KEY_PATH. See the docs on getting credentials from Google.'
+        );
+    }
 }
