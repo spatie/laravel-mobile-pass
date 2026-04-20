@@ -15,6 +15,7 @@ use Illuminate\Http\Response;
 use Illuminate\Mail\Attachment;
 use Illuminate\Support\Str;
 use Spatie\LaravelMobilePass\Actions\Apple\NotifyAppleOfPassUpdateAction;
+use Spatie\LaravelMobilePass\Actions\Google\NotifyGoogleOfPassUpdateAction;
 use Spatie\LaravelMobilePass\Builders\Apple\AirlinePassBuilder;
 use Spatie\LaravelMobilePass\Builders\Apple\ApplePassBuilder;
 use Spatie\LaravelMobilePass\Builders\Apple\BoardingPassBuilder;
@@ -23,6 +24,7 @@ use Spatie\LaravelMobilePass\Builders\Apple\GenericPassBuilder;
 use Spatie\LaravelMobilePass\Builders\Apple\StoreCardPassBuilder;
 use Spatie\LaravelMobilePass\Enums\Platform;
 use Spatie\LaravelMobilePass\Exceptions\CannotDownload;
+use Spatie\LaravelMobilePass\Jobs\PushPassUpdateJob;
 use Spatie\LaravelMobilePass\Models\Apple\AppleMobilePassRegistration;
 use Spatie\LaravelMobilePass\Support\Apple\DownloadableMobilePass;
 use Spatie\LaravelMobilePass\Support\Config;
@@ -34,6 +36,7 @@ use Spatie\LaravelMobilePass\Support\Config;
  * @property array $content
  * @property string|null $download_name
  * @property Carbon $updated_at
+ * @property Carbon|null $expired_at
  * @property Collection<int, AppleMobilePassRegistration> $registrations
  */
 class MobilePass extends Model implements Attachable, Responsable
@@ -48,10 +51,15 @@ class MobilePass extends Model implements Attachable, Responsable
         parent::boot();
 
         static::updated(function (MobilePass $mobilePass) {
-            /** @var class-string<NotifyAppleOfPassUpdateAction> $action */
-            $action = Config::getActionClass('notify_apple_of_pass_update', NotifyAppleOfPassUpdateAction::class);
+            [$configKey, $default] = match ($mobilePass->platform) {
+                Platform::Apple => ['notify_apple_of_pass_update', NotifyAppleOfPassUpdateAction::class],
+                Platform::Google => ['notify_google_of_pass_update', NotifyGoogleOfPassUpdateAction::class],
+            };
 
-            app($action)->execute($mobilePass);
+            /** @var class-string $action */
+            $action = Config::getActionClass($configKey, $default);
+
+            PushPassUpdateJob::dispatch($mobilePass, $action);
         });
     }
 
@@ -77,7 +85,41 @@ class MobilePass extends Model implements Attachable, Responsable
             'platform' => Platform::class,
             'content' => 'json',
             'images' => 'json',
+            'expired_at' => 'datetime',
         ];
+    }
+
+    public function expire(): self
+    {
+        match ($this->platform) {
+            Platform::Apple => $this->expireAsApple(),
+            Platform::Google => $this->expireAsGoogle(),
+        };
+
+        return $this;
+    }
+
+    protected function expireAsApple(): void
+    {
+        $content = $this->content;
+        $content['voided'] = true;
+        $content['expirationDate'] = now()->toIso8601String();
+
+        $this->update([
+            'content' => $content,
+            'expired_at' => now(),
+        ]);
+    }
+
+    protected function expireAsGoogle(): void
+    {
+        $content = $this->content;
+        $content['googleObjectPayload']['state'] = 'EXPIRED';
+
+        $this->update([
+            'content' => $content,
+            'expired_at' => now(),
+        ]);
     }
 
     public function airlinePassBuilder(): AirlinePassBuilder

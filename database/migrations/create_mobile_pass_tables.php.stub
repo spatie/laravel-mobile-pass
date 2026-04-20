@@ -19,6 +19,8 @@ return new class extends Migration
             $table->string('download_name')->nullable();
             $table->nullableMorphs('model');
 
+            $table->timestamp('expired_at')->nullable();
+
             $table->timestamps();
         });
 

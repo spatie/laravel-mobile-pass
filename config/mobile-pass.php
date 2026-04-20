@@ -3,6 +3,7 @@
 use Spatie\LaravelMobilePass\Actions\Apple\NotifyAppleOfPassUpdateAction;
 use Spatie\LaravelMobilePass\Actions\Apple\RegisterDeviceAction;
 use Spatie\LaravelMobilePass\Actions\Apple\UnregisterDeviceAction;
+use Spatie\LaravelMobilePass\Actions\Google\NotifyGoogleOfPassUpdateAction;
 use Spatie\LaravelMobilePass\Builders\Apple\AirlinePassBuilder;
 use Spatie\LaravelMobilePass\Builders\Apple\BoardingPassBuilder;
 use Spatie\LaravelMobilePass\Builders\Apple\CouponPassBuilder;
@@ -65,6 +66,7 @@ return [
     */
     'actions' => [
         'notify_apple_of_pass_update' => NotifyAppleOfPassUpdateAction::class,
+        'notify_google_of_pass_update' => NotifyGoogleOfPassUpdateAction::class,
         'register_device' => RegisterDeviceAction::class,
         'unregister_device' => UnregisterDeviceAction::class,
     ],
