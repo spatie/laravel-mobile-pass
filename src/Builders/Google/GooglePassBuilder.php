@@ -74,13 +74,6 @@ abstract class GooglePassBuilder
         return $this;
     }
 
-    public function setState(string $state): static
-    {
-        $this->state = $state;
-
-        return $this;
-    }
-
     public function objectId(): string
     {
         $suffix = $this->objectSuffix ??= (string) Str::uuid();
