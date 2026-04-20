@@ -3,7 +3,7 @@ title: Generating your first pass
 weight: 2
 ---
 
-The package offers [various builder classes](TODO: add link) that you can use to build passes.  These builders all have specialized methods to build their specific passes.
+The package offers [various builder classes](/docs/laravel-mobile-pass/v1/basic-usage/available-pass-types) that you can use to build passes. These builders all have specialized methods to build their specific passes.
 
 Here's an example of how you can generate a basic airline boarding pass:
 
@@ -64,7 +64,7 @@ $mobilePass = AirlinePassBuilder::make()
     ->setDestinationLocationDescription('Abu Dhabi Intl')
     ->setSeats(Seat::make(
         number: '66F',
-    ));
+    ))
     ->save();
 ```
 
