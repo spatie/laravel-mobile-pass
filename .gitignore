@@ -36,3 +36,6 @@ tests/TestSupport/temp
 
 # Certificates
 *.p12
+
+# Claude Code local state
+/.claude
