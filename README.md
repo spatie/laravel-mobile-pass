@@ -1,5 +1,7 @@
 **IN DEVELOPMENT: DO NOT USE IN PRODUCTION (YET)**
 
+Apple Wallet support is feature-complete. Google Wallet support (EventTicket, Boarding, Loyalty, Offer, and Generic passes, plus save/remove callbacks and push updates) is implemented and tested on `main`. For setup, see [Getting credentials from Apple](https://spatie.be/docs/laravel-mobile-pass/v1/basic-usage/getting-credentials-from-apple) and [Getting credentials from Google](https://spatie.be/docs/laravel-mobile-pass/v1/basic-usage/getting-credentials-from-google).
+
 # Generate mobile passes for iOS and Android
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/spatie/laravel-mobile-pass.svg?style=flat-square)](https://packagist.org/packages/spatie/laravel-mobile-pass)
@@ -7,7 +9,7 @@
 [![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/spatie/laravel-mobile-pass/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/spatie/laravel-mobile-pass/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
 [![Total Downloads](https://img.shields.io/packagist/dt/spatie/laravel-mobile-pass.svg?style=flat-square)](https://packagist.org/packages/spatie/laravel-mobile-pass)
 
-Using this package you can generate mobile passes for Apple Wallet. Possible use cases are boarding passes, event tickets, coupons, store cards, membership cards, gift cards etc.
+Using this package you can generate mobile passes for Apple Wallet and Google Wallet. Possible use cases are boarding passes, event tickets, coupons, store cards, membership cards, gift cards etc.
 
 You can even push out updates to issued passes, making sure that they are always up-to-date on your users devices.
 
