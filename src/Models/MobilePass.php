@@ -261,6 +261,5 @@ class MobilePass extends Model implements Attachable, Responsable
         $name = $name ?? $this->download_name ?? 'pass';
 
         return Str::beforeLast($name, '.pkpass');
-
     }
 }

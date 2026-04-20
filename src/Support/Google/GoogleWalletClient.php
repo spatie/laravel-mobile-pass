@@ -56,12 +56,6 @@ class GoogleWalletClient
         return $this->get("/{$resource}/{$id}");
     }
 
-    /** @return array<string, mixed> */
-    public function getObject(string $resource, string $id): array
-    {
-        return $this->get("/{$resource}/{$id}");
-    }
-
     /** @return array<int, array<string, mixed>> */
     public function listClasses(string $resource): array
     {
