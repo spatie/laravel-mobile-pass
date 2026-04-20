@@ -378,8 +378,6 @@ abstract class ApplePassBuilder
         $this->labelColour = Colour::makeFromRgbString($this->data['labelColor'] ?? null);
 
         $this->uncompileSemantics();
-        // $model->passImages = array_map(fn ($image) => Image::fromArray($image), $model->images);
-        // $model->barcodes = array_map(fn ($barcode) => Barcode::fromArray($barcode), $model->content['barcodes'] ?? []);
 
         $this->uncompileFieldSet('headerFields');
         $this->uncompileFieldSet('primaryFields');

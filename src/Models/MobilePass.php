@@ -38,9 +38,9 @@ use Spatie\LaravelMobilePass\Support\Google\GoogleJwtSigner;
  * @property Platform $platform
  * @property array $images
  * @property array $content
- * @property string|null $download_name
+ * @property ?string $download_name
  * @property Carbon $updated_at
- * @property Carbon|null $expired_at
+ * @property ?Carbon $expired_at
  * @property Collection<int, AppleMobilePassRegistration> $registrations
  * @property Collection<int, GoogleMobilePassEvent> $googleEvents
  */
