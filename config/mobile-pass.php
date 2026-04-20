@@ -16,6 +16,7 @@ use Spatie\LaravelMobilePass\Builders\Google\LoyaltyPassBuilder as GoogleLoyalty
 use Spatie\LaravelMobilePass\Builders\Google\OfferPassBuilder as GoogleOfferPassBuilder;
 use Spatie\LaravelMobilePass\Models\Apple\AppleMobilePassDevice;
 use Spatie\LaravelMobilePass\Models\Apple\AppleMobilePassRegistration;
+use Spatie\LaravelMobilePass\Models\Google\GoogleMobilePassEvent;
 use Spatie\LaravelMobilePass\Models\MobilePass;
 
 return [
@@ -58,6 +59,8 @@ return [
             'MOBILE_PASS_GOOGLE_API_BASE_URL',
             'https://walletobjects.googleapis.com/walletobjects/v1'
         ),
+
+        'callback_signing_key' => env('MOBILE_PASS_GOOGLE_CALLBACK_SIGNING_KEY'),
     ],
 
     /*
@@ -79,6 +82,7 @@ return [
         'mobile_pass' => MobilePass::class,
         'apple_mobile_pass_registration' => AppleMobilePassRegistration::class,
         'apple_mobile_pass_device' => AppleMobilePassDevice::class,
+        'google_mobile_pass_event' => GoogleMobilePassEvent::class,
     ],
 
     /*
