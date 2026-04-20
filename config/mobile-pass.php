@@ -36,6 +36,25 @@ return [
     ],
 
     /*
+    * Read the "Getting credentials from Google" section in the documentation
+    * to learn how to get these values.
+    */
+    'google' => [
+        'issuer_id' => env('MOBILE_PASS_GOOGLE_ISSUER_ID'),
+
+        'service_account_key_base64' => env('MOBILE_PASS_GOOGLE_KEY_BASE64'),
+        'service_account_key_contents' => env('MOBILE_PASS_GOOGLE_KEY_CONTENTS'),
+        'service_account_key_path' => env('MOBILE_PASS_GOOGLE_KEY_PATH'),
+
+        'origins' => [env('APP_URL')],
+
+        'api_base_url' => env(
+            'MOBILE_PASS_GOOGLE_API_BASE_URL',
+            'https://walletobjects.googleapis.com/walletobjects/v1'
+        ),
+    ],
+
+    /*
     * The actions perform core tasks offered by this package. You can customize the behaviour
     * by creating your own action class that extend the one that ships with the package.
     */
@@ -66,5 +85,14 @@ return [
             'generic' => GenericPassBuilder::class,
             'store_card' => StoreCardPassBuilder::class,
         ],
+    ],
+
+    /*
+    * The queue connection and name used for pushing pass updates to the Apple and Google
+    * wallet APIs. When the connection is `null`, updates will run synchronously.
+    */
+    'queue' => [
+        'connection' => env('MOBILE_PASS_QUEUE_CONNECTION'),
+        'name' => env('MOBILE_PASS_QUEUE_NAME', 'default'),
     ],
 ];
