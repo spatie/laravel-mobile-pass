@@ -12,7 +12,7 @@ use Spatie\LaravelMobilePass\Events\ReceivedAppleMobilePassLogEntriesEvent;
  */
 class MobilePassLogController extends Controller
 {
-    public function __invoke(Request $request)
+    public function __invoke(Request $request): void
     {
         event(new ReceivedAppleMobilePassLogEntriesEvent($request->json('logs')));
     }

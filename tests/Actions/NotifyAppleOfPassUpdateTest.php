@@ -6,11 +6,12 @@ use Spatie\LaravelMobilePass\Actions\Apple\NotifyAppleOfPassUpdateAction;
 use Spatie\LaravelMobilePass\Models\MobilePass;
 
 beforeEach(function () {
-    Http::fake();
     config(['mobile-pass.apple.apple_push_base_url' => 'https://example.com']);
 });
 
 it('sends a push notification to Apple', function () {
+    Http::fake();
+
     $pass = MobilePass::factory()->hasRegistrations(1)->create();
     app(NotifyAppleOfPassUpdateAction::class)->execute($pass);
 
@@ -22,6 +23,8 @@ it('sends a push notification to Apple', function () {
 });
 
 it('contains an empty json dictionary as the payload', function () {
+    Http::fake();
+
     $pass = MobilePass::factory()->hasRegistrations(1)->create();
     app(NotifyAppleOfPassUpdateAction::class)->execute($pass);
 
@@ -30,6 +33,8 @@ it('contains an empty json dictionary as the payload', function () {
 });
 
 it('sends the pass type ID as the apns topic', function () {
+    Http::fake();
+
     app(NotifyAppleOfPassUpdateAction::class)->execute(
         MobilePass::factory()->hasRegistrations(1)->create()
     );
@@ -39,6 +44,8 @@ it('sends the pass type ID as the apns topic', function () {
 });
 
 it('uses HTTP/2', function () {
+    Http::fake();
+
     app(NotifyAppleOfPassUpdateAction::class)->execute(
         MobilePass::factory()->hasRegistrations(1)->create()
     );
@@ -48,6 +55,8 @@ it('uses HTTP/2', function () {
 })->skip('This is failing in CI for some reason');
 
 it('includes the certificate', function () {
+    Http::fake();
+
     app(NotifyAppleOfPassUpdateAction::class)->execute(
         MobilePass::factory()->hasRegistrations(1)->create()
     );
@@ -56,6 +65,8 @@ it('includes the certificate', function () {
 });
 
 it('sends a push notification to every registration', function () {
+    Http::fake();
+
     app(NotifyAppleOfPassUpdateAction::class)->execute(
         MobilePass::factory()->hasRegistrations(3)->create()
     );
@@ -63,17 +74,14 @@ it('sends a push notification to every registration', function () {
     Http::assertSentCount(3);
 });
 
-it('deletes the device if the Apple reported that the push token is invalid', function () {
-    $this->markTestIncomplete('Need to find out what the response code/message would be.');
-
+it('deletes the registration if Apple reports the push token is invalid', function () {
     Http::fake([
-        '*' => Http::response('InvalidToken', 403),
+        '*' => Http::response('', 410),
     ]);
 
     app(NotifyAppleOfPassUpdateAction::class)->execute(
         MobilePass::factory()->hasRegistrations(1)->create()
     );
 
-    $this->assertDatabaseCount('mobile_pass_registrations', 0);
-    $this->assertDatabaseCount('mobile_pass_devices', 0);
+    $this->assertDatabaseCount('apple_mobile_pass_registrations', 0);
 });

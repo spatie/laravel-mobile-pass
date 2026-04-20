@@ -20,7 +20,7 @@ class RegisterDeviceController extends Controller
 
         $registration = (new $actionClass)->execute(
             $request->deviceId,
-            $request->get('pushToken'),
+            $request->input('pushToken'),
             $request->passTypeId,
             $request->passSerial,
         );

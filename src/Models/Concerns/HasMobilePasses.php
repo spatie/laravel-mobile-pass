@@ -10,7 +10,7 @@ use Spatie\LaravelMobilePass\Support\Config;
 /** @var $this \Illuminate\Database\Eloquent\Model */
 trait HasMobilePasses
 {
-    public function addMobilePass(MobilePass $mobilePass)
+    public function addMobilePass(MobilePass $mobilePass): void
     {
         $this->mobilePasses()->save($mobilePass);
     }

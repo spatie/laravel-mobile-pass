@@ -17,11 +17,6 @@ class InvalidConfig extends Exception
         return new self("The `{$actionName}` action must be an instance of `{$shouldBeOrExtend}`. `{$actionClass}` does not extend {$shouldBeOrExtend}.");
     }
 
-    public static function invalidEvent(string $eventName, mixed $eventClass, string $shouldBeOrExtend): self
-    {
-        return new self("The `{$eventName}` event must be an instance of `{$shouldBeOrExtend}`. `{$eventClass}` does not extend {$shouldBeOrExtend}.");
-    }
-
     public static function passBuilderNotRegistered(string $passBuilderName, Platform $platform): self
     {
         return new self("The pass builder `{$passBuilderName}` is not registered. Make sure you have registered it in the `builders.{$platform->value}` key of the  `mobile-pass` config file.");

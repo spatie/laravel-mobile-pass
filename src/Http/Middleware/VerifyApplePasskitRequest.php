@@ -10,7 +10,9 @@ class VerifyApplePasskitRequest
 {
     public function handle(Request $request, Closure $next)
     {
-        if ($request->header('Authorization') !== $this->expectedAuthorizationValue()) {
+        $providedAuthorization = (string) $request->header('Authorization');
+
+        if (! hash_equals($this->expectedAuthorizationValue(), $providedAuthorization)) {
             throw new AuthenticationException('Invalid Passkit authorization header.');
         }
 

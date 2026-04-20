@@ -2,6 +2,7 @@
 
 namespace Spatie\LaravelMobilePass\Actions\Apple;
 
+use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
 use Spatie\LaravelMobilePass\Models\Apple\AppleMobilePassRegistration;
 use Spatie\LaravelMobilePass\Models\MobilePass;
@@ -42,14 +43,22 @@ class NotifyAppleOfPassUpdateAction
 
     protected function notifyUpdate(AppleMobilePassRegistration $registration): self
     {
-        Http::withHeaders($this->headers($registration))
+        $response = Http::withHeaders($this->headers($registration))
             ->withOptions($this->options($registration))
             ->post(
                 url: $this->updateUrl($registration),
-                // @phpstan-ignore-next-line
                 data: json_decode('{}'),
             );
 
+        $this->handleResponse($registration, $response);
+
         return $this;
+    }
+
+    protected function handleResponse(AppleMobilePassRegistration $registration, Response $response): void
+    {
+        if ($response->status() === 410) {
+            $registration->delete();
+        }
     }
 }

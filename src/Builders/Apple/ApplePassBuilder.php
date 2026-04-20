@@ -308,21 +308,12 @@ abstract class ApplePassBuilder
             );
         }
 
-        // Remove any null keys or keys where the value is an empty array.
-        // TODO: do this recursively.
         $compiledData = array_filter(
             $this->compileData(),
             fn ($value) => ! empty($value)
         );
 
-        $data = $this->validator()->validate(
-            $compiledData
-        );
-
-        // The icon image is always required.
-        // TODO: validate this.
-
-        return $data;
+        return $this->validator()->validate($compiledData);
     }
 
     public function generate(): string
@@ -354,7 +345,7 @@ abstract class ApplePassBuilder
             'organizationName' => $this->organisationName,
             'passTypeIdentifier' => config('mobile-pass.apple.type_identifier'),
             'serialNumber' => $this->serialNumber,
-            'authenticationToken' => config('mobile-pass.webservice_secret'),
+            'authenticationToken' => config('mobile-pass.apple.webservice.secret'),
             'teamIdentifier' => config('mobile-pass.apple.team_identifier'),
             'description' => $this->description,
             'semantics' => $this->compileSemantics(),

@@ -9,6 +9,7 @@ use Spatie\LaravelMobilePass\Builders\Apple\GenericPassBuilder;
 
 it('can create a mobile pass', function () {
     $pass = GenericPassBuilder::make()
+        ->setOrganisationName('Spatie')
         ->setDescription('Hello!')
         ->setSerialNumber(123456)
 
