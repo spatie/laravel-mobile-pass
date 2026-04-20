@@ -8,6 +8,7 @@ use Spatie\LaravelMobilePass\Actions\Google\NotifyGoogleOfPassUpdateAction;
 use Spatie\LaravelMobilePass\Builders\Apple\AirlinePassBuilder;
 use Spatie\LaravelMobilePass\Builders\Apple\BoardingPassBuilder;
 use Spatie\LaravelMobilePass\Builders\Apple\CouponPassBuilder;
+use Spatie\LaravelMobilePass\Builders\Apple\EventTicketPassBuilder;
 use Spatie\LaravelMobilePass\Builders\Apple\GenericPassBuilder;
 use Spatie\LaravelMobilePass\Builders\Apple\StoreCardPassBuilder;
 use Spatie\LaravelMobilePass\Builders\Google\BoardingPassBuilder as GoogleBoardingPassBuilder;
@@ -95,6 +96,7 @@ return [
             'airline' => AirlinePassBuilder::class,
             'boarding' => BoardingPassBuilder::class,
             'coupon' => CouponPassBuilder::class,
+            'event_ticket' => EventTicketPassBuilder::class,
             'generic' => GenericPassBuilder::class,
             'store_card' => StoreCardPassBuilder::class,
         ],

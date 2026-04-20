@@ -1,0 +1,50 @@
+{
+    "files": [
+        "signature",
+        "manifest.json",
+        "pass.json",
+        "icon.png"
+    ],
+    "manifest": {
+        "pass.json": "<random>",
+        "icon.png": "<random>"
+    },
+    "pass": {
+        "description": "Hello!",
+        "formatVersion": 1,
+        "organizationName": "My organisation",
+        "passTypeIdentifier": "pass.app.gowallet",
+        "serialNumber": "<random>",
+        "teamIdentifier": "2SQU7LWHMY",
+        "eventTicket": {
+            "headerFields": [
+                {
+                    "key": "event",
+                    "label": "Event",
+                    "value": "Laracon EU"
+                }
+            ],
+            "primaryFields": [
+                {
+                    "key": "venue",
+                    "label": "Venue",
+                    "value": "Amsterdam"
+                }
+            ],
+            "secondaryFields": [
+                {
+                    "key": "name",
+                    "label": "Name",
+                    "value": "Dan Johnson"
+                }
+            ],
+            "auxiliaryFields": [
+                {
+                    "key": "seat",
+                    "label": "Seat",
+                    "value": "A12"
+                }
+            ]
+        }
+    }
+}
