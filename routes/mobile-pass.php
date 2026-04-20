@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Spatie\LaravelMobilePass\Http\Controllers\Apple\CheckForUpdatesController;
+use Spatie\LaravelMobilePass\Http\Controllers\Apple\DownloadApplePassController;
 use Spatie\LaravelMobilePass\Http\Controllers\Apple\GetAssociatedSerialsForDeviceController;
 use Spatie\LaravelMobilePass\Http\Controllers\Apple\MobilePassLogController;
 use Spatie\LaravelMobilePass\Http\Controllers\Apple\RegisterDeviceController;
@@ -27,5 +28,8 @@ Route::macro('mobilePass', function (string $prefix = '') {
 
         Route::post('log', MobilePassLogController::class)
             ->name('mobile-pass.logs');
+
+        Route::get('apple/{mobilePass}/download', DownloadApplePassController::class)
+            ->name('mobile-pass.apple.download');
     });
 });
