@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Http;
 use Spatie\LaravelMobilePass\Enums\Platform;
 use Spatie\LaravelMobilePass\Models\MobilePass;
+use Spatie\LaravelMobilePass\Tests\TestSupport\Google\GoogleFixtures;
 
 it('Apple expire sets voided and expirationDate, triggering APNs push', function () {
     Http::fake();
@@ -38,4 +39,30 @@ it('Google expire patches state=EXPIRED', function () {
         && $request['state'] === 'EXPIRED'
     );
     expect($pass->fresh()->expired_at)->not()->toBeNull();
+});
+
+it('Apple addToWalletUrl returns a signed download route', function () {
+    $pass = MobilePass::factory()->create(['platform' => Platform::Apple]);
+
+    $url = $pass->addToWalletUrl();
+
+    expect($url)->toContain('/apple/'.$pass->id.'/download');
+    expect($url)->toContain('signature=');
+});
+
+it('Google addToWalletUrl returns a pay.google.com save URL', function () {
+    config()->set('mobile-pass.google.service_account_key_path', GoogleFixtures::serviceAccountPath());
+    config()->set('mobile-pass.google.issuer_id', '3388');
+
+    $pass = MobilePass::factory()->create([
+        'platform' => Platform::Google,
+        'content' => [
+            'googleClassType' => 'eventTicketClass',
+            'googleObjectId' => '3388.john',
+        ],
+    ]);
+
+    $url = $pass->addToWalletUrl();
+
+    expect($url)->toStartWith('https://pay.google.com/gp/v/save/');
 });

@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Http\Response;
 use Illuminate\Mail\Attachment;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
 use Spatie\LaravelMobilePass\Actions\Apple\NotifyAppleOfPassUpdateAction;
 use Spatie\LaravelMobilePass\Actions\Google\NotifyGoogleOfPassUpdateAction;
@@ -28,6 +29,7 @@ use Spatie\LaravelMobilePass\Jobs\PushPassUpdateJob;
 use Spatie\LaravelMobilePass\Models\Apple\AppleMobilePassRegistration;
 use Spatie\LaravelMobilePass\Support\Apple\DownloadableMobilePass;
 use Spatie\LaravelMobilePass\Support\Config;
+use Spatie\LaravelMobilePass\Support\Google\GoogleJwtSigner;
 
 /**
  * @property string $builder_name
@@ -120,6 +122,31 @@ class MobilePass extends Model implements Attachable, Responsable
             'content' => $content,
             'expired_at' => now(),
         ]);
+    }
+
+    public function addToWalletUrl(): string
+    {
+        return match ($this->platform) {
+            Platform::Apple => $this->addToAppleWalletUrl(),
+            Platform::Google => $this->addToGoogleWalletUrl(),
+        };
+    }
+
+    protected function addToAppleWalletUrl(): string
+    {
+        return URL::signedRoute('mobile-pass.apple.download', ['mobilePass' => $this->id]);
+    }
+
+    protected function addToGoogleWalletUrl(): string
+    {
+        $objectResource = str_replace('Class', 'Object', $this->content['googleClassType']);
+        $resourceKey = $objectResource.'s';
+
+        $jwt = app(GoogleJwtSigner::class)->signSaveUrlJwt([
+            $resourceKey => [['id' => $this->content['googleObjectId']]],
+        ]);
+
+        return 'https://pay.google.com/gp/v/save/'.$jwt;
     }
 
     public function airlinePassBuilder(): AirlinePassBuilder
