@@ -7,7 +7,9 @@ use Spatie\LaravelMobilePass\Http\Controllers\Apple\GetAssociatedSerialsForDevic
 use Spatie\LaravelMobilePass\Http\Controllers\Apple\MobilePassLogController;
 use Spatie\LaravelMobilePass\Http\Controllers\Apple\RegisterDeviceController;
 use Spatie\LaravelMobilePass\Http\Controllers\Apple\UnregisterDeviceController;
+use Spatie\LaravelMobilePass\Http\Controllers\Google\HandleCallbackController;
 use Spatie\LaravelMobilePass\Http\Middleware\VerifyApplePasskitRequest;
+use Spatie\LaravelMobilePass\Http\Middleware\VerifyGoogleCallbackRequest;
 
 Route::macro('mobilePass', function (string $prefix = '') {
     Route::prefix("{$prefix}/passkit/v1")->group(function () {
@@ -31,5 +33,9 @@ Route::macro('mobilePass', function (string $prefix = '') {
 
         Route::get('apple/{mobilePass}/download', DownloadApplePassController::class)
             ->name('mobile-pass.apple.download');
+
+        Route::post('google/callbacks', HandleCallbackController::class)
+            ->middleware(VerifyGoogleCallbackRequest::class)
+            ->name('mobile-pass.google.callback');
     });
 });

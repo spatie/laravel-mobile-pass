@@ -3,6 +3,7 @@
 use Spatie\LaravelMobilePass\Actions\Apple\NotifyAppleOfPassUpdateAction;
 use Spatie\LaravelMobilePass\Actions\Apple\RegisterDeviceAction;
 use Spatie\LaravelMobilePass\Actions\Apple\UnregisterDeviceAction;
+use Spatie\LaravelMobilePass\Actions\Google\HandleGoogleCallbackAction;
 use Spatie\LaravelMobilePass\Actions\Google\NotifyGoogleOfPassUpdateAction;
 use Spatie\LaravelMobilePass\Builders\Apple\AirlinePassBuilder;
 use Spatie\LaravelMobilePass\Builders\Apple\BoardingPassBuilder;
@@ -68,6 +69,7 @@ return [
     * by creating your own action class that extend the one that ships with the package.
     */
     'actions' => [
+        'handle_google_callback' => HandleGoogleCallbackAction::class,
         'notify_apple_of_pass_update' => NotifyAppleOfPassUpdateAction::class,
         'notify_google_of_pass_update' => NotifyGoogleOfPassUpdateAction::class,
         'register_device' => RegisterDeviceAction::class,
