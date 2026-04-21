@@ -1,6 +1,6 @@
 ---
 title: Delivering passes to users
-weight: 7
+weight: 9
 ---
 
 Once a `MobilePass` exists, you've got a handful of ways to get it in front of the user. The sections below cover the common delivery surfaces: controllers, buttons, and QR codes on printed confirmations. Whatever surface you pick, the mechanics are the same for Apple and Google, since the package figures out the right link for you.

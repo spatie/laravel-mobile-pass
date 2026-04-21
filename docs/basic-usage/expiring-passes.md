@@ -1,6 +1,6 @@
 ---
 title: Expiring passes
-weight: 8
+weight: 10
 ---
 
 Every pass has a shelf life. The concert ends, the coupon gets redeemed, the gift card runs dry. When that happens, call `expire()` on the `MobilePass` model and let the package sort out the platform specifics:
