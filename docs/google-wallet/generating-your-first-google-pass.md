@@ -5,7 +5,7 @@ weight: 3
 
 Once you have a [Google pass class](declaring-google-pass-classes) declared, generating an individual pass for a user takes one builder call. The builder creates the Object on Google's servers and returns a `MobilePass` model you can store or hand to a controller.
 
-Here's an event ticket built on top of the `'taylor-swift-2026'` class:
+Here's an event ticket built on top of the `'beatles-shea-1965'` class:
 
 ```php
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\Barcode;
@@ -13,7 +13,7 @@ use Spatie\LaravelMobilePass\Builders\Google\EventTicketPassBuilder;
 use Spatie\LaravelMobilePass\Enums\BarcodeType;
 
 $mobilePass = EventTicketPassBuilder::make()
-    ->setClass('taylor-swift-2026')
+    ->setClass('beatles-shea-1965')
     ->setAttendeeName('Dan Johnson')
     ->setSection('Floor A')
     ->setRow('12')

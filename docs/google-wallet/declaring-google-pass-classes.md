@@ -5,7 +5,7 @@ weight: 2
 
 Google Wallet separates a pass into two pieces: a **Class** and an **Object**. A Class is a shared template (the event itself, the loyalty program, the flight). An Object is one pass for one user, built on top of a Class.
 
-Think of a Taylor Swift concert. The "Taylor Swift at Wembley on June 1" Class is declared once. Every ticket sold is an Object pointing at that Class. Or think of a Starbucks loyalty program: the program is one Class, and each member's card is a separate Object.
+Think of a Beatles concert. The "Beatles at Shea Stadium on August 15" Class is declared once. Every ticket sold is an Object pointing at that Class. Or think of a Starbucks loyalty program: the program is one Class, and each member's card is a separate Object.
 
 Apple has no equivalent of this. On Apple, every pass is standalone.
 
@@ -16,19 +16,19 @@ Every Google pass type has a matching Class. Create one by calling `make()` with
 ```php
 use Spatie\LaravelMobilePass\Builders\Google\EventTicketPassClass;
 
-EventTicketPassClass::make('taylor-swift-2026')
-    ->setIssuerName('Eras Tour Promotions')
-    ->setEventName('Taylor Swift | The Eras Tour')
-    ->setVenueName('Wembley Stadium')
-    ->setVenueAddress('London HA9 0WS, United Kingdom')
+EventTicketPassClass::make('beatles-shea-1965')
+    ->setIssuerName('Fab Four Promotions')
+    ->setEventName('The Beatles | Live at Shea')
+    ->setVenueName('Shea Stadium')
+    ->setVenueAddress('126th Street & Roosevelt Avenue, Flushing, NY')
     ->setStartDate(now()->addMonths(2))
-    ->setLogoUrl('https://example.com/taylor-logo.png')
-    ->setHeroImageUrl('https://example.com/taylor-hero.png')
+    ->setLogoUrl('https://example.com/beatles-logo.png')
+    ->setHeroImageUrl('https://example.com/beatles-hero.png')
     ->setBackgroundColor('#1a1a1a')
     ->save();
 ```
 
-The suffix (`'taylor-swift-2026'` here) is what you'll reference later when creating individual ticket passes. The full class ID Google sees is `{issuer-id}.{suffix}`, which the package builds for you.
+The suffix (`'beatles-shea-1965'` here) is what you'll reference later when creating individual ticket passes. The full class ID Google sees is `{issuer-id}.{suffix}`, which the package builds for you.
 
 ## Where to declare classes
 
@@ -65,7 +65,7 @@ class LoyaltyClassSeeder extends Seeder
 You can look a class up later by its suffix.
 
 ```php
-$class = EventTicketPassClass::find('taylor-swift-2026');
+$class = EventTicketPassClass::find('beatles-shea-1965');
 
 if ($class) {
     // class exists on Google
@@ -85,7 +85,7 @@ Both methods return instances with the fields Google sends back hydrated onto th
 Google has no hard delete for classes. What you can do is call `retire()`, which flips the class's `reviewStatus` to `REJECTED`. Google will stop promoting it, but every pass already issued against it keeps working.
 
 ```php
-EventTicketPassClass::find('taylor-swift-2026')?->retire();
+EventTicketPassClass::find('beatles-shea-1965')?->retire();
 ```
 
 ## Available Class builders

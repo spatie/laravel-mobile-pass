@@ -52,10 +52,7 @@ it('updates a field', function () {
         ->addHeaderField('seat', '66F')
         ->save();
 
-    $pass
-        ->builder()
-        ->updateField('flight-no', 'UPDATED')
-        ->save();
+    $pass->updateField('flight-no', 'UPDATED');
 
     expect($pass->generate())->toMatchMobilePassSnapshot();
 });

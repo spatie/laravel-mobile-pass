@@ -46,10 +46,10 @@ For non-airline transit (trains, boats, buses), subclass `BoardingPassBuilder` a
 use Spatie\LaravelMobilePass\Builders\Apple\EventTicketPassBuilder;
 
 EventTicketPassBuilder::make()
-    ->setOrganisationName('Eras Tour Promotions')
-    ->setSerialNumber('TS-BRU-0042')
-    ->setDescription('Taylor Swift at King Baudouin Stadium')
-    ->addPrimaryField('event', 'The Eras Tour')
+    ->setOrganisationName('Fab Four Promotions')
+    ->setSerialNumber('BTL-SHEA-0042')
+    ->setDescription('The Beatles at Shea Stadium')
+    ->addPrimaryField('event', 'Beatles Live at Shea')
     ->addSecondaryField('section', 'B12')
     ->addSecondaryField('seat', 'Row 8, Seat 22')
     ->save();
@@ -137,23 +137,23 @@ use Spatie\LaravelMobilePass\Builders\Google\EventTicketPassClass;
 use Spatie\LaravelMobilePass\Enums\BarcodeType;
 
 // Once, per event
-EventTicketPassClass::make('taylor-swift-2026')
-    ->setIssuerName('Eras Tour Promotions')
-    ->setEventName('The Eras Tour')
-    ->setVenueName('King Baudouin Stadium')
-    ->setVenueAddress('Avenue du Marathon 135, 1020 Brussels')
+EventTicketPassClass::make('beatles-shea-1965')
+    ->setIssuerName('Fab Four Promotions')
+    ->setEventName('Beatles Live at Shea')
+    ->setVenueName('Shea Stadium')
+    ->setVenueAddress('126th Street & Roosevelt Avenue, Flushing, NY')
     ->setStartDate(now()->addMonths(2))
-    ->setLogoUrl('https://cdn.example.com/ts-logo.png')
+    ->setLogoUrl('https://cdn.example.com/beatles-logo.png')
     ->save();
 
 // Per ticket
 EventTicketPassBuilder::make()
-    ->setClass('taylor-swift-2026')
+    ->setClass('beatles-shea-1965')
     ->setAttendeeName('Dan Johnson')
     ->setSection('B12')
     ->setRow('8')
     ->setSeat('22')
-    ->setBarcode(Barcode::make(BarcodeType::QR, 'TS-BRU-0042'))
+    ->setBarcode(Barcode::make(BarcodeType::QR, 'BTL-SHEA-0042'))
     ->save();
 ```
 

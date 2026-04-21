@@ -42,13 +42,13 @@ Http::fake();
 cache()->put('mobile-pass.google.access-token', 'test-token', 3600);
 
 $mobilePass = EventTicketPassBuilder::make()
-    ->setClass('taylor-swift-2026')
+    ->setClass('beatles-shea-1965')
     ->setAttendeeName('Test User')
     ->save();
 
 Http::assertSent(fn ($request) => str_contains($request->url(), '/eventTicketObject')
     && $request->method() === 'POST'
-    && $request['classId'] === '3388000000000000001.taylor-swift-2026'
+    && $request['classId'] === '3388000000000000001.beatles-shea-1965'
 );
 ```
 
@@ -95,8 +95,8 @@ Paste a JWT from `$mobilePass->addToWalletUrl()` into [wallet-lab-tools.web.app]
 `find()` and `all()` on class builders hit Google's GET endpoints and hydrate the class back into PHP. Compare the hydrated class to what you sent:
 
 ```php
-$class = EventTicketPassClass::find('taylor-swift-2026');
-expect($class->getEventName())->toBe('Taylor Swift');
+$class = EventTicketPassClass::find('beatles-shea-1965');
+expect($class->getEventName())->toBe('The Beatles | Live at Shea');
 ```
 
 This catches schema-level mistakes without a device.

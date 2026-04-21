@@ -11,4 +11,9 @@ class PlatformDoesntSupport extends Exception
     {
         return new self("Platform {$platform->value} doesn't support downloading passes.");
     }
+
+    public static function cannotUpdateFields(Platform $platform): self
+    {
+        return new self("Platform {$platform->value} doesn't support updating fields by key. Use the platform-specific builder instead.");
+    }
 }

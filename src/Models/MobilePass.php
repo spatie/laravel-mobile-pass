@@ -25,6 +25,7 @@ use Spatie\LaravelMobilePass\Builders\Apple\GenericPassBuilder;
 use Spatie\LaravelMobilePass\Builders\Apple\StoreCardPassBuilder;
 use Spatie\LaravelMobilePass\Enums\Platform;
 use Spatie\LaravelMobilePass\Exceptions\CannotDownload;
+use Spatie\LaravelMobilePass\Exceptions\PlatformDoesntSupport;
 use Spatie\LaravelMobilePass\Jobs\PushPassUpdateJob;
 use Spatie\LaravelMobilePass\Models\Apple\AppleMobilePassRegistration;
 use Spatie\LaravelMobilePass\Models\Google\GoogleMobilePassEvent;
@@ -220,6 +221,23 @@ class MobilePass extends Model implements Attachable, Responsable
         $builderClass = Config::getPassBuilderClass($this->builder_name, $this->platform);
 
         return $builderClass::make($this->content, $this->images, $this);
+    }
+
+    public function updateField(
+        string $key,
+        string $value,
+        ?string $changeMessage = null,
+        ?string $label = null,
+    ): static {
+        if ($this->platform !== Platform::Apple) {
+            throw PlatformDoesntSupport::cannotUpdateFields($this->platform);
+        }
+
+        $this->builder()
+            ->updateField($key, $value, $changeMessage, $label)
+            ->save();
+
+        return $this;
     }
 
     public function generate(): string

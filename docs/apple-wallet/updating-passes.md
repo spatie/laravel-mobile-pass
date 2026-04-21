@@ -10,13 +10,11 @@ The package handles that incoming request and stores the registration in the `mo
 Here's how you update a saved pass:
 
 ```php
-use App\Models\MobilePass;
+use Spatie\LaravelMobilePass\Models\MobilePass;
 
 $mobilePass = $user->firstMobilePass();
 
-$mobilePass->builder()
-    ->updateField('seat', '13A')
-    ->save();
+$mobilePass->updateField('seat', '13A');
 ```
 
 When a pass gets updated, the package notifies Apple. Apple tells the device that a new version is available, and the device fetches it from your server.
@@ -24,8 +22,15 @@ When a pass gets updated, the package notifies Apple. Apple tells the device tha
 If you want the user's device to show a notification when the value changes, pass a `changeMessage:`:
 
 ```php
+$mobilePass->updateField('seat', '13A', changeMessage: 'Your seat was changed to :value');
+```
+
+If you need to update several fields in one go (and save only once), drop down to the builder:
+
+```php
 $mobilePass->builder()
-    ->updateField('seat', '13A', changeMessage: 'Your seat was changed to :value')
+    ->updateField('seat', '13A')
+    ->updateField('gate', 'D68')
     ->save();
 ```
 

@@ -33,46 +33,42 @@ Here's an Apple Wallet event ticket:
 use Spatie\LaravelMobilePass\Builders\Apple\EventTicketPassBuilder;
 
 $mobilePass = EventTicketPassBuilder::make()
-    ->setOrganisationName('Eras Tour Promotions')
-    ->setSerialNumber('TS-BRU-0042')
-    ->setDescription('Taylor Swift at King Baudouin Stadium')
-    ->addField('event', 'The Eras Tour')
+    ->setOrganisationName('Fab Four Promotions')
+    ->setSerialNumber('BTL-SHEA-0042')
+    ->setDescription('The Beatles at Shea Stadium')
+    ->addField('event', 'Beatles Live at Shea')
     ->addField('attendee', 'Dan Johnson', label: 'Name')
     ->addField('seat', 'Floor A, Row 12')
     ->save();
 ```
 
-A note on the fields. The first argument (`event`, `attendee`, `seat`) is a free-form identifier. Apple doesn't care what string you pick, but it has to be unique within the pass, and you'll reuse it later when you want to update that specific field. The label shown on the pass defaults to a title-cased version of the key. Pass `label:` when you want something different (like `'Name'` instead of `'Attendee'` above).
+Those first arguments (`event`, `attendee`, `seat`) are identifiers you pick. Apple doesn't care what they say, they just have to be unique within the pass so you can refer back to them later when you want to update that specific field. The label that shows up on the pass is the identifier, title-cased. Pass `label:` when you want something different, which is why `'attendee'` reads as `'Name'` on this ticket.
 
-Apple passes have several field zones (header, primary, secondary, auxiliary, back) that control where a field shows up on the pass. `addField` defaults to primary, which is fine for getting started. When you need finer control, reach for `addHeaderField`, `addSecondaryField`, `addAuxiliaryField`, or `addBackField`. See [Generating your first pass](/docs/laravel-mobile-pass/v1/apple-wallet/generating-your-first-pass) for the full set.
+There are a few other zones a field can land in (header, primary, secondary, auxiliary, back), and they change where the field appears on the pass. `addField` drops it in the primary zone, which is the right place most of the time. When you want finer control, reach for `addHeaderField`, `addSecondaryField`, `addAuxiliaryField`, or `addBackField`. The [Apple walkthrough](/docs/laravel-mobile-pass/v1/apple-wallet/generating-your-first-pass) shows them all in one place.
 
-The `save()` method returns a `MobilePass` model. Nothing is written to disk. All pass properties (fields, images, barcode) are stored as a row in the `mobile_passes` table.
+Calling `save()` gives you back a `MobilePass` model. Nothing is written to disk; the whole pass (fields, images, barcode) lives as a row in the `mobile_passes` table.
 
-To hand the ticket to the user, return the model straight from a controller. `MobilePass` implements `Responsable`, so Laravel serves the signed `.pkpass` for you:
+Handing the ticket to the user is as simple as returning the model from a controller. `MobilePass` implements `Responsable`, so Laravel takes care of serving the signed `.pkpass` file:
 
 ```php
 // in a controller
 return $mobilePass;
 ```
 
-The user taps through, sees a preview in Apple Wallet, and taps Add. At that moment, Apple calls back to your app to register the device against the pass. The package handles that endpoint and stores the registration in the `mobile_pass_registrations` table. That link between pass and device is what makes updates possible.
+The user taps through, sees the pass preview in Apple Wallet, and taps Add. Apple then calls back to your app to register the device against the pass. The package handles that endpoint for you and saves the registration in the `mobile_pass_registrations` table. That link between pass and device is what lets you push updates later on.
 
 ### Updating a pass
 
-If the seat assignment changes later, update the field through the builder:
+Say the seat assignment changes after the user already has the ticket in Wallet. Call `updateField` directly on the model:
 
 ```php
-$mobilePass->builder()
-    ->updateField('seat', 'Floor A, Row 14')
-    ->save();
+$mobilePass->updateField('seat', 'Floor A, Row 14');
 ```
 
 If you want the user's device to display a notification when the value changes, pass a `changeMessage:`:
 
 ```php
-$mobilePass->builder()
-    ->updateField('seat', 'Floor A, Row 14', changeMessage: 'Your seat has changed to :value')
-    ->save();
+$mobilePass->updateField('seat', 'Floor A, Row 14', changeMessage: 'Your seat has changed to :value');
 ```
 
 The `:value` placeholder is replaced with the new field value when the notification shows. The `changeMessage` is stored on the field, so once set, Apple fires it for every future value change on that field until you overwrite it.
@@ -91,7 +87,7 @@ use Spatie\LaravelMobilePass\Builders\Google\EventTicketPassBuilder;
 use Spatie\LaravelMobilePass\Enums\BarcodeType;
 
 $mobilePass = EventTicketPassBuilder::make()
-    ->setClass('taylor-swift-2026')
+    ->setClass('beatles-shea-1965')
     ->setAttendeeName('Dan Johnson')
     ->setSection('Floor A')
     ->setRow('12')

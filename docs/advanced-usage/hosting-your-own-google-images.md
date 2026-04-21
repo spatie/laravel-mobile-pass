@@ -15,9 +15,9 @@ If your images already live on a CDN, S3 bucket, or any public host, hand Google
 use Spatie\LaravelMobilePass\Builders\Google\Entities\Image;
 use Spatie\LaravelMobilePass\Builders\Google\EventTicketPassClass;
 
-EventTicketPassClass::make('taylor-swift-2026')
-    ->setLogoUrl('https://cdn.example.com/taylor-logo.png')
-    ->setHeroImageUrl('https://cdn.example.com/taylor-hero.png')
+EventTicketPassClass::make('beatles-shea-1965')
+    ->setLogoUrl('https://cdn.example.com/beatles-logo.png')
+    ->setHeroImageUrl('https://cdn.example.com/beatles-hero.png')
     ->save();
 ```
 
