@@ -3,7 +3,7 @@ title: Installation & setup
 weight: 4
 ---
 
-You can install the package via composer:
+Pull the package in with Composer:
 
 ```bash
 composer require spatie/laravel-mobile-pass
@@ -11,22 +11,22 @@ composer require spatie/laravel-mobile-pass
 
 ## Getting credentials from Apple and Google
 
-Each platform needs its own credentials before the package can issue passes. Follow the walkthrough for whichever platforms you want to support:
+Each platform wants its own credentials before you can issue passes. Follow the walkthrough for whichever platforms you plan to support:
 
 - [Getting credentials from Apple](/docs/laravel-mobile-pass/v1/apple-wallet/getting-credentials-from-apple)
 - [Getting credentials from Google](/docs/laravel-mobile-pass/v1/google-wallet/getting-credentials-from-google)
 
-Each guide covers what to register, which keys to download, and the environment variables to set.
+Each guide walks you through what to register, which keys to download, and the environment variables to set.
 
 ## Publishing the config file
 
-Optionally, you can publish the `laravel-mobile-pass` config file with this command.
+You can publish the `laravel-mobile-pass` config if you want to tweak it:
 
 ```bash
 php artisan vendor:publish --tag="mobile-pass-config"
 ```
 
-This is the content of the published config file:
+Here's what the published file looks like:
 
 ```php
 return [
@@ -130,18 +130,18 @@ return [
 
 ## Migrating the database
 
-The package uses the database to track generated passes, Apple device registrations, and Google save/remove events. Publish and run the included migration:
+The package keeps track of generated passes, Apple device registrations, and Google save/remove events in your database. Publish and run the included migration:
 
 ```bash
 php artisan vendor:publish --tag="mobile-pass-migrations"
 php artisan migrate
 ```
 
-The published `create_mobile_pass_tables` migration creates the `mobile_passes`, `apple_mobile_pass_devices`, `apple_mobile_pass_registrations`, and `mobile_pass_google_events` tables.
+The published `create_mobile_pass_tables` migration creates four tables: `mobile_passes`, `apple_mobile_pass_devices`, `apple_mobile_pass_registrations`, and `mobile_pass_google_events`.
 
 ## Registering the routes
 
-The package can receive device registration requests and logs from Apple. To set up the necessary routes, call the `mobilePass` macro in your routes file.
+Apple needs to reach your app to register devices and log errors. To wire up the routes it calls into, drop the `mobilePass` macro into your routes file:
 
 ```php
 // in your routes file

@@ -3,7 +3,7 @@ title: Hosting your own Google images
 weight: 5
 ---
 
-Google Wallet expects every image on a pass (logo, hero image, program artwork) to live at a public HTTPS URL. Google fetches the image itself, it doesn't accept uploaded bytes like Apple's `.pkpass` format does.
+Google Wallet expects every image on a pass (logo, hero image, program artwork) to live at a public HTTPS URL. Google fetches the image itself. It doesn't accept uploaded bytes the way Apple's `.pkpass` format does.
 
 The package gives you two ways to provide an image.
 
@@ -21,11 +21,11 @@ EventTicketPassClass::make('beatles-shea-1965')
     ->save();
 ```
 
-Every Class builder exposes `setLogoUrl()`, `setHeroImageUrl()`, and friends that call `Image::fromUrl()` under the hood. This is the simplest path and what most apps should use.
+Every Class builder exposes `setLogoUrl()`, `setHeroImageUrl()`, and friends. Under the hood they call `Image::fromUrl()`. This is the simplest path and what most apps should use.
 
 ## Use a local file
 
-If you want to point at a file on your server, use `Image::fromLocalPath()`:
+If you want to point at a file on your server, reach for `Image::fromLocalPath()`:
 
 ```php
 use Spatie\LaravelMobilePass\Builders\Google\Entities\Image;
@@ -33,7 +33,7 @@ use Spatie\LaravelMobilePass\Builders\Google\Entities\Image;
 $image = Image::fromLocalPath(public_path('images/ticket-hero.png'));
 ```
 
-This is only supported on object-level builders in v1. Calling `publicUrl()` on a local-path image currently throws, because the package hasn't yet shipped a hosted image route. If you try to use `Image::fromLocalPath()` for a Class (which the Class validators run on), you'll see a `RuntimeException`.
+This is only supported on object-level builders in v1. Calling `publicUrl()` on a local-path image throws for now, because the package hasn't yet shipped a hosted image route. Feeding `Image::fromLocalPath()` into a Class (which runs the Class validators) will raise a `RuntimeException`.
 
 > A hosted image route is on the v1.1 roadmap. Until it ships, class-level images must be URLs.
 

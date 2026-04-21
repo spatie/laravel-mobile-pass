@@ -3,9 +3,9 @@ title: Generating your first pass
 weight: 2
 ---
 
-The package offers [various builder classes](/docs/laravel-mobile-pass/v1/basic-usage/available-pass-types) that you can use to build passes. These builders all have specialized methods to build their specific passes.
+The package ships with [a builder for each pass type](/docs/laravel-mobile-pass/v1/basic-usage/available-pass-types) Apple supports. Each builder has setters specific to the kind of pass you're making.
 
-Here's an example of how you can generate a basic airline boarding pass:
+Here's a basic airline boarding pass:
 
 ```php
 use Spatie\LaravelMobilePass\Builders\Apple\AirlinePassBuilder;
@@ -43,7 +43,7 @@ $mobilePass = AirlinePassBuilder::make()
     ->save();
 ```
 
-The `save()` method returns a newly created `MobilePass` model.
+Calling `save()` gives you back a freshly created `MobilePass` model.
 
 ## Field methods
 
@@ -55,4 +55,4 @@ Every Apple builder exposes the five field zones Apple supports:
 - `addAuxiliaryField($key, $value, label: ?, changeMessage: ?)`
 - `addBackField($key, $value, label: ?, changeMessage: ?)`
 
-The `$key` is a free-form identifier, unique within the pass. It is how you reference the field later when you update its value. The label shown on the pass defaults to a title-cased version of the key. Pass `label:` when you want a different display string. Pass `changeMessage:` when you want the user's device to show a notification whenever that field's value is updated (e.g. `'Your gate has changed to :value'`); the `:value` placeholder is replaced with the new field value.
+The `$key` is a free-form identifier you pick, unique within the pass. You'll reference it later when you want to update that field's value. The label shown on the pass defaults to a title-cased version of the key, so pass `label:` when you want something different. Pass `changeMessage:` when you want the user's device to show a notification whenever the field's value changes (for example, `'Your gate has changed to :value'`). The `:value` placeholder gets swapped out with the new field value.

@@ -68,7 +68,11 @@ $mobilePass->updateField('seat', 'Floor A, Row 14');
 If you want the user's device to display a notification when the value changes, pass a `changeMessage:`:
 
 ```php
-$mobilePass->updateField('seat', 'Floor A, Row 14', changeMessage: 'Your seat has changed to :value');
+$mobilePass->updateField(
+    'seat',
+    'Floor A, Row 14',
+    changeMessage: 'Your seat has changed to :value',
+);
 ```
 
 The `:value` placeholder is replaced with the new field value when the notification shows. The `changeMessage` is stored on the field, so once set, Apple fires it for every future value change on that field until you overwrite it.

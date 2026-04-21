@@ -18,9 +18,9 @@ Route::mobilePass('api');
 // endpoint is at: https://your-app.com/api/passkit/v1/google/callbacks
 ```
 
-Whichever URL you ended up with, head to the [Google Pay & Wallet Business Console](https://pay.google.com/business/console), find the **Callback URL** field, and paste it in.
+Whichever URL you ended up with, head to the [Google Pay & Wallet Business Console](https://pay.google.com/business/console), find the Callback URL field, and paste it in.
 
-Google signs the callback with an RS256 JWT. Set the signing key:
+Google signs the callback with an RS256 JWT, so you need to set the signing key:
 
 ```bash
 MOBILE_PASS_GOOGLE_CALLBACK_SIGNING_KEY="-----BEGIN PUBLIC KEY-----
@@ -28,7 +28,7 @@ MIIB...
 -----END PUBLIC KEY-----"
 ```
 
-You can find this key in the Business Console under Settings, API access. See [Getting credentials from Google](/docs/laravel-mobile-pass/v1/google-wallet/getting-credentials-from-google) for the full walkthrough.
+You'll find that key in the Business Console under Settings, API access. See [Getting credentials from Google](/docs/laravel-mobile-pass/v1/google-wallet/getting-credentials-from-google) for the full walkthrough.
 
 ## Listen for the events
 
@@ -76,4 +76,4 @@ if ($mobilePass->isCurrentlySavedToGoogleWallet()) {
 }
 ```
 
-This checks the most recent event. If the user saved, removed, then saved again, the helper returns `true`.
+The helper checks the most recent event. If the user saved, removed, then saved again, it returns `true`.

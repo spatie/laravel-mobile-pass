@@ -3,10 +3,9 @@ title: Customizing models
 weight: 2
 ---
 
-If you want to customize the behaviour of the models, you can do so by creating a new model that extends the default
-model. This way you can add new methods, traits, etc..
+If you want to change how the models behave, create a new model that extends the default one. From there you can add your own methods, traits, or whatever else you need.
 
-Here's how you would enable the `SoftDeletes` trait on a model:
+Here's how you'd turn on the `SoftDeletes` trait on a model:
 
 ```php
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -18,7 +17,7 @@ class CustomMobilePass extends MobilePass
 }
 ```
 
-You must then update the `mobile-pass` config file to use the new model:
+Then update the `mobile-pass` config to use your new model:
 
 ```php
 // config/mobile-pass.php

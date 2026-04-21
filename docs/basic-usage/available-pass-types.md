@@ -3,7 +3,7 @@ title: Available pass types
 weight: 9
 ---
 
-The package ships a builder for each pass type Apple Wallet and Google Wallet support. Pick the builder that matches the kind of pass you are issuing. Every builder has setters specific to its type, on top of the shared `save()`, `addToWalletUrl()`, `expire()` you already know.
+The package ships a builder for each pass type Apple Wallet and Google Wallet support. Pick the builder that matches the kind of pass you're issuing. Every builder has setters specific to its type, on top of the shared `save()`, `addToWalletUrl()`, and `expire()` you already know.
 
 | Apple                       | Google                      | Typical use                            |
 | --------------------------- | --------------------------- | -------------------------------------- |
@@ -11,11 +11,11 @@ The package ships a builder for each pass type Apple Wallet and Google Wallet su
 | `EventTicketPassBuilder`    | `EventTicketPassBuilder`    | Concerts, festivals, sports events     |
 | `CouponPassBuilder`         | `OfferPassBuilder`          | Discount codes, limited-time offers    |
 | `StoreCardPassBuilder`      | `LoyaltyPassBuilder`        | Loyalty cards, membership programs     |
-| `GenericPassBuilder`        | `GenericPassBuilder`        | Anything that does not fit the above   |
+| `GenericPassBuilder`        | `GenericPassBuilder`        | Anything that doesn't fit the above    |
 
-The Apple and Google pairs are not interchangeable: each platform has its own namespace (`Spatie\LaravelMobilePass\Builders\Apple\...` and `Spatie\LaravelMobilePass\Builders\Google\...`). If you want to support both platforms for the same conceptual pass, you build twice. The `MobilePass` model is shared, the fluent API is consistent, so there is very little boilerplate either way.
+The Apple and Google pairs aren't interchangeable. Each platform has its own namespace (`Spatie\LaravelMobilePass\Builders\Apple\...` and `Spatie\LaravelMobilePass\Builders\Google\...`). If you want to support both platforms for the same conceptual pass, you build twice. The `MobilePass` model is shared and the fluent API is consistent, so there's very little boilerplate either way.
 
-The sections below show a minimal example per pass type. For the full Apple walk-through see [Generating your first pass](/docs/laravel-mobile-pass/v1/apple-wallet/generating-your-first-pass). For Google, see [Generating your first Google pass](/docs/laravel-mobile-pass/v1/google-wallet/generating-your-first-google-pass).
+The sections below show a minimal example per pass type. For the full Apple walkthrough see [Generating your first pass](/docs/laravel-mobile-pass/v1/apple-wallet/generating-your-first-pass). For Google, see [Generating your first Google pass](/docs/laravel-mobile-pass/v1/google-wallet/generating-your-first-google-pass).
 
 ## Apple Wallet
 
@@ -100,7 +100,7 @@ GenericPassBuilder::make()
 
 ## Google Wallet
 
-Every Google pass type needs a Class declared first. The examples below show the full flow (declare Class, then create Object). Once the Class exists, every subsequent Object only needs its own `save()`. For the Class concept see [Declaring Google pass classes](/docs/laravel-mobile-pass/v1/google-wallet/declaring-google-pass-classes).
+Every Google pass type needs a Class declared first. The examples below show the full flow (declare the Class, then create the Object). Once the Class exists, every subsequent Object only needs its own `save()`. For more on the Class concept, see [Declaring Google pass classes](/docs/laravel-mobile-pass/v1/google-wallet/declaring-google-pass-classes).
 
 ### Boarding pass (flight)
 

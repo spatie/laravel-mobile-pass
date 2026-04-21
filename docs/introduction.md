@@ -3,15 +3,15 @@ title: Introduction
 weight: 1
 ---
 
-Using this package you can generate mobile passes for Apple Wallet and Google Wallet. Possible use cases are boarding passes, event tickets, coupons, store cards, membership cards, gift cards etc.
+With this package you can generate mobile passes for Apple Wallet and Google Wallet. Think boarding passes, event tickets, coupons, store cards, membership cards, gift cards, and anything else that belongs in a wallet.
 
-You can even push out updates to issued passes, making sure that they are always up-to-date on your users devices.
+You can also push updates to passes you've already handed out, so they stay current on your users' devices.
 
-Here's an example of a boarding pass that you can generate with this package.
+Here's an example of a boarding pass you can generate with this package.
 
 ![boarding pass](/docs/laravel-mobile-pass/v1/images/boarding.jpg)
 
-And here's an example of a coupon.
+And here's a coupon.
 
 ![coupon](/docs/laravel-mobile-pass/v1/images/coupon.jpg)
 
@@ -20,4 +20,3 @@ Google Wallet is supported too. The same `MobilePass` model backs both platforms
 ## Credits
 
 This package has been made in collaboration with [Dan Johnson](DanJohnson.xyz).
-

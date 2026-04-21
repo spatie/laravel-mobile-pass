@@ -3,8 +3,8 @@ title: Requirements
 weight: 3
 ---
 
-The laravel-mobile-pass package requires **PHP 8.2+**,  **Laravel 12+**. 
+This package needs PHP 8.2+ and Laravel 12+.
 
-The [zip extension](https://www.php.net/manual/en/zip.installation.php) is required.
+You'll also need the [zip extension](https://www.php.net/manual/en/zip.installation.php) enabled.
 
-You will also need to be a member of the [Apple Developer Program](https://developer.apple.com/programs/enroll) to generate passes for Apple.
+On top of that, generating passes for Apple means being a member of the [Apple Developer Program](https://developer.apple.com/programs/enroll).

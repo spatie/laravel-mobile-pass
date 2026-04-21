@@ -3,9 +3,9 @@ title: Customizing actions
 weight: 1
 ---
 
-The core functionality of this package is implemented as a set of action classes. These action classes are registered in the config file. You can customize the actions by extending the action classes and registering the new classes in the config file.
+The core behaviour of this package is split across a set of action classes, all registered in the config file. You can swap any of them out by extending the default class and pointing the config at your version.
 
-Let's assume that you want to execute some code before the package sends a notification to Apple when a pass is updated. You can create a new action class that extends the `NotifyAppleOfPassUpdateAction` action class and override the `execute` method.
+Say you want to run some code right before the package notifies Apple that a pass has been updated. Create a class that extends `NotifyAppleOfPassUpdateAction` and override the `execute` method:
 
 ```php
 namespace App\Actions;
@@ -23,7 +23,7 @@ class CustomNotifyAppleOfPassUpdateAction extends NotifyAppleOfPassUpdateAction
 }
 ```
 
-After creating the new action class, you need to register it in the `mobile-pass` config file. 
+Then register your class in the `mobile-pass` config file:
 
 ```php
 // config/mobile-pass.php

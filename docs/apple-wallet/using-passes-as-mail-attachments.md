@@ -3,9 +3,9 @@ title: Using passes as mail attachments
 weight: 4
 ---
 
-In your mail templates, you can attach passes to your emails. This is useful when you want to send a pass to a user after a purchase or when you want to send a pass to a user after they have signed up for a service.
+You can attach passes to the emails you send. That's handy after a purchase, or once someone signs up for something. The pass lands in their inbox ready to add to Wallet.
 
-To attach a pass to an email, you can simply return it in the `attachments` method of your Mailable class. Here's an example:
+To attach a pass to an email, just return it from the `attachments` method of your Mailable. Here's an example:
 
 ```php
 class OrderShipped extends Mailable
@@ -26,7 +26,7 @@ class OrderShipped extends Mailable
 }
 ```
 
-By default, the pass will be attached as a `pass.pkpass` file. If you want to change the filename, you can do so specify the download name when creating the pass:
+By default the pass is attached as `pass.pkpass`. To give it a different filename, set the download name on the builder:
 
 ```php
 $mobilePass = AirlinePassBuilder::make()

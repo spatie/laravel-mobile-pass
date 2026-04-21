@@ -3,7 +3,7 @@ title: Generating your first Google pass
 weight: 3
 ---
 
-Once you have a [Google pass class](declaring-google-pass-classes) declared, generating an individual pass for a user takes one builder call. The builder creates the Object on Google's servers and returns a `MobilePass` model you can store or hand to a controller.
+Once you have a [Google pass class](declaring-google-pass-classes) declared, generating a pass for a single user takes one builder call. The builder creates the Object on Google's servers and hands you back a `MobilePass` model you can store or return from a controller.
 
 Here's an event ticket built on top of the `'beatles-shea-1965'` class:
 
@@ -22,9 +22,9 @@ $mobilePass = EventTicketPassBuilder::make()
     ->save();
 ```
 
-The `Barcode` entity is imported from the `Apple\Entities` namespace because it is shared across both platforms. The Google builders translate it into Google's barcode payload shape (`QR_CODE`, `PDF_417`, `AZTEC`, `CODE_128`) for you.
+The `Barcode` entity comes from the `Apple\Entities` namespace because it's shared across both platforms. The Google builders translate it into Google's barcode payload shape (`QR_CODE`, `PDF_417`, `AZTEC`, `CODE_128`) for you.
 
-`save()` does three things:
+Calling `save()` does three things:
 
 1. Validates the payload.
 2. Creates the Object on Google.
@@ -32,7 +32,7 @@ The `Barcode` entity is imported from the `Apple\Entities` namespace because it 
 
 ## Handing the pass to the user
 
-`MobilePass` is `Responsable`, so to let a user add the pass to their Google Wallet you can return the model directly. Laravel will redirect them to the right Google Wallet save URL:
+The `MobilePass` model is `Responsable`, so you can return it straight from a controller and Laravel will redirect the user to the right Google Wallet save URL:
 
 ```php
 use Spatie\LaravelMobilePass\Models\MobilePass;
@@ -46,9 +46,9 @@ class AddToWalletController
 }
 ```
 
-Google handles the rest: the user sees the pass preview, taps Save, and it lands in their wallet.
+Google takes it from there: the user sees the pass preview, taps Save, and it lands in their wallet.
 
-For more ways to distribute the URL (buttons, emails, QR codes), see [Handing out passes](handing-out-passes).
+For other ways to distribute the URL (buttons, emails, QR codes), see [Handing out passes](handing-out-passes).
 
 ## Other Google builders
 

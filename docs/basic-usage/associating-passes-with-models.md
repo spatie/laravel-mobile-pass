@@ -3,11 +3,11 @@ title: Associating passes with models
 weight: 5
 ---
 
-This package offers methods to associate mobile passes with models. This can be useful if you want to associate a mobile pass with a user, a product, or any other model.
+You can link mobile passes to any of your models. That's useful when you want to tie a pass to a user, a product, an order, or anything else you need to look up later.
 
 ## Preparing your model
 
-You can associate a mobile pass with any model. First you need to add the `HasMobilePasses` trait to the model:
+Any model can hold mobile passes. Start by adding the `HasMobilePasses` trait to it:
 
 ```php
 use Spatie\LaravelMobilePass\Models\Concerns\HasMobilePasses;
@@ -20,7 +20,7 @@ class User extends Model
 
 ## Associating a mobile pass with a model
 
-Then you can associate a mobile pass with the model:
+With the trait in place, you can associate a pass with the model:
 
 ```php
 $mobilePassModel = AirlinePassBuilder::make()
@@ -33,19 +33,19 @@ User::first()->addMobilePass($mobilePassModel);
 
 ## Retrieving associated mobile passes
 
-You can retrieve all mobile passes associated with a model:
+You can grab every mobile pass tied to a model:
 
 ```php
 $mobilePasses = User::first()->mobilePasses;
 ```
 
-There's also a convenience method to retrieve the first mobile pass associated with a model:
+There's also a shortcut for the first one:
 
 ```php
 $mobilePass = User::first()->firstMobilePass();
 ```
 
-The `firstMobilePass` accept a parameter to retrieve the first mobile pass of a specific type:
+The `firstMobilePass` method takes an optional parameter to scope down to a specific type:
 
 ```php
 use Spatie\LaravelMobilePass\Enums\PassType;
@@ -53,7 +53,7 @@ use Spatie\LaravelMobilePass\Enums\PassType;
 $couponPass = User::first()->firstMobilePass(PassType::Coupon);
 ```
 
-There's also a parameter `filter` that accepts a closure to modify the query:
+There's also a `filter` parameter that accepts a closure if you want to shape the query yourself:
 
 ```php
 $couponPass = User::first()->firstMobilePass(filter: function ($query) {
@@ -61,3 +61,33 @@ $couponPass = User::first()->firstMobilePass(filter: function ($query) {
 });
 ```
 
+## Filtering by platform
+
+Most users carry passes on just one platform, but if you issue to both Apple Wallet and Google Wallet, the trait gives you dedicated helpers so you don't have to reach for `$pass->platform` yourself:
+
+```php
+$user = User::first();
+
+$user->applePasses;   // only Apple passes
+$user->googlePasses;  // only Google passes
+
+$user->firstApplePass();
+$user->firstGooglePass();
+```
+
+Both `firstApplePass` and `firstGooglePass` accept an optional `PassType` to narrow further:
+
+```php
+use Spatie\LaravelMobilePass\Enums\PassType;
+
+$user->firstApplePass(PassType::EventTicket);
+```
+
+If you need both axes at once, `firstMobilePass` also takes a `Platform`:
+
+```php
+use Spatie\LaravelMobilePass\Enums\PassType;
+use Spatie\LaravelMobilePass\Enums\Platform;
+
+$user->firstMobilePass(PassType::EventTicket, Platform::Apple);
+```
