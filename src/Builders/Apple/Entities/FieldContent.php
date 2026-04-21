@@ -10,6 +10,8 @@ use Spatie\LaravelMobilePass\Enums\TextAlignmentType;
 use Spatie\LaravelMobilePass\Enums\TimeStyleType;
 
 /**
+ * @internal Use the `add*Field` and `updateField` methods on the Apple builder.
+ *
  * https://developer.apple.com/documentation/walletpasses/passfieldcontent
  */
 class FieldContent implements Arrayable

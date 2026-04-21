@@ -23,7 +23,6 @@ The sections below show a minimal example per pass type. For the full Apple walk
 
 ```php
 use Spatie\LaravelMobilePass\Builders\Apple\AirlinePassBuilder;
-use Spatie\LaravelMobilePass\Builders\Apple\Entities\FieldContent;
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\Seat;
 
 AirlinePassBuilder::make()
@@ -34,10 +33,8 @@ AirlinePassBuilder::make()
     ->setDestinationAirportCode('LHR')
     ->setPassengerName('Dan Johnson')
     ->setSeats(Seat::make(number: '12A'))
-    ->setPrimaryFields(
-        FieldContent::make('departure')->withLabel('Abu Dhabi')->withValue('AUH'),
-        FieldContent::make('destination')->withLabel('London')->withValue('LHR'),
-    )
+    ->addPrimaryField('departure', 'AUH', label: 'Abu Dhabi')
+    ->addPrimaryField('destination', 'LHR', label: 'London')
     ->save();
 ```
 
@@ -47,21 +44,14 @@ For non-airline transit (trains, boats, buses), subclass `BoardingPassBuilder` a
 
 ```php
 use Spatie\LaravelMobilePass\Builders\Apple\EventTicketPassBuilder;
-use Spatie\LaravelMobilePass\Builders\Apple\Entities\FieldContent;
 
 EventTicketPassBuilder::make()
     ->setOrganisationName('Eras Tour Promotions')
     ->setSerialNumber('TS-BRU-0042')
     ->setDescription('Taylor Swift at King Baudouin Stadium')
-    ->setPrimaryFields(
-        FieldContent::make('event')
-            ->withLabel('Event')
-            ->withValue('The Eras Tour'),
-    )
-    ->setSecondaryFields(
-        FieldContent::make('section')->withLabel('Section')->withValue('B12'),
-        FieldContent::make('seat')->withLabel('Seat')->withValue('Row 8, Seat 22'),
-    )
+    ->addPrimaryField('event', 'The Eras Tour')
+    ->addSecondaryField('section', 'B12')
+    ->addSecondaryField('seat', 'Row 8, Seat 22')
     ->save();
 ```
 
@@ -69,18 +59,13 @@ EventTicketPassBuilder::make()
 
 ```php
 use Spatie\LaravelMobilePass\Builders\Apple\CouponPassBuilder;
-use Spatie\LaravelMobilePass\Builders\Apple\Entities\FieldContent;
 
 CouponPassBuilder::make()
     ->setOrganisationName('Spatie Store')
     ->setSerialNumber('COUPON-SUMMER25')
     ->setDescription('20% off everything this summer')
-    ->setPrimaryFields(
-        FieldContent::make('offer')->withLabel('Save')->withValue('20%'),
-    )
-    ->setSecondaryFields(
-        FieldContent::make('expires')->withLabel('Expires')->withValue('2026-08-31'),
-    )
+    ->addPrimaryField('offer', '20%', label: 'Save')
+    ->addSecondaryField('expires', '2026-08-31')
     ->save();
 ```
 
@@ -88,19 +73,14 @@ CouponPassBuilder::make()
 
 ```php
 use Spatie\LaravelMobilePass\Builders\Apple\StoreCardPassBuilder;
-use Spatie\LaravelMobilePass\Builders\Apple\Entities\FieldContent;
 
 StoreCardPassBuilder::make()
     ->setOrganisationName('Spatie Rewards')
     ->setSerialNumber('CARD-USER-7842')
     ->setDescription('Spatie Rewards member card')
-    ->setPrimaryFields(
-        FieldContent::make('balance')->withLabel('Points')->withValue('1,250'),
-    )
-    ->setSecondaryFields(
-        FieldContent::make('member')->withLabel('Member')->withValue('Dan Johnson'),
-        FieldContent::make('tier')->withLabel('Tier')->withValue('Gold'),
-    )
+    ->addPrimaryField('balance', '1,250', label: 'Points')
+    ->addSecondaryField('member', 'Dan Johnson')
+    ->addSecondaryField('tier', 'Gold')
     ->save();
 ```
 
@@ -108,18 +88,13 @@ StoreCardPassBuilder::make()
 
 ```php
 use Spatie\LaravelMobilePass\Builders\Apple\GenericPassBuilder;
-use Spatie\LaravelMobilePass\Builders\Apple\Entities\FieldContent;
 
 GenericPassBuilder::make()
     ->setOrganisationName('Spatie Conference')
     ->setSerialNumber('BADGE-042')
     ->setDescription('Conference attendee badge')
-    ->setPrimaryFields(
-        FieldContent::make('name')->withLabel('Name')->withValue('Dan Johnson'),
-    )
-    ->setSecondaryFields(
-        FieldContent::make('track')->withLabel('Track')->withValue('All-access'),
-    )
+    ->addPrimaryField('name', 'Dan Johnson')
+    ->addSecondaryField('track', 'All-access')
     ->save();
 ```
 

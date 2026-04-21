@@ -1,6 +1,5 @@
 <?php
 
-use Spatie\LaravelMobilePass\Builders\Apple\Entities\FieldContent;
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\Image;
 use Spatie\LaravelMobilePass\Builders\Apple\EventTicketPassBuilder;
 
@@ -9,26 +8,10 @@ it('builds a basic event ticket', function () {
         ->setOrganisationName('My organisation')
         ->setSerialNumber(123456)
         ->setDescription('Hello!')
-        ->setHeaderFields(
-            FieldContent::make('event')
-                ->withLabel('Event')
-                ->withValue('Laracon EU')
-        )
-        ->setPrimaryFields(
-            FieldContent::make('venue')
-                ->withLabel('Venue')
-                ->withValue('Amsterdam'),
-        )
-        ->setSecondaryFields(
-            FieldContent::make('name')
-                ->withLabel('Name')
-                ->withValue('Dan Johnson'),
-        )
-        ->setAuxiliaryFields(
-            FieldContent::make('seat')
-                ->withLabel('Seat')
-                ->withValue('A12'),
-        )
+        ->addHeaderField('event', 'Laracon EU')
+        ->addPrimaryField('venue', 'Amsterdam')
+        ->addSecondaryField('name', 'Dan Johnson')
+        ->addAuxiliaryField('seat', 'A12')
         ->setIconImage(
             Image::make(
                 x1Path: getTestSupportPath('images/spatie-thumbnail.png')

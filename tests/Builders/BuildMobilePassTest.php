@@ -3,7 +3,6 @@
 namespace Spatie\LaravelMobilePass\Tests\Feature;
 
 use Illuminate\Validation\ValidationException;
-use Spatie\LaravelMobilePass\Builders\Apple\Entities\FieldContent;
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\Image;
 use Spatie\LaravelMobilePass\Builders\Apple\GenericPassBuilder;
 
@@ -12,32 +11,12 @@ it('can create a mobile pass', function () {
         ->setOrganisationName('Spatie')
         ->setDescription('Hello!')
         ->setSerialNumber(123456)
-
-        ->setHeaderFields(
-            FieldContent::make('flight-no')
-                ->withLabel('Flight')
-                ->withValue('EY066'),
-            FieldContent::make('seat')
-                ->withLabel('Seat')
-                ->withValue('66F')
-        )
-        ->setPrimaryFields(
-            FieldContent::make('departure')
-                ->withLabel('Abu Dhabi International')
-                ->withValue('ABU'),
-            FieldContent::make('destination')
-                ->withLabel('London Heathrow')
-                ->withValue('LHR'),
-        )
-        ->setSecondaryFields(
-            FieldContent::make('name')
-                ->withLabel('Name')
-                ->withValue('Dan Johnson'),
-            FieldContent::make('gate')
-                ->withLabel('Gate')
-                ->withValue('D68')
-        )
-
+        ->addHeaderField('flight-no', 'EY066', label: 'Flight')
+        ->addHeaderField('seat', '66F')
+        ->addPrimaryField('departure', 'ABU', label: 'Abu Dhabi International')
+        ->addPrimaryField('destination', 'LHR', label: 'London Heathrow')
+        ->addSecondaryField('name', 'Dan Johnson')
+        ->addSecondaryField('gate', 'D68')
         ->setIconImage(
             Image::make(
                 x1Path: getTestSupportPath('images/spatie-thumbnail.png')
@@ -69,21 +48,13 @@ it('updates a field', function () {
                 x1Path: getTestSupportPath('images/spatie-thumbnail.png')
             )
         )
-        ->setHeaderFields(
-            FieldContent::make('flight-no')
-                ->withLabel('Flight')
-                ->withValue('EY066'),
-            FieldContent::make('seat')
-                ->withLabel('Seat')
-                ->withValue('66F')
-        )
+        ->addHeaderField('flight-no', 'EY066', label: 'Flight')
+        ->addHeaderField('seat', '66F')
         ->save();
 
-    // We should be able to update a field
     $pass
         ->builder()
-        ->updateField('flight-no', fn (FieldContent $field) => $field->withValue('UPDATED')
-        )
+        ->updateField('flight-no', 'UPDATED')
         ->save();
 
     expect($pass->generate())->toMatchMobilePassSnapshot();

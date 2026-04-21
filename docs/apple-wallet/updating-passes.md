@@ -3,46 +3,30 @@ title: Updating passes
 weight: 3
 ---
 
-When your user downloads a pass and adds it to their Wallet, Apple will send a request to confirm that the pass has been registered.
+When your user downloads a pass and adds it to their Wallet, Apple sends a request to confirm that the pass has been registered.
 
-The package will handle the incoming request, and store the registration in the `mobile_pass_registrations` table. This registration will be associated the `MobilePass` model that was used to generate the pass that was downloaded by the user.
+The package handles that incoming request and stores the registration in the `mobile_pass_registrations` table. The registration is associated with the `MobilePass` model that was used to generate the pass.
 
-Here's how you can update a saved pass.
-
-```php
-use App\Models\MobilePass;
-use Spatie\LaravelMobilePass\Models\FieldContent;
-
-$mobilePass = $user->firstMobilePass();
-
-$mobilePass
-    ->builder()
-    ->updateField('seat', fn (FieldContent $field) =>
-        $field->setValue('13A')
-    )
-    ->save();
-```
-
-When a pass gets updated, the package will notify Apple that the pass has been updated.
-
-Apple will then tell the device that a new version of the pass is available.
-
-Then, the device requests the latest version of the pass from your server.
-
-Here's how you can trigger a push notification for a change:
+Here's how you update a saved pass:
 
 ```php
 use App\Models\MobilePass;
-use Spatie\LaravelMobilePass\Models\FieldContent;
 
 $mobilePass = $user->firstMobilePass();
 
-$mobilePass
-    ->builder()
-    ->updateField('seat', fn (FieldContent $field) =>
-        $field
-            ->setValue('13A')
-            ->showMessageWhenChanged("Your seat was changed")
-    )
+$mobilePass->builder()
+    ->updateField('seat', '13A')
     ->save();
 ```
+
+When a pass gets updated, the package notifies Apple. Apple tells the device that a new version is available, and the device fetches it from your server.
+
+If you want the user's device to show a notification when the value changes, pass a `changeMessage:`:
+
+```php
+$mobilePass->builder()
+    ->updateField('seat', '13A', changeMessage: 'Your seat was changed to %@')
+    ->save();
+```
+
+The `%@` placeholder is substituted with the new value by Apple when the notification is rendered.

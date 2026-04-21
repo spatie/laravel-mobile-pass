@@ -2,7 +2,6 @@
 
 namespace Spatie\LaravelMobilePass\Builders\Apple;
 
-use Closure;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use PKPass\PKPass;
@@ -12,6 +11,7 @@ use Spatie\LaravelMobilePass\Builders\Apple\Entities\Image;
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\Price;
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\WifiNetwork;
 use Spatie\LaravelMobilePass\Builders\Apple\Validators\ApplePassValidator;
+use Spatie\LaravelMobilePass\Enums\FieldType;
 use Spatie\LaravelMobilePass\Enums\PassType;
 use Spatie\LaravelMobilePass\Enums\Platform;
 use Spatie\LaravelMobilePass\Exceptions\InvalidConfig;
@@ -111,58 +111,103 @@ abstract class ApplePassBuilder
         return $this;
     }
 
-    public function setPrimaryFields(FieldContent ...$primaryField): self
-    {
-        $this->primaryFields = collect($primaryField);
+    public function addHeaderField(
+        string $key,
+        string $value,
+        ?string $label = null,
+        ?string $changeMessage = null,
+    ): self {
+        return $this->addField(FieldType::Header, $key, $value, $label, $changeMessage);
+    }
+
+    public function addPrimaryField(
+        string $key,
+        string $value,
+        ?string $label = null,
+        ?string $changeMessage = null,
+    ): self {
+        return $this->addField(FieldType::Primary, $key, $value, $label, $changeMessage);
+    }
+
+    public function addSecondaryField(
+        string $key,
+        string $value,
+        ?string $label = null,
+        ?string $changeMessage = null,
+    ): self {
+        return $this->addField(FieldType::Secondary, $key, $value, $label, $changeMessage);
+    }
+
+    public function addAuxiliaryField(
+        string $key,
+        string $value,
+        ?string $label = null,
+        ?string $changeMessage = null,
+    ): self {
+        return $this->addField(FieldType::Auxiliary, $key, $value, $label, $changeMessage);
+    }
+
+    public function addBackField(
+        string $key,
+        string $value,
+        ?string $label = null,
+        ?string $changeMessage = null,
+    ): self {
+        return $this->addField(FieldType::Back, $key, $value, $label, $changeMessage);
+    }
+
+    protected function addField(
+        FieldType $type,
+        string $key,
+        string $value,
+        ?string $label = null,
+        ?string $changeMessage = null,
+    ): self {
+        $field = FieldContent::make($key)
+            ->withValue($value)
+            ->withLabel($label ?? Str::headline($key));
+
+        if ($changeMessage !== null) {
+            $field->showMessageWhenChanged($changeMessage);
+        }
+
+        $property = $type->value;
+
+        $this->$property ??= collect();
+        $this->$property[$key] = $field;
 
         return $this;
     }
 
-    public function setSecondaryFields(FieldContent ...$secondaryField): self
-    {
-        $this->secondaryFields = collect($secondaryField);
+    public function updateField(
+        string $key,
+        string $value,
+        ?string $changeMessage = null,
+        ?string $label = null,
+    ): self {
+        foreach (FieldType::cases() as $type) {
+            $property = $type->value;
 
-        return $this;
-    }
+            if ($this->$property === null) {
+                continue;
+            }
 
-    public function setAuxiliaryFields(FieldContent ...$auxiliaryField): self
-    {
-        $this->auxiliaryFields = collect($auxiliaryField);
-
-        return $this;
-    }
-
-    public function setHeaderFields(FieldContent ...$headerField): self
-    {
-        $this->headerFields = collect($headerField);
-
-        return $this;
-    }
-
-    public function setBackFields(FieldContent ...$backField): self
-    {
-        $this->backFields = collect($backField);
-
-        return $this;
-    }
-
-    public function updateField(string $key, Closure $fieldContent): self
-    {
-        $fieldTypes = [
-            'headerFields',
-            'primaryFields',
-            'secondaryFields',
-            'auxiliaryFields',
-            'backFields',
-        ];
-
-        foreach ($fieldTypes as $fieldType) {
-            $this->$fieldType = $this->$fieldType->map(function ($existingField) use ($key, $fieldContent) {
-                if ($existingField->key === $key) {
-                    return $fieldContent($existingField);
+            $this->$property = $this->$property->map(function (FieldContent $field) use ($key, $value, $changeMessage, $label) {
+                if ($field->key !== $key) {
+                    return $field;
                 }
 
-                return $existingField;
+                $field->withValue($value);
+
+                if ($changeMessage !== null) {
+                    $field->showMessageWhenChanged($changeMessage);
+                }
+
+                if ($label !== null) {
+                    $field->withLabel($label);
+                }
+
+                return $field;
             });
         }
 

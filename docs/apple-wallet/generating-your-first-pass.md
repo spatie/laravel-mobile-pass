@@ -9,46 +9,21 @@ Here's an example of how you can generate a basic airline boarding pass:
 
 ```php
 use Spatie\LaravelMobilePass\Builders\Apple\AirlinePassBuilder;
-use Spatie\LaravelMobilePass\Builders\Apple\Entities\FieldContent;
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\Image;
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\Seat;
 
 $mobilePass = AirlinePassBuilder::make()
     ->setOrganisationName('My organisation')
-    ->setSerialNumber(123456)
+    ->setSerialNumber('123456')
     ->setDescription('Hello!')
-    ->setHeaderFields(
-        FieldContent::make('flight-no')
-            ->withLabel('Flight')
-            ->withValue('EY066'),
-        FieldContent::make('seat')
-            ->withLabel('Seat')
-            ->withValue('66F')
-    )
-    ->setPrimaryFields(
-        FieldContent::make('departure')
-            ->withLabel('Abu Dhabi International')
-            ->withValue('ABU'),
-        FieldContent::make('destination')
-            ->withLabel('London Heathrow')
-            ->withValue('LHR'),
-    )
-    ->setSecondaryFields(
-        FieldContent::make('name')
-            ->withLabel('Name')
-            ->withValue('Dan Johnson'),
-        FieldContent::make('gate')
-            ->withLabel('Gate')
-            ->withValue('D68')
-    )
-    ->setAuxiliaryFields(
-        FieldContent::make('departs')
-            ->withLabel('Departs')
-            ->withValue(now()->toIso8601String()),
-        FieldContent::make('class')
-            ->withLabel('Class')
-            ->withValue('Economy'),
-    )
+    ->addHeaderField('flight-no', 'EY066', label: 'Flight')
+    ->addHeaderField('seat', '66F')
+    ->addPrimaryField('departure', 'ABU', label: 'Abu Dhabi International')
+    ->addPrimaryField('destination', 'LHR', label: 'London Heathrow')
+    ->addSecondaryField('name', 'Dan Johnson')
+    ->addSecondaryField('gate', 'D68')
+    ->addAuxiliaryField('departs', now()->toIso8601String())
+    ->addAuxiliaryField('class', 'Economy')
     ->setIconImage(
         Image::make(
             x1Path: public_path('images/your-thumbnail.png')
@@ -68,5 +43,16 @@ $mobilePass = AirlinePassBuilder::make()
     ->save();
 ```
 
-The `save` method will return a newly created `MobilePass` model.
+The `save()` method returns a newly created `MobilePass` model.
 
+## Field methods
+
+Every Apple builder exposes the five field zones Apple supports:
+
+- `addHeaderField($key, $value, label: ?, changeMessage: ?)`
+- `addPrimaryField($key, $value, label: ?, changeMessage: ?)`
+- `addSecondaryField($key, $value, label: ?, changeMessage: ?)`
+- `addAuxiliaryField($key, $value, label: ?, changeMessage: ?)`
+- `addBackField($key, $value, label: ?, changeMessage: ?)`
+
+The `$key` is a free-form identifier, unique within the pass. It is how you reference the field later when you update its value. The label shown on the pass defaults to a title-cased version of the key. Pass `label:` when you want a different display string. Pass `changeMessage:` when you want the user's device to show a notification whenever that field's value is updated (e.g. `'Your gate has changed to %@'`).

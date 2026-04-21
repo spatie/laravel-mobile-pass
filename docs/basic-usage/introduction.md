@@ -9,29 +9,18 @@ Here's an Apple Wallet event ticket:
 
 ```php
 use Spatie\LaravelMobilePass\Builders\Apple\EventTicketPassBuilder;
-use Spatie\LaravelMobilePass\Builders\Apple\Entities\FieldContent;
 
 $mobilePass = EventTicketPassBuilder::make()
     ->setOrganisationName('Eras Tour Promotions')
     ->setSerialNumber('TS-BRU-0042')
     ->setDescription('Taylor Swift at King Baudouin Stadium')
-    ->setPrimaryFields(
-        FieldContent::make('event')
-            ->withLabel('Event')
-            ->withValue('The Eras Tour'),
-    )
-    ->setSecondaryFields(
-        FieldContent::make('attendee')
-            ->withLabel('Name')
-            ->withValue('Dan Johnson'),
-        FieldContent::make('seat')
-            ->withLabel('Seat')
-            ->withValue('Floor A, Row 12'),
-    )
+    ->addPrimaryField('event', 'The Eras Tour')
+    ->addSecondaryField('attendee', 'Dan Johnson', label: 'Name')
+    ->addSecondaryField('seat', 'Floor A, Row 12')
     ->save();
 ```
 
-A note on the fields. Apple renders primary fields as the most prominent content on the front of the pass, and secondary fields as smaller supporting content below them. The first argument to `FieldContent::make()` (`event`, `attendee`, `seat`) is a free-form identifier. Apple doesn't care what string you pick, but it has to be unique within the pass, and you'll reuse it later when you want to update that specific field.
+A note on the fields. Apple renders primary fields as the most prominent content on the front of the pass, and secondary fields as smaller supporting content below them. The first argument (`event`, `attendee`, `seat`) is a free-form identifier. Apple doesn't care what string you pick, but it has to be unique within the pass, and you'll reuse it later when you want to update that specific field. The label shown to the user defaults to a title-cased version of the key. Pass an explicit `label:` when you want something different (like `'Name'` instead of `'Attendee'` above).
 
 The `save()` method returns a `MobilePass` model. Nothing is written to disk. All pass properties (fields, images, barcode) are stored as a row in the `mobile_passes` table.
 
@@ -49,11 +38,16 @@ The user taps through, sees a preview in Apple Wallet, and taps Add. At that mom
 If the seat assignment changes later, update the field through the builder:
 
 ```php
-$mobilePass
-    ->builder()
-    ->updateField('seat', fn (FieldContent $field) =>
-        $field->setValue('Floor A, Row 14')
-    )
+$mobilePass->builder()
+    ->updateField('seat', 'Floor A, Row 14')
+    ->save();
+```
+
+If you want the user's device to display a notification when the value changes, pass a `changeMessage:`:
+
+```php
+$mobilePass->builder()
+    ->updateField('seat', 'Floor A, Row 14', changeMessage: 'Your seat has changed to %@')
     ->save();
 ```
 
