@@ -29,4 +29,4 @@ Apple pushes updates through APNs, and the device then hits your server for the 
 
 Apple expects the `.pkpass` file to be signed with a certificate from the Apple Developer Program. Google expects a service account with an `iam.gserviceaccount.com` key. See [Getting credentials from Apple](/docs/laravel-mobile-pass/v1/apple-wallet/getting-credentials-from-apple) and [Getting credentials from Google](/docs/laravel-mobile-pass/v1/google-wallet/getting-credentials-from-google).
 
-Once both platforms are set up, the rest of the package works the same for both. `$pass->addToWalletUrl()` returns the right link, `$pass->expire()` does the right thing, and updates to the `MobilePass` model are pushed out automatically.
+Once both platforms are set up, the rest of the package works the same for both. `$mobilePass->addToWalletUrl()` returns the right link, `$mobilePass->expire()` does the right thing, and updates to the `MobilePass` model are pushed out automatically.

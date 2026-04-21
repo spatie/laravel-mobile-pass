@@ -148,7 +148,7 @@ php artisan migrate
 Two migrations are published:
 
 - `create_mobile_pass_tables` creates the `mobile_passes`, `apple_mobile_pass_devices`, and `apple_mobile_pass_registrations` tables.
-- `add_google_wallet_support` adds the `expired_at` column to `mobile_passes` (used by `$pass->expire()`) and creates the `mobile_pass_google_events` table (used by save and remove callbacks).
+- `add_google_wallet_support` adds the `expired_at` column to `mobile_passes` (used by `$mobilePass->expire()`) and creates the `mobile_pass_google_events` table (used by save and remove callbacks).
 
 ### Upgrading an existing install
 

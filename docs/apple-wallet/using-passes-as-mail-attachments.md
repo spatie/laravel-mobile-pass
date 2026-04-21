@@ -10,11 +10,11 @@ To attach a pass to an email, you can simply return it in the `attachments` meth
 ```php
 class OrderShipped extends Mailable
 {
-    public MobilePass $pass;
+    public MobilePass $mobilePass;
 
-    public function __construct(MobilePass $pass)
+    public function __construct(MobilePass $mobilePass)
     {
-        $this->pass = $pass;
+        $this->pass = $mobilePass;
     }
 
     public function attachments()

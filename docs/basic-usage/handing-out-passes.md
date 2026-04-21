@@ -6,7 +6,7 @@ weight: 7
 Whether a pass is for Apple Wallet or Google Wallet, you hand it to the user the same way: call `addToWalletUrl()` on the `MobilePass` model. The model knows its platform and returns the correct link for that platform.
 
 ```php
-$url = $pass->addToWalletUrl();
+$url = $mobilePass->addToWalletUrl();
 ```
 
 For Apple, this is a signed download URL that serves the `.pkpass` file. For Google, it's a `pay.google.com` save link that Google itself presents to the user.
@@ -20,9 +20,9 @@ use Spatie\LaravelMobilePass\Models\MobilePass;
 
 class AddToWalletController
 {
-    public function __invoke(MobilePass $pass)
+    public function __invoke(MobilePass $mobilePass)
     {
-        return redirect($pass->addToWalletUrl());
+        return redirect($mobilePass->addToWalletUrl());
     }
 }
 ```
@@ -32,7 +32,7 @@ class AddToWalletController
 You can put the URL behind any anchor or form. This works nicely in a post-checkout confirmation page:
 
 ```blade
-<a href="{{ $pass->addToWalletUrl() }}" class="btn">
+<a href="{{ $mobilePass->addToWalletUrl() }}" class="btn">
     Add to Wallet
 </a>
 ```
@@ -44,7 +44,7 @@ The same URL goes in transactional emails. Send one pass in the welcome email, a
 ```blade
 <p>Your ticket is ready!</p>
 
-<a href="{{ $pass->addToWalletUrl() }}">
+<a href="{{ $mobilePass->addToWalletUrl() }}">
     Add it to your Wallet
 </a>
 ```
@@ -56,7 +56,7 @@ If you're printing confirmations or displaying them on another screen, wrap the 
 ```php
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
-QrCode::size(240)->generate($pass->addToWalletUrl());
+QrCode::size(240)->generate($mobilePass->addToWalletUrl());
 ```
 
 ## A note on the Apple URL
@@ -69,13 +69,13 @@ When you need the raw `.pkpass` file rather than a URL (for an API response, or 
 
 ```php
 // Return as an HTTP response
-return $pass;
+return $mobilePass;
 
 // Explicit download with a custom filename
-$pass->download('boarding-pass-london');
+$mobilePass->download('boarding-pass-london');
 
 // Attach to an email
-$mail->attach($pass);
+$mail->attach($mobilePass);
 ```
 
 These only work for Apple passes. Google passes are never served as files, they live on Google's servers.

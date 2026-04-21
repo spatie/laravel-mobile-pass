@@ -62,16 +62,16 @@ Register the listener in your app's `EventServiceProvider` as usual.
 Every callback is stored as a `GoogleMobilePassEvent` related to the `MobilePass`. You can walk the history at any time:
 
 ```php
-$pass->googleEvents;
+$mobilePass->googleEvents;
 
-$pass->googleEvents()->saves()->get();
-$pass->googleEvents()->removes()->get();
+$mobilePass->googleEvents()->saves()->get();
+$mobilePass->googleEvents()->removes()->get();
 ```
 
 To know whether the pass is currently on the user's phone, use the helper:
 
 ```php
-if ($pass->isCurrentlySavedToGoogleWallet()) {
+if ($mobilePass->isCurrentlySavedToGoogleWallet()) {
     // Latest callback was a save
 }
 ```

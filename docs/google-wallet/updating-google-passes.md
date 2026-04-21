@@ -8,12 +8,12 @@ To update a Google pass, update its `MobilePass` model. The package notices and 
 ```php
 use Spatie\LaravelMobilePass\Models\MobilePass;
 
-$pass = MobilePass::find($id);
+$mobilePass = MobilePass::find($id);
 
-$content = $pass->content;
+$content = $mobilePass->content;
 $content['googleObjectPayload']['ticketHolderName'] = 'Dan Johnson Jr.';
 
-$pass->update(['content' => $content]);
+$mobilePass->update(['content' => $content]);
 ```
 
 When the model is saved, the package dispatches `NotifyGoogleOfPassUpdateAction`, which patches the Object on Google via the Wallet REST API. Google takes it from there.

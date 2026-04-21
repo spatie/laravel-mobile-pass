@@ -6,7 +6,7 @@ weight: 8
 Sometimes a pass should no longer be valid. A concert has ended, a coupon was redeemed, a gift card was spent. Call `expire()` on the `MobilePass` model and the package handles the platform specifics for you.
 
 ```php
-$pass->expire();
+$mobilePass->expire();
 ```
 
 For Apple passes, the package sets `voided=true` and `expirationDate` to the current time, then pushes an update via APNs. The pass will show up greyed out in the user's Wallet.

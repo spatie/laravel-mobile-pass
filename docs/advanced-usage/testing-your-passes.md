@@ -18,13 +18,13 @@ use Illuminate\Support\Facades\Http;
 
 Http::fake();
 
-$pass = AirlinePassBuilder::make()
+$mobilePass = AirlinePassBuilder::make()
     ->setOrganisationName('Spatie')
     ->setSerialNumber('abc')
     // ...
     ->save();
 
-$pass->update(['content' => [...]]);
+$mobilePass->update(['content' => [...]]);
 
 Http::assertSent(fn ($request) => str_starts_with($request->url(), 'https://api.push.apple.com'));
 ```
@@ -41,7 +41,7 @@ use Illuminate\Support\Facades\Http;
 Http::fake();
 cache()->put('mobile-pass.google.access-token', 'test-token', 3600);
 
-$pass = EventTicketPassBuilder::make()
+$mobilePass = EventTicketPassBuilder::make()
     ->setClass('taylor-swift-2026')
     ->setAttendeeName('Test User')
     ->save();
@@ -65,7 +65,7 @@ No amount of mocked tests replaces seeing the pass on a real device. Hold on to 
 Build the pass, hand it to yourself, and open the resulting URL on the iPhone. Safari recognises the `.pkpass` download and prompts you to add it to Wallet.
 
 ```php
-logger()->info($pass->addToWalletUrl());
+logger()->info($mobilePass->addToWalletUrl());
 ```
 
 Copy the URL from your log, open it on the phone, tap Add. That is the whole flow.
@@ -82,13 +82,13 @@ Pass rendering and saving work fine on Play-certified emulators. Only NFC tap-to
 
 **2. Desktop browser save, emulator view.**
 
-Open `$pass->addToWalletUrl()` in desktop Chrome while signed into the same Google account you use on the emulator. You will see Google's "Save to Google Wallet" preview page. Click Save. The pass is attached to the Google account and shows up in Google Wallet on any Android surface signed into that account, including the emulator.
+Open `$mobilePass->addToWalletUrl()` in desktop Chrome while signed into the same Google account you use on the emulator. You will see Google's "Save to Google Wallet" preview page. Click Save. The pass is attached to the Google account and shows up in Google Wallet on any Android surface signed into that account, including the emulator.
 
 This split flow is useful when the pass is part of a longer web journey you want to drive from desktop.
 
 **3. The wallet-lab-tools preview.**
 
-Paste a JWT from `$pass->addToWalletUrl()` into [wallet-lab-tools.web.app](https://wallet-lab-tools.web.app/) to get an approximation of how the pass will render, including colours, images, fields, and barcode. It is Google-run and a good sanity check for class visuals before you touch a device.
+Paste a JWT from `$mobilePass->addToWalletUrl()` into [wallet-lab-tools.web.app](https://wallet-lab-tools.web.app/) to get an approximation of how the pass will render, including colours, images, fields, and barcode. It is Google-run and a good sanity check for class visuals before you touch a device.
 
 **4. Class and object round-trip.**
 
@@ -121,7 +121,7 @@ use Spatie\LaravelMobilePass\Jobs\PushPassUpdateJob;
 
 Queue::fake();
 
-$pass->update(['content' => [...]]);
+$mobilePass->update(['content' => [...]]);
 
 Queue::assertPushed(PushPassUpdateJob::class);
 ```

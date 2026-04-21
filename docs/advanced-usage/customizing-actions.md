@@ -18,7 +18,7 @@ class CustomNotifyAppleOfPassUpdateAction extends NotifyAppleOfPassUpdateAction
     {
         // Your custom code here
 
-        parent::execute($pass);
+        parent::execute($mobilePass);
     }
 }
 ```

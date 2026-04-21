@@ -39,9 +39,9 @@ use Spatie\LaravelMobilePass\Models\MobilePass;
 
 class AddToWalletController
 {
-    public function __invoke(MobilePass $pass)
+    public function __invoke(MobilePass $mobilePass)
     {
-        return redirect($pass->addToWalletUrl());
+        return redirect($mobilePass->addToWalletUrl());
     }
 }
 ```

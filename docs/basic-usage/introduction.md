@@ -11,7 +11,7 @@ Here's an Apple Wallet event ticket:
 use Spatie\LaravelMobilePass\Builders\Apple\EventTicketPassBuilder;
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\FieldContent;
 
-$pass = EventTicketPassBuilder::make()
+$mobilePass = EventTicketPassBuilder::make()
     ->setOrganisationName('Eras Tour Promotions')
     ->setSerialNumber('TS-BRU-0042')
     ->setDescription('Taylor Swift at King Baudouin Stadium')
@@ -36,7 +36,7 @@ $pass = EventTicketPassBuilder::make()
 To hand the ticket to the user, redirect them to the URL the model gives you:
 
 ```php
-return redirect($pass->addToWalletUrl());
+return redirect($mobilePass->addToWalletUrl());
 ```
 
 The user taps through, sees a preview in Apple Wallet, and taps Add. At that moment, Apple calls back to your app to register the device against the pass. The package handles that endpoint and stores the registration in the `mobile_pass_registrations` table. That link between pass and device is what makes updates possible.
@@ -44,7 +44,7 @@ The user taps through, sees a preview in Apple Wallet, and taps Add. At that mom
 If the seat assignment changes later, update the field through the builder:
 
 ```php
-$pass
+$mobilePass
     ->builder()
     ->updateField('seat', fn (FieldContent $field) =>
         $field->setValue('Floor A, Row 14')
@@ -65,7 +65,7 @@ use Spatie\LaravelMobilePass\Builders\Apple\Entities\Barcode;
 use Spatie\LaravelMobilePass\Builders\Google\EventTicketPassBuilder;
 use Spatie\LaravelMobilePass\Enums\BarcodeType;
 
-$pass = EventTicketPassBuilder::make()
+$mobilePass = EventTicketPassBuilder::make()
     ->setClass('taylor-swift-2026')
     ->setAttendeeName('Dan Johnson')
     ->setSection('Floor A')
@@ -78,9 +78,9 @@ $pass = EventTicketPassBuilder::make()
 `save()` creates the Object on Google's servers and inserts a row in the same `mobile_passes` table. Handing it to the user is the same call:
 
 ```php
-return redirect($pass->addToWalletUrl());
+return redirect($mobilePass->addToWalletUrl());
 ```
 
-Android picks up the Google Wallet save link, iPhone users get the `.pkpass` download. `$pass->addToWalletUrl()` returns whatever is right for the platform the pass was built for.
+Android picks up the Google Wallet save link, iPhone users get the `.pkpass` download. `$mobilePass->addToWalletUrl()` returns whatever is right for the platform the pass was built for.
 
 Updates also look the same from your side. You change values and call `save()`. The difference is on the wire. For Apple, your app pushes out the update. For Google, Google itself pushes it to the device, so you don't host a device-facing web service for Google passes.
