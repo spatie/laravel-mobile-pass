@@ -3,7 +3,11 @@ title: Delivering passes to users
 weight: 7
 ---
 
-Whether a pass is for Apple Wallet or Google Wallet, you hand it to the user the same way: call `addToWalletUrl()` on the `MobilePass` model. The model knows its platform and returns the right link.
+Once a `MobilePass` exists, you've got a handful of ways to get it in front of the user. The sections below cover the common delivery surfaces: controllers, buttons, emails, and QR codes on printed confirmations. Whatever surface you pick, the mechanics are the same for Apple and Google, since the package figures out the right link for you.
+
+## Generating a URL
+
+Call `addToWalletUrl()` on the `MobilePass` model to get a shareable link. The model knows its platform and returns the right one.
 
 ```php
 $url = $mobilePass->addToWalletUrl();
