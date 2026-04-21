@@ -55,16 +55,10 @@ QrCode::size(240)->generate($mobilePass->addToWalletUrl());
 
 The Apple link is a `signedRoute`, not a `temporarySignedRoute`, so by default it doesn't expire. That matches how wallet download links usually get used: people open them days later on a new device. If you want an expiring URL, override the download route or wrap your own thing around it.
 
-## Apple-specific: explicit download and mail attachments
+## As an email attachment
 
-For Apple passes you can also reach for the raw `.pkpass` file directly. That's useful when you want a custom filename or you're attaching the pass to a mailable.
+For Apple passes, you can attach the `.pkpass` file directly to a mailable. Google passes aren't files (Google hosts them for you), so this route is Apple-only.
 
 ```php
-// Explicit download with a custom filename
-$mobilePass->download('boarding-pass-london');
-
-// Attach to an email
 $mail->attach($mobilePass);
 ```
-
-These only work for Apple passes. Google passes are never served as files. They live on Google's servers.
