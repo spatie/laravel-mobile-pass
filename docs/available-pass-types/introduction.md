@@ -15,6 +15,6 @@ Apple and Google don't name the equivalents the same way, so here's the rough ma
 | `StoreCardPassBuilder`      | `LoyaltyPassBuilder`        | Loyalty cards, membership programs     |
 | `GenericPassBuilder`        | `GenericPassBuilder`        | Anything that doesn't fit the above    |
 
-The Apple and Google pairs aren't interchangeable. Each platform has its own namespace (`Spatie\LaravelMobilePass\Builders\Apple\...` and `Spatie\LaravelMobilePass\Builders\Google\...`), so if you want to support both platforms for the same conceptual pass, you build twice. The `MobilePass` model is shared and the fluent API stays consistent, so there's very little extra boilerplate.
+The Apple and Google pairs aren't interchangeable. Each platform has its own namespace (`Spatie\LaravelMobilePass\Builders\Apple\...` and `Spatie\LaravelMobilePass\Builders\Google\...`), so if you want to support both platforms for the same conceptual pass, you build twice.
 
 Each page in this section walks through one pass type, side by side for Apple and Google. For the full walkthrough of how a pass goes from builder call to wallet, see [Generating your first pass](/docs/laravel-mobile-pass/v1/basic-usage/generating-your-first-pass).
