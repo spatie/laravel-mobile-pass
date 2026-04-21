@@ -3,7 +3,7 @@ title: Delivering passes to users
 weight: 7
 ---
 
-Once a `MobilePass` exists, you've got a handful of ways to get it in front of the user. The sections below cover the common delivery surfaces: controllers, buttons, emails, and QR codes on printed confirmations. Whatever surface you pick, the mechanics are the same for Apple and Google, since the package figures out the right link for you.
+Once a `MobilePass` exists, you've got a handful of ways to get it in front of the user. The sections below cover the common delivery surfaces: controllers, buttons, and QR codes on printed confirmations. Whatever surface you pick, the mechanics are the same for Apple and Google, since the package figures out the right link for you.
 
 ## Generating a URL
 
@@ -39,19 +39,7 @@ class AddToWalletController
 }
 ```
 
-If you need the URL itself (for an email link, a button, a QR code), call `$mobilePass->addToWalletUrl()` and embed the string wherever you like.
-
-## In an email
-
-The same URL goes in transactional emails. Send one pass in the welcome email, another when an event ticket is issued, and so on.
-
-```blade
-<p>Your ticket is ready!</p>
-
-<a href="{{ $mobilePass->addToWalletUrl() }}">
-    Add it to your Wallet
-</a>
-```
+If you need the URL itself (for a button, a QR code, or somewhere else entirely), call `$mobilePass->addToWalletUrl()` and embed the string wherever you like.
 
 ## As a QR code
 
