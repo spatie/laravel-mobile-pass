@@ -7,7 +7,15 @@ Every Apple builder extends `ApplePassBuilder`, so each pass type ships with the
 
 ## Field zones
 
-Apple splits the fields on a pass across five zones, and every Apple builder exposes one `add` method per zone:
+Apple splits the fields on a pass across five zones. Each zone sits in a different spot on the pass and gets its own typography, so pick the zone that matches how visible the information needs to be. See Apple's [PassKit Programming Guide](https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/PassKit_PG/Creating.html) for the full design rationale.
+
+- Header fields sit at the top right of the pass. They stay visible even when passes are stacked in Wallet, so use them for glanceable information only (a flight number, a balance). Up to three per pass.
+- Primary fields are the prominent ones on the front of the pass, rendered at the largest size. Use them for the main identity of the pass (origin and destination on a boarding pass, event name on a ticket). Up to three, or two on a boarding pass.
+- Secondary fields sit below the primary fields on the front, at a smaller size. Use them for the next layer of important information. Up to four.
+- Auxiliary fields are below the secondary fields, smaller still. Use them for less important front-of-pass details (a seat number, a gate letter). Up to four, five on boarding passes.
+- Back fields appear on the back of the pass, behind the info button. They have no length limit and support line breaks, URLs, and phone numbers (which Wallet turns into live links). Use them for the long stuff: terms, customer service, refund policy.
+
+Every Apple builder exposes one `add` method per zone:
 
 ```php
 addHeaderField(string $key, string $value, ?string $label, ?string $changeMessage, ?DateType $dateStyle, ?TimeStyleType $timeStyle, ?bool $showDateAsRelative)
