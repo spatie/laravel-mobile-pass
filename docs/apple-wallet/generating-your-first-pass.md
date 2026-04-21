@@ -3,7 +3,7 @@ title: Generating your first pass
 weight: 2
 ---
 
-The package ships with [a builder for each pass type](/docs/laravel-mobile-pass/v1/basic-usage/available-pass-types) Apple supports. Each builder has setters specific to the kind of pass you're making.
+The package ships with [a builder for each pass type](/docs/laravel-mobile-pass/v1/available-pass-types/introduction) Apple supports. Each builder has setters specific to the kind of pass you're making.
 
 Here's a basic airline boarding pass:
 
