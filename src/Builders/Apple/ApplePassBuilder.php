@@ -122,7 +122,7 @@ abstract class ApplePassBuilder
         ?TimeStyleType $timeStyle = null,
         ?bool $showDateAsRelative = null,
     ): self {
-        return $this->addField(FieldType::Header, $key, $value, $label, $changeMessage, $dateStyle, $timeStyle, $showDateAsRelative);
+        return $this->addField($key, $value, FieldType::Header, $label, $changeMessage, $dateStyle, $timeStyle, $showDateAsRelative);
     }
 
     public function addPrimaryField(
@@ -134,7 +134,7 @@ abstract class ApplePassBuilder
         ?TimeStyleType $timeStyle = null,
         ?bool $showDateAsRelative = null,
     ): self {
-        return $this->addField(FieldType::Primary, $key, $value, $label, $changeMessage, $dateStyle, $timeStyle, $showDateAsRelative);
+        return $this->addField($key, $value, FieldType::Primary, $label, $changeMessage, $dateStyle, $timeStyle, $showDateAsRelative);
     }
 
     public function addSecondaryField(
@@ -146,7 +146,7 @@ abstract class ApplePassBuilder
         ?TimeStyleType $timeStyle = null,
         ?bool $showDateAsRelative = null,
     ): self {
-        return $this->addField(FieldType::Secondary, $key, $value, $label, $changeMessage, $dateStyle, $timeStyle, $showDateAsRelative);
+        return $this->addField($key, $value, FieldType::Secondary, $label, $changeMessage, $dateStyle, $timeStyle, $showDateAsRelative);
     }
 
     public function addAuxiliaryField(
@@ -158,7 +158,7 @@ abstract class ApplePassBuilder
         ?TimeStyleType $timeStyle = null,
         ?bool $showDateAsRelative = null,
     ): self {
-        return $this->addField(FieldType::Auxiliary, $key, $value, $label, $changeMessage, $dateStyle, $timeStyle, $showDateAsRelative);
+        return $this->addField($key, $value, FieldType::Auxiliary, $label, $changeMessage, $dateStyle, $timeStyle, $showDateAsRelative);
     }
 
     public function addBackField(
@@ -170,13 +170,13 @@ abstract class ApplePassBuilder
         ?TimeStyleType $timeStyle = null,
         ?bool $showDateAsRelative = null,
     ): self {
-        return $this->addField(FieldType::Back, $key, $value, $label, $changeMessage, $dateStyle, $timeStyle, $showDateAsRelative);
+        return $this->addField($key, $value, FieldType::Back, $label, $changeMessage, $dateStyle, $timeStyle, $showDateAsRelative);
     }
 
-    protected function addField(
-        FieldType $type,
+    public function addField(
         string $key,
         string $value,
+        FieldType $type = FieldType::Primary,
         ?string $label = null,
         ?string $changeMessage = null,
         ?DateType $dateStyle = null,

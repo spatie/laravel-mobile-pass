@@ -14,13 +14,15 @@ $mobilePass = EventTicketPassBuilder::make()
     ->setOrganisationName('Eras Tour Promotions')
     ->setSerialNumber('TS-BRU-0042')
     ->setDescription('Taylor Swift at King Baudouin Stadium')
-    ->addPrimaryField('event', 'The Eras Tour')
-    ->addSecondaryField('attendee', 'Dan Johnson', label: 'Name')
-    ->addSecondaryField('seat', 'Floor A, Row 12')
+    ->addField('event', 'The Eras Tour')
+    ->addField('attendee', 'Dan Johnson', label: 'Name')
+    ->addField('seat', 'Floor A, Row 12')
     ->save();
 ```
 
-A note on the fields. Apple renders primary fields as the most prominent content on the front of the pass, and secondary fields as smaller supporting content below them. The first argument (`event`, `attendee`, `seat`) is a free-form identifier. Apple doesn't care what string you pick, but it has to be unique within the pass, and you'll reuse it later when you want to update that specific field. The label shown to the user defaults to a title-cased version of the key. Pass an explicit `label:` when you want something different (like `'Name'` instead of `'Attendee'` above).
+A note on the fields. The first argument (`event`, `attendee`, `seat`) is a free-form identifier. Apple doesn't care what string you pick, but it has to be unique within the pass, and you'll reuse it later when you want to update that specific field. The label shown on the pass defaults to a title-cased version of the key. Pass `label:` when you want something different (like `'Name'` instead of `'Attendee'` above).
+
+Apple passes have several field zones (header, primary, secondary, auxiliary, back) that control where a field shows up on the pass. `addField` defaults to primary, which is fine for getting started. When you need finer control, reach for `addHeaderField`, `addSecondaryField`, `addAuxiliaryField`, or `addBackField`. See [Generating your first pass](/docs/laravel-mobile-pass/v1/apple-wallet/generating-your-first-pass) for the full set.
 
 The `save()` method returns a `MobilePass` model. Nothing is written to disk. All pass properties (fields, images, barcode) are stored as a row in the `mobile_passes` table.
 
@@ -50,6 +52,8 @@ $mobilePass->builder()
     ->updateField('seat', 'Floor A, Row 14', changeMessage: 'Your seat has changed to %@')
     ->save();
 ```
+
+The `changeMessage` is stored on the field. Once set, Apple uses that template for every future value change on that field, not just this one update. The `%@` placeholder is substituted with the new value at notification time.
 
 The package notifies Apple, Apple pings the device, and the device pulls the new version of the pass from your server. The ticket updates in place. No second download, no re-sent email.
 
