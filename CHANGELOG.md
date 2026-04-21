@@ -2,10 +2,11 @@
 
 All notable changes to `laravel-mobile-pass` will be documented in this file.
 
-## Unreleased
+## 0.1.0 - 2026-04-21
 
 ### Added
 
+- Apple `pass.json` now includes `webServiceURL` derived from `mobile-pass.apple.webservice.host`, so iOS can register devices and receive pass updates
 - Google Wallet support: class and object builders for BoardingPass, EventTicket, Loyalty, Offer, and Generic pass types
 - `$pass->addToWalletUrl()` unified across Apple and Google
 - `$pass->expire()` unified across Apple and Google

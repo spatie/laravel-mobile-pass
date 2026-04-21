@@ -346,6 +346,7 @@ abstract class ApplePassBuilder
             'passTypeIdentifier' => config('mobile-pass.apple.type_identifier'),
             'serialNumber' => $this->serialNumber,
             'authenticationToken' => config('mobile-pass.apple.webservice.secret'),
+            'webServiceURL' => $this->webServiceURL(),
             'teamIdentifier' => config('mobile-pass.apple.team_identifier'),
             'description' => $this->description,
             'semantics' => $this->compileSemantics(),
@@ -356,6 +357,17 @@ abstract class ApplePassBuilder
                 'passType' => $this->type->value,
             ],
         ]));
+    }
+
+    protected function webServiceURL(): ?string
+    {
+        $host = config('mobile-pass.apple.webservice.host');
+
+        if (! $host) {
+            return null;
+        }
+
+        return rtrim($host, '/').'/passkit';
     }
 
     protected function uncompileSemantics(): void
