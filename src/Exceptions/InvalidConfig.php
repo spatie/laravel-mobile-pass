@@ -45,4 +45,13 @@ class InvalidConfig extends Exception
             .'or MOBILE_PASS_GOOGLE_KEY_PATH. See the docs on getting credentials from Google.'
         );
     }
+
+    public static function webserviceHostMustBeHttps(string $host): self
+    {
+        return new self(
+            "The `mobile-pass.apple.webservice.host` config value must use HTTPS, got `{$host}`. "
+            .'Apple rejects passes whose webServiceURL is not served over HTTPS. '
+            .'Leave the value empty if you do not need device registrations (typical for local dev over http://).'
+        );
+    }
 }

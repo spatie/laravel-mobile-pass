@@ -14,6 +14,7 @@ use Spatie\LaravelMobilePass\Builders\Apple\Entities\WifiNetwork;
 use Spatie\LaravelMobilePass\Builders\Apple\Validators\ApplePassValidator;
 use Spatie\LaravelMobilePass\Enums\PassType;
 use Spatie\LaravelMobilePass\Enums\Platform;
+use Spatie\LaravelMobilePass\Exceptions\InvalidConfig;
 use Spatie\LaravelMobilePass\Models\MobilePass;
 
 /**
@@ -365,6 +366,10 @@ abstract class ApplePassBuilder
 
         if (! $host) {
             return null;
+        }
+
+        if (! str_starts_with($host, 'https://')) {
+            throw InvalidConfig::webserviceHostMustBeHttps($host);
         }
 
         return rtrim($host, '/').'/passkit';

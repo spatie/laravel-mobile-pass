@@ -2,6 +2,12 @@
 
 All notable changes to `laravel-mobile-pass` will be documented in this file.
 
+## 0.1.2 - 2026-04-21
+
+### Changed
+
+- Building an Apple pass with a non-HTTPS `mobile-pass.apple.webservice.host` now throws `InvalidConfig::webserviceHostMustBeHttps` instead of silently producing a pass that Apple Wallet rejects (Apple requires `webServiceURL` to be HTTPS)
+
 ## 0.1.1 - 2026-04-21
 
 ### Changed
