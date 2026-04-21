@@ -36,6 +36,7 @@ $mobilePass = EventTicketPassBuilder::make()
 To hand the ticket to the user, return the model straight from a controller. `MobilePass` implements `Responsable`, so Laravel serves the signed `.pkpass` for you:
 
 ```php
+// in a controller
 return $mobilePass;
 ```
 
@@ -78,6 +79,7 @@ $mobilePass = EventTicketPassBuilder::make()
 `save()` creates the Object on Google's servers and inserts a row in the same `mobile_passes` table. Handing it to the user is the same one-liner:
 
 ```php
+// in a controller
 return $mobilePass;
 ```
 
