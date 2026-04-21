@@ -9,11 +9,11 @@ You can also push updates to passes you've already handed out, so they stay curr
 
 Here's an example of a boarding pass you can generate with this package.
 
-![boarding pass](/docs/laravel-mobile-pass/v1/images/boarding.jpg)
+<img src="/docs/laravel-mobile-pass/v1/images/boarding.jpg" alt="boarding pass" width="400">
 
 And here's a coupon.
 
-![coupon](/docs/laravel-mobile-pass/v1/images/coupon.jpg)
+<img src="/docs/laravel-mobile-pass/v1/images/coupon.jpg" alt="coupon" width="400">
 
 Google Wallet is supported too. The same `MobilePass` model backs both platforms, so most of the API is identical regardless of where the pass is headed.
 

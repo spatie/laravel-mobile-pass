@@ -26,3 +26,5 @@ Once you have a reader, you can call:
 - `passProperties()`: returns an array of properties from the pass.json file.
 - `passProperty(string $key)`: returns the value of the given property from the pass.json file.
 - `toArray()`: returns an array representation of the pass.
+
+The reader is also handy in your test suite. When you're asserting against a generated pass, pull it through `PkPassReader` and poke at the fields and manifest directly instead of eyeballing the raw bytes.
