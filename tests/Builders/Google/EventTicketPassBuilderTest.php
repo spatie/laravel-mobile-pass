@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Http;
-use Spatie\LaravelMobilePass\Builders\Apple\Entities\Barcode;
 use Spatie\LaravelMobilePass\Builders\Google\EventTicketPassBuilder;
 use Spatie\LaravelMobilePass\Enums\BarcodeType;
 use Spatie\LaravelMobilePass\Enums\Platform;
@@ -24,7 +23,7 @@ it('creates a MobilePass row and POSTs the object to Google', function () {
         ->setSection('B12')
         ->setRow('8')
         ->setSeat('22')
-        ->setBarcode(Barcode::make(BarcodeType::QR, 'TS-JS'))
+        ->setBarcode(BarcodeType::Qr, 'TS-JS')
         ->save();
 
     expect($pass->platform)->toBe(Platform::Google);

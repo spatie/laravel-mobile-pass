@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Http;
-use Spatie\LaravelMobilePass\Builders\Apple\Entities\Barcode;
 use Spatie\LaravelMobilePass\Builders\Google\LoyaltyPassBuilder;
 use Spatie\LaravelMobilePass\Enums\BarcodeType;
 use Spatie\LaravelMobilePass\Enums\Platform;
@@ -24,7 +23,7 @@ it('creates a MobilePass row and POSTs the loyalty object to Google', function (
         ->setAccountName('Jane Doe')
         ->setBalanceMicros(125000000)
         ->setBalanceString('125 points')
-        ->setBarcode(Barcode::make(BarcodeType::Aztec, 'LP-42'))
+        ->setBarcode(BarcodeType::Aztec, 'LP-42')
         ->save();
 
     expect($pass->platform)->toBe(Platform::Google);

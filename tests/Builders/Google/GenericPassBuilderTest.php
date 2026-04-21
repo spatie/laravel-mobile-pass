@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Http;
-use Spatie\LaravelMobilePass\Builders\Apple\Entities\Barcode;
 use Spatie\LaravelMobilePass\Builders\Google\GenericPassBuilder;
 use Spatie\LaravelMobilePass\Enums\BarcodeType;
 use Spatie\LaravelMobilePass\Enums\Platform;
@@ -24,7 +23,7 @@ it('creates a MobilePass row and POSTs the generic object to Google', function (
         ->setCardTitle('Acme Inc')
         ->setSubheader('Gold Tier')
         ->setExpiryNotificationEnabled(true)
-        ->setBarcode(Barcode::make(BarcodeType::QR, 'MEMBER-42'))
+        ->setBarcode(BarcodeType::Qr, 'MEMBER-42')
         ->save();
 
     expect($pass->platform)->toBe(Platform::Google);

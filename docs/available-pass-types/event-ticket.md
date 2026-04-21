@@ -25,7 +25,6 @@ EventTicketPassBuilder::make()
 Declare the Class once per event (the venue, the show, the shared visuals), then create an Object per ticket.
 
 ```php
-use Spatie\LaravelMobilePass\Builders\Apple\Entities\Barcode;
 use Spatie\LaravelMobilePass\Builders\Google\EventTicketPassBuilder;
 use Spatie\LaravelMobilePass\Builders\Google\EventTicketPassClass;
 use Spatie\LaravelMobilePass\Enums\BarcodeType;
@@ -47,6 +46,6 @@ EventTicketPassBuilder::make()
     ->setSection('B12')
     ->setRow('8')
     ->setSeat('22')
-    ->setBarcode(Barcode::make(BarcodeType::QR, 'BTL-SHEA-0042'))
+    ->setBarcode(BarcodeType::Qr, 'BTL-SHEA-0042')
     ->save();
 ```

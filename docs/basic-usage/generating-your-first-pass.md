@@ -64,7 +64,6 @@ Android users live in Google Wallet, and the same package covers that with a mat
 Once the class exists, building a ticket for one attendee looks like this:
 
 ```php
-use Spatie\LaravelMobilePass\Builders\Apple\Entities\Barcode;
 use Spatie\LaravelMobilePass\Builders\Google\EventTicketPassBuilder;
 use Spatie\LaravelMobilePass\Enums\BarcodeType;
 
@@ -74,7 +73,7 @@ $mobilePass = EventTicketPassBuilder::make()
     ->setSection('Floor A')
     ->setRow('12')
     ->setSeat('24')
-    ->setBarcode(Barcode::make(BarcodeType::QR, 'TICKET-12345'))
+    ->setBarcode(BarcodeType::Qr, 'TICKET-12345')
     ->save();
 ```
 

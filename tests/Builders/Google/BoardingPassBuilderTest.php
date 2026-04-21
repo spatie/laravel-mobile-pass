@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Http;
-use Spatie\LaravelMobilePass\Builders\Apple\Entities\Barcode;
 use Spatie\LaravelMobilePass\Builders\Google\BoardingPassBuilder;
 use Spatie\LaravelMobilePass\Enums\BarcodeType;
 use Spatie\LaravelMobilePass\Enums\Platform;
@@ -23,7 +22,7 @@ it('creates a MobilePass row and POSTs the boarding object to Google', function 
         ->setPassengerName('Jane Doe')
         ->setSeatNumber('12A')
         ->setConfirmationCode('XYZ123')
-        ->setBarcode(Barcode::make(BarcodeType::PDF417, 'BOARDING-CODE'))
+        ->setBarcode(BarcodeType::Pdf417, 'BOARDING-CODE')
         ->save();
 
     expect($pass->platform)->toBe(Platform::Google);

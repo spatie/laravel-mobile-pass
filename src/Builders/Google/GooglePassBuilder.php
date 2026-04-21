@@ -67,8 +67,14 @@ abstract class GooglePassBuilder
         return $this;
     }
 
-    public function setBarcode(Barcode $barcode): static
+    public function setBarcode(BarcodeType $format, string $message, ?string $altText = null): static
     {
+        $barcode = Barcode::make($format, $message);
+
+        if ($altText !== null) {
+            $barcode->withAltText($altText);
+        }
+
         $this->barcode = $barcode;
 
         return $this;
@@ -146,8 +152,8 @@ abstract class GooglePassBuilder
     protected function translateBarcodeType(BarcodeType $type): string
     {
         return match ($type) {
-            BarcodeType::QR => 'QR_CODE',
-            BarcodeType::PDF417 => 'PDF_417',
+            BarcodeType::Qr => 'QR_CODE',
+            BarcodeType::Pdf417 => 'PDF_417',
             BarcodeType::Aztec => 'AZTEC',
             BarcodeType::Code128 => 'CODE_128',
         };

@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Http;
-use Spatie\LaravelMobilePass\Builders\Apple\Entities\Barcode;
 use Spatie\LaravelMobilePass\Builders\Google\OfferPassBuilder;
 use Spatie\LaravelMobilePass\Enums\BarcodeType;
 use Spatie\LaravelMobilePass\Enums\Platform;
@@ -22,7 +21,7 @@ it('creates a MobilePass row and POSTs the offer object to Google', function () 
         ->setObjectSuffix('spring')
         ->setTitle('Spring Sale 20%')
         ->setRedemptionCode('SPRING20')
-        ->setBarcode(Barcode::make(BarcodeType::Code128, 'SPRING20'))
+        ->setBarcode(BarcodeType::Code128, 'SPRING20')
         ->save();
 
     expect($pass->platform)->toBe(Platform::Google);
