@@ -25,7 +25,7 @@ The URL works behind any anchor or form. This sits nicely on a post-checkout con
 
 ## Returning the model from a controller
 
-The `MobilePass` model implements `Responsable`, so the simplest way to deliver a pass is to return the model itself. Laravel serves the signed `.pkpass` for Apple passes and redirects to the Google Wallet save URL for Google passes, so you don't need to branch on platform:
+The `MobilePass` model implements `Responsable`, so the simplest way to deliver a pass is to return the model itself from a controller. Laravel takes it from there, serving the signed `.pkpass` for Apple passes and redirecting to the Google Wallet save URL for Google passes. One controller, both platforms.
 
 ```php
 use Spatie\LaravelMobilePass\Models\MobilePass;
