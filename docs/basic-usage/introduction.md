@@ -33,10 +33,10 @@ $mobilePass = EventTicketPassBuilder::make()
 
 `save()` returns a `MobilePass` model. Nothing is written to disk. All pass properties (fields, images, barcode) are stored as a row in the `mobile_passes` table.
 
-To hand the ticket to the user, redirect them to the URL the model gives you:
+To hand the ticket to the user, return the model straight from a controller. `MobilePass` implements `Responsable`, so Laravel serves the signed `.pkpass` for you:
 
 ```php
-return redirect($mobilePass->addToWalletUrl());
+return $mobilePass;
 ```
 
 The user taps through, sees a preview in Apple Wallet, and taps Add. At that moment, Apple calls back to your app to register the device against the pass. The package handles that endpoint and stores the registration in the `mobile_pass_registrations` table. That link between pass and device is what makes updates possible.
@@ -75,12 +75,12 @@ $mobilePass = EventTicketPassBuilder::make()
     ->save();
 ```
 
-`save()` creates the Object on Google's servers and inserts a row in the same `mobile_passes` table. Handing it to the user is the same call:
+`save()` creates the Object on Google's servers and inserts a row in the same `mobile_passes` table. Handing it to the user is the same one-liner:
 
 ```php
-return redirect($mobilePass->addToWalletUrl());
+return $mobilePass;
 ```
 
-Android picks up the Google Wallet save link, iPhone users get the `.pkpass` download. `$mobilePass->addToWalletUrl()` returns whatever is right for the platform the pass was built for.
+Android users get redirected to the Google Wallet save URL, iPhone users get the `.pkpass` download. The `Responsable` model picks the right response for the platform the pass was built for.
 
 Updates also look the same from your side. You change values and call `save()`. The difference is on the wire. For Apple, your app pushes out the update. For Google, Google itself pushes it to the device, so you don't host a device-facing web service for Google passes.

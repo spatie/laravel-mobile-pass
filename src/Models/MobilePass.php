@@ -11,7 +11,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
-use Illuminate\Http\Response;
 use Illuminate\Mail\Attachment;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
@@ -32,6 +31,7 @@ use Spatie\LaravelMobilePass\Models\Google\GoogleMobilePassEvent;
 use Spatie\LaravelMobilePass\Support\Apple\DownloadableMobilePass;
 use Spatie\LaravelMobilePass\Support\Config;
 use Spatie\LaravelMobilePass\Support\Google\GoogleJwtSigner;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * @property string $builder_name
@@ -245,9 +245,16 @@ class MobilePass extends Model implements Attachable, Responsable
         return $this->updated_at > $since;
     }
 
+    /**
+     * Make the pass directly returnable from a controller. Apple passes are served as
+     * the signed `.pkpass` download; Google passes redirect to the Google Wallet save URL.
+     */
     public function toResponse($request): Response
     {
-        return $this->download($this->download_name)->toResponse($request);
+        return match ($this->platform) {
+            Platform::Apple => $this->download($this->download_name)->toResponse($request),
+            Platform::Google => redirect($this->addToWalletUrl()),
+        };
     }
 
     public function toMailAttachment(): Attachment

@@ -32,7 +32,7 @@ The `Barcode` entity is imported from the `Apple\Entities` namespace because it 
 
 ## Handing the pass to the user
 
-To let a user add the pass to their Google Wallet, redirect them to the URL returned by `addToWalletUrl()`:
+`MobilePass` is `Responsable`, so to let a user add the pass to their Google Wallet you can return the model directly. Laravel will redirect them to the right Google Wallet save URL:
 
 ```php
 use Spatie\LaravelMobilePass\Models\MobilePass;
@@ -41,7 +41,7 @@ class AddToWalletController
 {
     public function __invoke(MobilePass $mobilePass)
     {
-        return redirect($mobilePass->addToWalletUrl());
+        return $mobilePass;
     }
 }
 ```

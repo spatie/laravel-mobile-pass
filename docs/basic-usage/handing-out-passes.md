@@ -11,9 +11,9 @@ $url = $mobilePass->addToWalletUrl();
 
 For Apple, this is a signed download URL that serves the `.pkpass` file. For Google, it's a `pay.google.com` save link that Google itself presents to the user.
 
-## As a redirect
+## Returning the model from a controller
 
-The simplest way to deliver a pass is to redirect the user to the URL:
+`MobilePass` implements `Responsable`, so the simplest way to deliver a pass is to return the model itself. Laravel serves the signed `.pkpass` for Apple passes and redirects to the Google Wallet save URL for Google passes — you don't have to branch:
 
 ```php
 use Spatie\LaravelMobilePass\Models\MobilePass;
@@ -22,10 +22,12 @@ class AddToWalletController
 {
     public function __invoke(MobilePass $mobilePass)
     {
-        return redirect($mobilePass->addToWalletUrl());
+        return $mobilePass;
     }
 }
 ```
+
+If you need the URL itself (for an email link, a button, a QR code), call `$mobilePass->addToWalletUrl()` and embed the string wherever you like.
 
 ## As a button or link
 
@@ -63,14 +65,11 @@ QrCode::size(240)->generate($mobilePass->addToWalletUrl());
 
 The Apple link is a `signedRoute`, not a `temporarySignedRoute`. By default it does not expire. This matches how Apple users expect wallet download links to work: they'll often open the email days later on a new device. If you want an expiring URL, override the download route or build your own wrapper around it.
 
-## Apple-specific: direct download and mail attachments
+## Apple-specific: explicit download and mail attachments
 
-When you need the raw `.pkpass` file rather than a URL (for an API response, or as a mail attachment), the `MobilePass` model still supports those older patterns.
+For Apple passes you can also reach for the raw `.pkpass` file directly — useful when you want a custom filename or you're attaching the pass to a mailable.
 
 ```php
-// Return as an HTTP response
-return $mobilePass;
-
 // Explicit download with a custom filename
 $mobilePass->download('boarding-pass-london');
 
@@ -78,4 +77,4 @@ $mobilePass->download('boarding-pass-london');
 $mail->attach($mobilePass);
 ```
 
-These only work for Apple passes. Google passes are never served as files, they live on Google's servers.
+These only work for Apple passes. Google passes are never served as files; they live on Google's servers.
