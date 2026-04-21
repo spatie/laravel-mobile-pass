@@ -1,6 +1,5 @@
 <?php
 
-use Spatie\LaravelMobilePass\Builders\Apple\Entities\Image;
 use Spatie\LaravelMobilePass\Builders\Apple\EventTicketPassBuilder;
 
 it('builds a basic event ticket', function () {
@@ -12,11 +11,7 @@ it('builds a basic event ticket', function () {
         ->addPrimaryField('venue', 'Amsterdam')
         ->addSecondaryField('name', 'Dan Johnson')
         ->addAuxiliaryField('seat', 'A12')
-        ->setIconImage(
-            Image::make(
-                x1Path: getTestSupportPath('images/spatie-thumbnail.png')
-            )
-        );
+        ->setIconImage(getTestSupportPath('images/spatie-thumbnail.png'));
 
     $compiledData = $eventTicketPassBuilder->data();
 

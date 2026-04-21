@@ -7,29 +7,42 @@ Apple and Google Wallet want pass artwork in very different shapes. Apple needs 
 
 ## Apple
 
-Every Apple pass takes a logo (top-left corner) and an icon (the square seen in notifications and email attachments). Boarding passes also take a footer image above the barcode. Other pass types optionally accept a strip, thumbnail, or background image depending on the layout.
+Every Apple pass takes a logo (top-left corner) and an icon (the square seen in notifications and email attachments). Boarding passes also take a footer image above the barcode.
 
-Pass a `Spatie\LaravelMobilePass\Builders\Apple\Entities\Image` entity with the path(s) to your file(s):
+Pass the path to the image file on disk:
 
 ```php
-use Spatie\LaravelMobilePass\Builders\Apple\Entities\Image;
-
 $builder
-    ->setLogoImage(Image::make(x1Path: public_path('images/logo.png')))
-    ->setIconImage(Image::make(x1Path: public_path('images/icon.png')));
+    ->setLogoImage(public_path('images/logo.png'))
+    ->setIconImage(public_path('images/icon.png'));
 ```
 
-Apple renders passes at 1x, 2x, and 3x pixel densities. You can ship just a 1x and let Wallet scale it, but you'll get crisper results by providing the higher-density versions too:
+Apple renders passes at 1x, 2x, and 3x pixel densities. Providing higher-density versions gives you crisper results; pass them as extra arguments:
 
 ```php
-Image::make(
+$builder->setLogoImage(
     x1Path: public_path('images/logo.png'),
     x2Path: public_path('images/logo@2x.png'),
     x3Path: public_path('images/logo@3x.png'),
 );
 ```
 
-`Image::make()` throws an `InvalidArgumentException` if any of the paths you pass don't exist, so mistyped paths surface immediately.
+If a path doesn't exist on disk, the builder throws an `InvalidArgumentException` right away so mistyped paths surface immediately.
+
+### Recommended dimensions
+
+Apple publishes the exact sizes it expects. The values below are for the 1x density; double them for 2x, triple for 3x.
+
+| Image | 1x size (points) | Notes |
+|---|---|---|
+| Icon | 29 × 29 | Used in notifications and email attachments. Required. |
+| Logo | up to 160 × 50 | Top-left of the pass. Required. |
+| Thumbnail | up to 90 × 90 | Square artwork next to primary fields on event tickets and generic passes. |
+| Strip | 375 × 123 (coupon) / 375 × 98 (event ticket) | Full-width image behind the primary fields. |
+| Background | 180 × 220 | Event tickets only. Blurred and stretched by Wallet. |
+| Footer | 286 × 15 | Boarding passes only. Sits above the barcode. |
+
+See Apple's [Pass Design and Creation](https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/PassKit_PG/Creating.html) chapter for the full table, exact pixel sizes for every density, and which images each pass style supports.
 
 ## Google
 
@@ -49,9 +62,11 @@ Different Class types expose different image setters. Event tickets and boarding
 
 Google caches images it has fetched. When you change a URL's contents in place, you may need to use a new URL (or append a cache-busting query string) to see the new image.
 
+See Google's [Visual design reference](https://developers.google.com/wallet/generic/resources/visual-design) for the sizes and formats it expects.
+
 ## Background colours
 
-Both platforms support a background colour (handy when you're not using a background image). On Apple pass an RGB `Colour` to `setBackgroundColour()`:
+Both platforms support a background colour (handy when you're not using a background image). On Apple pass a hex string to `setBackgroundColour()`:
 
 ```php
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\Colour;

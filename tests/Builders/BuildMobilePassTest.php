@@ -3,7 +3,6 @@
 namespace Spatie\LaravelMobilePass\Tests\Feature;
 
 use Illuminate\Validation\ValidationException;
-use Spatie\LaravelMobilePass\Builders\Apple\Entities\Image;
 use Spatie\LaravelMobilePass\Builders\Apple\GenericPassBuilder;
 
 it('can create a mobile pass', function () {
@@ -17,11 +16,7 @@ it('can create a mobile pass', function () {
         ->addPrimaryField('destination', 'LHR', label: 'London Heathrow')
         ->addSecondaryField('name', 'Dan Johnson')
         ->addSecondaryField('gate', 'D68')
-        ->setIconImage(
-            Image::make(
-                x1Path: getTestSupportPath('images/spatie-thumbnail.png')
-            )
-        );
+        ->setIconImage(getTestSupportPath('images/spatie-thumbnail.png'));
 
     $pass->save();
 
@@ -43,11 +38,7 @@ it('updates a field', function () {
         ->setOrganisationName('My organisation')
         ->setSerialNumber(123456)
         ->setDescription('Hello!')
-        ->setIconImage(
-            Image::make(
-                x1Path: getTestSupportPath('images/spatie-thumbnail.png')
-            )
-        )
+        ->setIconImage(getTestSupportPath('images/spatie-thumbnail.png'))
         ->addHeaderField('flight-no', 'EY066', label: 'Flight')
         ->addHeaderField('seat', '66F')
         ->save();

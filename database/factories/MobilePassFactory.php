@@ -20,9 +20,7 @@ class MobilePassFactory extends Factory
             'type' => 'generic',
             'platform' => Platform::Apple,
             'images' => [
-                'icon' => Image::make(
-                    getTestSupportPath('images/spatie-thumbnail.png')
-                ),
+                'icon' => new Image(getTestSupportPath('images/spatie-thumbnail.png')),
             ],
             'content' => [
                 'formatVersion' => 1,

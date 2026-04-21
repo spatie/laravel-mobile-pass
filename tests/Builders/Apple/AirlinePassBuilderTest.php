@@ -1,7 +1,6 @@
 <?php
 
 use Spatie\LaravelMobilePass\Builders\Apple\AirlinePassBuilder;
-use Spatie\LaravelMobilePass\Builders\Apple\Entities\Image;
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\Seat;
 
 it('builds a basic airline boarding pass', function () {
@@ -17,11 +16,7 @@ it('builds a basic airline boarding pass', function () {
         ->addSecondaryField('gate', 'D68')
         ->addAuxiliaryField('departs', now()->toIso8601String())
         ->addAuxiliaryField('class', 'Economy')
-        ->setIconImage(
-            Image::make(
-                x1Path: getTestSupportPath('images/spatie-thumbnail.png')
-            )
-        )
+        ->setIconImage(getTestSupportPath('images/spatie-thumbnail.png'))
 
         // Now set the semantic fields.
         ->setDepartureAirportCode('AUH')

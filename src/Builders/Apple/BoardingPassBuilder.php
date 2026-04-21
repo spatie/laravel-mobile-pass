@@ -294,9 +294,9 @@ abstract class BoardingPassBuilder extends ApplePassBuilder
         return $this;
     }
 
-    public function setFooterImage(Image $image): self
+    public function setFooterImage(string $x1Path, ?string $x2Path = null, ?string $x3Path = null): self
     {
-        $this->images['footer'] = $image;
+        $this->images['footer'] = new Image($x1Path, $x2Path, $x3Path);
 
         return $this;
     }

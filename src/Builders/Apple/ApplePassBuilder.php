@@ -104,16 +104,16 @@ abstract class ApplePassBuilder
         return $this;
     }
 
-    public function setLogoImage(Image $image): self
+    public function setLogoImage(string $x1Path, ?string $x2Path = null, ?string $x3Path = null): self
     {
-        $this->images['logo'] = $image;
+        $this->images['logo'] = new Image($x1Path, $x2Path, $x3Path);
 
         return $this;
     }
 
-    public function setIconImage(Image $image): self
+    public function setIconImage(string $x1Path, ?string $x2Path = null, ?string $x3Path = null): self
     {
-        $this->images['icon'] = $image;
+        $this->images['icon'] = new Image($x1Path, $x2Path, $x3Path);
 
         return $this;
     }
