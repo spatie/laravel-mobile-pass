@@ -11,9 +11,11 @@ use Spatie\LaravelMobilePass\Builders\Apple\Entities\Image;
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\Price;
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\WifiNetwork;
 use Spatie\LaravelMobilePass\Builders\Apple\Validators\ApplePassValidator;
+use Spatie\LaravelMobilePass\Enums\DateType;
 use Spatie\LaravelMobilePass\Enums\FieldType;
 use Spatie\LaravelMobilePass\Enums\PassType;
 use Spatie\LaravelMobilePass\Enums\Platform;
+use Spatie\LaravelMobilePass\Enums\TimeStyleType;
 use Spatie\LaravelMobilePass\Exceptions\InvalidConfig;
 use Spatie\LaravelMobilePass\Models\MobilePass;
 
@@ -116,8 +118,11 @@ abstract class ApplePassBuilder
         string $value,
         ?string $label = null,
         ?string $changeMessage = null,
+        ?DateType $dateStyle = null,
+        ?TimeStyleType $timeStyle = null,
+        ?bool $showDateAsRelative = null,
     ): self {
-        return $this->addField(FieldType::Header, $key, $value, $label, $changeMessage);
+        return $this->addField(FieldType::Header, $key, $value, $label, $changeMessage, $dateStyle, $timeStyle, $showDateAsRelative);
     }
 
     public function addPrimaryField(
@@ -125,8 +130,11 @@ abstract class ApplePassBuilder
         string $value,
         ?string $label = null,
         ?string $changeMessage = null,
+        ?DateType $dateStyle = null,
+        ?TimeStyleType $timeStyle = null,
+        ?bool $showDateAsRelative = null,
     ): self {
-        return $this->addField(FieldType::Primary, $key, $value, $label, $changeMessage);
+        return $this->addField(FieldType::Primary, $key, $value, $label, $changeMessage, $dateStyle, $timeStyle, $showDateAsRelative);
     }
 
     public function addSecondaryField(
@@ -134,8 +142,11 @@ abstract class ApplePassBuilder
         string $value,
         ?string $label = null,
         ?string $changeMessage = null,
+        ?DateType $dateStyle = null,
+        ?TimeStyleType $timeStyle = null,
+        ?bool $showDateAsRelative = null,
     ): self {
-        return $this->addField(FieldType::Secondary, $key, $value, $label, $changeMessage);
+        return $this->addField(FieldType::Secondary, $key, $value, $label, $changeMessage, $dateStyle, $timeStyle, $showDateAsRelative);
     }
 
     public function addAuxiliaryField(
@@ -143,8 +154,11 @@ abstract class ApplePassBuilder
         string $value,
         ?string $label = null,
         ?string $changeMessage = null,
+        ?DateType $dateStyle = null,
+        ?TimeStyleType $timeStyle = null,
+        ?bool $showDateAsRelative = null,
     ): self {
-        return $this->addField(FieldType::Auxiliary, $key, $value, $label, $changeMessage);
+        return $this->addField(FieldType::Auxiliary, $key, $value, $label, $changeMessage, $dateStyle, $timeStyle, $showDateAsRelative);
     }
 
     public function addBackField(
@@ -152,8 +166,11 @@ abstract class ApplePassBuilder
         string $value,
         ?string $label = null,
         ?string $changeMessage = null,
+        ?DateType $dateStyle = null,
+        ?TimeStyleType $timeStyle = null,
+        ?bool $showDateAsRelative = null,
     ): self {
-        return $this->addField(FieldType::Back, $key, $value, $label, $changeMessage);
+        return $this->addField(FieldType::Back, $key, $value, $label, $changeMessage, $dateStyle, $timeStyle, $showDateAsRelative);
     }
 
     protected function addField(
@@ -162,6 +179,9 @@ abstract class ApplePassBuilder
         string $value,
         ?string $label = null,
         ?string $changeMessage = null,
+        ?DateType $dateStyle = null,
+        ?TimeStyleType $timeStyle = null,
+        ?bool $showDateAsRelative = null,
     ): self {
         $field = FieldContent::make($key)
             ->withValue($value)
@@ -169,6 +189,18 @@ abstract class ApplePassBuilder
 
         if ($changeMessage !== null) {
             $field->showMessageWhenChanged($changeMessage);
+        }
+
+        if ($dateStyle !== null) {
+            $field->usingDateType($dateStyle);
+        }
+
+        if ($timeStyle !== null) {
+            $field->usingTimeType($timeStyle);
+        }
+
+        if ($showDateAsRelative === true) {
+            $field->showDateAsRelative();
         }
 
         $property = $type->value;
