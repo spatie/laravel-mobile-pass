@@ -1,6 +1,6 @@
 ---
-title: Introduction
-weight: 1
+title: Installation & setup
+weight: 4
 ---
 
 Pull the package in with Composer:
@@ -13,8 +13,8 @@ composer require spatie/laravel-mobile-pass
 
 Each platform wants its own credentials before you can issue passes. Follow the walkthrough for whichever platforms you plan to support:
 
-- [Getting credentials from Apple](/docs/laravel-mobile-pass/v1/installation-setup/getting-credentials-from-apple)
-- [Getting credentials from Google](/docs/laravel-mobile-pass/v1/installation-setup/getting-credentials-from-google)
+- [Getting credentials from Apple](/docs/laravel-mobile-pass/v1/apple-wallet/getting-credentials-from-apple)
+- [Getting credentials from Google](/docs/laravel-mobile-pass/v1/google-wallet/getting-credentials-from-google)
 
 Each guide walks you through what to register, which keys to download, and the environment variables to set.
 

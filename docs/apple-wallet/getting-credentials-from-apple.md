@@ -1,6 +1,6 @@
 ---
 title: Getting credentials from Apple
-weight: 2
+weight: 1
 ---
 
 Before you can generate passes for Apple Wallet, you need a certificate from Apple. The package uses it to sign every pass you issue.

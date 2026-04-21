@@ -28,7 +28,7 @@ MIIB...
 -----END PUBLIC KEY-----"
 ```
 
-You'll find that key in the Business Console under Settings, API access. See [Getting credentials from Google](/docs/laravel-mobile-pass/v1/installation-setup/getting-credentials-from-google) for the full walkthrough.
+You'll find that key in the Business Console under Settings, API access. See [Getting credentials from Google](/docs/laravel-mobile-pass/v1/google-wallet/getting-credentials-from-google) for the full walkthrough.
 
 ## Listen for the events
 
