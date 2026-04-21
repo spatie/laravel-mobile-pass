@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-mobile-pass` will be documented in this file.
 
+## 0.2.0 - 2026-04-21
+
+**Full Changelog**: https://github.com/spatie/laravel-mobile-pass/compare/0.1.2...0.2.0
+
 ## 0.1.2 - 2026-04-21
 
 ### Changed
