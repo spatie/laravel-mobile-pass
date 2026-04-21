@@ -31,6 +31,8 @@ $mobilePass = EventTicketPassBuilder::make()
     ->save();
 ```
 
+A note on the fields. Apple renders **primary fields** as the most prominent content on the front of the pass, and **secondary fields** as smaller supporting content below them. The first argument to `FieldContent::make()` (`event`, `attendee`, `seat`) is a free-form identifier. Apple doesn't care what string you pick, but it has to be unique within the pass, and you'll reuse it later when you want to update that specific field.
+
 `save()` returns a `MobilePass` model. Nothing is written to disk. All pass properties (fields, images, barcode) are stored as a row in the `mobile_passes` table.
 
 To hand the ticket to the user, return the model straight from a controller. `MobilePass` implements `Responsable`, so Laravel serves the signed `.pkpass` for you:
