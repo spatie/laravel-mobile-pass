@@ -3,7 +3,7 @@ title: Introduction
 weight: 1
 ---
 
-The package ships a builder for every pass type Apple Wallet and Google Wallet support. Pick the builder that matches the kind of pass you're issuing, and you're done. Every builder has setters specific to its type, on top of the shared `save()`, `addToWalletUrl()`, and `expire()` you already know from the basics.
+The package ships a builder for every pass type Apple Wallet and Google Wallet support. Pick the builder that matches the kind of pass you're issuing, and you're done. Every builder has setters specific to its type, on top of the shared `save()`, `addToWalletUrl()`, and `expire()`.
 
 Apple and Google don't name the equivalents the same way, so here's the rough mapping:
 
