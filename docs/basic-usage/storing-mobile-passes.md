@@ -1,6 +1,6 @@
 ---
 title: Storing mobile passes
-weight: 8
+weight: 7
 ---
 
 Most of the time you don't need to store a mobile pass yourself. The package generates it on the fly when a user downloads it.

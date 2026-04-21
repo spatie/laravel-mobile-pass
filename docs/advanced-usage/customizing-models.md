@@ -1,6 +1,6 @@
 ---
 title: Customizing models
-weight: 2
+weight: 3
 ---
 
 If you want to change how the models behave, create a new model that extends the default one. From there you can add your own methods, traits, or whatever else you need.

@@ -1,6 +1,6 @@
 ---
 title: Reading stored passes
-weight: 3
+weight: 4
 ---
 
 The package ships a `PkPassReader` class that reads Apple passes, either from a file or from a string.

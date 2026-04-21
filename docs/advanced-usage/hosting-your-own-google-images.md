@@ -1,6 +1,6 @@
 ---
 title: Hosting your own Google images
-weight: 5
+weight: 6
 ---
 
 Google Wallet expects every image on a pass (logo, hero image, program artwork) to live at a public HTTPS URL. Google fetches the image itself. It doesn't accept uploaded bytes the way Apple's `.pkpass` format does.

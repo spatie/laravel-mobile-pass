@@ -1,6 +1,6 @@
 ---
 title: Customizing actions
-weight: 1
+weight: 2
 ---
 
 The core behaviour of this package is split across a set of action classes, all registered in the config file. You can swap any of them out by extending the default class and pointing the config at your version.

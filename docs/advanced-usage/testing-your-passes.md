@@ -1,6 +1,6 @@
 ---
 title: Testing your passes
-weight: 6
+weight: 7
 ---
 
 Testing mobile passes happens on two layers. In your test suite you mock the platform APIs and assert the payloads and workflows. For manual testing you want to actually see the pass render on a real wallet app, which is easy for Apple if you have an iPhone and trickier for Google if all your hardware is iOS.

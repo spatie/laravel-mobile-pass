@@ -1,6 +1,6 @@
 ---
 title: Listening to Google save and remove events
-weight: 3
+weight: 5
 ---
 
 When a user saves a Google pass to their wallet (or removes one), Google calls back to your app. The package verifies the callback, records it to the database, and fires a Laravel event you can listen for.

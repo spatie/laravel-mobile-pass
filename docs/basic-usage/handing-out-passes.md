@@ -1,6 +1,6 @@
 ---
 title: Delivering passes to users
-weight: 9
+weight: 2
 ---
 
 Once a `MobilePass` exists, you've got a handful of ways to get it in front of the user. The sections below cover the common delivery surfaces: controllers, buttons, and QR codes on printed confirmations. Whatever surface you pick, the mechanics are the same for Apple and Google, since the package figures out the right link for you.
@@ -57,8 +57,41 @@ The Apple link is a `signedRoute`, not a `temporarySignedRoute`, so by default i
 
 ## As an email attachment
 
-For Apple passes, you can attach the `.pkpass` file directly to a mailable. Google passes aren't files (Google hosts them for you), so this route is Apple-only.
+For Apple passes, you can attach the `.pkpass` file directly to a mailable. The `MobilePass` model implements Laravel's `Attachable` contract, so attaching it is a one-liner. Google passes aren't files (Google hosts them for you), so this route is Apple-only.
+
+Here's the full Mailable:
 
 ```php
-$mail->attach($mobilePass);
+use App\Models\User;
+use Illuminate\Mail\Mailable;
+use Illuminate\Mail\Mailables\Attachment;
+use Illuminate\Mail\Mailables\Content;
+use Illuminate\Mail\Mailables\Envelope;
+use Spatie\LaravelMobilePass\Models\MobilePass;
+
+class TicketPurchased extends Mailable
+{
+    public function __construct(
+        public User $user,
+        public MobilePass $mobilePass,
+    ) {}
+
+    public function envelope(): Envelope
+    {
+        return new Envelope(subject: 'Your ticket');
+    }
+
+    public function content(): Content
+    {
+        return new Content(markdown: 'mail.ticket-purchased');
+    }
+
+    /** @return array<int, MobilePass> */
+    public function attachments(): array
+    {
+        return [$this->mobilePass];
+    }
+}
 ```
+
+The attachment lands in the inbox as a `.pkpass` file named after the pass's download name. iPhones recognise the MIME type (`application/vnd.apple.pkpass`) and offer to add it to Wallet straight from Mail.
