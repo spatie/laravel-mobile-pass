@@ -3,17 +3,17 @@ title: Expiring passes
 weight: 8
 ---
 
-Sometimes a pass shouldn't be valid anymore. A concert has ended, a coupon was redeemed, a gift card is spent. Call `expire()` on the `MobilePass` model and the package handles the platform specifics for you.
+Every pass has a shelf life. The concert ends, the coupon gets redeemed, the gift card runs dry. When that happens, call `expire()` on the `MobilePass` model and let the package sort out the platform specifics:
 
 ```php
 $mobilePass->expire();
 ```
 
-For Apple passes, the package sets `voided=true` and `expirationDate` to the current time, then pushes the update out via APNs. The pass shows up greyed out in the user's Wallet.
+For an Apple pass, the package flips `voided` to `true`, stamps `expirationDate` with the current time, and pushes the update to the device through APNs. Wallet greys the pass out.
 
-For Google passes, the package patches `state=EXPIRED` on the Object. Google propagates that to the user's device and greys out the pass there too.
+For a Google pass, it patches `state=EXPIRED` on the Object. Google fans that out to the user's device, and Google Wallet greys the pass there too.
 
-Either way, the package also sets `expired_at` on the `MobilePass` row, so you can filter expired passes out of your own queries:
+On top of that, the package stamps `expired_at` on the row itself, so you can filter expired passes out of your own queries without thinking about the platform:
 
 ```php
 MobilePass::whereNull('expired_at')->get();
@@ -21,6 +21,6 @@ MobilePass::whereNull('expired_at')->get();
 
 ## Passes stay on the device
 
-Neither Apple nor Google lets you yank a pass off a user's device remotely. What you can do is mark it expired, which tells the wallet app to grey it out and demote it from the lock screen. The user deletes it themselves whenever they're ready.
+One thing worth knowing: neither Apple nor Google lets you yank a pass off a user's device remotely. What you can do is mark it expired. The wallet app greys it out, demotes it from the lock screen, and stops surfacing it in relevant moments. The user gets to decide when to actually delete it.
 
-That's a conscious design choice from both platforms. Users keep control over what's on their device.
+That's a deliberate design choice on both platforms. Users keep control over what lives on their device, and we just nudge the pass into a "you probably don't need this anymore" state.
