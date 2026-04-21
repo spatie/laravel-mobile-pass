@@ -113,7 +113,7 @@ Google's Wallet REST API has no dry-run mode, so this is the only way to catch s
 
 ## Queueing in tests
 
-If you've opted into the queue (see [Queueing update pushes](queueing-update-pushes)), remember to call `Queue::fake()` in your tests so update pushes don't actually ship. Assertions then look like:
+If you've opted into the queue (see the [Updating a pass](/docs/laravel-mobile-pass/v1/basic-usage/updating-a-pass) page for the setup), remember to call `Queue::fake()` in your tests so update pushes don't actually ship. Assertions then look like:
 
 ```php
 use Illuminate\Support\Facades\Queue;

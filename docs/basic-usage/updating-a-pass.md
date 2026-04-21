@@ -55,7 +55,18 @@ Under the hood, the package dispatches `NotifyGoogleOfPassUpdateAction`, which p
 
 ## Running update pushes asynchronously
 
-By default, both Apple and Google update pushes run synchronously. If the upstream API is slow, so is your request. For high-traffic apps, move the push onto a queue by setting `MOBILE_PASS_QUEUE_CONNECTION`. See [Queueing update pushes](/docs/laravel-mobile-pass/v1/advanced-usage/queueing-update-pushes) for the full setup.
+The notification to Apple (via APNs) or Google (via the Wallet REST API) goes out through a `PushPassUpdateJob`. By default that job runs synchronously in the same process, which is fine for development and low-traffic apps since errors surface immediately and no queue worker is needed.
+
+If your app has enough traffic that those few-hundred-millisecond HTTP calls start to hurt, or you're updating passes in bulk, move the job onto a queue. Set a queue connection and every update push dispatches to the queue instead:
+
+```bash
+MOBILE_PASS_QUEUE_CONNECTION=redis
+MOBILE_PASS_QUEUE_NAME=wallet
+```
+
+With those set, every update push goes onto the `wallet` queue on the `redis` connection. The web request returns right away and a queue worker handles the push a moment later.
+
+`PushPassUpdateJob` is a standard Laravel `ShouldQueue` job, so the usual queue conventions apply. Tune retries, delays, and failure handling in your queue config or on the job class if you need to customise it.
 
 ## Customising the update action
 
