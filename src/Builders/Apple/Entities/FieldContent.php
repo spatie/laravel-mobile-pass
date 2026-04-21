@@ -116,7 +116,7 @@ class FieldContent implements Arrayable
 
     public function showMessageWhenChanged(string $changeMessage): self
     {
-        $this->changeMessage = $changeMessage;
+        $this->changeMessage = str_replace(':value', '%@', $changeMessage);
 
         return $this;
     }

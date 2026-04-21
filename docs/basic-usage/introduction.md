@@ -49,13 +49,13 @@ If you want the user's device to display a notification when the value changes, 
 
 ```php
 $mobilePass->builder()
-    ->updateField('seat', 'Floor A, Row 14', changeMessage: 'Your seat has changed to %@')
+    ->updateField('seat', 'Floor A, Row 14', changeMessage: 'Your seat has changed to :value')
     ->save();
 ```
 
-The `changeMessage` is stored on the field. Once set, Apple uses that template for every future value change on that field, not just this one update. The `%@` placeholder is substituted with the new value at notification time.
+The `:value` placeholder is replaced with the new field value when the notification shows. The `changeMessage` is stored on the field, so once set, Apple fires it for every future value change on that field until you overwrite it.
 
-The package notifies Apple, Apple pings the device, and the device pulls the new version of the pass from your server. The ticket updates in place. No second download, no re-sent email.
+The package notifies Apple, Apple pings the device, and the device pulls the new version of the pass from your server. The ticket updates in place, no second download.
 
 ## What about Google?
 

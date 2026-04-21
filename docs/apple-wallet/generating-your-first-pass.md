@@ -55,4 +55,4 @@ Every Apple builder exposes the five field zones Apple supports:
 - `addAuxiliaryField($key, $value, label: ?, changeMessage: ?)`
 - `addBackField($key, $value, label: ?, changeMessage: ?)`
 
-The `$key` is a free-form identifier, unique within the pass. It is how you reference the field later when you update its value. The label shown on the pass defaults to a title-cased version of the key. Pass `label:` when you want a different display string. Pass `changeMessage:` when you want the user's device to show a notification whenever that field's value is updated (e.g. `'Your gate has changed to %@'`).
+The `$key` is a free-form identifier, unique within the pass. It is how you reference the field later when you update its value. The label shown on the pass defaults to a title-cased version of the key. Pass `label:` when you want a different display string. Pass `changeMessage:` when you want the user's device to show a notification whenever that field's value is updated (e.g. `'Your gate has changed to :value'`); the `:value` placeholder is replaced with the new field value.
