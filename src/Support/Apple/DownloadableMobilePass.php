@@ -19,7 +19,7 @@ class DownloadableMobilePass implements Responsable
     {
         return [
             'Content-Type' => 'application/vnd.apple.pkpass',
-            'Content-Disposition' => "attachment; filename=\"{$this->downloadName}.pkpass\"",
+            'Content-Disposition' => "inline; filename=\"{$this->downloadName}.pkpass\"",
         ];
     }
 

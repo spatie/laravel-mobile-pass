@@ -2,6 +2,12 @@
 
 All notable changes to `laravel-mobile-pass` will be documented in this file.
 
+## 0.1.1 - 2026-04-21
+
+### Changed
+
+- Apple `.pkpass` downloads are now served with `Content-Disposition: inline` instead of `attachment`, so Safari opens the Wallet preview directly (other browsers still download the file, as they have no Wallet handler)
+
 ## 0.1.0 - 2026-04-21
 
 ### Added
