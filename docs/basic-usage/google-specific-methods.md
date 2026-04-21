@@ -13,6 +13,8 @@ Apple has no equivalent of this. On Apple, every pass stands on its own.
 
 Every Google pass type has a matching Class. You create one by calling `make()` with a unique suffix, setting the template fields, then calling `save()`.
 
+Here's the Beatles concert Class, declared once per event:
+
 ```php
 use Spatie\LaravelMobilePass\Builders\Google\EventTicketPassClass;
 
@@ -30,35 +32,21 @@ EventTicketPassClass::make('beatles-shea-1965')
 
 The suffix (`'beatles-shea-1965'` here) is what you'll reference later when creating individual ticket passes. The full class ID Google sees is `{issuer-id}.{suffix}`, which the package stitches together for you.
 
-## Where to declare classes
-
-Google stores Classes on its own servers, not in your database. You declare them once. Three common patterns:
-
-- A seeder, when the class is static (like a long-running loyalty program). Usually the right default.
-- A dedicated artisan command, when you want to re-run class creation from CI or from your server.
-- An admin action, when non-developers need to spin up new classes (an event organiser creating a new concert in your app, say).
-
-Here's a seeder example:
+Once the Class is on Google, you issue one Object per attendee, pointing at that Class:
 
 ```php
-namespace Database\Seeders;
+use Spatie\LaravelMobilePass\Builders\Google\EventTicketPassBuilder;
 
-use Illuminate\Database\Seeder;
-use Spatie\LaravelMobilePass\Builders\Google\LoyaltyPassClass;
-
-class LoyaltyClassSeeder extends Seeder
-{
-    public function run(): void
-    {
-        LoyaltyPassClass::make('spatie-rewards')
-            ->setIssuerName('Spatie')
-            ->setProgramName('Spatie Rewards')
-            ->setProgramLogoUrl('https://spatie.be/logo.png')
-            ->setBackgroundColor('#1d72b8')
-            ->save();
-    }
-}
+EventTicketPassBuilder::make()
+    ->setClass('beatles-shea-1965')
+    ->setAttendeeName('John Lennon')
+    ->setSection('Floor A')
+    ->setRow('12')
+    ->setSeat('24')
+    ->save();
 ```
+
+Google stores Classes on its own servers, not in your database.
 
 ## Fetching classes back
 
