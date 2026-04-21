@@ -14,7 +14,7 @@ use Spatie\LaravelMobilePass\Enums\BarcodeType;
 
 $mobilePass = EventTicketPassBuilder::make()
     ->setClass('beatles-shea-1965')
-    ->setAttendeeName('Dan Johnson')
+    ->setAttendeeName('John Lennon')
     ->setSection('Floor A')
     ->setRow('12')
     ->setSeat('24')

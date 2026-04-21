@@ -17,14 +17,40 @@ AirlinePassBuilder::make()
     ->setDescription('Etihad flight EY066 boarding pass')
     ->setDepartureAirportCode('AUH')
     ->setDestinationAirportCode('LHR')
-    ->setPassengerName('Dan Johnson')
+    ->setPassengerName('Paul McCartney')
     ->setSeats(Seat::make(number: '12A'))
-    ->addPrimaryField('departure', 'AUH', label: 'Abu Dhabi')
-    ->addPrimaryField('destination', 'LHR', label: 'London')
+    ->addField('departure', 'AUH', label: 'Abu Dhabi')
+    ->addField('destination', 'LHR', label: 'London')
     ->save();
 ```
 
-For non-airline transit (trains, boats, buses), subclass `BoardingPassBuilder` and pick your own `TransitType`.
+For non-airline transit (trains, boats, buses), `BoardingPassBuilder` is abstract. Subclass it yourself and set `$transitType` to whichever `TransitType` case fits:
+
+```php
+use Spatie\LaravelMobilePass\Builders\Apple\BoardingPassBuilder;
+use Spatie\LaravelMobilePass\Enums\TransitType;
+
+class TrainPassBuilder extends BoardingPassBuilder
+{
+    protected ?TransitType $transitType = TransitType::Train;
+}
+```
+
+Once that class exists, build a pass with it exactly the same way as `AirlinePassBuilder`:
+
+```php
+TrainPassBuilder::make()
+    ->setOrganisationName('SNCB')
+    ->setSerialNumber('TICKET-456')
+    ->setDescription('Brussels to Antwerp, coach 3')
+    ->setPassengerName(PersonName::make(givenName: 'George', familyName: 'Harrison'))
+    ->setSeats(Seat::make(number: '24B'))
+    ->addField('departure', 'BRU', label: 'Brussels-Central')
+    ->addField('destination', 'ANT', label: 'Antwerp-Central')
+    ->save();
+```
+
+`TransitType` has `Air`, `Train`, `Boat`, and `Generic` cases.
 
 ## Google
 
@@ -41,14 +67,14 @@ BoardingPassClass::make('lh123-2026-04-20')
     ->setFlightNumber('LH123')
     ->setOriginAirportCode('FRA')
     ->setDestinationAirportCode('JFK')
-    ->setLocalScheduledDepartureDateTime(now()->addWeek()->setTime(14, 30))
+    ->setLocalScheduledDepartureDateTime(Carbon::parse('2026-04-20 14:30'))
     ->setLogoUrl('https://cdn.example.com/lh-logo.png')
     ->save();
 
 // Per passenger
 BoardingPassBuilder::make()
     ->setClass('lh123-2026-04-20')
-    ->setPassengerName('Dan Johnson')
+    ->setPassengerName('Paul McCartney')
     ->setSeatNumber('12A')
     ->setConfirmationCode('ABC123')
     ->save();

@@ -14,8 +14,8 @@ StoreCardPassBuilder::make()
     ->setOrganisationName('Spatie Rewards')
     ->setSerialNumber('CARD-USER-7842')
     ->setDescription('Spatie Rewards member card')
-    ->addPrimaryField('balance', '1,250', label: 'Points')
-    ->addSecondaryField('member', 'Dan Johnson')
+    ->addField('balance', '1,250', label: 'Points')
+    ->addSecondaryField('member', 'Ringo Starr')
     ->addSecondaryField('tier', 'Gold')
     ->save();
 ```
@@ -42,7 +42,7 @@ LoyaltyPassClass::make('spatie-rewards')
 LoyaltyPassBuilder::make()
     ->setClass('spatie-rewards')
     ->setAccountId('USER-7842')
-    ->setAccountName('Dan Johnson')
+    ->setAccountName('Ringo Starr')
     ->setBalanceString('1,250 points')
     ->save();
 ```

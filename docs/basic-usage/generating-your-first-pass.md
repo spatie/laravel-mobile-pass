@@ -37,7 +37,7 @@ $mobilePass = EventTicketPassBuilder::make()
     ->setSerialNumber('BTL-SHEA-0042')
     ->setDescription('The Beatles at Shea Stadium')
     ->addField('event', 'Beatles Live at Shea')
-    ->addField('attendee', 'Dan Johnson', label: 'Name')
+    ->addField('attendee', 'John Lennon', label: 'Name')
     ->addField('seat', 'Floor A, Row 12')
     ->save();
 ```
@@ -92,7 +92,7 @@ use Spatie\LaravelMobilePass\Enums\BarcodeType;
 
 $mobilePass = EventTicketPassBuilder::make()
     ->setClass('beatles-shea-1965')
-    ->setAttendeeName('Dan Johnson')
+    ->setAttendeeName('John Lennon')
     ->setSection('Floor A')
     ->setRow('12')
     ->setSeat('24')

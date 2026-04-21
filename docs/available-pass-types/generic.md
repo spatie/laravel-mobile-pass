@@ -14,7 +14,7 @@ GenericPassBuilder::make()
     ->setOrganisationName('Spatie Conference')
     ->setSerialNumber('BADGE-042')
     ->setDescription('Conference attendee badge')
-    ->addPrimaryField('name', 'Dan Johnson')
+    ->addField('name', 'Ringo Starr')
     ->addSecondaryField('track', 'All-access')
     ->save();
 ```
@@ -38,7 +38,7 @@ GenericPassClass::make('spatie-conference-badge')
 // Per attendee
 GenericPassBuilder::make()
     ->setClass('spatie-conference-badge')
-    ->setHeader('Dan Johnson')
+    ->setHeader('Ringo Starr')
     ->setCardTitle('All-access badge')
     ->setSubheader('Speaker')
     ->save();

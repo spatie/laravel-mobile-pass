@@ -11,7 +11,7 @@ use Spatie\LaravelMobilePass\Models\MobilePass;
 $mobilePass = MobilePass::find($id);
 
 $content = $mobilePass->content;
-$content['googleObjectPayload']['ticketHolderName'] = 'Dan Johnson Jr.';
+$content['googleObjectPayload']['ticketHolderName'] = 'John Winston Lennon';
 
 $mobilePass->update(['content' => $content]);
 ```

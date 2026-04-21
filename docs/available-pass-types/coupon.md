@@ -14,7 +14,7 @@ CouponPassBuilder::make()
     ->setOrganisationName('Spatie Store')
     ->setSerialNumber('COUPON-SUMMER25')
     ->setDescription('20% off everything this summer')
-    ->addPrimaryField('offer', '20%', label: 'Save')
+    ->addField('offer', '20%', label: 'Save')
     ->addSecondaryField('expires', '2026-08-31')
     ->save();
 ```

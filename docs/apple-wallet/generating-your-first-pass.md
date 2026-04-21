@@ -18,9 +18,9 @@ $mobilePass = AirlinePassBuilder::make()
     ->setDescription('Hello!')
     ->addHeaderField('flight-no', 'EY066', label: 'Flight')
     ->addHeaderField('seat', '66F')
-    ->addPrimaryField('departure', 'ABU', label: 'Abu Dhabi International')
-    ->addPrimaryField('destination', 'LHR', label: 'London Heathrow')
-    ->addSecondaryField('name', 'Dan Johnson')
+    ->addField('departure', 'ABU', label: 'Abu Dhabi International')
+    ->addField('destination', 'LHR', label: 'London Heathrow')
+    ->addSecondaryField('name', 'Paul McCartney')
     ->addSecondaryField('gate', 'D68')
     ->addAuxiliaryField('departs', now()->toIso8601String())
     ->addAuxiliaryField('class', 'Economy')
@@ -50,7 +50,7 @@ Calling `save()` gives you back a freshly created `MobilePass` model.
 Every Apple builder exposes the five field zones Apple supports:
 
 - `addHeaderField($key, $value, label: ?, changeMessage: ?)`
-- `addPrimaryField($key, $value, label: ?, changeMessage: ?)`
+- `addField($key, $value, label: ?, changeMessage: ?)`
 - `addSecondaryField($key, $value, label: ?, changeMessage: ?)`
 - `addAuxiliaryField($key, $value, label: ?, changeMessage: ?)`
 - `addBackField($key, $value, label: ?, changeMessage: ?)`
