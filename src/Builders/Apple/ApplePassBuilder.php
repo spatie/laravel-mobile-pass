@@ -2,6 +2,7 @@
 
 namespace Spatie\LaravelMobilePass\Builders\Apple;
 
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use PKPass\PKPass;
@@ -9,6 +10,7 @@ use Spatie\LaravelMobilePass\Builders\Apple\Entities\Barcode;
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\Colour;
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\FieldContent;
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\Image;
+use Spatie\LaravelMobilePass\Builders\Apple\Entities\Location;
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\Price;
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\WifiNetwork;
 use Spatie\LaravelMobilePass\Builders\Apple\Validators\ApplePassValidator;
@@ -67,6 +69,13 @@ abstract class ApplePassBuilder
     protected ?string $downloadName = null;
 
     protected ?Barcode $barcode = null;
+
+    protected ?Carbon $relevantDate = null;
+
+    protected ?int $maxDistance = null;
+
+    /** @var array<int, Location> */
+    protected array $locations = [];
 
     abstract protected static function validator(): ApplePassValidator;
 
@@ -327,6 +336,31 @@ abstract class ApplePassBuilder
         return $this;
     }
 
+    public function setRelevantDate(Carbon $date): self
+    {
+        $this->relevantDate = $date;
+
+        return $this;
+    }
+
+    public function addLocation(
+        float $latitude,
+        float $longitude,
+        ?float $altitude = null,
+        ?string $relevantText = null,
+    ): self {
+        $this->locations[] = new Location($latitude, $longitude, $altitude, $relevantText);
+
+        return $this;
+    }
+
+    public function setMaxDistance(int $meters): self
+    {
+        $this->maxDistance = $meters;
+
+        return $this;
+    }
+
     protected function addImagesToFile(PKPass $pkPass): PKPass
     {
         foreach ($this->images as $filename => $image) {
@@ -451,6 +485,12 @@ abstract class ApplePassBuilder
             'labelColor' => (string) $this->labelColour,
             'barcode' => $barcode,
             'barcodes' => $barcode ? [$barcode] : null,
+            'relevantDate' => $this->relevantDate?->toIso8601String(),
+            'locations' => empty($this->locations) ? null : array_map(
+                fn (Location $location) => $location->toArray(),
+                $this->locations,
+            ),
+            'maxDistance' => $this->maxDistance,
             'userInfo' => [
                 'passType' => $this->type->value,
             ],
@@ -499,6 +539,17 @@ abstract class ApplePassBuilder
         $this->barcode = empty($this->data['barcode'])
             ? null
             : Barcode::fromArray($this->data['barcode']);
+
+        $this->relevantDate = empty($this->data['relevantDate'])
+            ? null
+            : Carbon::parse($this->data['relevantDate']);
+
+        $this->locations = array_map(
+            fn (array $location) => Location::fromArray($location),
+            $this->data['locations'] ?? [],
+        );
+
+        $this->maxDistance = $this->data['maxDistance'] ?? null;
 
         $this->uncompileSemantics();
 

@@ -18,6 +18,9 @@ abstract class ApplePassValidator
             'logoText' => ['nullable', 'string'],
             'barcode' => [],
             'barcodes' => [],
+            'relevantDate' => [],
+            'locations' => [],
+            'maxDistance' => [],
             'semantics' => [],
             'primaryFields' => [],
 
