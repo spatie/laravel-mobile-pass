@@ -15,6 +15,14 @@ $url = $mobilePass->addToWalletUrl();
 
 For Apple, that's a signed download URL serving the `.pkpass` file. For Google, it's a `pay.google.com` save link that Google itself presents to the user.
 
+The URL works behind any anchor or form. This sits nicely on a post-checkout confirmation page:
+
+```blade
+<a href="{{ $mobilePass->addToWalletUrl() }}" class="btn">
+    Add to Wallet
+</a>
+```
+
 ## Returning the model from a controller
 
 The `MobilePass` model implements `Responsable`, so the simplest way to deliver a pass is to return the model itself. Laravel serves the signed `.pkpass` for Apple passes and redirects to the Google Wallet save URL for Google passes, so you don't need to branch on platform:
@@ -32,16 +40,6 @@ class AddToWalletController
 ```
 
 If you need the URL itself (for an email link, a button, a QR code), call `$mobilePass->addToWalletUrl()` and embed the string wherever you like.
-
-## As a button or link
-
-The URL works behind any anchor or form. This sits nicely on a post-checkout confirmation page:
-
-```blade
-<a href="{{ $mobilePass->addToWalletUrl() }}" class="btn">
-    Add to Wallet
-</a>
-```
 
 ## In an email
 
