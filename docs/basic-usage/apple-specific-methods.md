@@ -35,30 +35,21 @@ addBackField(string $key, string $value, ...)
 
 ## Images
 
-Every pass takes a logo and an icon. Pass a `Spatie\LaravelMobilePass\Builders\Apple\Entities\Image` entity built with the path(s) to your files:
-
-```php
-use Spatie\LaravelMobilePass\Builders\Apple\Entities\Image;
-
-$builder
-    ->setLogoImage(Image::make(x1Path: public_path('images/logo.png')))
-    ->setIconImage(Image::make(x1Path: public_path('images/icon.png')));
-```
-
-Apple expects images at 1x, 2x, and 3x resolutions. If you have all three, pass `x2Path` and `x3Path` as well. Boarding passes also expose `setFooterImage()`.
+Every Apple pass takes a logo and icon, and pass-type-specific extras (strip, thumbnail, background, footer). See [Adding images](/docs/laravel-mobile-pass/v1/basic-usage/adding-images) for the full walkthrough.
 
 ## Colours
+
+Background colour is covered in [Adding images](/docs/laravel-mobile-pass/v1/basic-usage/adding-images). For foreground and label colours:
 
 ```php
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\Colour;
 
 $builder
-    ->setBackgroundColour(Colour::makeFromHex('#1d72b8'))
     ->setForegroundColour(Colour::makeFromHex('#ffffff'))
     ->setLabelColour(Colour::makeFromHex('#a7c7e7'));
 ```
 
-Background, foreground, and label colours are all optional. Apple picks sensible defaults if you skip them.
+Both are optional. Apple picks sensible defaults if you skip them.
 
 ## Download name
 

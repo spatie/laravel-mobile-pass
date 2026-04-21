@@ -113,13 +113,4 @@ $builder->setObjectSuffix("ticket-{$ticketId}");
 
 ### Barcodes
 
-Pass a `Barcode` entity to render a barcode on the Google pass:
-
-```php
-use Spatie\LaravelMobilePass\Builders\Apple\Entities\Barcode;
-use Spatie\LaravelMobilePass\Enums\BarcodeType;
-
-$builder->setBarcode(Barcode::make(BarcodeType::QR, 'TICKET-12345'));
-```
-
-The `Barcode` entity lives in the `Apple\Entities` namespace because the same entity drives both platforms. The Google builder translates it into Google's barcode payload shape (`QR_CODE`, `PDF_417`, `AZTEC`, `CODE_128`) for you.
+Every Google builder accepts a barcode through `setBarcode()`. See [Adding barcodes](/docs/laravel-mobile-pass/v1/basic-usage/adding-barcodes) for the walkthrough.
