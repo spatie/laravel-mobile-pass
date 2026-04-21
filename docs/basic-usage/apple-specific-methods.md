@@ -39,14 +39,12 @@ Every Apple pass takes a logo and icon, and pass-type-specific extras (strip, th
 
 ## Colours
 
-Background colour is covered in [Adding images](/docs/laravel-mobile-pass/v1/basic-usage/adding-images). For foreground and label colours:
+Background colour is covered in [Adding images](/docs/laravel-mobile-pass/v1/basic-usage/adding-images). For foreground and label colours pass a hex string:
 
 ```php
-use Spatie\LaravelMobilePass\Builders\Apple\Entities\Colour;
-
 $builder
-    ->setForegroundColour(Colour::makeFromHex('#ffffff'))
-    ->setLabelColour(Colour::makeFromHex('#a7c7e7'));
+    ->setForegroundColour('#ffffff')
+    ->setLabelColour('#a7c7e7');
 ```
 
 Both are optional. Apple picks sensible defaults if you skip them.

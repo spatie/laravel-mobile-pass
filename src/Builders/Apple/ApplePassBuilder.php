@@ -272,23 +272,23 @@ abstract class ApplePassBuilder
         return $this;
     }
 
-    public function setBackgroundColour(Colour $backgroundColour): self
+    public function setBackgroundColour(string $hex): self
     {
-        $this->backgroundColour = $backgroundColour;
+        $this->backgroundColour = Colour::makeFromHex($hex);
 
         return $this;
     }
 
-    public function setForegroundColour(Colour $foregroundColour): self
+    public function setForegroundColour(string $hex): self
     {
-        $this->foregroundColour = $foregroundColour;
+        $this->foregroundColour = Colour::makeFromHex($hex);
 
         return $this;
     }
 
-    public function setLabelColour(Colour $labelColour): self
+    public function setLabelColour(string $hex): self
     {
-        $this->labelColour = $labelColour;
+        $this->labelColour = Colour::makeFromHex($hex);
 
         return $this;
     }

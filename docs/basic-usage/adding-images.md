@@ -35,12 +35,14 @@ Apple publishes the exact sizes it expects. The values below are for the 1x dens
 
 | Image | 1x size (points) | Notes |
 |---|---|---|
-| Icon | 29 × 29 | Used in notifications and email attachments. Required. |
-| Logo | up to 160 × 50 | Top-left of the pass. Required. |
+| Icon | 29 × 29 | Used in notifications and email attachments. Ship this one at minimum. |
+| Logo | up to 160 × 50 | Top-left of the pass. |
 | Thumbnail | up to 90 × 90 | Square artwork next to primary fields on event tickets and generic passes. |
 | Strip | 375 × 123 (coupon) / 375 × 98 (event ticket) | Full-width image behind the primary fields. |
 | Background | 180 × 220 | Event tickets only. Blurred and stretched by Wallet. |
 | Footer | 286 × 15 | Boarding passes only. Sits above the barcode. |
+
+Apple's docs don't strictly require any of these, but passes feel unfinished without an icon (it's what shows up on the lock screen and in Mail), so treat that one as mandatory in practice.
 
 See Apple's [Pass Design and Creation](https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/PassKit_PG/Creating.html) chapter for the full table, exact pixel sizes for every density, and which images each pass style supports.
 
@@ -69,9 +71,7 @@ See Google's [Visual design reference](https://developers.google.com/wallet/gene
 Both platforms support a background colour (handy when you're not using a background image). On Apple pass a hex string to `setBackgroundColour()`:
 
 ```php
-use Spatie\LaravelMobilePass\Builders\Apple\Entities\Colour;
-
-$builder->setBackgroundColour(Colour::makeFromHex('#1d72b8'));
+$builder->setBackgroundColour('#1d72b8');
 ```
 
 On Google hand a hex string to `setBackgroundColor()` on the Class:
