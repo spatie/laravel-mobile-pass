@@ -5,12 +5,14 @@ namespace Spatie\LaravelMobilePass\Builders\Apple;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use PKPass\PKPass;
+use Spatie\LaravelMobilePass\Builders\Apple\Entities\Barcode;
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\Colour;
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\FieldContent;
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\Image;
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\Price;
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\WifiNetwork;
 use Spatie\LaravelMobilePass\Builders\Apple\Validators\ApplePassValidator;
+use Spatie\LaravelMobilePass\Enums\BarcodeType;
 use Spatie\LaravelMobilePass\Enums\DateType;
 use Spatie\LaravelMobilePass\Enums\FieldType;
 use Spatie\LaravelMobilePass\Enums\PassType;
@@ -63,6 +65,8 @@ abstract class ApplePassBuilder
     protected array $images = [];
 
     protected ?string $downloadName = null;
+
+    protected ?Barcode $barcode = null;
 
     abstract protected static function validator(): ApplePassValidator;
 
@@ -310,6 +314,19 @@ abstract class ApplePassBuilder
         return $this;
     }
 
+    public function setBarcode(BarcodeType $format, string $message, ?string $altText = null): self
+    {
+        $barcode = Barcode::make($format, $message);
+
+        if ($altText !== null) {
+            $barcode->withAltText($altText);
+        }
+
+        $this->barcode = $barcode;
+
+        return $this;
+    }
+
     protected function addImagesToFile(PKPass $pkPass): PKPass
     {
         foreach ($this->images as $filename => $image) {
@@ -417,6 +434,8 @@ abstract class ApplePassBuilder
 
     protected function compileData(): array
     {
+        $barcode = $this->barcode?->toArray();
+
         return array_merge($this->data ?? [], array_filter([
             'formatVersion' => 1,
             'organizationName' => $this->organisationName,
@@ -430,6 +449,8 @@ abstract class ApplePassBuilder
             'backgroundColor' => (string) $this->backgroundColour,
             'foregroundColor' => (string) $this->foregroundColour,
             'labelColor' => (string) $this->labelColour,
+            'barcode' => $barcode,
+            'barcodes' => $barcode ? [$barcode] : null,
             'userInfo' => [
                 'passType' => $this->type->value,
             ],
@@ -474,6 +495,10 @@ abstract class ApplePassBuilder
         $this->backgroundColour = Colour::makeFromRgbString($this->data['backgroundColor'] ?? null);
         $this->foregroundColour = Colour::makeFromRgbString($this->data['foregroundColor'] ?? null);
         $this->labelColour = Colour::makeFromRgbString($this->data['labelColor'] ?? null);
+
+        $this->barcode = empty($this->data['barcode'])
+            ? null
+            : Barcode::fromArray($this->data['barcode']);
 
         $this->uncompileSemantics();
 

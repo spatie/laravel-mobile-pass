@@ -17,6 +17,7 @@ abstract class ApplePassValidator
             'teamIdentifier' => ['required', 'string'],
             'logoText' => ['nullable', 'string'],
             'barcode' => [],
+            'barcodes' => [],
             'semantics' => [],
             'primaryFields' => [],
 
