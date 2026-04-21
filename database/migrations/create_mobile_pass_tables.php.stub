@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    public function up()
+    public function up(): void
     {
         Schema::create('mobile_passes', function (Blueprint $table) {
             $table->uuid('id')->primary();
@@ -26,9 +26,7 @@ return new class extends Migration
 
         Schema::create('apple_mobile_pass_devices', function (Blueprint $table) {
             $table->string('id')->primary();
-
             $table->string('push_token');
-
             $table->timestamps();
         });
 
@@ -39,13 +37,31 @@ return new class extends Migration
             $table->foreign('device_id')->references('id')->on('apple_mobile_pass_devices');
 
             $table->string('pass_type_id');
-            $table->uuid('pass_serial');
-            $table->foreign('pass_serial')->references('id')->on('mobile_passes');
+
+            $table->foreignUuid('pass_serial')
+                ->constrained('mobile_passes', 'id');
 
             $table->timestamps();
 
             $table->index(['device_id', 'pass_serial']);
             $table->index(['device_id', 'pass_type_id']);
+        });
+
+        Schema::create('mobile_pass_google_events', function (Blueprint $table) {
+            $table->uuid('id')->primary();
+
+            $table->foreignUuid('mobile_pass_id')
+                ->constrained('mobile_passes')
+                ->cascadeOnDelete();
+
+            $table->string('event_type');
+            $table->timestamp('received_at');
+            $table->json('raw_payload')->nullable();
+
+            $table->timestamps();
+
+            $table->index(['mobile_pass_id', 'event_type']);
+            $table->index('received_at');
         });
     }
 };

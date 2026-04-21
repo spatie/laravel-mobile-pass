@@ -130,21 +130,14 @@ return [
 
 ## Migrating the database
 
-The package uses the database to track generated passes, Apple device registrations, and Google save/remove events. Publish and run the included migrations:
+The package uses the database to track generated passes, Apple device registrations, and Google save/remove events. Publish and run the included migration:
 
 ```bash
 php artisan vendor:publish --tag="mobile-pass-migrations"
 php artisan migrate
 ```
 
-Two migrations are published:
-
-- `create_mobile_pass_tables` creates the `mobile_passes`, `apple_mobile_pass_devices`, and `apple_mobile_pass_registrations` tables.
-- `add_google_wallet_support` adds the `expired_at` column to `mobile_passes` (used by `$mobilePass->expire()`) and creates the `mobile_pass_google_events` table (used by save and remove callbacks).
-
-### Upgrading an existing install
-
-If you already had `create_mobile_pass_tables` applied before upgrading to the Google-aware release, only the second migration runs. The `expired_at` column is added conditionally (it checks if the column exists), so repeat migrations are safe.
+The published `create_mobile_pass_tables` migration creates the `mobile_passes`, `apple_mobile_pass_devices`, `apple_mobile_pass_registrations`, and `mobile_pass_google_events` tables.
 
 ## Registering the routes
 
@@ -152,6 +145,5 @@ The package can receive device registration requests and logs from Apple. To set
 
 ```php
 // in your routes file
-
 Route::mobilePass();
 ```

@@ -44,9 +44,6 @@ class TestCase extends Orchestra
         $migration = include __DIR__.'/../database/migrations/create_mobile_pass_tables.php.stub';
         $migration->up();
 
-        $googleMigration = include __DIR__.'/../database/migrations/add_google_wallet_support.php.stub';
-        $googleMigration->up();
-
         Schema::create('test_models', function (Blueprint $table) {
             $table->id();
             $table->timestamps();

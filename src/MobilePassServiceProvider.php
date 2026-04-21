@@ -15,7 +15,7 @@ class MobilePassServiceProvider extends PackageServiceProvider
             ->name('laravel-mobile-pass')
             ->hasConfigFile()
             ->hasRoutes('mobile-pass')
-            ->hasMigrations('create_mobile_pass_tables', 'add_google_wallet_support');
+            ->hasMigration('create_mobile_pass_tables');
     }
 
     public function registeringPackage(): void
