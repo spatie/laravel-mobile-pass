@@ -55,29 +55,7 @@ Handing the ticket to the user is as simple as returning the model from a contro
 return $mobilePass;
 ```
 
-The user taps through, sees the pass preview in Apple Wallet, and taps Add. Apple then calls back to your app to register the device against the pass. The package handles that endpoint for you and saves the registration in the `mobile_pass_registrations` table. That link between pass and device is what lets you push updates later on.
-
-### Updating a pass
-
-Say the seat assignment changes after the user already has the ticket in Wallet. Call `updateField` directly on the model:
-
-```php
-$mobilePass->updateField('seat', 'Floor A, Row 14');
-```
-
-If you want the user's device to display a notification when the value changes, pass a `changeMessage:`:
-
-```php
-$mobilePass->updateField(
-    'seat',
-    'Floor A, Row 14',
-    changeMessage: 'Your seat has changed to :value',
-);
-```
-
-The `:value` placeholder is replaced with the new field value when the notification shows. The `changeMessage` is stored on the field, so once set, Apple fires it for every future value change on that field until you overwrite it.
-
-The package notifies Apple, Apple pings the device, and the device pulls the new version of the pass from your server. The ticket updates in place, no second download.
+The user taps through, sees the pass preview in Apple Wallet, and taps Add. Apple then calls back to your app to register the device against the pass. The package handles that endpoint for you and saves the registration in the `mobile_pass_registrations` table. That link between pass and device is what lets you push updates later. See [Updating a pass](/docs/laravel-mobile-pass/v1/basic-usage/updating-a-pass) for the details.
 
 ## What about Google?
 
@@ -109,4 +87,4 @@ return $mobilePass;
 
 Android users get redirected to the Google Wallet save URL, iPhone users get the `.pkpass` download. The `Responsable` model picks the right response for the platform the pass was built for.
 
-Updates also look the same from your side. You change values and call `save()`. The difference is on the wire. For Apple, your app pushes out the update. For Google, Google itself pushes it to the device, so you don't host a device-facing web service for Google passes.
+Updating a Google pass works a little differently from Apple. See [Updating a pass](/docs/laravel-mobile-pass/v1/basic-usage/updating-a-pass) for both flows side by side.
