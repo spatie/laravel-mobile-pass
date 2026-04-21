@@ -1,9 +1,31 @@
 ---
-title: Introduction
+title: Generating your first pass
 weight: 1
 ---
 
 Say you're selling event tickets. After checkout, you want the user to tap a button and drop the ticket straight into their iPhone wallet. With this package, that takes a builder call and a redirect.
+
+## Before you start
+
+Grab credentials for the platform(s) you want to support. Each walkthrough lists the environment variables you need to set:
+
+- [Getting credentials from Apple](/docs/laravel-mobile-pass/v1/apple-wallet/getting-credentials-from-apple)
+- [Getting credentials from Google](/docs/laravel-mobile-pass/v1/google-wallet/getting-credentials-from-google)
+
+If you want to link passes to a user (or any other model) so you can look them up later, add the `HasMobilePasses` trait to that model:
+
+```php
+use Spatie\LaravelMobilePass\Models\Concerns\HasMobilePasses;
+
+class User extends Model
+{
+    use HasMobilePasses;
+}
+```
+
+Full details in [Associating passes with models](/docs/laravel-mobile-pass/v1/basic-usage/associating-passes-with-models).
+
+## Building a pass
 
 Here's an Apple Wallet event ticket:
 
