@@ -92,6 +92,11 @@ abstract class ApplePassBuilder
         $this->uncompileContent();
     }
 
+    protected static function appleConfig(string $key): mixed
+    {
+        return config("mobile-pass.apple.{$key}");
+    }
+
     public function setDownloadName(string $downloadName): self
     {
         $this->downloadName = $downloadName;
@@ -205,8 +210,8 @@ abstract class ApplePassBuilder
 
         $property = $type->value;
 
-        $this->$property ??= collect();
-        $this->$property[$key] = $field;
+        $this->{$property} ??= collect();
+        $this->{$property}[$key] = $field;
 
         return $this;
     }
@@ -220,11 +225,11 @@ abstract class ApplePassBuilder
         foreach (FieldType::cases() as $type) {
             $property = $type->value;
 
-            if ($this->$property === null) {
+            if ($this->{$property} === null) {
                 continue;
             }
 
-            $this->$property = $this->$property->map(function (FieldContent $field) use ($key, $value, $changeMessage, $label) {
+            $this->{$property} = $this->{$property}->map(function (FieldContent $field) use ($key, $value, $changeMessage, $label) {
                 if ($field->key !== $key) {
                     return $field;
                 }
@@ -308,23 +313,20 @@ abstract class ApplePassBuilder
     protected function addImagesToFile(PKPass $pkPass): PKPass
     {
         foreach ($this->images as $filename => $image) {
-            // The $image Image entity could contain up to three
-            // images in different resolutions.
-
             if (! $image instanceof Image) {
                 $image = Image::make($image['x1Path'], $image['x2Path'], $image['x3Path']);
             }
 
             if ($image->x1Path) {
-                $pkPass->addFile($image->x1Path, "$filename.png");
+                $pkPass->addFile($image->x1Path, "{$filename}.png");
             }
 
             if ($image->x2Path) {
-                $pkPass->addFile($image->x2Path, "$filename@2x.png");
+                $pkPass->addFile($image->x2Path, "{$filename}@2x.png");
             }
 
             if ($image->x3Path) {
-                $pkPass->addFile($image->x3Path, "$filename@3x.png");
+                $pkPass->addFile($image->x3Path, "{$filename}@3x.png");
             }
         }
 
@@ -333,27 +335,24 @@ abstract class ApplePassBuilder
 
     public static function getCertificatePath(): string
     {
-        if (! empty(config('mobile-pass.apple.certificate_contents'))) {
-            $path = sys_get_temp_dir().'/LaravelMobilePass.p12';
+        $contents = self::appleConfig('certificate_contents');
 
-            if (! file_exists($path)) {
-                file_put_contents(
-                    $path,
-                    base64_decode(
-                        config('mobile-pass.apple.certificate_contents')
-                    )
-                );
-            }
-
-            return $path;
+        if (empty($contents)) {
+            return self::appleConfig('certificate_path');
         }
 
-        return config('mobile-pass.apple.certificate_path');
+        $path = sys_get_temp_dir().'/LaravelMobilePass.p12';
+
+        if (! file_exists($path)) {
+            file_put_contents($path, base64_decode($contents));
+        }
+
+        return $path;
     }
 
     public static function getCertificatePassword(): string
     {
-        return config('mobile-pass.apple.certificate_password');
+        return self::appleConfig('certificate_password');
     }
 
     public function save(): MobilePass
@@ -380,10 +379,10 @@ abstract class ApplePassBuilder
 
     public function data(): array
     {
-        if (empty($this->organisationName) && ! empty(config('mobile-pass.apple.organisation_name'))) {
-            $this->setOrganisationName(
-                config('mobile-pass.apple.organisation_name')
-            );
+        $configuredOrganisationName = self::appleConfig('organisation_name');
+
+        if (empty($this->organisationName) && ! empty($configuredOrganisationName)) {
+            $this->setOrganisationName($configuredOrganisationName);
         }
 
         $compiledData = array_filter(
@@ -421,11 +420,11 @@ abstract class ApplePassBuilder
         return array_merge($this->data ?? [], array_filter([
             'formatVersion' => 1,
             'organizationName' => $this->organisationName,
-            'passTypeIdentifier' => config('mobile-pass.apple.type_identifier'),
+            'passTypeIdentifier' => self::appleConfig('type_identifier'),
             'serialNumber' => $this->serialNumber,
-            'authenticationToken' => config('mobile-pass.apple.webservice.secret'),
+            'authenticationToken' => self::appleConfig('webservice.secret'),
             'webServiceURL' => $this->webServiceURL(),
-            'teamIdentifier' => config('mobile-pass.apple.team_identifier'),
+            'teamIdentifier' => self::appleConfig('team_identifier'),
             'description' => $this->description,
             'semantics' => $this->compileSemantics(),
             'backgroundColor' => (string) $this->backgroundColour,
@@ -439,7 +438,7 @@ abstract class ApplePassBuilder
 
     protected function webServiceURL(): ?string
     {
-        $host = config('mobile-pass.apple.webservice.host');
+        $host = self::appleConfig('webservice.host');
 
         if (! $host) {
             return null;
@@ -454,10 +453,15 @@ abstract class ApplePassBuilder
 
     protected function uncompileSemantics(): void
     {
-        $this->totalPrice = ! empty($this->data['semantics']['totalPrice']) ? Price::fromArray($this->data['semantics']['totalPrice']) : null;
-        $this->wifiDetails = ! empty($this->data['semantics']['wifiAccess']) ? collect(
-            array_map(fn ($wifi) => WifiNetwork::fromArray($wifi), $this->data['semantics']['wifiAccess'])
-        ) : null;
+        $semantics = $this->data['semantics'] ?? [];
+
+        $this->totalPrice = empty($semantics['totalPrice'])
+            ? null
+            : Price::fromArray($semantics['totalPrice']);
+
+        $this->wifiDetails = empty($semantics['wifiAccess'])
+            ? null
+            : collect($semantics['wifiAccess'])->map(fn (array $wifi) => WifiNetwork::fromArray($wifi));
     }
 
     protected function uncompileContent(): void
@@ -482,10 +486,10 @@ abstract class ApplePassBuilder
 
     protected function uncompileFieldSet(string $fieldSetName): void
     {
-        $this->$fieldSetName = collect();
+        $this->{$fieldSetName} = collect();
 
         foreach ($this->data[$this->type->value][$fieldSetName] ?? [] as $field) {
-            $this->$fieldSetName[$field['key']] = FieldContent::fromArray($field);
+            $this->{$fieldSetName}[$field['key']] = FieldContent::fromArray($field);
         }
     }
 }

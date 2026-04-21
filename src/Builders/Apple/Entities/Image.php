@@ -2,6 +2,8 @@
 
 namespace Spatie\LaravelMobilePass\Builders\Apple\Entities;
 
+use InvalidArgumentException;
+
 class Image
 {
     public function __construct(
@@ -9,16 +11,14 @@ class Image
         public ?string $x2Path = null,
         public ?string $x3Path = null
     ) {
-        if (! file_exists($x1Path)) {
-            throw new \InvalidArgumentException("File not found at path: {$x1Path}");
+        self::assertFileExists($x1Path);
+
+        if ($x2Path !== null) {
+            self::assertFileExists($x2Path);
         }
 
-        if ($x2Path && ! file_exists($x2Path)) {
-            throw new \InvalidArgumentException("File not found at path: {$x2Path}");
-        }
-
-        if ($x3Path && ! file_exists($x3Path)) {
-            throw new \InvalidArgumentException("File not found at path: {$x3Path}");
+        if ($x3Path !== null) {
+            self::assertFileExists($x3Path);
         }
     }
 
@@ -27,19 +27,23 @@ class Image
         ?string $x2Path = null,
         ?string $x3Path = null,
     ): self {
-        return new self(
-            x1Path: $x1Path,
-            x2Path: $x2Path,
-            x3Path: $x3Path,
-        );
+        return new self($x1Path, $x2Path, $x3Path);
     }
 
+    /** @param  array<string, string|null>  $image */
     public static function fromArray(array $image): self
     {
         return new self(
-            x1Path: $image['x1Path'],
-            x2Path: $image['x2Path'] ?? null,
-            x3Path: $image['x3Path'] ?? null,
+            $image['x1Path'],
+            $image['x2Path'] ?? null,
+            $image['x3Path'] ?? null,
         );
+    }
+
+    private static function assertFileExists(string $path): void
+    {
+        if (! file_exists($path)) {
+            throw new InvalidArgumentException("File not found at path: {$path}");
+        }
     }
 }

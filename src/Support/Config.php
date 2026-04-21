@@ -68,11 +68,6 @@ class Config
     {
         $passBuilderClass = config("mobile-pass.builders.{$platform->value}.{$passBuilderName}");
 
-        $classToExtend = match ($platform) {
-            Platform::Apple => ApplePassBuilder::class,
-            Platform::Google => GooglePassBuilder::class,
-        };
-
         if (! $passBuilderClass) {
             throw InvalidConfig::passBuilderNotRegistered($passBuilderName, $platform);
         }
@@ -80,6 +75,11 @@ class Config
         if (! class_exists($passBuilderClass)) {
             throw InvalidConfig::passBuilderNotFound($passBuilderName, $passBuilderClass);
         }
+
+        $classToExtend = match ($platform) {
+            Platform::Apple => ApplePassBuilder::class,
+            Platform::Google => GooglePassBuilder::class,
+        };
 
         if (! is_a($passBuilderClass, $classToExtend, true)) {
             throw InvalidConfig::invalidPassBuilderClass($passBuilderName, $passBuilderClass, $platform);

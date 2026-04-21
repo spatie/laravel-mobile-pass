@@ -11,13 +11,12 @@ class NotifyAppleOfPassUpdateAction
 {
     public function execute(MobilePass $mobilePass): void
     {
-        $mobilePass
-            ->registrations
-            ->each(
-                fn (AppleMobilePassRegistration $registration) => $this->notifyUpdate($registration)
-            );
+        $mobilePass->registrations->each(
+            fn (AppleMobilePassRegistration $registration) => $this->notifyUpdate($registration),
+        );
     }
 
+    /** @return array<string, string> */
     protected function headers(AppleMobilePassRegistration $registration): array
     {
         return [
@@ -25,13 +24,16 @@ class NotifyAppleOfPassUpdateAction
         ];
     }
 
+    /** @return array<string, mixed> */
     protected function options(AppleMobilePassRegistration $registration): array
     {
+        $builder = $registration->pass->builder();
+
         return [
             'version' => 2.0,
             'cert' => [
-                $registration->pass->builder()->getCertificatePath(),
-                $registration->pass->builder()->getCertificatePassword(),
+                $builder->getCertificatePath(),
+                $builder->getCertificatePassword(),
             ],
         ];
     }

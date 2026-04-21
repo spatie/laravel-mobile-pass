@@ -15,16 +15,11 @@ class DownloadableMobilePass implements Responsable
         $this->downloadName = Str::beforeLast($this->downloadName, '.pkpass');
     }
 
-    protected function headers(): array
-    {
-        return [
-            'Content-Type' => 'application/vnd.apple.pkpass',
-            'Content-Disposition' => "inline; filename=\"{$this->downloadName}.pkpass\"",
-        ];
-    }
-
     public function toResponse($request): Response
     {
-        return response($this->passContent)->withHeaders($this->headers());
+        return response($this->passContent)->withHeaders([
+            'Content-Type' => 'application/vnd.apple.pkpass',
+            'Content-Disposition' => "inline; filename=\"{$this->downloadName}.pkpass\"",
+        ]);
     }
 }

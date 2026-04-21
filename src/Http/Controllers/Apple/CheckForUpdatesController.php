@@ -2,6 +2,7 @@
 
 namespace Spatie\LaravelMobilePass\Http\Controllers\Apple;
 
+use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Spatie\LaravelMobilePass\Http\Requests\Apple\CheckForUpdatesRequest;
 use Spatie\LaravelMobilePass\Models\MobilePass;
@@ -12,7 +13,7 @@ use Spatie\LaravelMobilePass\Models\MobilePass;
  */
 class CheckForUpdatesController extends Controller
 {
-    public function __invoke(CheckForUpdatesRequest $request)
+    public function __invoke(CheckForUpdatesRequest $request): Response
     {
         $pass = $request->mobilePass();
 
@@ -25,7 +26,7 @@ class CheckForUpdatesController extends Controller
             ->setNotModified();
     }
 
-    protected function respondWithNewlyGeneratedPass(MobilePass $pass)
+    protected function respondWithNewlyGeneratedPass(MobilePass $pass): Response
     {
         return response($pass->generate())
             ->header('Content-Type', 'application/vnd.apple.pkpass')

@@ -12,16 +12,9 @@ class Colour implements Stringable
         public int $blue
     ) {}
 
-    public static function make(
-        int $red,
-        int $green,
-        int $blue
-    ): self {
-        return new self(
-            red: $red,
-            green: $green,
-            blue: $blue
-        );
+    public static function make(int $red, int $green, int $blue): self
+    {
+        return new self($red, $green, $blue);
     }
 
     public static function makeFromRgbString(?string $rgb): ?self
@@ -32,22 +25,14 @@ class Colour implements Stringable
 
         [$red, $green, $blue] = sscanf($rgb, 'rgb(%d, %d, %d)');
 
-        return new self(
-            red: (int) $red,
-            green: (int) $green,
-            blue: (int) $blue
-        );
+        return new self((int) $red, (int) $green, (int) $blue);
     }
 
     public static function makeFromHex(string $hex): self
     {
         [$red, $green, $blue] = sscanf($hex, '#%02x%02x%02x');
 
-        return new self(
-            red: $red,
-            green: $green,
-            blue: $blue
-        );
+        return new self($red, $green, $blue);
     }
 
     public function __toString(): string

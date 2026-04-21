@@ -3,6 +3,8 @@
 namespace Spatie\LaravelMobilePass\Http\Controllers\Apple;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Collection;
 use Spatie\LaravelMobilePass\Http\Requests\Apple\GetAssociatedSerialsForDeviceRequest;
@@ -14,15 +16,16 @@ use Spatie\LaravelMobilePass\Models\Apple\AppleMobilePassRegistration;
  */
 class GetAssociatedSerialsForDeviceController extends Controller
 {
-    public function __invoke(GetAssociatedSerialsForDeviceRequest $request)
+    public function __invoke(GetAssociatedSerialsForDeviceRequest $request): Response|JsonResponse
     {
+        $updatedSince = $request->passesUpdatedSince();
+
         $registrations = $request
             ->registrationsQuery()
-            ->when($request->passesUpdatedSince(), function (Builder $query) use ($request) {
-                $query->whereHas('pass', function (Builder $query) use ($request) {
-                    $query->where('updated_at', '>', $request->passesUpdatedSince());
-                });
-            })
+            ->when($updatedSince, fn (Builder $query) => $query->whereHas(
+                'pass',
+                fn (Builder $passQuery) => $passQuery->where('updated_at', '>', $updatedSince),
+            ))
             ->get();
 
         if ($registrations->isEmpty()) {
@@ -32,6 +35,9 @@ class GetAssociatedSerialsForDeviceController extends Controller
         return response()->json($this->responseData($registrations));
     }
 
+    /**
+     * @return array{lastUpdated: string, serialNumbers: array<int, string>}
+     */
     protected function responseData(Collection $registrations): array
     {
         $lastUpdated = $registrations

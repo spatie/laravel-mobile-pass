@@ -11,22 +11,15 @@ class WifiNetwork implements Arrayable
         public string $password,
     ) {}
 
-    public static function make(
-        string $ssid,
-        string $password,
-    ): self {
-        return new self(
-            ssid: $ssid,
-            password: $password,
-        );
+    public static function make(string $ssid, string $password): self
+    {
+        return new self($ssid, $password);
     }
 
+    /** @param  array<string, string>  $values */
     public static function fromArray(array $values): self
     {
-        return new self(
-            ssid: $values['ssid'],
-            password: $values['password'],
-        );
+        return new self($values['ssid'], $values['password']);
     }
 
     public function toArray(): array

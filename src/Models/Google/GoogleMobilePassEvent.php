@@ -39,9 +39,7 @@ class GoogleMobilePassEvent extends Model
     /** @return BelongsTo<MobilePass, $this> */
     public function mobilePass(): BelongsTo
     {
-        $modelClass = Config::mobilePassModel();
-
-        return $this->belongsTo($modelClass, 'mobile_pass_id');
+        return $this->belongsTo(Config::mobilePassModel(), 'mobile_pass_id');
     }
 
     /**

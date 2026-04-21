@@ -9,7 +9,7 @@ class AppleMobilePassDeviceFactory extends Factory
 {
     protected $model = AppleMobilePassDevice::class;
 
-    public function definition()
+    public function definition(): array
     {
         return [
             'id' => fake()->uuid(),

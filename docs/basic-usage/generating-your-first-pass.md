@@ -23,7 +23,7 @@ class User extends Model
 }
 ```
 
-Full details in [Associating passes with models](/docs/laravel-mobile-pass/v1/basic-usage/associating-passes-with-models).
+Once you've associated passes with a model, see [Retrieving mobile passes](/docs/laravel-mobile-pass/v1/basic-usage/retrieving-mobile-passes) for the helper methods that fetch them back.
 
 ## Building a pass
 

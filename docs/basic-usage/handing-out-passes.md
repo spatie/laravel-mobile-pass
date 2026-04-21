@@ -1,5 +1,5 @@
 ---
-title: Handing out passes
+title: Delivering passes to users
 weight: 7
 ---
 

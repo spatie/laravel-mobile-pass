@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 
 class VerifyApplePasskitRequest
 {
-    public function handle(Request $request, Closure $next)
+    public function handle(Request $request, Closure $next): mixed
     {
         $providedAuthorization = (string) $request->header('Authorization');
 

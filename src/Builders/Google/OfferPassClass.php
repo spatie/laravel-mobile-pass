@@ -118,8 +118,6 @@ class OfferPassClass extends GooglePassClass
             $this->finePrint = (string) $payload['finePrint'];
         }
 
-        if (isset($payload['logo']['sourceUri']['uri'])) {
-            $this->logo = Image::fromUrl((string) $payload['logo']['sourceUri']['uri']);
-        }
+        $this->logo = $this->hydrateImage($payload, 'logo');
     }
 }

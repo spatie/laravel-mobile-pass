@@ -13,7 +13,7 @@ class MobilePassFactory extends Factory
 {
     protected $model = MobilePass::class;
 
-    public function definition()
+    public function definition(): array
     {
         return [
             'builder_name' => 'generic',
@@ -49,19 +49,6 @@ class MobilePassFactory extends Factory
             ],
         ];
     }
-
-    // public function configure(): static
-    // {
-    //     return $this->afterMaking(function (MobilePass $mobilePass) {
-    //         $mobilePass
-    //             ->builder()
-    //             ->setIconImage(
-    //                 Image::make(
-    //                     getTestSupportPath('images/spatie-thumbnail.png')
-    //                 )
-    //             );
-    //     });
-    // }
 
     public function hasRegistrationForDevice(AppleMobilePassDevice $device): static
     {

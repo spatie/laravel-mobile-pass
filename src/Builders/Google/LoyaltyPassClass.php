@@ -102,9 +102,7 @@ class LoyaltyPassClass extends GooglePassClass
             $this->programName = (string) $payload['programName'];
         }
 
-        if (isset($payload['programLogo']['sourceUri']['uri'])) {
-            $this->programLogo = Image::fromUrl((string) $payload['programLogo']['sourceUri']['uri']);
-        }
+        $this->programLogo = $this->hydrateImage($payload, 'programLogo');
 
         if (isset($payload['rewardsTier'])) {
             $this->rewardsTier = (string) $payload['rewardsTier'];

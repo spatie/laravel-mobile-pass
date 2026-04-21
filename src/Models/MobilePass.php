@@ -97,7 +97,7 @@ class MobilePass extends Model implements Attachable, Responsable
     {
         $latest = $this->googleEvents()->orderByDesc('received_at')->first();
 
-        return $latest !== null && $latest->event_type === 'save';
+        return $latest?->event_type === 'save';
     }
 
     protected function casts(): array
@@ -159,13 +159,12 @@ class MobilePass extends Model implements Attachable, Responsable
     protected function addToGoogleWalletUrl(): string
     {
         $objectResource = str_replace('Class', 'Object', $this->content['googleClassType']);
-        $resourceKey = $objectResource.'s';
 
         $jwt = app(GoogleJwtSigner::class)->signSaveUrlJwt([
-            $resourceKey => [['id' => $this->content['googleObjectId']]],
+            "{$objectResource}s" => [['id' => $this->content['googleObjectId']]],
         ]);
 
-        return 'https://pay.google.com/gp/v/save/'.$jwt;
+        return "https://pay.google.com/gp/v/save/{$jwt}";
     }
 
     public function airlinePassBuilder(): AirlinePassBuilder
@@ -256,7 +255,7 @@ class MobilePass extends Model implements Attachable, Responsable
 
     public function wasUpdatedAfter(?Carbon $since = null): bool
     {
-        if (! $since) {
+        if ($since === null) {
             return true;
         }
 
@@ -283,8 +282,6 @@ class MobilePass extends Model implements Attachable, Responsable
 
     protected function downloadName(?string $name = null): string
     {
-        $name = $name ?? $this->download_name ?? 'pass';
-
-        return Str::beforeLast($name, '.pkpass');
+        return Str::beforeLast($name ?? $this->download_name ?? 'pass', '.pkpass');
     }
 }

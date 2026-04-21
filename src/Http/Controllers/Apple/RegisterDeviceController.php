@@ -3,6 +3,7 @@
 namespace Spatie\LaravelMobilePass\Http\Controllers\Apple;
 
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Spatie\LaravelMobilePass\Actions\Apple\RegisterDeviceAction;
 use Spatie\LaravelMobilePass\Support\Config;
@@ -13,7 +14,7 @@ use Spatie\LaravelMobilePass\Support\Config;
  */
 class RegisterDeviceController extends Controller
 {
-    public function __invoke(Request $request)
+    public function __invoke(Request $request): Response
     {
         /** @var class-string<RegisterDeviceAction> $actionClass */
         $actionClass = Config::getActionClass('register_device', RegisterDeviceAction::class);

@@ -25,20 +25,18 @@ class AppleMobilePassRegistration extends Model
 
     public function pass(): BelongsTo
     {
-        $modelClass = Config::mobilePassModel();
-
-        return $this->belongsTo($modelClass, 'pass_serial');
+        return $this->belongsTo(Config::mobilePassModel(), 'pass_serial');
     }
 
     public function device(): BelongsTo
     {
-        $modelClass = Config::appleDeviceModel();
-
-        return $this->belongsTo($modelClass, 'device_id');
+        return $this->belongsTo(Config::appleDeviceModel(), 'device_id');
     }
 
     public function appleUpdateUrl(): string
     {
-        return config('mobile-pass.apple.apple_push_base_url')."/{$this->device->push_token}";
+        $baseUrl = config('mobile-pass.apple.apple_push_base_url');
+
+        return "{$baseUrl}/{$this->device->push_token}";
     }
 }

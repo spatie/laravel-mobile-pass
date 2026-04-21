@@ -305,35 +305,53 @@ abstract class BoardingPassBuilder extends ApplePassBuilder
     {
         parent::uncompileSemantics();
 
-        $this->boardingGroup = $this->data['semantics']['boardingGroup'] ?? null;
-        $this->boardingSequenceNumber = $this->data['semantics']['boardingSequenceNumber'] ?? null;
-        $this->confirmationNumber = $this->data['semantics']['confirmationNumber'] ?? null;
-        $this->currentArrivalDate = ! empty($this->data['semantics']['currentArrivalDate']) ? Carbon::parse($this->data['semantics']['currentArrivalDate']) : null;
-        $this->currentBoardingDate = ! empty($this->data['semantics']['currentBoardingDate']) ? Carbon::parse($this->data['semantics']['currentBoardingDate']) : null;
-        $this->currentDepartureDate = ! empty($this->data['semantics']['currentDepartureDate']) ? Carbon::parse($this->data['semantics']['currentDepartureDate']) : null;
-        $this->departureLocation = ! empty($this->data['semantics']['departureLocation']) ? Location::fromArray($this->data['semantics']['departureLocation']) : null;
-        $this->departureLocationDescription = $this->data['semantics']['departureLocationDescription'] ?? null;
-        $this->destinationLocation = ! empty($this->data['semantics']['destinationLocation']) ? Location::fromArray($this->data['semantics']['destinationLocation']) : null;
-        $this->destinationLocationDescription = $this->data['semantics']['destinationLocationDescription'] ?? null;
-        $this->durationInSeconds = $this->data['semantics']['duration'] ?? null;
-        $this->membershipProgramName = $this->data['semantics']['membershipProgramName'] ?? null;
-        $this->membershipProgramNumber = $this->data['semantics']['membershipProgramNumber'] ?? null;
-        $this->originalArrivalDate = ! empty($this->data['semantics']['originalArrivalDate']) ? Carbon::parse($this->data['semantics']['originalArrivalDate']) : null;
-        $this->originalBoardingDate = ! empty($this->data['semantics']['originalBoardingDate']) ? Carbon::parse($this->data['semantics']['originalBoardingDate']) : null;
-        $this->originalDepartureDate = ! empty($this->data['semantics']['originalDepartureDate']) ? Carbon::parse($this->data['semantics']['originalDepartureDate']) : null;
-        $this->passengerName = ! empty($this->data['semantics']['passengerName']) ? PersonName::fromArray($this->data['semantics']['passengerName']) : null;
-        $this->priorityStatus = $this->data['semantics']['priorityStatus'] ?? null;
-        $this->seats = ! empty($this->data['semantics']['seats']) ? collect(
-            array_map(fn (array $seat) => Seat::fromArray($seat), $this->data['semantics']['seats'])
-        ) : null;
-        $this->securityScreening = $this->data['semantics']['securityScreening'] ?? null;
-        $this->silenceRequested = $this->data['semantics']['silenceRequested'] ?? null;
-        $this->transitProvider = $this->data['semantics']['transitProvider'] ?? null;
-        $this->transitStatus = $this->data['semantics']['transitStatus'] ?? null;
-        $this->transitStatusReason = $this->data['semantics']['transitStatusReason'] ?? null;
-        $this->vehicleName = $this->data['semantics']['vehicleName'] ?? null;
-        $this->vehicleNumber = $this->data['semantics']['vehicleNumber'] ?? null;
-        $this->vehicleType = $this->data['semantics']['vehicleType'] ?? null;
+        $semantics = $this->data['semantics'] ?? [];
+
+        $this->boardingGroup = $semantics['boardingGroup'] ?? null;
+        $this->boardingSequenceNumber = $semantics['boardingSequenceNumber'] ?? null;
+        $this->confirmationNumber = $semantics['confirmationNumber'] ?? null;
+        $this->currentArrivalDate = $this->parseSemanticDate($semantics, 'currentArrivalDate');
+        $this->currentBoardingDate = $this->parseSemanticDate($semantics, 'currentBoardingDate');
+        $this->currentDepartureDate = $this->parseSemanticDate($semantics, 'currentDepartureDate');
+        $this->departureLocation = empty($semantics['departureLocation'])
+            ? null
+            : Location::fromArray($semantics['departureLocation']);
+        $this->departureLocationDescription = $semantics['departureLocationDescription'] ?? null;
+        $this->destinationLocation = empty($semantics['destinationLocation'])
+            ? null
+            : Location::fromArray($semantics['destinationLocation']);
+        $this->destinationLocationDescription = $semantics['destinationLocationDescription'] ?? null;
+        $this->durationInSeconds = $semantics['duration'] ?? null;
+        $this->membershipProgramName = $semantics['membershipProgramName'] ?? null;
+        $this->membershipProgramNumber = $semantics['membershipProgramNumber'] ?? null;
+        $this->originalArrivalDate = $this->parseSemanticDate($semantics, 'originalArrivalDate');
+        $this->originalBoardingDate = $this->parseSemanticDate($semantics, 'originalBoardingDate');
+        $this->originalDepartureDate = $this->parseSemanticDate($semantics, 'originalDepartureDate');
+        $this->passengerName = empty($semantics['passengerName'])
+            ? null
+            : PersonName::fromArray($semantics['passengerName']);
+        $this->priorityStatus = $semantics['priorityStatus'] ?? null;
+        $this->seats = empty($semantics['seats'])
+            ? null
+            : collect($semantics['seats'])->map(fn (array $seat) => Seat::fromArray($seat));
+        $this->securityScreening = $semantics['securityScreening'] ?? null;
+        $this->silenceRequested = $semantics['silenceRequested'] ?? null;
+        $this->transitProvider = $semantics['transitProvider'] ?? null;
+        $this->transitStatus = $semantics['transitStatus'] ?? null;
+        $this->transitStatusReason = $semantics['transitStatusReason'] ?? null;
+        $this->vehicleName = $semantics['vehicleName'] ?? null;
+        $this->vehicleNumber = $semantics['vehicleNumber'] ?? null;
+        $this->vehicleType = $semantics['vehicleType'] ?? null;
+    }
+
+    /** @param  array<string, mixed>  $semantics */
+    private function parseSemanticDate(array $semantics, string $key): ?Carbon
+    {
+        if (empty($semantics[$key])) {
+            return null;
+        }
+
+        return Carbon::parse($semantics[$key]);
     }
 
     protected function compileSemantics(): array

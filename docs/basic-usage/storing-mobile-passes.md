@@ -3,9 +3,11 @@ title: Storing mobile passes
 weight: 6
 ---
 
-Most of the time you don't need to store a mobile pass yourself. The package generates it on the fly when a user tries to download it.
+Most of the time you don't need to store a mobile pass yourself. The package generates it on the fly when a user downloads it.
 
-If you do want to keep a copy around, call `generate` on a `MobilePass` model:
+Everything on this page is Apple-only. Google Wallet passes aren't files; they live on Google's servers, and users reach them through a `pay.google.com` save URL rather than downloading anything.
+
+If you do want to keep a copy of the `.pkpass` file for an Apple pass, call `generate` on the `MobilePass` model:
 
 ```php
 use Spatie\LaravelMobilePass\Models\MobilePass;
@@ -15,9 +17,9 @@ $mobilePassContent = $mobilePass->generate();
 file_put_contents('path/to/store/pass.pkpass', $mobilePassContent);
 ```
 
-# Generating a mobile pass without a model
+## Generating a mobile pass without a model
 
-If you don't want a `MobilePass` model at all, you can call `generate` directly on one of the builders instead:
+If you don't want a `MobilePass` model at all, you can call `generate` directly on one of the Apple builders instead:
 
 ```php
 $mobilePassContent = AirlinePassBuilder::make()

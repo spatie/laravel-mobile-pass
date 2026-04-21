@@ -133,12 +133,7 @@ class BoardingPassClass extends GooglePassClass
             $this->destinationAirportCode = (string) $payload['destination']['airportIataCode'];
         }
 
-        if (isset($payload['logo']['sourceUri']['uri'])) {
-            $this->logo = Image::fromUrl((string) $payload['logo']['sourceUri']['uri']);
-        }
-
-        if (isset($payload['heroImage']['sourceUri']['uri'])) {
-            $this->hero = Image::fromUrl((string) $payload['heroImage']['sourceUri']['uri']);
-        }
+        $this->logo = $this->hydrateImage($payload, 'logo');
+        $this->hero = $this->hydrateImage($payload, 'heroImage');
     }
 }

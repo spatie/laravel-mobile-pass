@@ -11,21 +11,17 @@ class Location implements Arrayable
         public float $longitude
     ) {}
 
-    public static function make(
-        float $latitude,
-        float $longitude
-    ): self {
-        return new self(
-            latitude: $latitude,
-            longitude: $longitude,
-        );
+    public static function make(float $latitude, float $longitude): self
+    {
+        return new self($latitude, $longitude);
     }
 
+    /** @param  array<string, mixed>  $values */
     public static function fromArray(array $values): self
     {
         return new self(
-            latitude: (float) $values['latitude'],
-            longitude: (float) $values['longitude'],
+            (float) $values['latitude'],
+            (float) $values['longitude'],
         );
     }
 

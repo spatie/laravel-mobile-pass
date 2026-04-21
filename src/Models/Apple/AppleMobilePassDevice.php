@@ -20,8 +20,6 @@ class AppleMobilePassDevice extends Model
 
     public function registrations(): HasMany
     {
-        $modelClass = Config::appleMobilePassRegistrationModel();
-
-        return $this->hasMany($modelClass, 'device_id');
+        return $this->hasMany(Config::appleMobilePassRegistrationModel(), 'device_id');
     }
 }

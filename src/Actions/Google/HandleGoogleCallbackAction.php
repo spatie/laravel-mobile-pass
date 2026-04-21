@@ -41,11 +41,10 @@ class HandleGoogleCallbackAction
             'raw_payload' => $claims,
         ]);
 
-        $laravelEvent = $eventType === 'save'
-            ? new GoogleMobilePassSaved($mobilePass, $event)
-            : new GoogleMobilePassRemoved($mobilePass, $event);
-
-        event($laravelEvent);
+        event(match ($eventType) {
+            'save' => new GoogleMobilePassSaved($mobilePass, $event),
+            'remove' => new GoogleMobilePassRemoved($mobilePass, $event),
+        });
     }
 
     protected function resolvePass(string $objectId): ?MobilePass

@@ -2,13 +2,14 @@
 
 namespace Spatie\LaravelMobilePass\Models\Concerns;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Spatie\LaravelMobilePass\Enums\PassType;
 use Spatie\LaravelMobilePass\Enums\Platform;
 use Spatie\LaravelMobilePass\Models\MobilePass;
 use Spatie\LaravelMobilePass\Support\Config;
 
-/** @var $this \Illuminate\Database\Eloquent\Model */
+/** @mixin Model */
 trait HasMobilePasses
 {
     public function addMobilePass(MobilePass $mobilePass): void
@@ -18,9 +19,7 @@ trait HasMobilePasses
 
     public function mobilePasses(): MorphMany
     {
-        $mobilePassModel = Config::mobilePassModel();
-
-        return $this->morphMany($mobilePassModel, 'model');
+        return $this->morphMany(Config::mobilePassModel(), 'model');
     }
 
     public function applePasses(): MorphMany
