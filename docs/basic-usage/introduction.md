@@ -31,9 +31,9 @@ $mobilePass = EventTicketPassBuilder::make()
     ->save();
 ```
 
-A note on the fields. Apple renders **primary fields** as the most prominent content on the front of the pass, and **secondary fields** as smaller supporting content below them. The first argument to `FieldContent::make()` (`event`, `attendee`, `seat`) is a free-form identifier. Apple doesn't care what string you pick, but it has to be unique within the pass, and you'll reuse it later when you want to update that specific field.
+A note on the fields. Apple renders primary fields as the most prominent content on the front of the pass, and secondary fields as smaller supporting content below them. The first argument to `FieldContent::make()` (`event`, `attendee`, `seat`) is a free-form identifier. Apple doesn't care what string you pick, but it has to be unique within the pass, and you'll reuse it later when you want to update that specific field.
 
-`save()` returns a `MobilePass` model. Nothing is written to disk. All pass properties (fields, images, barcode) are stored as a row in the `mobile_passes` table.
+The `save()` method returns a `MobilePass` model. Nothing is written to disk. All pass properties (fields, images, barcode) are stored as a row in the `mobile_passes` table.
 
 To hand the ticket to the user, return the model straight from a controller. `MobilePass` implements `Responsable`, so Laravel serves the signed `.pkpass` for you:
 
@@ -43,6 +43,8 @@ return $mobilePass;
 ```
 
 The user taps through, sees a preview in Apple Wallet, and taps Add. At that moment, Apple calls back to your app to register the device against the pass. The package handles that endpoint and stores the registration in the `mobile_pass_registrations` table. That link between pass and device is what makes updates possible.
+
+### Updating a pass
 
 If the seat assignment changes later, update the field through the builder:
 
@@ -59,7 +61,7 @@ The package notifies Apple, Apple pings the device, and the device pulls the new
 
 ## What about Google?
 
-Android users live in Google Wallet, and the same package covers that with a matching set of builders. The flow is almost identical, with one extra step up front. Google requires you to declare a **Class** (a shared template for a batch of passes) before you can issue individual tickets. You do that once per event.
+Android users live in Google Wallet, and the same package covers that with a matching set of builders. The flow is almost identical, with one extra step up front. Google requires you to declare a Class (a shared template for a batch of passes) before you can issue individual tickets. You do that once per event.
 
 Once the class exists, building a ticket for one attendee looks like this:
 
@@ -78,7 +80,7 @@ $mobilePass = EventTicketPassBuilder::make()
     ->save();
 ```
 
-`save()` creates the Object on Google's servers and inserts a row in the same `mobile_passes` table. Handing it to the user is the same one-liner:
+The `save()` method creates the Object on Google's servers and inserts a row in the same `mobile_passes` table. Handing it to the user is the same one-liner:
 
 ```php
 // in a controller
