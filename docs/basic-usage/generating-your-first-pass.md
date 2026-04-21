@@ -9,8 +9,8 @@ Say you're selling event tickets. After checkout, you want the user to tap a but
 
 Grab credentials for the platform(s) you want to support. Each walkthrough lists the environment variables you need to set:
 
-- [Getting credentials from Apple](/docs/laravel-mobile-pass/v1/apple-wallet/getting-credentials-from-apple)
-- [Getting credentials from Google](/docs/laravel-mobile-pass/v1/google-wallet/getting-credentials-from-google)
+- [Getting credentials from Apple](/docs/laravel-mobile-pass/v1/getting-credentials-from-apple)
+- [Getting credentials from Google](/docs/laravel-mobile-pass/v1/getting-credentials-from-google)
 
 If you want to link passes to a user (or any other model) so you can look them up later, add the `HasMobilePasses` trait to that model:
 

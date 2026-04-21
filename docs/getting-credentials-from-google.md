@@ -1,6 +1,6 @@
 ---
 title: Getting credentials from Google
-weight: 1
+weight: 6
 ---
 
 To generate passes for Google Wallet you need two things from Google: a service account key (which the package uses to call the Wallet API on your behalf) and an issuer ID (Google's label for your organisation).
