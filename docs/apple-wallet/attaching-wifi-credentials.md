@@ -68,3 +68,7 @@ Pass types that actually render the Wi-Fi button: boarding passes (iOS 12+), eve
 The password lives in the pass in plain text. Anything that exports the pass (mail attachments, screenshots, iCloud backups) exposes it. Use this for networks whose password is meant to be shared, not corporate networks or guest networks that rotate daily.
 
 Changing the password later means [updating the pass](/docs/laravel-mobile-pass/v1/basic-usage/updating-a-pass) so the new credentials land on the user's device. Devices that have already joined keep the old password cached until they forget the network.
+
+## Apple's reference
+
+The underlying field is the [`wifiAccess` semantic tag](https://developer.apple.com/documentation/walletpasses/semantictagtype/wifiaccess) in the pass's `semantics` dictionary. Apple's [Semantic Tags reference](https://developer.apple.com/documentation/walletpasses/semantictags) lists every tag the pass format supports and which ones Wallet surfaces.
