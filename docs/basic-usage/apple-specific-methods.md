@@ -1,6 +1,6 @@
 ---
 title: Apple-specific methods
-weight: 10
+weight: 11
 ---
 
 Every Apple builder extends `ApplePassBuilder`, so each pass type ships with the same base API for fields, images, and colours. These methods are Apple-only. The basics of building a pass (creating a builder, setting an organisation name, calling `save()`) are covered in [Generating your first pass](/docs/laravel-mobile-pass/v1/basic-usage/generating-your-first-pass).

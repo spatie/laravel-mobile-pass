@@ -11,6 +11,7 @@ use Spatie\LaravelMobilePass\Builders\Apple\Entities\Colour;
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\FieldContent;
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\Image;
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\Location;
+use Spatie\LaravelMobilePass\Builders\Apple\Entities\NfcPayload;
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\Price;
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\WifiNetwork;
 use Spatie\LaravelMobilePass\Builders\Apple\Validators\ApplePassValidator;
@@ -76,6 +77,8 @@ abstract class ApplePassBuilder
 
     /** @var array<int, Location> */
     protected array $locations = [];
+
+    protected ?NfcPayload $nfc = null;
 
     abstract protected static function validator(): ApplePassValidator;
 
@@ -355,6 +358,16 @@ abstract class ApplePassBuilder
         return $this;
     }
 
+    public function setNfc(
+        string $message,
+        string $encryptionPublicKey,
+        bool $requiresAuthentication = false,
+    ): self {
+        $this->nfc = new NfcPayload($message, $encryptionPublicKey, $requiresAuthentication);
+
+        return $this;
+    }
+
     protected function addImagesToFile(PKPass $pkPass): PKPass
     {
         foreach ($this->images as $filename => $image) {
@@ -489,6 +502,7 @@ abstract class ApplePassBuilder
                 $this->locations,
             ),
             'maxDistance' => $this->maxDistance,
+            'nfc' => $this->nfc?->toArray(),
             'userInfo' => [
                 'passType' => $this->type->value,
             ],
@@ -554,6 +568,10 @@ abstract class ApplePassBuilder
         );
 
         $this->maxDistance = $this->data['maxDistance'] ?? null;
+
+        $this->nfc = empty($this->data['nfc'])
+            ? null
+            : NfcPayload::fromArray($this->data['nfc']);
 
         $this->uncompileSemantics();
 
