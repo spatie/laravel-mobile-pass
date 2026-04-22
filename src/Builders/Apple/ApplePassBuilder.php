@@ -313,9 +313,10 @@ abstract class ApplePassBuilder
         return $this;
     }
 
-    public function setWifiDetails(WifiNetwork ...$wifiNetwork): self
+    public function addWifiNetwork(string $ssid, string $password): self
     {
-        $this->wifiDetails = collect($wifiNetwork);
+        $this->wifiDetails ??= collect();
+        $this->wifiDetails->push(new WifiNetwork($ssid, $password));
 
         return $this;
     }

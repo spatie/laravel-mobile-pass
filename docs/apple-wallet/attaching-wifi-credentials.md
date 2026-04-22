@@ -5,37 +5,33 @@ weight: 5
 
 Apple Wallet passes can carry Wi-Fi credentials. When the user's iPhone detects the pass is relevant (they're near the venue, the gate, the hotel), Wallet surfaces a "Join Wi-Fi network" button on the pass. One tap and the phone joins the network. No settings screen, no typing the password.
 
-The feature is Apple-only. Google Wallet has no equivalent, so `setWifiDetails` is ignored for Google builders.
+The feature is Apple-only. Google Wallet has no equivalent, so `addWifiNetwork` is ignored for Google builders.
 
 ## Attaching a network
 
-Pass one or more `WifiNetwork` entities through `setWifiDetails()`:
+Call `addWifiNetwork()` with the SSID and password:
 
 ```php
 use Spatie\LaravelMobilePass\Builders\Apple\EventTicketPassBuilder;
-use Spatie\LaravelMobilePass\Builders\Apple\Entities\WifiNetwork;
 
 EventTicketPassBuilder::make()
     ->setOrganisationName('Fab Four Promotions')
     ->setSerialNumber('BTL-SHEA-0042')
     ->setDescription('The Beatles at Shea Stadium')
-    ->setWifiDetails(
-        WifiNetwork::make('SheaStadium-Guest', 'welcome1965'),
-    )
+    ->addWifiNetwork('SheaStadium-Guest', 'welcome1965')
     ->save();
 ```
 
-The entity is a simple SSID + password pair. Internally, the builder writes it to the pass's `semantics.wifiAccess` array, which is where Apple looks for these credentials.
+Internally, the builder writes the network to the pass's `semantics.wifiAccess` array, which is where Apple looks for these credentials.
 
 ## Multiple networks
 
-You can attach more than one. Wallet presents them in order and the user picks one when they tap:
+Chain the call as many times as you need. Wallet presents them in order and the user picks one when they tap:
 
 ```php
-$builder->setWifiDetails(
-    WifiNetwork::make('SheaStadium-Guest', 'welcome1965'),
-    WifiNetwork::make('SheaStadium-VIP', 'backstage1965'),
-);
+$builder
+    ->addWifiNetwork('SheaStadium-Guest', 'welcome1965')
+    ->addWifiNetwork('SheaStadium-VIP', 'backstage1965');
 ```
 
 A typical use is a public guest network plus a faster sponsor network for specific ticket holders.
@@ -54,9 +50,7 @@ $builder
         relevantText: 'Welcome to Shea Stadium',
     )
     ->setRelevantDate(Carbon::parse('1965-08-15 19:00'))
-    ->setWifiDetails(
-        WifiNetwork::make('SheaStadium-Guest', 'welcome1965'),
-    );
+    ->addWifiNetwork('SheaStadium-Guest', 'welcome1965');
 ```
 
 Now the pass comes forward an hour before the show when the user is near the stadium, with the Wi-Fi button visible.
