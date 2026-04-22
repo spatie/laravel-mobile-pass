@@ -1,6 +1,6 @@
 ---
 title: Retrieving mobile passes
-weight: 9
+weight: 6
 ---
 
 Once a pass is associated with one of your models (see [Generating your first pass](/docs/laravel-mobile-pass/v1/basic-usage/generating-your-first-pass) for how to wire that up), the `HasMobilePasses` trait gives you a few ways to fetch them back.

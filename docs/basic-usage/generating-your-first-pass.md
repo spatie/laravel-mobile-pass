@@ -44,7 +44,7 @@ $mobilePass = EventTicketPassBuilder::make()
 
 Those first arguments (`event`, `attendee`, `seat`) are identifiers you pick. Apple doesn't care what they say, they just have to be unique within the pass so you can refer back to them later when you want to update that specific field. The label that shows up on the pass is the identifier, title-cased. Pass `label:` when you want something different, which is why `'attendee'` reads as `'Name'` on this ticket.
 
-There are a few other zones a field can land in (header, primary, secondary, auxiliary, back), and they change where the field appears on the pass. `addField` drops it in the primary zone, which is the right place most of the time. When you want finer control, reach for `addHeaderField`, `addSecondaryField`, `addAuxiliaryField`, or `addBackField`. See [Apple-specific methods](/docs/laravel-mobile-pass/v1/basic-usage/apple-specific-methods) for the full reference.
+There are a few other zones a field can land in (header, primary, secondary, auxiliary, back), and they change where the field appears on the pass. `addField` drops it in the primary zone, which is the right place most of the time. When you want finer control, reach for `addHeaderField`, `addSecondaryField`, `addAuxiliaryField`, or `addBackField`. See [Apple-specific methods](/docs/laravel-mobile-pass/v1/apple-wallet/apple-specific-methods) for the full reference.
 
 Calling `save()` gives you back a `MobilePass` model. Nothing is written to disk; the whole pass (fields, images, barcode) lives as a row in the `mobile_passes` table.
 

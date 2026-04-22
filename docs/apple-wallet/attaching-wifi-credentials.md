@@ -1,6 +1,6 @@
 ---
 title: Attaching Wi-Fi credentials
-weight: 7
+weight: 4
 ---
 
 Apple Wallet passes can carry Wi-Fi credentials. When the user's iPhone detects the pass is relevant (they're near the venue, the gate, the hotel), Wallet surfaces a "Join Wi-Fi network" button on the pass. One tap and the phone joins the network. No settings screen, no typing the password.
@@ -42,7 +42,7 @@ A typical use is a public guest network plus a faster sponsor network for specif
 
 ## When it actually surfaces
 
-The "Join Wi-Fi" button doesn't show up just because the pass has the credentials. Apple only exposes it when the pass is contextually relevant. In practice that means you also want to set [pass relevance](/docs/laravel-mobile-pass/v1/basic-usage/pass-relevance) so the pass surfaces on the lock screen at the right moment:
+The "Join Wi-Fi" button doesn't show up just because the pass has the credentials. Apple only exposes it when the pass is contextually relevant. In practice that means you also want to set [pass relevance](/docs/laravel-mobile-pass/v1/apple-wallet/pass-relevance) so the pass surfaces on the lock screen at the right moment:
 
 ```php
 use Illuminate\Support\Carbon;

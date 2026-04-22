@@ -1,6 +1,6 @@
 ---
 title: NFC passes
-weight: 6
+weight: 3
 ---
 
 Apple Wallet passes can carry an NFC payload that's transmitted when the pass is held up to a compatible reader. This is what makes tap-to-redeem loyalty cards, transit passes, and access control passes work.

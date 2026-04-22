@@ -1,6 +1,6 @@
 ---
 title: Google-specific methods
-weight: 13
+weight: 1
 ---
 
 Google Wallet splits a pass into two pieces: a Class and an Object. The Class is a shared template (the event itself, the loyalty program, the flight). The Object is one pass for one user, built on top of a Class.
