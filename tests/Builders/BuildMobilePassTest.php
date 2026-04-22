@@ -47,3 +47,21 @@ it('updates a field', function () {
 
     expect($pass->generate())->toMatchMobilePassSnapshot();
 });
+
+it('keeps the serial number stable when re-hydrated', function () {
+    $pass = GenericPassBuilder::make()
+        ->setOrganisationName('Spatie')
+        ->setDescription('Hello!')
+        ->setSerialNumber('stable-serial-123')
+        ->setIconImage(getTestSupportPath('images/spatie-thumbnail.png'))
+        ->addHeaderField('flight-no', 'EY066', label: 'Flight')
+        ->save();
+
+    expect($pass->content['serialNumber'])->toBe('stable-serial-123');
+
+    expect($pass->builder()->data()['serialNumber'])->toBe('stable-serial-123');
+
+    $pass->updateField('flight-no', 'UPDATED');
+    $pass->refresh();
+    expect($pass->content['serialNumber'])->toBe('stable-serial-123');
+});
