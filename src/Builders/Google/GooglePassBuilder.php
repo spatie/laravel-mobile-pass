@@ -13,6 +13,7 @@ use Spatie\LaravelMobilePass\Enums\Platform;
 use Spatie\LaravelMobilePass\Models\MobilePass;
 use Spatie\LaravelMobilePass\Support\Config;
 use Spatie\LaravelMobilePass\Support\Google\GoogleCredentials;
+use Spatie\LaravelMobilePass\Support\WifiUri;
 
 /**
  * @phpstan-consistent-constructor
@@ -78,6 +79,19 @@ abstract class GooglePassBuilder
         $this->barcode = $barcode;
 
         return $this;
+    }
+
+    public function setWifiBarcode(
+        string $ssid,
+        ?string $password = null,
+        bool $hidden = false,
+        ?string $altText = null,
+    ): static {
+        return $this->setBarcode(
+            BarcodeType::Qr,
+            WifiUri::build($ssid, $password, $hidden),
+            $altText ?? $ssid,
+        );
     }
 
     public function objectId(): string

@@ -23,6 +23,7 @@ use Spatie\LaravelMobilePass\Enums\Platform;
 use Spatie\LaravelMobilePass\Enums\TimeStyleType;
 use Spatie\LaravelMobilePass\Exceptions\InvalidConfig;
 use Spatie\LaravelMobilePass\Models\MobilePass;
+use Spatie\LaravelMobilePass\Support\WifiUri;
 
 /**
  * @phpstan-consistent-constructor
@@ -332,6 +333,19 @@ abstract class ApplePassBuilder
         $this->barcode = $barcode;
 
         return $this;
+    }
+
+    public function setWifiBarcode(
+        string $ssid,
+        ?string $password = null,
+        bool $hidden = false,
+        ?string $altText = null,
+    ): self {
+        return $this->setBarcode(
+            BarcodeType::Qr,
+            WifiUri::build($ssid, $password, $hidden),
+            $altText ?? $ssid,
+        );
     }
 
     public function setRelevantDate(Carbon $date): self

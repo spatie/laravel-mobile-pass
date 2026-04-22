@@ -60,32 +60,36 @@ Pass types that actually render the button: boarding passes (iOS 12+), event tic
 
 ## Option 2: a Wi-Fi QR code
 
-Use the standard `WIFI:` URI format on the pass's barcode. iOS's camera app and Android's camera both understand this format and prompt the user to join when scanned.
+Call `setWifiBarcode()` with the SSID and password. The builder encodes the credentials as a QR code on the pass, in the standard Wi-Fi URI format that iOS's camera app and Android's camera understand.
 
 ```php
 use Spatie\LaravelMobilePass\Builders\Apple\GenericPassBuilder;
-use Spatie\LaravelMobilePass\Enums\BarcodeType;
 
 GenericPassBuilder::make()
     ->setOrganisationName('Spatie')
     ->setDescription('Guest Wi-Fi')
     ->addField('ssid', 'Spatie Guest', label: 'Network')
     ->addSecondaryField('password', 'welcome', label: 'Password')
-    ->setBarcode(
-        BarcodeType::Qr,
-        'WIFI:S:Spatie Guest;T:WPA;P:welcome;;',
-        altText: 'Spatie Guest',
-    )
+    ->setWifiBarcode('Spatie Guest', 'welcome')
     ->save();
 ```
 
-The `WIFI:` URI format is:
+For an open network, leave the password off:
 
-```
-WIFI:S:<ssid>;T:<WPA|WPA2|WPA3|nopass>;P:<password>;H:<true|false>;;
+```php
+$builder->setWifiBarcode('Spatie Guest');
 ```
 
-`S` is the SSID, `T` is the security type, `P` is the password, `H` marks the network as hidden. Escape semicolons, colons, commas, and backslashes in the SSID or password with a backslash.
+For a hidden SSID, pass `hidden: true`. You can also override the alt text that renders next to the barcode. By default it shows the SSID.
+
+```php
+$builder->setWifiBarcode(
+    ssid: 'Spatie Guest',
+    password: 'welcome',
+    hidden: true,
+    altText: 'Scan to join',
+);
+```
 
 This approach shines when other people scan your pass to join. Pin it in Wallet for your home network, hand the QR to a guest, let coworkers scan the pass displayed on your phone.
 
