@@ -7,13 +7,12 @@ With this package you can generate mobile passes for Apple Wallet and Google Wal
 
 You can also push updates to passes you've already handed out, so they stay current on your users' devices.
 
-Here's an example of a boarding pass you can generate with this package.
+Here are two examples of passes you can generate with this package, a boarding pass and a coupon.
 
-<img src="/docs/laravel-mobile-pass/v1/images/boarding.jpg" alt="boarding pass" width="400">
-
-And here's a coupon.
-
-<img src="/docs/laravel-mobile-pass/v1/images/coupon.jpg" alt="coupon" width="400">
+<div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+    <img src="/docs/laravel-mobile-pass/v1/images/boarding.jpg" alt="boarding pass" style="width: 100%; max-width: 400px; flex: 1 1 300px;">
+    <img src="/docs/laravel-mobile-pass/v1/images/coupon.jpg" alt="coupon" style="width: 100%; max-width: 400px; flex: 1 1 300px;">
+</div>
 
 ## Credits
 
