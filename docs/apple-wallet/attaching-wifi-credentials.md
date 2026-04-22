@@ -5,41 +5,10 @@ weight: 5
 
 There are two ways to ship Wi-Fi credentials on an Apple Wallet pass, and they behave very differently. Pick the one that matches how users are supposed to join.
 
-- Encode the credentials in the pass's QR code. Anyone (including the pass holder) scans the barcode with their phone's camera and the OS offers to join. Works cross-platform, no relevance or entitlement needed.
 - Attach them via the `wifiAccess` semantic tag. A "Join Wi-Fi network" button shows up inside the pass holder's own Wallet app when the pass is contextually relevant. Apple-only, narrower pass-type support.
+- Encode the credentials in the pass's QR code. Anyone (including the pass holder) scans the barcode with their phone's camera and the OS offers to join. Works cross-platform, no relevance or entitlement needed.
 
-## Option 1: a Wi-Fi QR code
-
-Use the standard `WIFI:` URI format on the pass's barcode. iOS's camera app and Android's camera both understand this format and prompt the user to join when scanned.
-
-```php
-use Spatie\LaravelMobilePass\Builders\Apple\GenericPassBuilder;
-use Spatie\LaravelMobilePass\Enums\BarcodeType;
-
-GenericPassBuilder::make()
-    ->setOrganisationName('Spatie')
-    ->setDescription('Guest Wi-Fi')
-    ->addField('ssid', 'Spatie Guest', label: 'Network')
-    ->addSecondaryField('password', 'welcome', label: 'Password')
-    ->setBarcode(
-        BarcodeType::Qr,
-        'WIFI:S:Spatie Guest;T:WPA;P:welcome;;',
-        altText: 'Spatie Guest',
-    )
-    ->save();
-```
-
-The `WIFI:` URI format is:
-
-```
-WIFI:S:<ssid>;T:<WPA|WPA2|WPA3|nopass>;P:<password>;H:<true|false>;;
-```
-
-`S` is the SSID, `T` is the security type, `P` is the password, `H` marks the network as hidden. Escape semicolons, colons, commas, and backslashes in the SSID or password with a backslash.
-
-This approach shines when other people scan your pass to join. Pin it in Wallet for your home network, hand the QR to a guest, let coworkers scan the pass displayed on your phone.
-
-## Option 2: the wifiAccess semantic tag
+## Option 1: the wifiAccess semantic tag
 
 Apple's `wifiAccess` semantic tag drives a dedicated "Join Wi-Fi network" button inside Wallet. Call `addWifiNetwork()` with the SSID and password:
 
@@ -89,6 +58,37 @@ Pass types that actually render the button: boarding passes (iOS 12+), event tic
 - WPA-Enterprise (username + password) is not supported.
 - Hidden SSIDs work but you'll want to confirm the exact SSID string matches what the AP broadcasts.
 
+## Option 2: a Wi-Fi QR code
+
+Use the standard `WIFI:` URI format on the pass's barcode. iOS's camera app and Android's camera both understand this format and prompt the user to join when scanned.
+
+```php
+use Spatie\LaravelMobilePass\Builders\Apple\GenericPassBuilder;
+use Spatie\LaravelMobilePass\Enums\BarcodeType;
+
+GenericPassBuilder::make()
+    ->setOrganisationName('Spatie')
+    ->setDescription('Guest Wi-Fi')
+    ->addField('ssid', 'Spatie Guest', label: 'Network')
+    ->addSecondaryField('password', 'welcome', label: 'Password')
+    ->setBarcode(
+        BarcodeType::Qr,
+        'WIFI:S:Spatie Guest;T:WPA;P:welcome;;',
+        altText: 'Spatie Guest',
+    )
+    ->save();
+```
+
+The `WIFI:` URI format is:
+
+```
+WIFI:S:<ssid>;T:<WPA|WPA2|WPA3|nopass>;P:<password>;H:<true|false>;;
+```
+
+`S` is the SSID, `T` is the security type, `P` is the password, `H` marks the network as hidden. Escape semicolons, colons, commas, and backslashes in the SSID or password with a backslash.
+
+This approach shines when other people scan your pass to join. Pin it in Wallet for your home network, hand the QR to a guest, let coworkers scan the pass displayed on your phone.
+
 ## Security considerations
 
 Whichever approach you pick, the password lives in the pass in plain text. Anything that exports the pass (mail attachments, screenshots, iCloud backups) exposes it. Use this for networks whose password is meant to be shared, not corporate networks or guest networks that rotate daily.
@@ -97,10 +97,10 @@ Changing the password later means [updating the pass](/docs/laravel-mobile-pass/
 
 ## Apple's reference
 
-The underlying field for the second approach is the [`wifiAccess` semantic tag](https://developer.apple.com/documentation/walletpasses/semantictagtype/wifiaccess) in the pass's `semantics` dictionary. Apple's [Semantic Tags reference](https://developer.apple.com/documentation/walletpasses/semantictags) lists every tag the pass format supports.
+The underlying field for the first approach is the [`wifiAccess` semantic tag](https://developer.apple.com/documentation/walletpasses/semantictagtype/wifiaccess) in the pass's `semantics` dictionary. Apple's [Semantic Tags reference](https://developer.apple.com/documentation/walletpasses/semantictags) lists every tag the pass format supports.
 
 The QR-code approach uses the [Wi-Fi URI format](https://en.wikipedia.org/wiki/QR_code#Joining_a_Wi-Fi_network) that originated with Android and was later adopted by iOS. It's documented by both platforms as a shortcut for joining networks.
 
 ## Try it
 
-The [live demo](https://laravel-mobile-pass-demo-main-lgrvgq.laravel.cloud/wifi-pass) has a form where you enter an SSID and password and download a generated pass. Source: [`GenerateExampleWifiPass.php`](https://github.com/spatie/laravel-mobile-pass-demo/blob/main/app/Actions/GenerateExampleWifiPass.php) and [`WifiPassForm.php`](https://github.com/spatie/laravel-mobile-pass-demo/blob/main/app/Livewire/WifiPassForm.php).
+The [live demo](https://laravel-mobile-pass-demo-main-lgrvgq.laravel.cloud/wifi-pass) has a form where you enter an SSID and password and download a generated pass. It uses the QR-code approach so the same pass works for anyone who scans it. Source: [`GenerateExampleWifiPass.php`](https://github.com/spatie/laravel-mobile-pass-demo/blob/main/app/Actions/GenerateExampleWifiPass.php) and [`WifiPassForm.php`](https://github.com/spatie/laravel-mobile-pass-demo/blob/main/app/Livewire/WifiPassForm.php).
