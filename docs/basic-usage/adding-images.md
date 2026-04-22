@@ -64,7 +64,19 @@ Different Class types expose different image setters. Event tickets and boarding
 
 Google caches images it has fetched. When you change a URL's contents in place, you may need to use a new URL (or append a cache-busting query string) to see the new image.
 
-See Google's [Visual design reference](https://developers.google.com/wallet/generic/resources/visual-design) for the sizes and formats it expects.
+### Recommended dimensions
+
+Google expects PNG at the dimensions below. The service scales images down when needed, but starting above the recommended size avoids soft edges on high-density displays.
+
+| Image | Recommended size (px) | Notes |
+|---|---|---|
+| Logo | 660 × 660 (minimum) | Masked into a circle. Keep the mark inside an 840 × 840 safe area with a 15% margin. |
+| Wide logo | 1280 × 400 | Used when a rectangular logo reads better than the circular one. |
+| Hero image | 1032 × 336 | Full-width banner across the body of the card. 3:1 or wider aspect. |
+| Full-width image | 1860 px wide | Variable height. For featured hero art on generic passes. |
+| Above/below-barcode strip | 1600 × 80 | Thin strip around the barcode, 20 dp tall. |
+
+Google's [Brand guidelines](https://developers.google.com/wallet/generic/resources/brand-guidelines) carry the full reference, including per-pass-type constraints.
 
 ## Background colours
 
