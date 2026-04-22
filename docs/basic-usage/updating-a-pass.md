@@ -1,6 +1,6 @@
 ---
 title: Updating a pass
-weight: 7
+weight: 8
 ---
 
 A pass on someone's phone isn't frozen. Seat assignments shift, gates change, loyalty balances tick up, coupons get extended. Push those changes through the `MobilePass` model and the package handles the platform-specific mechanics for you.

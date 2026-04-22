@@ -1,6 +1,6 @@
 ---
 title: Apple-specific methods
-weight: 11
+weight: 12
 ---
 
 Every Apple builder extends `ApplePassBuilder`, so each pass type ships with the same base API for fields, images, and colours. These methods are Apple-only. The basics of building a pass (creating a builder, setting an organisation name, calling `save()`) are covered in [Generating your first pass](/docs/laravel-mobile-pass/v1/basic-usage/generating-your-first-pass).
@@ -55,5 +55,5 @@ The file Apple Wallet downloads defaults to the pass's serial number. Pass a fri
 
 ## Niche methods
 
-- `setWifiDetails(WifiNetwork ...$wifiNetwork)`: attach one or more Wi-Fi credentials so the pass can join a network when scanned.
 - `setTotalPrice(Price $totalPrice)`: record the total cost on the pass (useful for event tickets and coupons).
+- `setWifiDetails(WifiNetwork ...$wifiNetwork)`: attach one or more Wi-Fi credentials. See [Attaching Wi-Fi credentials](/docs/laravel-mobile-pass/v1/basic-usage/attaching-wifi-credentials).
