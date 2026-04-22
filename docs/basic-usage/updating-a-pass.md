@@ -5,6 +5,8 @@ weight: 5
 
 A pass on someone's phone isn't frozen. Seat assignments shift, gates change, loyalty balances tick up, coupons get extended. Push those changes through the `MobilePass` model and the package handles the platform-specific mechanics for you.
 
+You can watch this roll in live in the [demo](https://mobile-pass-demo.spatie.be). Install any pass on your iPhone, hit the "simulate change" button on the detail page, and Wallet pulls the new version within a minute.
+
 ## Apple
 
 For Apple passes, use `updateField` on the model. It replaces the value for the given key and saves in one call:

@@ -107,4 +107,4 @@ The QR-code approach uses the [Wi-Fi URI format](https://en.wikipedia.org/wiki/Q
 
 ## Try it
 
-The [live demo](https://laravel-mobile-pass-demo-main-lgrvgq.laravel.cloud/wifi-pass) has a form where you enter an SSID and password and download a generated pass. It uses the QR-code approach so the same pass works for anyone who scans it. Source: [`GenerateExampleWifiPass.php`](https://github.com/spatie/laravel-mobile-pass-demo/blob/main/app/Actions/GenerateExampleWifiPass.php) and [`WifiPassForm.php`](https://github.com/spatie/laravel-mobile-pass-demo/blob/main/app/Livewire/WifiPassForm.php).
+The [live demo](https://mobile-pass-demo.spatie.be/wifi-pass) has a form where you enter an SSID and password and download a generated pass. It uses the QR-code approach so the same pass works for anyone who scans it. Source: [`GenerateExampleWifiPass.php`](https://github.com/spatie/laravel-mobile-pass-demo/blob/main/app/Actions/GenerateExampleWifiPass.php) and [`WifiPassForm.php`](https://github.com/spatie/laravel-mobile-pass-demo/blob/main/app/Livewire/WifiPassForm.php).

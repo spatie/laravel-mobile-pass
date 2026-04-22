@@ -21,6 +21,10 @@ And here's an example of a coupon.
 
 ![coupon](https://github.com/spatie/laravel-mobile-pass/blob/main/docs/images/coupon.jpg?raw=true)
 
+## Try it live
+
+A live demo of the package runs at [mobile-pass-demo.spatie.be](https://mobile-pass-demo.spatie.be). Generate every pass type, install it on your iPhone, and push a live update to your device. Source: [spatie/laravel-mobile-pass-demo](https://github.com/spatie/laravel-mobile-pass-demo).
+
 This package has been made in collaboration with [Dan Johnson](DanJohnson.xyz).
 
 ## Support us

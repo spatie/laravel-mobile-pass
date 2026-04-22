@@ -5,6 +5,8 @@ weight: 1
 
 Say you're selling event tickets. After checkout, you want the user to tap a button and drop the ticket straight into their iPhone wallet. With this package, that takes a builder call and a redirect.
 
+If you want to see finished passes first, the [live demo](https://mobile-pass-demo.spatie.be) generates every pass type this package supports, installs them on your iPhone, and lets you push live updates. Source: [spatie/laravel-mobile-pass-demo](https://github.com/spatie/laravel-mobile-pass-demo).
+
 ## Before you start
 
 Grab credentials for the platform(s) you want to support. Each walkthrough lists the environment variables you need to set:
