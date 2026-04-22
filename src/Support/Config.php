@@ -24,24 +24,27 @@ use Spatie\LaravelMobilePass\Models\MobilePass;
 
 class Config
 {
-    /** @var array<string, array<string, class-string>> */
-    protected const DEFAULT_BUILDERS = [
-        'apple' => [
-            'airline' => AirlinePassBuilder::class,
-            'boarding' => AppleBoardingPassBuilder::class,
-            'coupon' => CouponPassBuilder::class,
-            'event_ticket' => AppleEventTicketPassBuilder::class,
-            'generic' => AppleGenericPassBuilder::class,
-            'store_card' => StoreCardPassBuilder::class,
-        ],
-        'google' => [
-            'boarding' => GoogleBoardingPassBuilder::class,
-            'event_ticket' => GoogleEventTicketPassBuilder::class,
-            'generic' => GoogleGenericPassBuilder::class,
-            'loyalty' => LoyaltyPassBuilder::class,
-            'offer' => OfferPassBuilder::class,
-        ],
-    ];
+    /** @return array<string, array<string, class-string>> */
+    protected static function defaultBuilders(): array
+    {
+        return [
+            'apple' => [
+                'airline' => AirlinePassBuilder::class,
+                'boarding' => AppleBoardingPassBuilder::class,
+                'coupon' => CouponPassBuilder::class,
+                'event_ticket' => AppleEventTicketPassBuilder::class,
+                'generic' => AppleGenericPassBuilder::class,
+                'store_card' => StoreCardPassBuilder::class,
+            ],
+            'google' => [
+                'boarding' => GoogleBoardingPassBuilder::class,
+                'event_ticket' => GoogleEventTicketPassBuilder::class,
+                'generic' => GoogleGenericPassBuilder::class,
+                'loyalty' => LoyaltyPassBuilder::class,
+                'offer' => OfferPassBuilder::class,
+            ],
+        ];
+    }
 
     /** @return class-string<MobilePass> */
     public static function mobilePassModel(): string
@@ -97,7 +100,7 @@ class Config
     public static function getPassBuilderClass(string $passBuilderName, Platform $platform): string
     {
         $passBuilderClass = config("mobile-pass.builders.{$platform->value}.{$passBuilderName}")
-            ?? self::DEFAULT_BUILDERS[$platform->value][$passBuilderName]
+            ?? self::defaultBuilders()[$platform->value][$passBuilderName]
             ?? null;
 
         if (! $passBuilderClass) {
