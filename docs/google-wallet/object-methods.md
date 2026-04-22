@@ -30,7 +30,3 @@ Each Google pass Object also has its own unique ID. By default, the package gene
 ```php
 $builder->setObjectSuffix("ticket-{$ticketId}");
 ```
-
-## Barcodes
-
-Every Google builder accepts a barcode through `setBarcode()`. See [Adding barcodes](/docs/laravel-mobile-pass/v1/basic-usage/adding-barcodes) for the walkthrough.
