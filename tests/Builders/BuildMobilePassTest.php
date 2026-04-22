@@ -12,8 +12,8 @@ it('can create a mobile pass', function () {
         ->setSerialNumber(123456)
         ->addHeaderField('flight-no', 'EY066', label: 'Flight')
         ->addHeaderField('seat', '66F')
-        ->addPrimaryField('departure', 'ABU', label: 'Abu Dhabi International')
-        ->addPrimaryField('destination', 'LHR', label: 'London Heathrow')
+        ->addField('departure', 'ABU', label: 'Abu Dhabi International')
+        ->addField('destination', 'LHR', label: 'London Heathrow')
         ->addSecondaryField('name', 'Dan Johnson')
         ->addSecondaryField('gate', 'D68')
         ->setIconImage(getTestSupportPath('images/spatie-thumbnail.png'));

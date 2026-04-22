@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Carbon;
 use Spatie\LaravelMobilePass\Builders\Apple\EventTicketPassBuilder;
+use Spatie\LaravelMobilePass\Models\MobilePass;
 
 it('serialises a relevant date onto the pass', function () {
     $data = EventTicketPassBuilder::make()
@@ -42,18 +43,21 @@ it('serialises locations and max distance onto the pass', function () {
 });
 
 it('round-trips relevance data through the uncompile path', function () {
-    $builder = EventTicketPassBuilder::make([
-        'organizationName' => 'Fab Four Promotions',
-        'serialNumber' => 'BTL-SHEA-0042',
-        'description' => 'The Beatles at Shea Stadium',
-        'relevantDate' => '1965-08-15T20:00:00-04:00',
-        'locations' => [
-            ['latitude' => 40.7559, 'longitude' => -73.8456, 'relevantText' => 'Shea Stadium'],
+    $model = MobilePass::factory()->make([
+        'builder_name' => EventTicketPassBuilder::name(),
+        'content' => [
+            'organizationName' => 'Fab Four Promotions',
+            'serialNumber' => 'BTL-SHEA-0042',
+            'description' => 'The Beatles at Shea Stadium',
+            'relevantDate' => '1965-08-15T20:00:00-04:00',
+            'locations' => [
+                ['latitude' => 40.7559, 'longitude' => -73.8456, 'relevantText' => 'Shea Stadium'],
+            ],
+            'maxDistance' => 750,
         ],
-        'maxDistance' => 750,
     ]);
 
-    $data = $builder->data();
+    $data = EventTicketPassBuilder::hydrate($model)->data();
 
     expect($data['relevantDate'])->toStartWith('1965-08-15T20:00:00');
     expect($data['locations'])->toHaveCount(1);

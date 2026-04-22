@@ -40,9 +40,9 @@ class InvalidConfig extends Exception
     public static function missingGoogleCredentials(): self
     {
         return new self(
-            'No Google service account key is configured. Set one of '
-            .'MOBILE_PASS_GOOGLE_KEY_BASE64, MOBILE_PASS_GOOGLE_KEY_CONTENTS, '
-            .'or MOBILE_PASS_GOOGLE_KEY_PATH. See the docs on getting credentials from Google.'
+            'No Google service account key is configured. Set either '
+            .'MOBILE_PASS_GOOGLE_KEY (raw JSON or base64-encoded JSON) or '
+            .'MOBILE_PASS_GOOGLE_KEY_PATH. See the docs on getting credentials from Google.'
         );
     }
 

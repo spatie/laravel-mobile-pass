@@ -79,9 +79,15 @@ abstract class ApplePassBuilder
 
     abstract protected static function validator(): ApplePassValidator;
 
-    public static function make(array $data = [], array $images = [], ?MobilePass $model = null): static
+    public static function make(): static
     {
-        return new static($data, $images, $model);
+        return new static;
+    }
+
+    /** @internal */
+    public static function hydrate(MobilePass $model): static
+    {
+        return new static($model->content, $model->images, $model);
     }
 
     public static function name(): string
@@ -141,18 +147,6 @@ abstract class ApplePassBuilder
         ?bool $showDateAsRelative = null,
     ): self {
         return $this->addField($key, $value, FieldType::Header, $label, $changeMessage, $dateStyle, $timeStyle, $showDateAsRelative);
-    }
-
-    public function addPrimaryField(
-        string $key,
-        string $value,
-        ?string $label = null,
-        ?string $changeMessage = null,
-        ?DateType $dateStyle = null,
-        ?TimeStyleType $timeStyle = null,
-        ?bool $showDateAsRelative = null,
-    ): self {
-        return $this->addField($key, $value, FieldType::Primary, $label, $changeMessage, $dateStyle, $timeStyle, $showDateAsRelative);
     }
 
     public function addSecondaryField(
@@ -386,7 +380,7 @@ abstract class ApplePassBuilder
 
     public static function getCertificatePath(): string
     {
-        $contents = self::appleConfig('certificate_contents');
+        $contents = self::appleConfig('certificate');
 
         if (empty($contents)) {
             return self::appleConfig('certificate_path');
@@ -434,6 +428,10 @@ abstract class ApplePassBuilder
 
         if (empty($this->organisationName) && ! empty($configuredOrganisationName)) {
             $this->setOrganisationName($configuredOrganisationName);
+        }
+
+        if (empty($this->serialNumber)) {
+            $this->serialNumber = (string) Str::uuid();
         }
 
         $compiledData = array_filter(
@@ -501,12 +499,18 @@ abstract class ApplePassBuilder
     {
         $host = self::appleConfig('webservice.host');
 
-        if (! $host) {
-            return null;
+        if ($host !== null && $host !== '' && ! str_starts_with($host, 'https://')) {
+            throw InvalidConfig::webserviceHostMustBeHttps($host);
         }
 
-        if (! str_starts_with($host, 'https://')) {
-            throw InvalidConfig::webserviceHostMustBeHttps($host);
+        if (empty($host)) {
+            $appUrl = (string) config('app.url');
+
+            $host = str_starts_with($appUrl, 'https://') ? $appUrl : null;
+        }
+
+        if (! $host) {
+            return null;
         }
 
         return rtrim($host, '/').'/passkit';

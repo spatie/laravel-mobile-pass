@@ -7,8 +7,7 @@ use Spatie\LaravelMobilePass\Tests\TestSupport\Google\GoogleFixtures;
 beforeEach(function () {
     config()->set('mobile-pass.google', [
         'issuer_id' => null,
-        'service_account_key_base64' => null,
-        'service_account_key_contents' => null,
+        'service_account_key' => null,
         'service_account_key_path' => null,
     ]);
 });
@@ -24,16 +23,16 @@ it('loads credentials from a file path', function () {
         ->toBe('mobile-pass-test@mobile-pass-test.iam.gserviceaccount.com');
 });
 
-it('loads credentials from raw contents', function () {
-    config()->set('mobile-pass.google.service_account_key_contents', GoogleFixtures::serviceAccountContents());
+it('loads credentials from raw JSON contents', function () {
+    config()->set('mobile-pass.google.service_account_key', GoogleFixtures::serviceAccountContents());
 
     expect(GoogleCredentials::clientEmail())
         ->toBe('mobile-pass-test@mobile-pass-test.iam.gserviceaccount.com');
 });
 
-it('loads credentials from base64 contents', function () {
+it('loads credentials from base64-encoded contents', function () {
     config()->set(
-        'mobile-pass.google.service_account_key_base64',
+        'mobile-pass.google.service_account_key',
         base64_encode(GoogleFixtures::serviceAccountContents())
     );
 
@@ -41,13 +40,9 @@ it('loads credentials from base64 contents', function () {
         ->toBe('mobile-pass-test@mobile-pass-test.iam.gserviceaccount.com');
 });
 
-it('prefers base64 over contents and path when multiple are set', function () {
-    config()->set('mobile-pass.google.service_account_key_path', GoogleFixtures::serviceAccountPath());
-    config()->set('mobile-pass.google.service_account_key_contents', '{"client_email":"wrong@example.com"}');
-    config()->set(
-        'mobile-pass.google.service_account_key_base64',
-        base64_encode(GoogleFixtures::serviceAccountContents())
-    );
+it('prefers inline contents over path when both are set', function () {
+    config()->set('mobile-pass.google.service_account_key_path', '/does/not/exist.json');
+    config()->set('mobile-pass.google.service_account_key', GoogleFixtures::serviceAccountContents());
 
     expect(GoogleCredentials::clientEmail())
         ->toBe('mobile-pass-test@mobile-pass-test.iam.gserviceaccount.com');

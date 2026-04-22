@@ -51,6 +51,32 @@ it('strips a trailing slash from the configured https host', function () {
     expect($data['webServiceURL'])->toBe('https://example.test/passkit');
 });
 
+it('falls back to config(app.url) when the host is not set and the app URL is HTTPS', function () {
+    config()->set('mobile-pass.apple.webservice.host', null);
+    config()->set('app.url', 'https://my-app.test');
+
+    $data = CouponPassBuilder::make()
+        ->setOrganisationName('Acme')
+        ->setSerialNumber('abc')
+        ->setDescription('Coupon')
+        ->data();
+
+    expect($data['webServiceURL'])->toBe('https://my-app.test/passkit');
+});
+
+it('ignores a non-HTTPS app.url when the host is not set', function () {
+    config()->set('mobile-pass.apple.webservice.host', null);
+    config()->set('app.url', 'http://localhost');
+
+    $data = CouponPassBuilder::make()
+        ->setOrganisationName('Acme')
+        ->setSerialNumber('abc')
+        ->setDescription('Coupon')
+        ->data();
+
+    expect($data)->not->toHaveKey('webServiceURL');
+});
+
 it('preserves a custom path in the configured host (for users with a route prefix)', function () {
     config()->set('mobile-pass.apple.webservice.host', 'https://example.test/api');
 

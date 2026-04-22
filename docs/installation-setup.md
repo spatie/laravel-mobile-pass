@@ -39,13 +39,11 @@ return [
         'type_identifier' => env('MOBILE_PASS_APPLE_TYPE_IDENTIFIER'),
         'team_identifier' => env('MOBILE_PASS_APPLE_TEAM_IDENTIFIER'),
 
-        /*
-         * These values are used to ensure secure communication with Apple.
-         */
-        'apple_push_base_url' => 'https://api.push.apple.com/3/device',
+        'certificate' => env('MOBILE_PASS_APPLE_CERTIFICATE'),
         'certificate_path' => env('MOBILE_PASS_APPLE_CERTIFICATE_PATH'),
-        'certificate_contents' => env('MOBILE_PASS_APPLE_CERTIFICATE_CONTENTS'),
         'certificate_password' => env('MOBILE_PASS_APPLE_CERTIFICATE_PASSWORD'),
+
+        'apple_push_base_url' => 'https://api.push.apple.com/3/device',
         'webservice' => [
             'secret' => env('MOBILE_PASS_APPLE_WEBSERVICE_SECRET'),
             'host' => env('MOBILE_PASS_APPLE_WEBSERVICE_HOST'),
@@ -59,8 +57,7 @@ return [
     'google' => [
         'issuer_id' => env('MOBILE_PASS_GOOGLE_ISSUER_ID'),
 
-        'service_account_key_base64' => env('MOBILE_PASS_GOOGLE_KEY_BASE64'),
-        'service_account_key_contents' => env('MOBILE_PASS_GOOGLE_KEY_CONTENTS'),
+        'service_account_key' => env('MOBILE_PASS_GOOGLE_KEY'),
         'service_account_key_path' => env('MOBILE_PASS_GOOGLE_KEY_PATH'),
 
         'origins' => [env('APP_URL')],

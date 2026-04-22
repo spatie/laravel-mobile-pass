@@ -35,10 +35,10 @@ MOBILE_PASS_GOOGLE_ISSUER_ID=3388000000022000000
 MOBILE_PASS_GOOGLE_KEY_PATH=/absolute/path/to/service-account.json
 ```
 
-If you'd rather not put the file on disk, you can pass the key contents directly instead:
+If you'd rather not put the file on disk, inline the key contents instead. `MOBILE_PASS_GOOGLE_KEY` accepts either raw JSON or base64-encoded JSON; the package detects the format:
 
 ```bash
-MOBILE_PASS_GOOGLE_KEY_CONTENTS='{"type":"service_account",...}'
+MOBILE_PASS_GOOGLE_KEY='{"type":"service_account",...}'
 ```
 
 Or base64-encode the file and store that:
@@ -48,10 +48,10 @@ base64 -i path/to/service-account.json | pbcopy
 ```
 
 ```bash
-MOBILE_PASS_GOOGLE_KEY_BASE64=ewogICJ0eXBlIjogInNlcnZpY2VfYWNjb3VudCIsCi...
+MOBILE_PASS_GOOGLE_KEY=ewogICJ0eXBlIjogInNlcnZpY2VfYWNjb3VudCIsCi...
 ```
 
-The package checks these three variables in order (path, contents, base64), so pick whichever fits your deployment best.
+When both `MOBILE_PASS_GOOGLE_KEY` and `MOBILE_PASS_GOOGLE_KEY_PATH` are set, inline contents win.
 
 ## Configure the callback signing key
 

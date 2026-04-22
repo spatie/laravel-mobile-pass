@@ -5,17 +5,6 @@ use Spatie\LaravelMobilePass\Actions\Apple\RegisterDeviceAction;
 use Spatie\LaravelMobilePass\Actions\Apple\UnregisterDeviceAction;
 use Spatie\LaravelMobilePass\Actions\Google\HandleGoogleCallbackAction;
 use Spatie\LaravelMobilePass\Actions\Google\NotifyGoogleOfPassUpdateAction;
-use Spatie\LaravelMobilePass\Builders\Apple\AirlinePassBuilder;
-use Spatie\LaravelMobilePass\Builders\Apple\BoardingPassBuilder;
-use Spatie\LaravelMobilePass\Builders\Apple\CouponPassBuilder;
-use Spatie\LaravelMobilePass\Builders\Apple\EventTicketPassBuilder;
-use Spatie\LaravelMobilePass\Builders\Apple\GenericPassBuilder;
-use Spatie\LaravelMobilePass\Builders\Apple\StoreCardPassBuilder;
-use Spatie\LaravelMobilePass\Builders\Google\BoardingPassBuilder as GoogleBoardingPassBuilder;
-use Spatie\LaravelMobilePass\Builders\Google\EventTicketPassBuilder as GoogleEventTicketPassBuilder;
-use Spatie\LaravelMobilePass\Builders\Google\GenericPassBuilder as GoogleGenericPassBuilder;
-use Spatie\LaravelMobilePass\Builders\Google\LoyaltyPassBuilder as GoogleLoyaltyPassBuilder;
-use Spatie\LaravelMobilePass\Builders\Google\OfferPassBuilder as GoogleOfferPassBuilder;
 use Spatie\LaravelMobilePass\Models\Apple\AppleMobilePassDevice;
 use Spatie\LaravelMobilePass\Models\Apple\AppleMobilePassRegistration;
 use Spatie\LaravelMobilePass\Models\Google\GoogleMobilePassEvent;
@@ -32,12 +21,15 @@ return [
         'team_identifier' => env('MOBILE_PASS_APPLE_TEAM_IDENTIFIER'),
 
         /*
-        * These values are used to ensure secure communication with Apple.
+        * Point certificate at a file on disk, or inline the base64-encoded
+        * .p12 contents through MOBILE_PASS_APPLE_CERTIFICATE. Exactly one
+        * of the two needs to be set.
         */
-        'apple_push_base_url' => 'https://api.push.apple.com/3/device',
+        'certificate' => env('MOBILE_PASS_APPLE_CERTIFICATE'),
         'certificate_path' => env('MOBILE_PASS_APPLE_CERTIFICATE_PATH'),
-        'certificate_contents' => env('MOBILE_PASS_APPLE_CERTIFICATE_CONTENTS'),
         'certificate_password' => env('MOBILE_PASS_APPLE_CERTIFICATE_PASSWORD'),
+
+        'apple_push_base_url' => 'https://api.push.apple.com/3/device',
         'webservice' => [
             'secret' => env('MOBILE_PASS_APPLE_WEBSERVICE_SECRET'),
             'host' => env('MOBILE_PASS_APPLE_WEBSERVICE_HOST'),
@@ -51,8 +43,12 @@ return [
     'google' => [
         'issuer_id' => env('MOBILE_PASS_GOOGLE_ISSUER_ID'),
 
-        'service_account_key_base64' => env('MOBILE_PASS_GOOGLE_KEY_BASE64'),
-        'service_account_key_contents' => env('MOBILE_PASS_GOOGLE_KEY_CONTENTS'),
+        /*
+        * Point service_account_key at a file on disk, or inline the JSON
+        * contents (raw or base64-encoded) through MOBILE_PASS_GOOGLE_KEY.
+        * Exactly one of the two needs to be set.
+        */
+        'service_account_key' => env('MOBILE_PASS_GOOGLE_KEY'),
         'service_account_key_path' => env('MOBILE_PASS_GOOGLE_KEY_PATH'),
 
         'origins' => [env('APP_URL')],
@@ -89,23 +85,16 @@ return [
     ],
 
     /*
-    * The builders are responsible for creating the pass that will be stored in the `mobile_passes` table.
+    * Register custom pass builders here. Built-in builders are registered
+    * automatically — only add entries for builders you have authored yourself.
+    * The array is keyed by the builder's snake_case name.
     */
     'builders' => [
         'apple' => [
-            'airline' => AirlinePassBuilder::class,
-            'boarding' => BoardingPassBuilder::class,
-            'coupon' => CouponPassBuilder::class,
-            'event_ticket' => EventTicketPassBuilder::class,
-            'generic' => GenericPassBuilder::class,
-            'store_card' => StoreCardPassBuilder::class,
+            // 'my_custom_apple_pass' => MyCustomApplePassBuilder::class,
         ],
         'google' => [
-            'boarding' => GoogleBoardingPassBuilder::class,
-            'event_ticket' => GoogleEventTicketPassBuilder::class,
-            'generic' => GoogleGenericPassBuilder::class,
-            'loyalty' => GoogleLoyaltyPassBuilder::class,
-            'offer' => GoogleOfferPassBuilder::class,
+            // 'my_custom_google_pass' => MyCustomGooglePassBuilder::class,
         ],
     ],
 

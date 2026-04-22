@@ -29,16 +29,12 @@ class GoogleCredentials
 
     protected static function rawKeyContents(): string
     {
-        $base64 = (string) config('mobile-pass.google.service_account_key_base64');
-
-        if ($base64 !== '') {
-            return (string) base64_decode($base64);
-        }
-
-        $contents = (string) config('mobile-pass.google.service_account_key_contents');
+        $contents = (string) config('mobile-pass.google.service_account_key');
 
         if ($contents !== '') {
-            return $contents;
+            return str_starts_with(ltrim($contents), '{')
+                ? $contents
+                : (string) base64_decode($contents);
         }
 
         $path = (string) config('mobile-pass.google.service_account_key_path');

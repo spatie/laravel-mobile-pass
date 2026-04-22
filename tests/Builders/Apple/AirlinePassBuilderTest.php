@@ -10,8 +10,8 @@ it('builds a basic airline boarding pass', function () {
         ->setDescription('Hello!')
         ->addHeaderField('flight-no', 'EY066', label: 'Flight')
         ->addHeaderField('seat', '66F')
-        ->addPrimaryField('departure', 'ABU', label: 'Abu Dhabi International')
-        ->addPrimaryField('destination', 'LHR', label: 'London Heathrow')
+        ->addField('departure', 'ABU', label: 'Abu Dhabi International')
+        ->addField('destination', 'LHR', label: 'London Heathrow')
         ->addSecondaryField('name', 'Dan Johnson')
         ->addSecondaryField('gate', 'D68')
         ->addAuxiliaryField('departs', now()->toIso8601String())
@@ -37,11 +37,12 @@ it('builds a basic airline boarding pass', function () {
     $mobilePass = $airlinePassBuilder->save();
 
     // second save, model gets updated
-    $mobilePass
-        ->airlinePassBuilder()
-        ->setSeats(Seat::make(
-            number: '123DAN',
-        ))->save();
+    /** @var AirlinePassBuilder $rebuilder */
+    $rebuilder = $mobilePass->builder();
+
+    $rebuilder
+        ->setSeats(Seat::make(number: '123DAN'))
+        ->save();
 
     expect($mobilePass->generate())->toMatchMobilePassSnapshot();
 });

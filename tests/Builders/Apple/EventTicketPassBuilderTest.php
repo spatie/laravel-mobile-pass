@@ -8,7 +8,7 @@ it('builds a basic event ticket', function () {
         ->setSerialNumber(123456)
         ->setDescription('Hello!')
         ->addHeaderField('event', 'Laracon EU')
-        ->addPrimaryField('venue', 'Amsterdam')
+        ->addField('venue', 'Amsterdam')
         ->addSecondaryField('name', 'Dan Johnson')
         ->addAuxiliaryField('seat', 'A12')
         ->setIconImage(getTestSupportPath('images/spatie-thumbnail.png'));

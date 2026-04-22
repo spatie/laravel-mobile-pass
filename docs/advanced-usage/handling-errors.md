@@ -29,7 +29,7 @@ Catch `ValidationException` the same way you would in a controller. `$exception-
 
 `Spatie\LaravelMobilePass\Exceptions\InvalidConfig` is thrown when the `mobile-pass` config file is missing something the package needs. The most common reasons:
 
-- `InvalidConfig::missingGoogleCredentials()`: no Google service account key is configured. Set one of `MOBILE_PASS_GOOGLE_KEY_BASE64`, `MOBILE_PASS_GOOGLE_KEY_CONTENTS`, or `MOBILE_PASS_GOOGLE_KEY_PATH`.
+- `InvalidConfig::missingGoogleCredentials()`: no Google service account key is configured. Set either `MOBILE_PASS_GOOGLE_KEY` (raw JSON or base64-encoded JSON) or `MOBILE_PASS_GOOGLE_KEY_PATH`.
 - `InvalidConfig::webserviceHostMustBeHttps($host)`: `mobile-pass.apple.webservice.host` is set to a non-HTTPS URL. Apple rejects passes whose `webServiceURL` isn't HTTPS. Leave the value empty for local development over `http://`.
 - `InvalidConfig::passBuilderNotRegistered()` and `InvalidConfig::invalidPassBuilderClass()`: a builder you're referencing isn't in the `builders` config key, or doesn't extend the expected base class.
 
