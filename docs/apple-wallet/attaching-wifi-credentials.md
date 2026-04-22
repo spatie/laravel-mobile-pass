@@ -1,6 +1,6 @@
 ---
 title: Attaching Wi-Fi credentials
-weight: 4
+weight: 5
 ---
 
 Apple Wallet passes can carry Wi-Fi credentials. When the user's iPhone detects the pass is relevant (they're near the venue, the gate, the hotel), Wallet surfaces a "Join Wi-Fi network" button on the pass. One tap and the phone joins the network. No settings screen, no typing the password.

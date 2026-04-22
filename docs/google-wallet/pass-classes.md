@@ -1,5 +1,5 @@
 ---
-title: Google-specific methods
+title: Pass classes
 weight: 1
 ---
 
@@ -31,20 +31,6 @@ EventTicketPassClass::make('beatles-shea-1965')
 ```
 
 The suffix (`'beatles-shea-1965'` here) is what you'll reference later when creating individual ticket passes. The full class ID Google sees is `{issuer-id}.{suffix}`, which the package stitches together for you.
-
-Once the Class is on Google, you issue one Object per attendee, pointing at that Class:
-
-```php
-use Spatie\LaravelMobilePass\Builders\Google\EventTicketPassBuilder;
-
-EventTicketPassBuilder::make()
-    ->setClass('beatles-shea-1965')
-    ->setAttendeeName('John Lennon')
-    ->setSection('Floor A')
-    ->setRow('12')
-    ->setSeat('24')
-    ->save();
-```
 
 Google stores Classes on its own servers, not in your database.
 
@@ -86,31 +72,4 @@ The package ships a Class for each Google pass type:
 - `OfferPassClass`
 - `GenericPassClass`
 
-## Object-level methods
-
-Every Google builder extends `GooglePassBuilder`, which handles the bits of a pass that are Object-specific. Look-and-feel (logos, colours, event name, venue) lives on the Class, covered above.
-
-### Referencing the Class
-
-Every Google pass Object has to point at a Class. Call `setClass()` with the suffix you used when declaring it:
-
-```php
-EventTicketPassBuilder::make()
-    ->setClass('beatles-shea-1965')
-    // ...
-    ->save();
-```
-
-Saving without a class throws a `RuntimeException`.
-
-### Object IDs
-
-Each Google pass Object also has its own unique ID. By default, the package generates a UUID for each Object you create. If you'd rather control the ID yourself (say, to line it up with a primary key from your database), pass a suffix:
-
-```php
-$builder->setObjectSuffix("ticket-{$ticketId}");
-```
-
-### Barcodes
-
-Every Google builder accepts a barcode through `setBarcode()`. See [Adding barcodes](/docs/laravel-mobile-pass/v1/basic-usage/adding-barcodes) for the walkthrough.
+See [Object methods](/docs/laravel-mobile-pass/v1/google-wallet/object-methods) for how to issue a per-user pass once your Class is declared.

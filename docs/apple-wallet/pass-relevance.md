@@ -1,6 +1,6 @@
 ---
 title: Pass relevance
-weight: 2
+weight: 3
 ---
 
 Apple Wallet can surface a pass on the lock screen at the right moment. A boarding pass appears before the flight, a coffee loyalty card surfaces when the user walks into the shop, a concert ticket shows up as the doors open. This is called pass relevance, and it's driven by a date, one or more locations, or both.
