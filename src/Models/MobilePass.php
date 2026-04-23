@@ -163,6 +163,10 @@ class MobilePass extends Model implements Attachable, Responsable
 
     public function builder(): ApplePassBuilder
     {
+        if ($this->platform !== Platform::Apple) {
+            throw PlatformDoesntSupport::cannotUpdateFields($this->platform);
+        }
+
         /** @var class-string<ApplePassBuilder> $builderClass */
         $builderClass = Config::getPassBuilderClass($this->builder_name, $this->platform);
 

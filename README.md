@@ -1,7 +1,3 @@
-**IN DEVELOPMENT: DO NOT USE IN PRODUCTION (YET)**
-
-Apple Wallet support is feature-complete. Google Wallet support (EventTicket, Boarding, Loyalty, Offer, and Generic passes, plus save/remove callbacks and push updates) is implemented and tested on `main`. For setup, see [Getting credentials from Apple](https://spatie.be/docs/laravel-mobile-pass/v1/basic-usage/getting-credentials-from-apple) and [Getting credentials from Google](https://spatie.be/docs/laravel-mobile-pass/v1/basic-usage/getting-credentials-from-google).
-
 # Generate mobile passes for iOS and Android
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/spatie/laravel-mobile-pass.svg?style=flat-square)](https://packagist.org/packages/spatie/laravel-mobile-pass)

@@ -50,7 +50,7 @@ TrainPassBuilder::make()
     ->save();
 ```
 
-`TransitType` has `Air`, `Train`, `Boat`, and `Generic` cases.
+`TransitType` has `Air`, `Train`, `Bus`, `Boat`, and `Generic` cases.
 
 ## Google
 
