@@ -78,12 +78,12 @@ Google expects PNG at the dimensions below. The service scales images down when 
 
 Google's [Brand guidelines](https://developers.google.com/wallet/generic/resources/brand-guidelines) carry the full reference, including per-pass-type constraints.
 
-## Background colours
+## Background colors
 
-Both platforms support a background colour (handy when you're not using a background image). On Apple pass a hex string to `setBackgroundColour()`:
+Both platforms support a background color (handy when you're not using a background image). On Apple pass a hex string to `setBackgroundColor()`:
 
 ```php
-$builder->setBackgroundColour('#1d72b8');
+$builder->setBackgroundColor('#1d72b8');
 ```
 
 On Google hand a hex string to `setBackgroundColor()` on the Class:

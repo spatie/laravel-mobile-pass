@@ -12,7 +12,7 @@ use Spatie\LaravelMobilePass\Builders\Apple\AirlinePassBuilder;
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\Seat;
 
 AirlinePassBuilder::make()
-    ->setOrganisationName('Etihad')
+    ->setOrganizationName('Etihad')
     ->setSerialNumber('TICKET-123')
     ->setDescription('Etihad flight EY066 boarding pass')
     ->setDepartureAirportCode('AUH')
@@ -40,7 +40,7 @@ Once that class exists, build a pass with it exactly the same way as `AirlinePas
 
 ```php
 TrainPassBuilder::make()
-    ->setOrganisationName('SNCB')
+    ->setOrganizationName('SNCB')
     ->setSerialNumber('TICKET-456')
     ->setDescription('Brussels to Antwerp, coach 3')
     ->setPassengerName(PersonName::make(givenName: 'George', familyName: 'Harrison'))

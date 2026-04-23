@@ -14,7 +14,7 @@ use Illuminate\Validation\ValidationException;
 
 try {
     EventTicketPassBuilder::make()
-        ->setOrganisationName('Fab Four Promotions')
+        ->setOrganizationName('Fab Four Promotions')
         // setSerialNumber omitted
         ->setDescription('The Beatles at Shea Stadium')
         ->save();

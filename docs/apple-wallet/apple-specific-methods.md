@@ -5,14 +5,14 @@ weight: 2
 
 A handful of Apple-only setters that don't earn their own page. Each one is a small customisation on top of the essentials covered in [Generating your first pass](/docs/laravel-mobile-pass/v1/basic-usage/generating-your-first-pass).
 
-## Colours
+## Colors
 
-Background colour is covered in [Adding images](/docs/laravel-mobile-pass/v1/basic-usage/adding-images). For foreground and label colours pass a hex string:
+Background color is covered in [Adding images](/docs/laravel-mobile-pass/v1/basic-usage/adding-images). For foreground and label colors pass a hex string:
 
 ```php
 $builder
-    ->setForegroundColour('#ffffff')
-    ->setLabelColour('#a7c7e7');
+    ->setForegroundColor('#ffffff')
+    ->setLabelColor('#a7c7e7');
 ```
 
 Both are optional. Apple picks sensible defaults if you skip them.

@@ -5,7 +5,7 @@ use Spatie\LaravelMobilePass\Models\MobilePass;
 
 it('serialises an NFC payload onto the pass', function () {
     $data = EventTicketPassBuilder::make()
-        ->setOrganisationName('Fab Four Promotions')
+        ->setOrganizationName('Fab Four Promotions')
         ->setSerialNumber('BTL-SHEA-0042')
         ->setDescription('The Beatles at Shea Stadium')
         ->setNfc(
@@ -25,7 +25,7 @@ it('serialises an NFC payload onto the pass', function () {
 
 it('includes requiresAuthentication when set', function () {
     $data = EventTicketPassBuilder::make()
-        ->setOrganisationName('Fab Four Promotions')
+        ->setOrganizationName('Fab Four Promotions')
         ->setSerialNumber('BTL-SHEA-0042')
         ->setDescription('The Beatles at Shea Stadium')
         ->setNfc(

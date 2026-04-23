@@ -35,7 +35,7 @@ return [
      * to learn how to get these values.
      */
     'apple' => [
-        'organisation_name' => env('MOBILE_PASS_APPLE_ORGANISATION_NAME'),
+        'organization_name' => env('MOBILE_PASS_APPLE_ORGANIZATION_NAME'),
         'type_identifier' => env('MOBILE_PASS_APPLE_TYPE_IDENTIFIER'),
         'team_identifier' => env('MOBILE_PASS_APPLE_TEAM_IDENTIFIER'),
 

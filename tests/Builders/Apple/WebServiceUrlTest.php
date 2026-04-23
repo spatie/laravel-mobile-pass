@@ -7,7 +7,7 @@ it('omits webServiceURL when webservice.host is not configured', function () {
     config()->set('mobile-pass.apple.webservice.host', null);
 
     $data = CouponPassBuilder::make()
-        ->setOrganisationName('Acme')
+        ->setOrganizationName('Acme')
         ->setSerialNumber('abc')
         ->setDescription('Coupon')
         ->data();
@@ -21,7 +21,7 @@ it('throws when the host is not HTTPS', function () {
     config()->set('mobile-pass.apple.webservice.host', 'http://example.test');
 
     CouponPassBuilder::make()
-        ->setOrganisationName('Acme')
+        ->setOrganizationName('Acme')
         ->setSerialNumber('abc')
         ->setDescription('Coupon')
         ->data();
@@ -31,7 +31,7 @@ it('appends /passkit to the configured host', function () {
     config()->set('mobile-pass.apple.webservice.host', 'https://example.test');
 
     $data = CouponPassBuilder::make()
-        ->setOrganisationName('Acme')
+        ->setOrganizationName('Acme')
         ->setSerialNumber('abc')
         ->setDescription('Coupon')
         ->data();
@@ -43,7 +43,7 @@ it('strips a trailing slash from the configured https host', function () {
     config()->set('mobile-pass.apple.webservice.host', 'https://example.test/');
 
     $data = CouponPassBuilder::make()
-        ->setOrganisationName('Acme')
+        ->setOrganizationName('Acme')
         ->setSerialNumber('abc')
         ->setDescription('Coupon')
         ->data();
@@ -56,7 +56,7 @@ it('falls back to config(app.url) when the host is not set and the app URL is HT
     config()->set('app.url', 'https://my-app.test');
 
     $data = CouponPassBuilder::make()
-        ->setOrganisationName('Acme')
+        ->setOrganizationName('Acme')
         ->setSerialNumber('abc')
         ->setDescription('Coupon')
         ->data();
@@ -69,7 +69,7 @@ it('ignores a non-HTTPS app.url when the host is not set', function () {
     config()->set('app.url', 'http://localhost');
 
     $data = CouponPassBuilder::make()
-        ->setOrganisationName('Acme')
+        ->setOrganizationName('Acme')
         ->setSerialNumber('abc')
         ->setDescription('Coupon')
         ->data();
@@ -81,7 +81,7 @@ it('preserves a custom path in the configured host (for users with a route prefi
     config()->set('mobile-pass.apple.webservice.host', 'https://example.test/api');
 
     $data = CouponPassBuilder::make()
-        ->setOrganisationName('Acme')
+        ->setOrganizationName('Acme')
         ->setSerialNumber('abc')
         ->setDescription('Coupon')
         ->data();

@@ -7,7 +7,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use PKPass\PKPass;
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\Barcode;
-use Spatie\LaravelMobilePass\Builders\Apple\Entities\Colour;
+use Spatie\LaravelMobilePass\Builders\Apple\Entities\Color;
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\FieldContent;
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\Image;
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\Location;
@@ -34,7 +34,7 @@ abstract class ApplePassBuilder
 
     protected ?string $serialNumber = null;
 
-    protected ?string $organisationName = null;
+    protected ?string $organizationName = null;
 
     protected ?string $passTypeIdentifier = null;
 
@@ -42,11 +42,11 @@ abstract class ApplePassBuilder
 
     protected ?string $teamIdentifier = null;
 
-    protected ?Colour $backgroundColour = null;
+    protected ?Color $backgroundColor = null;
 
-    protected ?Colour $foregroundColour = null;
+    protected ?Color $foregroundColor = null;
 
-    protected ?Colour $labelColour = null;
+    protected ?Color $labelColor = null;
 
     protected ?string $description = null;
 
@@ -273,9 +273,9 @@ abstract class ApplePassBuilder
         return $this;
     }
 
-    public function setOrganisationName(string $organisationName): self
+    public function setOrganizationName(string $organizationName): self
     {
-        $this->organisationName = $organisationName;
+        $this->organizationName = $organizationName;
 
         return $this;
     }
@@ -287,23 +287,23 @@ abstract class ApplePassBuilder
         return $this;
     }
 
-    public function setBackgroundColour(string $hex): self
+    public function setBackgroundColor(string $hex): self
     {
-        $this->backgroundColour = Colour::makeFromHex($hex);
+        $this->backgroundColor = Color::makeFromHex($hex);
 
         return $this;
     }
 
-    public function setForegroundColour(string $hex): self
+    public function setForegroundColor(string $hex): self
     {
-        $this->foregroundColour = Colour::makeFromHex($hex);
+        $this->foregroundColor = Color::makeFromHex($hex);
 
         return $this;
     }
 
-    public function setLabelColour(string $hex): self
+    public function setLabelColor(string $hex): self
     {
-        $this->labelColour = Colour::makeFromHex($hex);
+        $this->labelColor = Color::makeFromHex($hex);
 
         return $this;
     }
@@ -458,11 +458,11 @@ abstract class ApplePassBuilder
 
     public function data(): array
     {
-        $configuredOrganisationName = self::appleConfig('organisation_name');
+        $configuredOrganizationName = self::appleConfig('organization_name');
 
-        if (empty($this->organisationName)) {
-            if (! empty($configuredOrganisationName)) {
-                $this->setOrganisationName($configuredOrganisationName);
+        if (empty($this->organizationName)) {
+            if (! empty($configuredOrganizationName)) {
+                $this->setOrganizationName($configuredOrganizationName);
             }
         }
 
@@ -506,7 +506,7 @@ abstract class ApplePassBuilder
 
         return array_merge($this->data, array_filter([
             'formatVersion' => 1,
-            'organizationName' => $this->organisationName,
+            'organizationName' => $this->organizationName,
             'passTypeIdentifier' => self::appleConfig('type_identifier'),
             'serialNumber' => $this->serialNumber,
             'authenticationToken' => self::appleConfig('webservice.secret'),
@@ -514,9 +514,9 @@ abstract class ApplePassBuilder
             'teamIdentifier' => self::appleConfig('team_identifier'),
             'description' => $this->description,
             'semantics' => $this->compileSemantics(),
-            'backgroundColor' => (string) $this->backgroundColour,
-            'foregroundColor' => (string) $this->foregroundColour,
-            'labelColor' => (string) $this->labelColour,
+            'backgroundColor' => (string) $this->backgroundColor,
+            'foregroundColor' => (string) $this->foregroundColor,
+            'labelColor' => (string) $this->labelColor,
             'barcode' => $barcode,
             'barcodes' => $barcode ? [$barcode] : null,
             'relevantDate' => $this->relevantDate?->toIso8601String(),
@@ -581,15 +581,15 @@ abstract class ApplePassBuilder
 
     protected function uncompileContent(): void
     {
-        $this->organisationName = $this->data['organizationName'] ?? null;
+        $this->organizationName = $this->data['organizationName'] ?? null;
         $this->passTypeIdentifier = $this->data['passTypeIdentifier'] ?? null;
         $this->serialNumber = $this->data['serialNumber'] ?? null;
         $this->authenticationToken = $this->data['authenticationToken'] ?? null;
         $this->teamIdentifier = $this->data['teamIdentifier'] ?? null;
         $this->description = $this->data['description'] ?? null;
-        $this->backgroundColour = Colour::makeFromRgbString($this->data['backgroundColor'] ?? null);
-        $this->foregroundColour = Colour::makeFromRgbString($this->data['foregroundColor'] ?? null);
-        $this->labelColour = Colour::makeFromRgbString($this->data['labelColor'] ?? null);
+        $this->backgroundColor = Color::makeFromRgbString($this->data['backgroundColor'] ?? null);
+        $this->foregroundColor = Color::makeFromRgbString($this->data['foregroundColor'] ?? null);
+        $this->labelColor = Color::makeFromRgbString($this->data['labelColor'] ?? null);
 
         $this->barcode = empty($this->data['barcode'])
             ? null

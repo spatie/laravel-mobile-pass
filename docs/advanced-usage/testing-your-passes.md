@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\Http;
 Http::fake();
 
 $mobilePass = AirlinePassBuilder::make()
-    ->setOrganisationName('Spatie')
+    ->setOrganizationName('Spatie')
     ->setSerialNumber('abc')
     // ...
     ->save();
@@ -88,7 +88,7 @@ That split flow is useful when the pass is part of a longer web journey you want
 
 3. The wallet-lab-tools preview.
 
-Paste a JWT from `$mobilePass->addToWalletUrl()` into [wallet-lab-tools.web.app](https://wallet-lab-tools.web.app/) to get an approximation of how the pass will render (colours, images, fields, barcode). It's Google-run and a good sanity check for class visuals before you touch a device.
+Paste a JWT from `$mobilePass->addToWalletUrl()` into [wallet-lab-tools.web.app](https://wallet-lab-tools.web.app/) to get an approximation of how the pass will render (colors, images, fields, barcode). It's Google-run and a good sanity check for class visuals before you touch a device.
 
 4. Class and object round-trip.
 

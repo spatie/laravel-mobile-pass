@@ -4,7 +4,7 @@ namespace Spatie\LaravelMobilePass\Builders\Apple\Entities;
 
 use Stringable;
 
-class Colour implements Stringable
+class Color implements Stringable
 {
     public function __construct(
         public int $red,

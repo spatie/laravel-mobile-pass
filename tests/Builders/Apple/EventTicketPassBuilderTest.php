@@ -4,7 +4,7 @@ use Spatie\LaravelMobilePass\Builders\Apple\EventTicketPassBuilder;
 
 it('builds a basic event ticket', function () {
     $eventTicketPassBuilder = EventTicketPassBuilder::make()
-        ->setOrganisationName('My organisation')
+        ->setOrganizationName('My organization')
         ->setSerialNumber(123456)
         ->setDescription('Hello!')
         ->addHeaderField('event', 'Laracon EU')

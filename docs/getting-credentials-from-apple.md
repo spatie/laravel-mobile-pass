@@ -5,7 +5,7 @@ weight: 5
 
 Before you can generate passes for Apple Wallet, you need a certificate from Apple. The package uses it to sign every pass you issue.
 
-To request one, you (or your organisation) must be enrolled in the [Apple Developer Program](https://developer.apple.com/programs/enroll).
+To request one, you (or your organization) must be enrolled in the [Apple Developer Program](https://developer.apple.com/programs/enroll).
 
 Start by following [Apple's guide](https://developer.apple.com/help/account/certificates/create-a-certificate-signing-request/) to generate a CSR (Certificate Signing Request) file. Once you have that, work through the steps below.
 

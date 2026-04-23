@@ -11,7 +11,7 @@ Event tickets cover concerts, festivals, sports events, conferences, and anythin
 use Spatie\LaravelMobilePass\Builders\Apple\EventTicketPassBuilder;
 
 EventTicketPassBuilder::make()
-    ->setOrganisationName('Fab Four Promotions')
+    ->setOrganizationName('Fab Four Promotions')
     ->setSerialNumber('BTL-SHEA-0042')
     ->setDescription('The Beatles at Shea Stadium')
     ->addField('event', 'Beatles Live at Shea')

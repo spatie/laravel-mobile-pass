@@ -23,7 +23,7 @@ If you don't want a `MobilePass` model at all, you can call `generate` directly 
 
 ```php
 $mobilePassContent = AirlinePassBuilder::make()
-    ->setOrganisationName('My organisation')
+    ->setOrganizationName('My organization')
 //  other calls
     ->generate();
 

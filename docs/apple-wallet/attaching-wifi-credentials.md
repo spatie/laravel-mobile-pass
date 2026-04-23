@@ -16,7 +16,7 @@ Apple's `wifiAccess` semantic tag drives a dedicated "Join Wi-Fi network" button
 use Spatie\LaravelMobilePass\Builders\Apple\EventTicketPassBuilder;
 
 EventTicketPassBuilder::make()
-    ->setOrganisationName('Fab Four Promotions')
+    ->setOrganizationName('Fab Four Promotions')
     ->setSerialNumber('BTL-SHEA-0042')
     ->setDescription('The Beatles at Shea Stadium')
     ->addWifiNetwork('SheaStadium-Guest', 'welcome1965')
@@ -66,7 +66,7 @@ Call `setWifiBarcode()` with the SSID and password. The builder encodes the cred
 use Spatie\LaravelMobilePass\Builders\Apple\GenericPassBuilder;
 
 GenericPassBuilder::make()
-    ->setOrganisationName('Spatie')
+    ->setOrganizationName('Spatie')
     ->setDescription('Guest Wi-Fi')
     ->addField('ssid', 'Spatie Guest', label: 'Network')
     ->addSecondaryField('password', 'welcome', label: 'Password')

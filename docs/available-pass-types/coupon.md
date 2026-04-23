@@ -11,7 +11,7 @@ Coupons cover discount codes, limited-time offers, and anything else with "redee
 use Spatie\LaravelMobilePass\Builders\Apple\CouponPassBuilder;
 
 CouponPassBuilder::make()
-    ->setOrganisationName('Spatie Store')
+    ->setOrganizationName('Spatie Store')
     ->setSerialNumber('COUPON-SUMMER25')
     ->setDescription('20% off everything this summer')
     ->addField('offer', '20%', label: 'Save')

@@ -4,7 +4,7 @@ use Spatie\LaravelMobilePass\Builders\Apple\GenericPassBuilder;
 
 it('sets a Wi-Fi QR barcode from ssid and password', function () {
     $data = GenericPassBuilder::make()
-        ->setOrganisationName('Spatie')
+        ->setOrganizationName('Spatie')
         ->setSerialNumber('WIFI-001')
         ->setDescription('Guest Wi-Fi')
         ->setWifiBarcode('Spatie Guest', 'welcome')
@@ -20,7 +20,7 @@ it('sets a Wi-Fi QR barcode from ssid and password', function () {
 
 it('builds a nopass Wi-Fi barcode when no password is given', function () {
     $data = GenericPassBuilder::make()
-        ->setOrganisationName('Spatie')
+        ->setOrganizationName('Spatie')
         ->setSerialNumber('WIFI-002')
         ->setDescription('Open Wi-Fi')
         ->setWifiBarcode('Open Network')
@@ -32,7 +32,7 @@ it('builds a nopass Wi-Fi barcode when no password is given', function () {
 
 it('uses a custom altText when provided', function () {
     $data = GenericPassBuilder::make()
-        ->setOrganisationName('Spatie')
+        ->setOrganizationName('Spatie')
         ->setSerialNumber('WIFI-003')
         ->setDescription('Guest Wi-Fi')
         ->setWifiBarcode('Spatie Guest', 'welcome', altText: 'Scan to join')

@@ -11,7 +11,7 @@ Loyalty cards cover membership programs, frequent-buyer cards, and stamp cards. 
 use Spatie\LaravelMobilePass\Builders\Apple\StoreCardPassBuilder;
 
 StoreCardPassBuilder::make()
-    ->setOrganisationName('Spatie Rewards')
+    ->setOrganizationName('Spatie Rewards')
     ->setSerialNumber('CARD-USER-7842')
     ->setDescription('Spatie Rewards member card')
     ->addField('balance', '1,250', label: 'Points')
@@ -22,7 +22,7 @@ StoreCardPassBuilder::make()
 
 ## Google
 
-Declare the Class once per program (the brand, the colours, the labels), then create an Object per member.
+Declare the Class once per program (the brand, the colors, the labels), then create an Object per member.
 
 ```php
 use Spatie\LaravelMobilePass\Builders\Google\LoyaltyPassBuilder;

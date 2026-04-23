@@ -16,7 +16,7 @@ use Spatie\LaravelMobilePass\Builders\Apple\EventTicketPassBuilder;
 use Spatie\LaravelMobilePass\Enums\BarcodeType;
 
 EventTicketPassBuilder::make()
-    ->setOrganisationName('Fab Four Promotions')
+    ->setOrganizationName('Fab Four Promotions')
     ->setSerialNumber('BTL-SHEA-0042')
     ->setDescription('The Beatles at Shea Stadium')
     ->setBarcode(BarcodeType::Qr, 'TICKET-12345')

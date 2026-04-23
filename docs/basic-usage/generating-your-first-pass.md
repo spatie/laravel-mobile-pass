@@ -35,7 +35,7 @@ Here's an Apple Wallet event ticket:
 use Spatie\LaravelMobilePass\Builders\Apple\EventTicketPassBuilder;
 
 $mobilePass = EventTicketPassBuilder::make()
-    ->setOrganisationName('Fab Four Promotions')
+    ->setOrganizationName('Fab Four Promotions')
     ->setSerialNumber('BTL-SHEA-0042')
     ->setDescription('The Beatles at Shea Stadium')
     ->addField('event', 'Beatles Live at Shea')

@@ -6,7 +6,7 @@ use Spatie\LaravelMobilePass\Models\MobilePass;
 
 it('serialises a relevant date onto the pass', function () {
     $data = EventTicketPassBuilder::make()
-        ->setOrganisationName('Fab Four Promotions')
+        ->setOrganizationName('Fab Four Promotions')
         ->setSerialNumber('BTL-SHEA-0042')
         ->setDescription('The Beatles at Shea Stadium')
         ->setRelevantDate(Carbon::parse('1965-08-15 20:00', 'America/New_York'))
@@ -19,7 +19,7 @@ it('serialises a relevant date onto the pass', function () {
 
 it('serialises locations and max distance onto the pass', function () {
     $data = EventTicketPassBuilder::make()
-        ->setOrganisationName('Fab Four Promotions')
+        ->setOrganizationName('Fab Four Promotions')
         ->setSerialNumber('BTL-SHEA-0042')
         ->setDescription('The Beatles at Shea Stadium')
         ->addLocation(latitude: 40.7559, longitude: -73.8456, relevantText: 'Welcome to Shea Stadium')

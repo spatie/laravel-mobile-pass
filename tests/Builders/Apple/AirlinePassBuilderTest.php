@@ -5,7 +5,7 @@ use Spatie\LaravelMobilePass\Builders\Apple\Entities\Seat;
 
 it('builds a basic airline boarding pass', function () {
     $airlinePassBuilder = AirlinePassBuilder::make()
-        ->setOrganisationName('My organisation')
+        ->setOrganizationName('My organization')
         ->setSerialNumber(123456)
         ->setDescription('Hello!')
         ->addHeaderField('flight-no', 'EY066', label: 'Flight')

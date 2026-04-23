@@ -7,7 +7,7 @@ use Spatie\LaravelMobilePass\Builders\Apple\GenericPassBuilder;
 
 it('can create a mobile pass', function () {
     $pass = GenericPassBuilder::make()
-        ->setOrganisationName('Spatie')
+        ->setOrganizationName('Spatie')
         ->setDescription('Hello!')
         ->setSerialNumber(123456)
         ->addHeaderField('flight-no', 'EY066', label: 'Flight')
@@ -27,7 +27,7 @@ it('can create a mobile pass', function () {
 
 it('throws a validation exception when a required field is missing', function () {
     GenericPassBuilder::make()
-        ->setOrganisationName('Test Org')
+        ->setOrganizationName('Test Org')
         ->setSerialNumber(123456)
         // description intentionally omitted
         ->data();
@@ -35,7 +35,7 @@ it('throws a validation exception when a required field is missing', function ()
 
 it('updates a field', function () {
     $pass = GenericPassBuilder::make()
-        ->setOrganisationName('My organisation')
+        ->setOrganizationName('My organization')
         ->setSerialNumber(123456)
         ->setDescription('Hello!')
         ->setIconImage(getTestSupportPath('images/spatie-thumbnail.png'))
@@ -50,7 +50,7 @@ it('updates a field', function () {
 
 it('keeps the serial number stable when re-hydrated', function () {
     $pass = GenericPassBuilder::make()
-        ->setOrganisationName('Spatie')
+        ->setOrganizationName('Spatie')
         ->setDescription('Hello!')
         ->setSerialNumber('stable-serial-123')
         ->setIconImage(getTestSupportPath('images/spatie-thumbnail.png'))

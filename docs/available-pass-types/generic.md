@@ -11,7 +11,7 @@ When none of the other pass types fit, generic is your escape hatch. It's useful
 use Spatie\LaravelMobilePass\Builders\Apple\GenericPassBuilder;
 
 GenericPassBuilder::make()
-    ->setOrganisationName('Spatie Conference')
+    ->setOrganizationName('Spatie Conference')
     ->setSerialNumber('BADGE-042')
     ->setDescription('Conference attendee badge')
     ->addField('name', 'Ringo Starr')
