@@ -94,23 +94,16 @@ return [
     ],
 
     /*
-     * The builders are responsible for creating the pass that will be stored in the `mobile_passes` table.
+     * Register custom pass builders here. Built-in builders are registered
+     * automatically, so only add entries for builders you have authored yourself.
+     * The array is keyed by the builder's snake_case name.
      */
     'builders' => [
         'apple' => [
-            'airline' => Spatie\LaravelMobilePass\Builders\Apple\AirlinePassBuilder::class,
-            'boarding' => Spatie\LaravelMobilePass\Builders\Apple\BoardingPassBuilder::class,
-            'coupon' => Spatie\LaravelMobilePass\Builders\Apple\CouponPassBuilder::class,
-            'event_ticket' => Spatie\LaravelMobilePass\Builders\Apple\EventTicketPassBuilder::class,
-            'generic' => Spatie\LaravelMobilePass\Builders\Apple\GenericPassBuilder::class,
-            'store_card' => Spatie\LaravelMobilePass\Builders\Apple\StoreCardPassBuilder::class,
+            // 'my_custom_apple_pass' => MyCustomApplePassBuilder::class,
         ],
         'google' => [
-            'boarding' => Spatie\LaravelMobilePass\Builders\Google\BoardingPassBuilder::class,
-            'event_ticket' => Spatie\LaravelMobilePass\Builders\Google\EventTicketPassBuilder::class,
-            'generic' => Spatie\LaravelMobilePass\Builders\Google\GenericPassBuilder::class,
-            'loyalty' => Spatie\LaravelMobilePass\Builders\Google\LoyaltyPassBuilder::class,
-            'offer' => Spatie\LaravelMobilePass\Builders\Google\OfferPassBuilder::class,
+            // 'my_custom_google_pass' => MyCustomGooglePassBuilder::class,
         ],
     ],
 

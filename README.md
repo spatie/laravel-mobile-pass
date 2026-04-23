@@ -21,7 +21,7 @@ And here's an example of a coupon.
 
 A live demo of the package runs at [mobile-pass-demo.spatie.be](https://mobile-pass-demo.spatie.be). Generate every pass type, install it on your iPhone, and push a live update to your device. Source: [spatie/laravel-mobile-pass-demo](https://github.com/spatie/laravel-mobile-pass-demo).
 
-This package has been made in collaboration with [Dan Johnson](DanJohnson.xyz).
+This package has been made in collaboration with [Dan Johnson](https://github.com/danjohnson95).
 
 ## Support us
 
@@ -56,7 +56,7 @@ Please review [our security policy](../../security/policy) on how to report secu
 ## Credits
 
 - [Dan Johnson](https://github.com/danjohnson95)
-- [Freek Van der Herten](https//github.com/freekmurze)
+- [Freek Van der Herten](https://github.com/freekmurze)
 - [All Contributors](../../contributors)
 
 ## License

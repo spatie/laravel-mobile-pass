@@ -37,16 +37,15 @@ These surface at runtime the first time the package tries to use the misconfigur
 
 ## Platform mismatches
 
-`Spatie\LaravelMobilePass\Exceptions\PlatformDoesntSupport` fires when you call a method that doesn't make sense for the pass's platform.
+The `Spatie\LaravelMobilePass\Exceptions\PlatformDoesntSupport` exception fires when you call a method that doesn't make sense for the pass's platform.
 
-- `PlatformDoesntSupport::cannotDownload(Platform::Google)`: you called `$mobilePass->download()` on a Google pass. Google passes aren't files; they live on Google's servers.
-- `PlatformDoesntSupport::cannotUpdateFields(Platform::Google)`: you called `$mobilePass->updateField(...)` on a Google pass. Use the Google builder's `content`-patching flow instead (see [Updating a pass](/docs/laravel-mobile-pass/v1/basic-usage/updating-a-pass)).
+Calling `$mobilePass->updateField(...)` on a Google pass throws `PlatformDoesntSupport::cannotUpdateFields(Platform::Google)`. Use the Google builder's `content`-patching flow instead (see [Updating a pass](/docs/laravel-mobile-pass/v1/basic-usage/updating-a-pass)).
 
-Both are the kind of mistake you want to catch during development. Let them bubble to your exception handler in production; they indicate a bug in your code, not a user error.
+It's the kind of mistake you want to catch during development. Let it bubble to your exception handler in production; it indicates a bug in your code, not a user error.
 
 ## Download errors
 
-`Spatie\LaravelMobilePass\Exceptions\CannotDownload` wraps the Google-side download case: `CannotDownload::wrongPlatform($mobilePass)` is thrown if you try to serve a Google pass through Apple's download route.
+Calling `$mobilePass->download()` on a Google pass throws `Spatie\LaravelMobilePass\Exceptions\CannotDownload::wrongPlatform($mobilePass)`. The same exception fires if a Google pass is requested through Apple's download route. Google passes aren't files; they live on Google's servers and users reach them through a `pay.google.com` save URL.
 
 ## Google Wallet API errors
 

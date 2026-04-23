@@ -20,4 +20,4 @@ The [live demo](https://mobile-pass-demo.spatie.be) at `mobile-pass-demo.spatie.
 
 ## Credits
 
-This package has been made in collaboration with [Dan Johnson](DanJohnson.xyz).
+This package has been made in collaboration with [Dan Johnson](https://github.com/danjohnson95).
