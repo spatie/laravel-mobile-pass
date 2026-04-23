@@ -1,5 +1,6 @@
 <?php
 
+use PKPass\PKPassException;
 use Spatie\LaravelMobilePass\Builders\Apple\GenericPassBuilder;
 use Spatie\LaravelMobilePass\Exceptions\InvalidCertificate;
 
@@ -31,6 +32,6 @@ it('mentions the env vars in the error message and keeps the original as previou
     } catch (InvalidCertificate $exception) {
         expect($exception->getMessage())->toContain('MOBILE_PASS_APPLE_CERTIFICATE_PATH');
         expect($exception->getMessage())->toContain('MOBILE_PASS_APPLE_CERTIFICATE_PASSWORD');
-        expect($exception->getPrevious())->toBeInstanceOf(PKPass\PKPassException::class);
+        expect($exception->getPrevious())->toBeInstanceOf(PKPassException::class);
     }
 });
