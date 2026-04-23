@@ -5,7 +5,7 @@ namespace Spatie\LaravelMobilePass\Exceptions;
 use Exception;
 use Spatie\LaravelMobilePass\Models\MobilePass;
 
-class CannotDownload extends Exception
+class CannotDownload extends Exception implements MobilePassException
 {
     public static function wrongPlatform(MobilePass $mobilePass): self
     {

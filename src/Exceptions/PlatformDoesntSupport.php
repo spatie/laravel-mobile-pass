@@ -5,7 +5,7 @@ namespace Spatie\LaravelMobilePass\Exceptions;
 use Exception;
 use Spatie\LaravelMobilePass\Enums\Platform;
 
-class PlatformDoesntSupport extends Exception
+class PlatformDoesntSupport extends Exception implements MobilePassException
 {
     public static function cannotUpdateFields(Platform $platform): self
     {

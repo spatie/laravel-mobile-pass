@@ -2,7 +2,7 @@
 
 namespace Spatie\LaravelMobilePass\Builders\Apple\Entities;
 
-use InvalidArgumentException;
+use Spatie\LaravelMobilePass\Exceptions\ImageNotFound;
 
 class Image
 {
@@ -43,7 +43,7 @@ class Image
     private static function assertFileExists(string $path): void
     {
         if (! file_exists($path)) {
-            throw new InvalidArgumentException("File not found at path: {$path}");
+            throw ImageNotFound::atPath($path);
         }
     }
 }

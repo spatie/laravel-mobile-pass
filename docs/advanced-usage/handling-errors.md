@@ -5,6 +5,20 @@ weight: 1
 
 The package throws a handful of typed exceptions so you can recover from the common failure modes without parsing error messages.
 
+Every package-specific exception implements the `Spatie\LaravelMobilePass\Exceptions\MobilePassException` marker interface, so you can catch anything this package threw with a single catch clause if that's all you care about:
+
+```php
+use Spatie\LaravelMobilePass\Exceptions\MobilePassException;
+
+try {
+    // something that touches the package
+} catch (MobilePassException $exception) {
+    report($exception);
+}
+```
+
+Each exception class below also implements this interface; the sections that follow describe when each specific one fires.
+
 ## Validation errors
 
 Every builder runs a Laravel validator before it hands a pass off to Apple or Google. If a required field is missing, or a value has the wrong shape, `save()` throws a `Spatie\LaravelMobilePass\Exceptions\InvalidPass`.
@@ -95,6 +109,34 @@ The common causes are an expired pass-type certificate, a wrong certificate pass
 
 If APNs itself can't be reached (DNS, network, TLS), Laravel's HTTP client raises a `Illuminate\Http\Client\ConnectionException`. The `PushPassUpdateJob` retries according to your queue's retry policy when dispatched to a queue; when running synchronously, the exception bubbles up on the web request that triggered the update.
 
-## When the pass itself is malformed
+## Certificate signing failures
 
-`.pkpass` generation uses the underlying `pkpass/pkpass` library. Signing failures (bad certificate path, wrong password, expired cert) surface as `Exception` from that library with messages like `Invalid certificate file. Make sure you have a P12 certificate that also contains a private key`. Check your `MOBILE_PASS_APPLE_CERTIFICATE_PATH` and `MOBILE_PASS_APPLE_CERTIFICATE_PASSWORD` values, and confirm the cert hasn't expired.
+`.pkpass` generation uses the underlying `pkpass/pkpass` library. When it can't load or use the pass-signing certificate (wrong path, wrong password, expired cert, bad PKCS12 format), the package catches the raw `PKPass\PKPassException` and re-throws it as `Spatie\LaravelMobilePass\Exceptions\InvalidCertificate`:
+
+```php
+use Spatie\LaravelMobilePass\Exceptions\InvalidCertificate;
+
+try {
+    $mobilePass->generate();
+} catch (InvalidCertificate $exception) {
+    report($exception);
+}
+```
+
+The exception's message names the env vars you should check (`MOBILE_PASS_APPLE_CERTIFICATE_PATH`, `MOBILE_PASS_APPLE_CERTIFICATE`, `MOBILE_PASS_APPLE_CERTIFICATE_PASSWORD`). The original `PKPassException` is available through `$exception->getPrevious()` if you need the raw OpenSSL detail.
+
+## Missing image files
+
+Apple builders read their images off disk. If you hand `setLogoImage()`, `setIconImage()`, and friends a path that doesn't exist, the builder throws `Spatie\LaravelMobilePass\Exceptions\ImageNotFound` immediately (not at `save()` time), so a typo surfaces right at the call site:
+
+```php
+use Spatie\LaravelMobilePass\Exceptions\ImageNotFound;
+
+try {
+    $builder->setLogoImage('/no/such/file.png');
+} catch (ImageNotFound $exception) {
+    // $exception->getMessage() includes the missing path
+}
+```
+
+Google's class builders take URLs, not paths, so this doesn't apply there; Google fetches the image itself when it renders the pass.

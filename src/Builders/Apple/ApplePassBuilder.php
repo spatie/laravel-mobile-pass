@@ -6,6 +6,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use PKPass\PKPass;
+use PKPass\PKPassException;
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\Barcode;
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\Color;
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\FieldContent;
@@ -21,6 +22,7 @@ use Spatie\LaravelMobilePass\Enums\FieldType;
 use Spatie\LaravelMobilePass\Enums\PassType;
 use Spatie\LaravelMobilePass\Enums\Platform;
 use Spatie\LaravelMobilePass\Enums\TimeStyleType;
+use Spatie\LaravelMobilePass\Exceptions\InvalidCertificate;
 use Spatie\LaravelMobilePass\Exceptions\InvalidConfig;
 use Spatie\LaravelMobilePass\Models\MobilePass;
 use Spatie\LaravelMobilePass\Support\WifiUri;
@@ -480,16 +482,20 @@ abstract class ApplePassBuilder
 
     public function generate(): string
     {
-        $pkPass = new PKPass(
-            self::getCertificatePath(),
-            self::getCertificatePassword(),
-        );
+        try {
+            $pkPass = new PKPass(
+                self::getCertificatePath(),
+                self::getCertificatePassword(),
+            );
 
-        $pkPass->setData($this->data());
+            $pkPass->setData($this->data());
 
-        $this->addImagesToFile($pkPass);
+            $this->addImagesToFile($pkPass);
 
-        return $pkPass->create(output: false);
+            return $pkPass->create(output: false);
+        } catch (PKPassException $exception) {
+            throw InvalidCertificate::fromPkPassException($exception);
+        }
     }
 
     protected function compileSemantics(): ?array

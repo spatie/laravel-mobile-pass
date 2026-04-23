@@ -5,7 +5,7 @@ namespace Spatie\LaravelMobilePass\Exceptions;
 use Exception;
 use Illuminate\Http\Client\Response;
 
-class GoogleWalletRequestFailed extends Exception
+class GoogleWalletRequestFailed extends Exception implements MobilePassException
 {
     public function __construct(
         public readonly int $status,

@@ -5,7 +5,7 @@ namespace Spatie\LaravelMobilePass\Exceptions;
 use Exception;
 use Spatie\LaravelMobilePass\Enums\Platform;
 
-class InvalidConfig extends Exception
+class InvalidConfig extends Exception implements MobilePassException
 {
     public static function invalidModel(string $modelName, string $modelClass, string $defaultClass): self
     {
