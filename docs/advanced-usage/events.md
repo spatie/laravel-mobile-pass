@@ -95,9 +95,24 @@ protected $listen = [
 ];
 ```
 
-## Querying Google save/remove history
+## Checking whether a pass is currently in the wallet
 
-Every Google callback is also persisted as a `GoogleMobilePassEvent` row tied to the `MobilePass`, so you can walk the history without hooking into the events:
+If you don't care about the event stream and just want to know whether the pass is installed right now, use the unified helper:
+
+```php
+if ($mobilePass->isCurrentlyInWallet()) {
+    // Apple: at least one device has it registered
+    // Google: latest save/remove callback was a save
+}
+```
+
+The helper dispatches by platform so you don't need to care which one the pass belongs to.
+
+## Querying the underlying history
+
+Both platforms also expose their raw history if you want it.
+
+For Google, every callback is persisted as a `GoogleMobilePassEvent` row tied to the `MobilePass`:
 
 ```php
 $mobilePass->googleEvents;
@@ -106,14 +121,10 @@ $mobilePass->googleEvents()->saves()->get();
 $mobilePass->googleEvents()->removes()->get();
 ```
 
-To check whether the pass is currently on the user's phone, use the helper:
+Or use the Google-specific helper if you want just the "is it saved" check:
 
 ```php
-if ($mobilePass->isCurrentlySavedToGoogleWallet()) {
-    // Latest callback was a save
-}
+$mobilePass->isCurrentlySavedToGoogleWallet();
 ```
 
-The helper looks at the most recent callback. If the user saved, removed, then saved again, it returns `true`.
-
-For Apple, `$mobilePass->registrations` gives you the set of currently registered devices. An empty collection means no iPhone currently has the pass installed (or the device never called the unregister endpoint, which does happen; Apple isn't strict about it).
+For Apple, `$mobilePass->registrations` gives you the set of currently registered devices. Every row is an `AppleMobilePassRegistration`; Google passes always have an empty collection here. An empty collection on an Apple pass means no iPhone currently has the pass installed (or the device never called the unregister endpoint, which does happen; Apple isn't strict about it).

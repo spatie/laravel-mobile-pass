@@ -94,6 +94,14 @@ class MobilePass extends Model implements Attachable, Responsable
         return $latest?->event_type === 'save';
     }
 
+    public function isCurrentlyInWallet(): bool
+    {
+        return match ($this->platform) {
+            Platform::Apple => $this->registrations()->exists(),
+            Platform::Google => $this->isCurrentlySavedToGoogleWallet(),
+        };
+    }
+
     public function isApple(): bool
     {
         return $this->platform === Platform::Apple;
