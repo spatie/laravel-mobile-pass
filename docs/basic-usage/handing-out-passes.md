@@ -51,10 +51,6 @@ use SimpleSoftwareIO\QrCode\Facades\QrCode;
 QrCode::size(240)->generate($mobilePass->addToWalletUrl());
 ```
 
-## A note on the Apple URL
-
-The Apple link is a `signedRoute`, not a `temporarySignedRoute`, so by default it doesn't expire. That matches how wallet download links usually get used: people open them days later on a new device. If you want an expiring URL, override the download route or wrap your own thing around it.
-
 ## As an email attachment
 
 For Apple passes, you can attach the `.pkpass` file directly to a mailable. The `MobilePass` model implements Laravel's `Attachable` contract, so attaching it is a one-liner. Google passes aren't files (Google hosts them for you), so this route is Apple-only.
@@ -95,3 +91,28 @@ class TicketPurchased extends Mailable
 ```
 
 The attachment lands in the inbox as a `.pkpass` file named after the pass's download name. iPhones recognise the MIME type (`application/vnd.apple.pkpass`) and offer to add it to Wallet straight from Mail.
+
+## Giving the Apple URL an expiration
+
+By default the Apple link is a `signedRoute`, not a `temporarySignedRoute`, so it doesn't expire. That matches how wallet download links are usually used in practice (people open them days later on a new device), but you can change it by swapping in a custom `MobilePass` model and overriding `addToAppleWalletUrl()`:
+
+```php
+namespace App\Models;
+
+use Illuminate\Support\Facades\URL;
+use Spatie\LaravelMobilePass\Models\MobilePass as BaseMobilePass;
+
+class MobilePass extends BaseMobilePass
+{
+    protected function addToAppleWalletUrl(): string
+    {
+        return URL::temporarySignedRoute(
+            'mobile-pass.apple.download',
+            now()->addHour(),
+            ['mobilePass' => $this->id],
+        );
+    }
+}
+```
+
+Then register it in `config/mobile-pass.php` under `models.mobile_pass`. See [Customizing models](/docs/laravel-mobile-pass/v1/advanced-usage/customizing-models) for the full walkthrough.
