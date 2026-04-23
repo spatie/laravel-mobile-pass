@@ -12,10 +12,10 @@
     "pass": {
         "description": "Hello!",
         "formatVersion": 1,
-        "organizationName": "My organisation",
-        "passTypeIdentifier": "pass.app.gowallet",
+        "organizationName": "My organization",
+        "passTypeIdentifier": "pass.com.example",
         "serialNumber": "<random>",
-        "teamIdentifier": "2SQU7LWHMY",
+        "teamIdentifier": "ABCD1234EF",
         "eventTicket": {
             "headerFields": [
                 {

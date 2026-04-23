@@ -4,9 +4,8 @@ use PKPass\PKPassException;
 use Spatie\LaravelMobilePass\Builders\Apple\GenericPassBuilder;
 use Spatie\LaravelMobilePass\Exceptions\InvalidCertificate;
 
-it('throws InvalidCertificate when the certificate path does not exist', function () {
-    config()->set('mobile-pass.apple.certificate_path', '/tmp/not-a-real-certificate-'.uniqid().'.p12');
-    config()->set('mobile-pass.apple.certificate_password', 'whatever');
+it('throws InvalidCertificate when the P12 password is wrong', function () {
+    config()->set('mobile-pass.apple.certificate_password', 'wrong-password');
 
     GenericPassBuilder::make()
         ->setOrganizationName('Spatie')
@@ -17,8 +16,7 @@ it('throws InvalidCertificate when the certificate path does not exist', functio
 })->throws(InvalidCertificate::class);
 
 it('mentions the env vars in the error message and keeps the original as previous', function () {
-    config()->set('mobile-pass.apple.certificate_path', '/tmp/not-a-real-certificate-'.uniqid().'.p12');
-    config()->set('mobile-pass.apple.certificate_password', 'whatever');
+    config()->set('mobile-pass.apple.certificate_password', 'wrong-password');
 
     try {
         GenericPassBuilder::make()

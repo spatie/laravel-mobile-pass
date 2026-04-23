@@ -13,9 +13,9 @@
         "description": "Hello!",
         "formatVersion": 1,
         "organizationName": "Spatie",
-        "passTypeIdentifier": "pass.app.gowallet",
+        "passTypeIdentifier": "pass.com.example",
         "serialNumber": "<random>",
-        "teamIdentifier": "2SQU7LWHMY",
+        "teamIdentifier": "ABCD1234EF",
         "generic": {
             "headerFields": [
                 {

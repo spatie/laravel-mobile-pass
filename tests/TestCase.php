@@ -39,6 +39,13 @@ class TestCase extends Orchestra
 
     protected function getEnvironmentSetUp($app)
     {
+        $app['config']->set('mobile-pass.apple.certificate', null);
+        $app['config']->set('mobile-pass.apple.certificate_path', __DIR__.'/TestSupport/apple/test-certificate.p12');
+        $app['config']->set('mobile-pass.apple.certificate_password', 'test');
+        $app['config']->set('mobile-pass.apple.type_identifier', 'pass.com.example');
+        $app['config']->set('mobile-pass.apple.team_identifier', 'ABCD1234EF');
+        $app['config']->set('mobile-pass.apple.organization_name', 'Spatie Tests');
+
         Schema::dropAllTables();
 
         $migration = include __DIR__.'/../database/migrations/create_mobile_pass_tables.php.stub';
