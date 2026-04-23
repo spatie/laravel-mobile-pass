@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Event;
-use Spatie\LaravelMobilePass\Events\ReceivedAppleMobilePassLogEntriesEvent;
+use Spatie\LaravelMobilePass\Events\AppleMobilePassLogsReceived;
 
 it('will fire an event when logs are received', function () {
     Event::fake();
@@ -16,7 +16,7 @@ it('will fire an event when logs are received', function () {
         ->postJson(route('mobile-pass.logs'), ['logs' => $logEntries])
         ->assertSuccessful();
 
-    Event::assertDispatched(function (ReceivedAppleMobilePassLogEntriesEvent $event) use ($logEntries) {
+    Event::assertDispatched(function (AppleMobilePassLogsReceived $event) use ($logEntries) {
         expect($event->logEntries)->toBe($logEntries);
 
         return true;

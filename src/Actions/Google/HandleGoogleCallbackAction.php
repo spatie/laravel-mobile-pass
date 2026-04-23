@@ -3,8 +3,8 @@
 namespace Spatie\LaravelMobilePass\Actions\Google;
 
 use Illuminate\Http\Request;
-use Spatie\LaravelMobilePass\Events\GoogleMobilePassRemoved;
-use Spatie\LaravelMobilePass\Events\GoogleMobilePassSaved;
+use Spatie\LaravelMobilePass\Events\MobilePassAdded;
+use Spatie\LaravelMobilePass\Events\MobilePassRemoved;
 use Spatie\LaravelMobilePass\Models\MobilePass;
 use Spatie\LaravelMobilePass\Support\Config;
 
@@ -39,7 +39,7 @@ class HandleGoogleCallbackAction
 
         $eventModelClass = Config::googleMobilePassEventModel();
 
-        $event = $eventModelClass::query()->create([
+        $eventModelClass::query()->create([
             'mobile_pass_id' => $mobilePass->id,
             'event_type' => $eventType,
             'received_at' => now(),
@@ -47,8 +47,8 @@ class HandleGoogleCallbackAction
         ]);
 
         event(match ($eventType) {
-            'save' => new GoogleMobilePassSaved($mobilePass, $event),
-            'remove' => new GoogleMobilePassRemoved($mobilePass, $event),
+            'save' => new MobilePassAdded($mobilePass),
+            'remove' => new MobilePassRemoved($mobilePass),
         });
     }
 

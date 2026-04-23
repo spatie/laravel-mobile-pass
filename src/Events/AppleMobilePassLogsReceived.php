@@ -2,8 +2,12 @@
 
 namespace Spatie\LaravelMobilePass\Events;
 
-class ReceivedAppleMobilePassLogEntriesEvent
+use Illuminate\Foundation\Events\Dispatchable;
+
+class AppleMobilePassLogsReceived
 {
+    use Dispatchable;
+
     /**
      * @param  array<string>  $logEntries
      */

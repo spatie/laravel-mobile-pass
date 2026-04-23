@@ -2,6 +2,7 @@
 
 namespace Spatie\LaravelMobilePass\Actions\Apple;
 
+use Spatie\LaravelMobilePass\Events\MobilePassRemoved;
 use Spatie\LaravelMobilePass\Models\Apple\AppleMobilePassRegistration;
 use Spatie\LaravelMobilePass\Support\Config;
 
@@ -12,10 +13,17 @@ class UnregisterDeviceAction
         $mobilePassRegistrationModel = Config::appleMobilePassRegistrationModel();
 
         $mobilePassRegistrationModel::query()
+            ->with('pass')
             ->where([
                 'device_id' => $deviceId,
                 'pass_serial' => $passSerial,
             ])
-            ->each(fn (AppleMobilePassRegistration $registration) => $registration->delete());
+            ->each(function (AppleMobilePassRegistration $registration) {
+                $pass = $registration->pass;
+
+                $registration->delete();
+
+                event(new MobilePassRemoved($pass));
+            });
     }
 }

@@ -65,6 +65,6 @@ MIIB...
 -----END PUBLIC KEY-----"
 ```
 
-Without this key, the callback route rejects every incoming request. See [Listening to Google save and remove events](/docs/laravel-mobile-pass/v1/advanced-usage/listening-to-google-save-remove-events) for the full callback flow.
+Without this key, the callback route rejects every incoming request. See [Events](/docs/laravel-mobile-pass/v1/advanced-usage/events) for the full callback flow.
 
 The service account key and the callback signing key are both sensitive. Keep them out of version control.
