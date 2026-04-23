@@ -4,6 +4,7 @@
 [![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/spatie/laravel-mobile-pass/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/spatie/laravel-mobile-pass/actions?query=workflow%3Arun-tests+branch%3Amain)
 [![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/spatie/laravel-mobile-pass/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/spatie/laravel-mobile-pass/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
 [![Total Downloads](https://img.shields.io/packagist/dt/spatie/laravel-mobile-pass.svg?style=flat-square)](https://packagist.org/packages/spatie/laravel-mobile-pass)
+[![Laravel Compatibility](https://badge.laravel.cloud/badge/spatie/laravel-mobile-pass?style=flat)](https://packagist.org/packages/spatie/laravel-mobile-pass)
 
 Using this package you can generate mobile passes for Apple Wallet and Google Wallet. Possible use cases are boarding passes, event tickets, coupons, store cards, membership cards, gift cards etc.
 
