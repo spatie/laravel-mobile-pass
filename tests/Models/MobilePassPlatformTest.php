@@ -66,3 +66,19 @@ it('Google addToWalletUrl returns a pay.google.com save URL', function () {
 
     expect($url)->toStartWith('https://pay.google.com/gp/v/save/');
 });
+
+it('isApple returns true for Apple passes and false for Google passes', function () {
+    $apple = MobilePass::factory()->make(['platform' => Platform::Apple]);
+    $google = MobilePass::factory()->make(['platform' => Platform::Google]);
+
+    expect($apple->isApple())->toBeTrue();
+    expect($google->isApple())->toBeFalse();
+});
+
+it('isGoogle returns true for Google passes and false for Apple passes', function () {
+    $apple = MobilePass::factory()->make(['platform' => Platform::Apple]);
+    $google = MobilePass::factory()->make(['platform' => Platform::Google]);
+
+    expect($google->isGoogle())->toBeTrue();
+    expect($apple->isGoogle())->toBeFalse();
+});

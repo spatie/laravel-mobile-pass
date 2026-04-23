@@ -94,6 +94,16 @@ class MobilePass extends Model implements Attachable, Responsable
         return $latest?->event_type === 'save';
     }
 
+    public function isApple(): bool
+    {
+        return $this->platform === Platform::Apple;
+    }
+
+    public function isGoogle(): bool
+    {
+        return $this->platform === Platform::Google;
+    }
+
     protected function casts(): array
     {
         return [

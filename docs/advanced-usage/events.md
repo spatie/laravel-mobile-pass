@@ -12,7 +12,7 @@ The `Spatie\LaravelMobilePass\Events\MobilePassAdded` event fires when a user ad
 - Apple, when an iPhone calls the register-device endpoint after the user taps Add in Wallet. The event fires once per new `(device, pass)` registration. Re-registrations of the same device don't re-fire.
 - Google, when Google sends a `save` callback for the pass.
 
-The event carries the `MobilePass` model. The platform is available through `$event->mobilePass->platform` if you need to branch on it.
+The event carries the `MobilePass` model. If you need to branch on platform, call `$event->mobilePass->isApple()` or `$event->mobilePass->isGoogle()`, or read the full enum at `$event->mobilePass->platform`.
 
 ```php
 namespace App\Listeners;
