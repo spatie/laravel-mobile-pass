@@ -2,6 +2,8 @@
 
 namespace Spatie\LaravelMobilePass\Builders\Google\Validators;
 
+use Spatie\LaravelMobilePass\Exceptions\InvalidPass;
+
 abstract class GooglePassObjectValidator
 {
     /** @return array<string, array<int, string>> */
@@ -13,6 +15,12 @@ abstract class GooglePassObjectValidator
      */
     public function validate(array $payload): array
     {
-        return validator($payload, $this->rules())->validate();
+        $validator = validator($payload, $this->rules());
+
+        if ($validator->fails()) {
+            throw new InvalidPass($validator);
+        }
+
+        return $validator->validated();
     }
 }

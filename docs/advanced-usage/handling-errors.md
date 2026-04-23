@@ -7,10 +7,10 @@ The package throws a handful of typed exceptions so you can recover from the com
 
 ## Validation errors
 
-Every builder runs a Laravel validator before it hands a pass off to Apple or Google. If a required field is missing, or a value has the wrong shape, `save()` throws an `Illuminate\Validation\ValidationException`.
+Every builder runs a Laravel validator before it hands a pass off to Apple or Google. If a required field is missing, or a value has the wrong shape, `save()` throws a `Spatie\LaravelMobilePass\Exceptions\InvalidPass`.
 
 ```php
-use Illuminate\Validation\ValidationException;
+use Spatie\LaravelMobilePass\Exceptions\InvalidPass;
 
 try {
     EventTicketPassBuilder::make()
@@ -18,12 +18,16 @@ try {
         // setSerialNumber omitted
         ->setDescription('The Beatles at Shea Stadium')
         ->save();
-} catch (ValidationException $exception) {
+} catch (InvalidPass $exception) {
     report($exception);
 }
 ```
 
-Catch `ValidationException` the same way you would in a controller. `$exception->errors()` gives you the field-by-field reasons.
+`InvalidPass` extends Laravel's `Illuminate\Validation\ValidationException`, so a couple of things still work out of the box:
+
+- `$exception->errors()` gives you the field-by-field reasons.
+- Catching `ValidationException` instead of `InvalidPass` still works, if you prefer the broader type.
+- Thrown from a controller method, Laravel's default exception handler still renders a 422 JSON response with the errors.
 
 ## Configuration errors
 

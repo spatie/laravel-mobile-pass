@@ -4,6 +4,7 @@ namespace Spatie\LaravelMobilePass\Tests\Feature;
 
 use Illuminate\Validation\ValidationException;
 use Spatie\LaravelMobilePass\Builders\Apple\GenericPassBuilder;
+use Spatie\LaravelMobilePass\Exceptions\InvalidPass;
 
 it('can create a mobile pass', function () {
     $pass = GenericPassBuilder::make()
@@ -25,13 +26,27 @@ it('can create a mobile pass', function () {
     expect($passkeyContent)->toMatchMobilePassSnapshot();
 });
 
-it('throws a validation exception when a required field is missing', function () {
+it('throws InvalidPass when a required field is missing', function () {
     GenericPassBuilder::make()
         ->setOrganizationName('Test Org')
         ->setSerialNumber(123456)
         // description intentionally omitted
         ->data();
-})->throws(ValidationException::class);
+})->throws(InvalidPass::class);
+
+it('InvalidPass is also catchable as ValidationException', function () {
+    try {
+        GenericPassBuilder::make()
+            ->setOrganizationName('Test Org')
+            ->setSerialNumber(123456)
+            ->data();
+
+        $this->fail('Expected an exception to be thrown.');
+    } catch (ValidationException $exception) {
+        expect($exception)->toBeInstanceOf(InvalidPass::class);
+        expect($exception->errors())->toHaveKey('description');
+    }
+});
 
 it('updates a field', function () {
     $pass = GenericPassBuilder::make()
