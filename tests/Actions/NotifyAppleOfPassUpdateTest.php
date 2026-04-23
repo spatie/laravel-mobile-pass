@@ -3,6 +3,7 @@
 use Illuminate\Http\Client\Request;
 use Illuminate\Support\Facades\Http;
 use Spatie\LaravelMobilePass\Actions\Apple\NotifyAppleOfPassUpdateAction;
+use Spatie\LaravelMobilePass\Exceptions\AppleWalletRequestFailed;
 use Spatie\LaravelMobilePass\Models\MobilePass;
 
 beforeEach(function () {
@@ -84,4 +85,32 @@ it('deletes the registration if Apple reports the push token is invalid', functi
     );
 
     $this->assertDatabaseCount('apple_mobile_pass_registrations', 0);
+});
+
+it('throws AppleWalletRequestFailed on other non-2xx responses', function () {
+    Http::fake([
+        '*' => Http::response('BadDeviceToken', 400),
+    ]);
+
+    app(NotifyAppleOfPassUpdateAction::class)->execute(
+        MobilePass::factory()->hasRegistrations(1)->create()
+    );
+})->throws(AppleWalletRequestFailed::class);
+
+it('carries the status, body and endpoint on AppleWalletRequestFailed', function () {
+    Http::fake([
+        '*' => Http::response('TooManyRequests', 429),
+    ]);
+
+    try {
+        app(NotifyAppleOfPassUpdateAction::class)->execute(
+            MobilePass::factory()->hasRegistrations(1)->create()
+        );
+
+        $this->fail('Expected AppleWalletRequestFailed to be thrown.');
+    } catch (AppleWalletRequestFailed $exception) {
+        expect($exception->status)->toBe(429);
+        expect($exception->body)->toBe('TooManyRequests');
+        expect($exception->endpoint)->toStartWith('https://example.com/');
+    }
 });

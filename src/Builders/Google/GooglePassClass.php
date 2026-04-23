@@ -7,7 +7,7 @@ use Illuminate\Support\Str;
 use Spatie\LaravelMobilePass\Builders\Google\Entities\Image;
 use Spatie\LaravelMobilePass\Builders\Google\Entities\LocalizedString;
 use Spatie\LaravelMobilePass\Builders\Google\Validators\GooglePassClassValidator;
-use Spatie\LaravelMobilePass\Exceptions\GoogleWalletApiError;
+use Spatie\LaravelMobilePass\Exceptions\GoogleWalletRequestFailed;
 use Spatie\LaravelMobilePass\Support\Google\GoogleCredentials;
 use Spatie\LaravelMobilePass\Support\Google\GoogleWalletClient;
 
@@ -94,7 +94,7 @@ abstract class GooglePassClass
 
         try {
             $payload = app(GoogleWalletClient::class)->getClass(static::resourceName(), $id);
-        } catch (GoogleWalletApiError $exception) {
+        } catch (GoogleWalletRequestFailed $exception) {
             if ($exception->status === 404) {
                 return null;
             }

@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Http;
-use Spatie\LaravelMobilePass\Exceptions\GoogleWalletApiError;
+use Spatie\LaravelMobilePass\Exceptions\GoogleWalletRequestFailed;
 use Spatie\LaravelMobilePass\Support\Google\GoogleWalletClient;
 use Spatie\LaravelMobilePass\Tests\TestSupport\Google\GoogleFixtures;
 
@@ -38,13 +38,13 @@ it('upgrades a 409 on insert to a patch', function () {
     );
 });
 
-it('throws GoogleWalletApiError on unexpected 4xx', function () {
+it('throws GoogleWalletRequestFailed on unexpected 4xx', function () {
     Http::fake([
         '*/eventTicketClass' => Http::response(['error' => 'nope'], 403),
     ]);
 
     app(GoogleWalletClient::class)->insertClass('eventTicketClass', '3388.abc', []);
-})->throws(GoogleWalletApiError::class);
+})->throws(GoogleWalletRequestFailed::class);
 
 it('patches an object', function () {
     Http::fake([

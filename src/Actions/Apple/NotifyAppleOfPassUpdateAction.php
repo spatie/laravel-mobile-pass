@@ -4,6 +4,7 @@ namespace Spatie\LaravelMobilePass\Actions\Apple;
 
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
+use Spatie\LaravelMobilePass\Exceptions\AppleWalletRequestFailed;
 use Spatie\LaravelMobilePass\Models\Apple\AppleMobilePassRegistration;
 use Spatie\LaravelMobilePass\Models\MobilePass;
 
@@ -61,6 +62,12 @@ class NotifyAppleOfPassUpdateAction
     {
         if ($response->status() === 410) {
             $registration->delete();
+
+            return;
+        }
+
+        if ($response->failed()) {
+            throw AppleWalletRequestFailed::fromResponse($response, $this->updateUrl($registration));
         }
     }
 }

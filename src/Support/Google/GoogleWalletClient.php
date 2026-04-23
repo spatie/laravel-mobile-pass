@@ -7,7 +7,7 @@ use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
-use Spatie\LaravelMobilePass\Exceptions\GoogleWalletApiError;
+use Spatie\LaravelMobilePass\Exceptions\GoogleWalletRequestFailed;
 use Throwable;
 
 class GoogleWalletClient
@@ -131,7 +131,7 @@ class GoogleWalletClient
     protected function parse(Response $response, string $endpoint): array
     {
         if ($response->failed()) {
-            throw GoogleWalletApiError::fromResponse($response, $endpoint);
+            throw GoogleWalletRequestFailed::fromResponse($response, $endpoint);
         }
 
         return $response->json() ?? [];

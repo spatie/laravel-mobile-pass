@@ -51,18 +51,18 @@ It's the kind of mistake you want to catch during development. Let it bubble to 
 
 Calling `$mobilePass->download()` on a Google pass throws `Spatie\LaravelMobilePass\Exceptions\CannotDownload::wrongPlatform($mobilePass)`. The same exception fires if a Google pass is requested through Apple's download route. Google passes aren't files; they live on Google's servers and users reach them through a `pay.google.com` save URL.
 
-## Google Wallet API errors
+## Google Wallet request failures
 
-Every call to Google's Wallet API (creating a Class, creating an Object, fetching or retiring) goes through a typed failure. `Spatie\LaravelMobilePass\Exceptions\GoogleWalletApiError` carries the original HTTP response so you can inspect what Google actually said:
+Every call to Google's Wallet API (creating a Class, creating an Object, fetching or retiring) goes through a typed failure. The `Spatie\LaravelMobilePass\Exceptions\GoogleWalletRequestFailed` exception carries the original HTTP response so you can inspect what Google actually said:
 
 ```php
-use Spatie\LaravelMobilePass\Exceptions\GoogleWalletApiError;
+use Spatie\LaravelMobilePass\Exceptions\GoogleWalletRequestFailed;
 
 try {
     EventTicketPassClass::make('duplicate-id')
         ->setIssuerName('...')
         ->save();
-} catch (GoogleWalletApiError $exception) {
+} catch (GoogleWalletRequestFailed $exception) {
     logger()->error('Google Wallet rejected the request', [
         'status' => $exception->status,
         'body' => $exception->body,
@@ -73,11 +73,27 @@ try {
 
 The common causes are duplicate Class IDs, malformed payloads, or an expired service account key. Google's error bodies are JSON; decode them to read the field-level reasons.
 
-## APNs push failures
+## Apple Wallet request failures
 
-The package notifies Apple Wallet of pass updates over APNs. If APNs can't be reached, or Apple rejects the push, the HTTP client throws a standard `Illuminate\Http\Client\RequestException`. The `PushPassUpdateJob` will retry according to your queue's retry policy when dispatched to a queue; when running synchronously, the exception bubbles up on the web request that triggered the update.
+The package notifies Apple Wallet of pass updates over APNs. If Apple responds with a non-2xx status (except 410, which signals a stale registration that the package cleans up automatically), the push action throws `Spatie\LaravelMobilePass\Exceptions\AppleWalletRequestFailed`. The exception has the same shape as its Google counterpart:
 
-If APNs rejections are a persistent pattern (expired cert, revoked token), the underlying HTTP status code in the response body is where you'll see what Apple thinks.
+```php
+use Spatie\LaravelMobilePass\Exceptions\AppleWalletRequestFailed;
+
+try {
+    $mobilePass->updateField('seat', '13A');
+} catch (AppleWalletRequestFailed $exception) {
+    logger()->error('APNs push was rejected', [
+        'status' => $exception->status,
+        'body' => $exception->body,
+        'endpoint' => $exception->endpoint,
+    ]);
+}
+```
+
+The common causes are an expired pass-type certificate, a wrong certificate password, or a revoked APNs token. Persistent rejections point at your `MOBILE_PASS_APPLE_CERTIFICATE_PATH` or `MOBILE_PASS_APPLE_CERTIFICATE_PASSWORD`.
+
+If APNs itself can't be reached (DNS, network, TLS), Laravel's HTTP client raises a `Illuminate\Http\Client\ConnectionException`. The `PushPassUpdateJob` retries according to your queue's retry policy when dispatched to a queue; when running synchronously, the exception bubbles up on the web request that triggered the update.
 
 ## When the pass itself is malformed
 
