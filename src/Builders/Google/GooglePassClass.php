@@ -5,6 +5,7 @@ namespace Spatie\LaravelMobilePass\Builders\Google;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Spatie\LaravelMobilePass\Builders\Google\Entities\Image;
+use Spatie\LaravelMobilePass\Builders\Google\Entities\LocalizedString;
 use Spatie\LaravelMobilePass\Builders\Google\Validators\GooglePassClassValidator;
 use Spatie\LaravelMobilePass\Exceptions\GoogleWalletApiError;
 use Spatie\LaravelMobilePass\Support\Google\GoogleCredentials;
@@ -151,5 +152,19 @@ abstract class GooglePassClass
         }
 
         return Image::fromUrl((string) $uri);
+    }
+
+    /** @param array<string, mixed> $payload */
+    protected function hydrateLocalizedString(array $payload, string $key): ?LocalizedString
+    {
+        $value = $payload[$key]['defaultValue']['value'] ?? null;
+
+        if ($value === null) {
+            return null;
+        }
+
+        $language = $payload[$key]['defaultValue']['language'] ?? 'en-US';
+
+        return LocalizedString::of((string) $value, (string) $language);
     }
 }

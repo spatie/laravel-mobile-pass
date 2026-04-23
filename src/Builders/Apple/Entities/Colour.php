@@ -19,7 +19,7 @@ class Colour implements Stringable
 
     public static function makeFromRgbString(?string $rgb): ?self
     {
-        if (! $rgb) {
+        if (empty($rgb)) {
             return null;
         }
 

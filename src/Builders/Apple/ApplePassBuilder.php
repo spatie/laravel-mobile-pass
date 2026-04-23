@@ -30,8 +30,6 @@ use Spatie\LaravelMobilePass\Support\WifiUri;
  */
 abstract class ApplePassBuilder
 {
-    protected ?array $data = null;
-
     protected PassType $type;
 
     protected ?string $serialNumber = null;
@@ -65,8 +63,6 @@ abstract class ApplePassBuilder
     protected ?Collection $headerFields = null;
 
     protected ?Collection $backFields = null;
-
-    protected array $images = [];
 
     protected ?string $downloadName = null;
 
@@ -106,10 +102,11 @@ abstract class ApplePassBuilder
         return Platform::Apple;
     }
 
-    public function __construct(array $data = [], array $images = [], protected ?MobilePass $model = null)
-    {
-        $this->data = $data;
-        $this->images = $images;
+    public function __construct(
+        protected array $data = [],
+        protected array $images = [],
+        protected ?MobilePass $model = null,
+    ) {
         $this->downloadName = $model?->download_name;
 
         $this->uncompileContent();
@@ -215,7 +212,7 @@ abstract class ApplePassBuilder
             $field->usingTimeType($timeStyle);
         }
 
-        if ($showDateAsRelative === true) {
+        if ($showDateAsRelative) {
             $field->showDateAsRelative();
         }
 
@@ -240,26 +237,33 @@ abstract class ApplePassBuilder
                 continue;
             }
 
-            $this->{$property} = $this->{$property}->map(function (FieldContent $field) use ($key, $value, $changeMessage, $label) {
-                if ($field->key !== $key) {
-                    return $field;
-                }
-
-                $field->withValue($value);
-
-                if ($changeMessage !== null) {
-                    $field->showMessageWhenChanged($changeMessage);
-                }
-
-                if ($label !== null) {
-                    $field->withLabel($label);
-                }
-
-                return $field;
-            });
+            $this->{$property} = $this->{$property}->map(
+                fn (FieldContent $field) => $field->key === $key
+                    ? $this->applyFieldUpdate($field, $value, $changeMessage, $label)
+                    : $field,
+            );
         }
 
         return $this;
+    }
+
+    protected function applyFieldUpdate(
+        FieldContent $field,
+        string $value,
+        ?string $changeMessage,
+        ?string $label,
+    ): FieldContent {
+        $field->withValue($value);
+
+        if ($changeMessage !== null) {
+            $field->showMessageWhenChanged($changeMessage);
+        }
+
+        if ($label !== null) {
+            $field->withLabel($label);
+        }
+
+        return $field;
     }
 
     public function setSerialNumber(string $serialNumber): self
@@ -416,9 +420,11 @@ abstract class ApplePassBuilder
 
         $path = sys_get_temp_dir().'/LaravelMobilePass.p12';
 
-        if (! file_exists($path)) {
-            file_put_contents($path, base64_decode($contents));
+        if (file_exists($path)) {
+            return $path;
         }
+
+        file_put_contents($path, base64_decode($contents));
 
         return $path;
     }
@@ -454,8 +460,10 @@ abstract class ApplePassBuilder
     {
         $configuredOrganisationName = self::appleConfig('organisation_name');
 
-        if (empty($this->organisationName) && ! empty($configuredOrganisationName)) {
-            $this->setOrganisationName($configuredOrganisationName);
+        if (empty($this->organisationName)) {
+            if (! empty($configuredOrganisationName)) {
+                $this->setOrganisationName($configuredOrganisationName);
+            }
         }
 
         if (empty($this->serialNumber)) {
@@ -464,7 +472,7 @@ abstract class ApplePassBuilder
 
         $compiledData = array_filter(
             $this->compileData(),
-            fn ($value) => ! empty($value)
+            fn ($value) => ! empty($value),
         );
 
         return $this->validator()->validate($compiledData);
@@ -496,7 +504,7 @@ abstract class ApplePassBuilder
     {
         $barcode = $this->barcode?->toArray();
 
-        return array_merge($this->data ?? [], array_filter([
+        return array_merge($this->data, array_filter([
             'formatVersion' => 1,
             'organizationName' => $this->organisationName,
             'passTypeIdentifier' => self::appleConfig('type_identifier'),
@@ -526,23 +534,36 @@ abstract class ApplePassBuilder
 
     protected function webServiceURL(): ?string
     {
-        $host = self::appleConfig('webservice.host');
+        $host = $this->resolveWebServiceHost();
 
-        if ($host !== null && $host !== '' && ! str_starts_with($host, 'https://')) {
-            throw InvalidConfig::webserviceHostMustBeHttps($host);
-        }
-
-        if (empty($host)) {
-            $appUrl = (string) config('app.url');
-
-            $host = str_starts_with($appUrl, 'https://') ? $appUrl : null;
-        }
-
-        if (! $host) {
+        if ($host === null) {
             return null;
         }
 
         return rtrim($host, '/').'/passkit';
+    }
+
+    protected function resolveWebServiceHost(): ?string
+    {
+        $configuredHost = self::appleConfig('webservice.host');
+
+        if (is_string($configuredHost)) {
+            if ($configuredHost !== '') {
+                if (! str_starts_with($configuredHost, 'https://')) {
+                    throw InvalidConfig::webserviceHostMustBeHttps($configuredHost);
+                }
+
+                return $configuredHost;
+            }
+        }
+
+        $appUrl = (string) config('app.url');
+
+        if (! str_starts_with($appUrl, 'https://')) {
+            return null;
+        }
+
+        return $appUrl;
     }
 
     protected function uncompileSemantics(): void
@@ -591,11 +612,9 @@ abstract class ApplePassBuilder
 
         $this->uncompileSemantics();
 
-        $this->uncompileFieldSet('headerFields');
-        $this->uncompileFieldSet('primaryFields');
-        $this->uncompileFieldSet('secondaryFields');
-        $this->uncompileFieldSet('auxiliaryFields');
-        $this->uncompileFieldSet('backFields');
+        foreach (FieldType::cases() as $fieldType) {
+            $this->uncompileFieldSet($fieldType->value);
+        }
     }
 
     protected function uncompileFieldSet(string $fieldSetName): void

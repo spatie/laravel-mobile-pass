@@ -104,20 +104,9 @@ class EventTicketPassClass extends GooglePassClass
     {
         $this->hydrateCommonFields($payload);
 
-        if (isset($payload['eventName']['defaultValue']['value'])) {
-            $this->eventName = LocalizedString::of(
-                (string) $payload['eventName']['defaultValue']['value'],
-                (string) ($payload['eventName']['defaultValue']['language'] ?? 'en-US'),
-            );
-        }
-
-        if (isset($payload['venue']['name']['defaultValue']['value'])) {
-            $this->venueName = LocalizedString::of((string) $payload['venue']['name']['defaultValue']['value']);
-        }
-
-        if (isset($payload['venue']['address']['defaultValue']['value'])) {
-            $this->venueAddress = LocalizedString::of((string) $payload['venue']['address']['defaultValue']['value']);
-        }
+        $this->eventName = $this->hydrateLocalizedString($payload, 'eventName');
+        $this->venueName = $this->hydrateLocalizedString($payload['venue'] ?? [], 'name');
+        $this->venueAddress = $this->hydrateLocalizedString($payload['venue'] ?? [], 'address');
 
         if (isset($payload['dateTime']['start'])) {
             $this->startDate = Carbon::parse((string) $payload['dateTime']['start']);

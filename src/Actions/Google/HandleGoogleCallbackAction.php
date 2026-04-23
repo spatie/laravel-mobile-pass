@@ -16,13 +16,18 @@ class HandleGoogleCallbackAction
         $claims = (array) $request->attributes->get('google_callback_claims', []);
 
         $objectId = $claims['objectId'] ?? null;
+
+        if ($objectId === null) {
+            return;
+        }
+
         $eventType = match ($claims['eventType'] ?? null) {
             'save' => 'save',
             'del' => 'remove',
             default => null,
         };
 
-        if ($objectId === null || $eventType === null) {
+        if ($eventType === null) {
             return;
         }
 

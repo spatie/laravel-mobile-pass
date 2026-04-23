@@ -32,15 +32,19 @@ class GoogleCredentials
         $contents = (string) config('mobile-pass.google.service_account_key');
 
         if ($contents !== '') {
-            return str_starts_with(ltrim($contents), '{')
-                ? $contents
-                : (string) base64_decode($contents);
+            if (str_starts_with(ltrim($contents), '{')) {
+                return $contents;
+            }
+
+            return (string) base64_decode($contents);
         }
 
         $path = (string) config('mobile-pass.google.service_account_key_path');
 
-        if ($path !== '' && is_file($path)) {
-            return (string) file_get_contents($path);
+        if ($path !== '') {
+            if (is_file($path)) {
+                return (string) file_get_contents($path);
+            }
         }
 
         throw InvalidConfig::missingGoogleCredentials();

@@ -27,9 +27,9 @@ class PushPassUpdateJob implements ShouldQueue
             return;
         }
 
-        $this
-            ->onConnection($connection)
-            ->onQueue(config('mobile-pass.queue.name', 'default'));
+        $queueName = config('mobile-pass.queue.name', 'default');
+
+        $this->onConnection($connection)->onQueue($queueName);
     }
 
     public static function dispatch(mixed ...$arguments): mixed

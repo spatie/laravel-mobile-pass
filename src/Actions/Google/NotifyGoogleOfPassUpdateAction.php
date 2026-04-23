@@ -14,7 +14,11 @@ class NotifyGoogleOfPassUpdateAction
         $googleClassType = $mobilePass->content['googleClassType'] ?? null;
         $objectId = $mobilePass->content['googleObjectId'] ?? null;
 
-        if (! $googleClassType || ! $objectId) {
+        if (! $googleClassType) {
+            return;
+        }
+
+        if (! $objectId) {
             return;
         }
 

@@ -99,9 +99,10 @@ class Config
     /** @return class-string<ApplePassBuilder|GooglePassBuilder> */
     public static function getPassBuilderClass(string $passBuilderName, Platform $platform): string
     {
-        $passBuilderClass = config("mobile-pass.builders.{$platform->value}.{$passBuilderName}")
-            ?? self::defaultBuilders()[$platform->value][$passBuilderName]
-            ?? null;
+        $configuredClass = config("mobile-pass.builders.{$platform->value}.{$passBuilderName}");
+        $defaultClass = self::defaultBuilders()[$platform->value][$passBuilderName] ?? null;
+
+        $passBuilderClass = $configuredClass ?? $defaultClass;
 
         if (! $passBuilderClass) {
             throw InvalidConfig::passBuilderNotRegistered($passBuilderName, $platform);

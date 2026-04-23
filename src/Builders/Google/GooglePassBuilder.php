@@ -96,9 +96,9 @@ abstract class GooglePassBuilder
 
     public function objectId(): string
     {
-        $suffix = $this->objectSuffix ??= (string) Str::uuid();
+        $this->objectSuffix ??= (string) Str::uuid();
 
-        return GoogleCredentials::issuerId().'.'.$suffix;
+        return GoogleCredentials::issuerId().'.'.$this->objectSuffix;
     }
 
     public function classId(): string

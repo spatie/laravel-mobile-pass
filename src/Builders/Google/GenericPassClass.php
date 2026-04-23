@@ -89,27 +89,9 @@ class GenericPassClass extends GooglePassClass
     {
         $this->hydrateCommonFields($payload);
 
-        if (isset($payload['cardTitle']['defaultValue']['value'])) {
-            $this->cardTitle = LocalizedString::of(
-                (string) $payload['cardTitle']['defaultValue']['value'],
-                (string) ($payload['cardTitle']['defaultValue']['language'] ?? 'en-US'),
-            );
-        }
-
-        if (isset($payload['subheader']['defaultValue']['value'])) {
-            $this->subheader = LocalizedString::of(
-                (string) $payload['subheader']['defaultValue']['value'],
-                (string) ($payload['subheader']['defaultValue']['language'] ?? 'en-US'),
-            );
-        }
-
-        if (isset($payload['header']['defaultValue']['value'])) {
-            $this->header = LocalizedString::of(
-                (string) $payload['header']['defaultValue']['value'],
-                (string) ($payload['header']['defaultValue']['language'] ?? 'en-US'),
-            );
-        }
-
+        $this->cardTitle = $this->hydrateLocalizedString($payload, 'cardTitle');
+        $this->subheader = $this->hydrateLocalizedString($payload, 'subheader');
+        $this->header = $this->hydrateLocalizedString($payload, 'header');
         $this->logo = $this->hydrateImage($payload, 'logo');
         $this->hero = $this->hydrateImage($payload, 'heroImage');
     }
