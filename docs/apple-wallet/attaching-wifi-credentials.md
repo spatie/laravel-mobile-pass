@@ -33,7 +33,7 @@ $builder
 
 ### When the button actually surfaces
 
-The button doesn't show up just because the pass has the credentials. Apple only exposes it when the pass is contextually relevant. In practice that means you also want to set [pass relevance](/docs/laravel-mobile-pass/v1/apple-wallet/pass-relevance) so the pass surfaces on the lock screen at the right moment:
+The button doesn't show up just because the pass has the credentials. Apple only exposes it when the pass is contextually relevant. In practice that means you also want to set [pass relevance](apple-wallet/pass-relevance) so the pass surfaces on the lock screen at the right moment:
 
 ```php
 use Illuminate\Support\Carbon;
@@ -97,7 +97,7 @@ This approach shines when other people scan your pass to join. Pin it in Wallet 
 
 Whichever approach you pick, the password lives in the pass in plain text. Anything that exports the pass (mail attachments, screenshots, iCloud backups) exposes it. Use this for networks whose password is meant to be shared, not corporate networks or guest networks that rotate daily.
 
-Changing the password later means [updating the pass](/docs/laravel-mobile-pass/v1/basic-usage/updating-a-pass) so the new credentials land on the user's device. Devices that have already joined keep the old password cached until they forget the network.
+Changing the password later means [updating the pass](basic-usage/updating-a-pass) so the new credentials land on the user's device. Devices that have already joined keep the old password cached until they forget the network.
 
 ## Apple's reference
 

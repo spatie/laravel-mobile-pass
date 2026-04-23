@@ -10,8 +10,8 @@ You can also push updates to passes you've already handed out, so they stay curr
 Here are two examples of passes you can generate with this package, a boarding pass and a coupon.
 
 <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
-    <img src="/docs/laravel-mobile-pass/v1/images/boarding.jpg" alt="boarding pass" style="width: 100%; max-width: 400px; flex: 1 1 300px;">
-    <img src="/docs/laravel-mobile-pass/v1/images/coupon.jpg" alt="coupon" style="width: 100%; max-width: 400px; flex: 1 1 300px;">
+    <img src="images/boarding.jpg" alt="boarding pass" style="width: 100%; max-width: 400px; flex: 1 1 300px;">
+    <img src="images/coupon.jpg" alt="coupon" style="width: 100%; max-width: 400px; flex: 1 1 300px;">
 </div>
 
 ## Try it live

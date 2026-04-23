@@ -72,4 +72,4 @@ With those set, every update push goes onto the `wallet` queue on the `redis` co
 
 ## Customising the update action
 
-If you want to run your own code around the update push (logging, audit trails, retry policies, anything in that neighbourhood), extend either `NotifyAppleOfPassUpdateAction` or `NotifyGoogleOfPassUpdateAction` and register your class in the config. See [Customizing actions](/docs/laravel-mobile-pass/v1/advanced-usage/customizing-actions) for the walkthrough.
+If you want to run your own code around the update push (logging, audit trails, retry policies, anything in that neighbourhood), extend either `NotifyAppleOfPassUpdateAction` or `NotifyGoogleOfPassUpdateAction` and register your class in the config. See [Customizing actions](advanced-usage/customizing-actions) for the walkthrough.

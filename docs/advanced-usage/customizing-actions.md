@@ -78,5 +78,5 @@ Runs when Google calls back to your app with a save or remove event. It resolves
 
 As a rule of thumb:
 
-- For side effects (logging, analytics, notifications), listen to the `MobilePassAdded` / `MobilePassRemoved` events instead. See [Events](/docs/laravel-mobile-pass/v1/advanced-usage/events). Events are cheaper to set up and won't break if the action's internals change.
+- For side effects (logging, analytics, notifications), listen to the `MobilePassAdded` / `MobilePassRemoved` events instead. See [Events](advanced-usage/events). Events are cheaper to set up and won't break if the action's internals change.
 - Override an action when the event hook isn't enough, for example when you want to change the persistence shape (different columns, different models), swap transport (custom APNs client), or reject the operation outright.

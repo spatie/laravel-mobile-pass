@@ -57,7 +57,7 @@ These surface at runtime the first time the package tries to use the misconfigur
 
 The `Spatie\LaravelMobilePass\Exceptions\PlatformDoesntSupport` exception fires when you call a method that doesn't make sense for the pass's platform.
 
-Calling `$mobilePass->updateField(...)` on a Google pass throws `PlatformDoesntSupport::cannotUpdateFields(Platform::Google)`. Use the Google builder's `content`-patching flow instead (see [Updating a pass](/docs/laravel-mobile-pass/v1/basic-usage/updating-a-pass)).
+Calling `$mobilePass->updateField(...)` on a Google pass throws `PlatformDoesntSupport::cannotUpdateFields(Platform::Google)`. Use the Google builder's `content`-patching flow instead (see [Updating a pass](basic-usage/updating-a-pass)).
 
 It's the kind of mistake you want to catch during development. Let it bubble to your exception handler in production; it indicates a bug in your code, not a user error.
 
