@@ -3,7 +3,7 @@ title: Object methods
 weight: 2
 ---
 
-Every Google builder extends `GooglePassBuilder`, which handles the bits of a pass that are specific to one user. Look-and-feel (logos, colors, event name, venue) lives on the Class, covered in [Pass classes](/docs/laravel-mobile-pass/v1/google-wallet/pass-classes).
+Every Google builder extends `GooglePassBuilder`, which handles the bits of a pass that are specific to one user. Look-and-feel (logos, colors, event name, venue) lives on the Class, covered in [Pass classes](google-wallet/pass-classes).
 
 ## Referencing the Class
 

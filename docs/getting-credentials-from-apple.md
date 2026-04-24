@@ -25,7 +25,7 @@ Start by following [Apple's guide](https://developer.apple.com/help/account/cert
 
 8. Export your keys to a `.p12` file. Open Keychain Access, search for your certificate by the identifier you picked earlier, expand the item to reveal the private key, and select both. Right-click, choose Export, pick a password, and save the file.
 
-![Exporting the certificate](/docs/laravel-mobile-pass/v1/images/exporting-key.gif)
+![Exporting the certificate](images/exporting-key.gif)
 
 Now point the package at that `.p12`. Either set `mobile-pass.apple.certificate_path` in the config, or set the `MOBILE_PASS_APPLE_CERTIFICATE_PATH` env var.
 

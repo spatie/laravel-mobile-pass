@@ -17,4 +17,4 @@ Apple and Google don't name the equivalents the same way, so here's the rough ma
 
 The Apple and Google pairs aren't interchangeable. Each platform has its own namespace (`Spatie\LaravelMobilePass\Builders\Apple\...` and `Spatie\LaravelMobilePass\Builders\Google\...`), so if you want to support both platforms for the same conceptual pass, you build twice.
 
-Each page in this section walks through one pass type, side by side for Apple and Google. For the full walkthrough of how a pass goes from builder call to wallet, see [Generating your first pass](/docs/laravel-mobile-pass/v1/basic-usage/generating-your-first-pass).
+Each page in this section walks through one pass type, side by side for Apple and Google. For the full walkthrough of how a pass goes from builder call to wallet, see [Generating your first pass](basic-usage/generating-your-first-pass).

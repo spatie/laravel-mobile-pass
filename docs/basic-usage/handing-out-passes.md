@@ -115,4 +115,4 @@ class MobilePass extends BaseMobilePass
 }
 ```
 
-Then register it in `config/mobile-pass.php` under `models.mobile_pass`. See [Customizing models](/docs/laravel-mobile-pass/v1/advanced-usage/customizing-models) for the full walkthrough.
+Then register it in `config/mobile-pass.php` under `models.mobile_pass`. See [Customizing models](advanced-usage/customizing-models) for the full walkthrough.

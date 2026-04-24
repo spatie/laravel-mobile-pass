@@ -3,11 +3,11 @@ title: Apple-specific methods
 weight: 2
 ---
 
-A handful of Apple-only setters that don't earn their own page. Each one is a small customisation on top of the essentials covered in [Generating your first pass](/docs/laravel-mobile-pass/v1/basic-usage/generating-your-first-pass).
+A handful of Apple-only setters that don't earn their own page. Each one is a small customisation on top of the essentials covered in [Generating your first pass](basic-usage/generating-your-first-pass).
 
 ## Colors
 
-Background color is covered in [Adding images](/docs/laravel-mobile-pass/v1/basic-usage/adding-images). For foreground and label colors pass a hex string:
+Background color is covered in [Adding images](basic-usage/adding-images). For foreground and label colors pass a hex string:
 
 ```php
 $builder

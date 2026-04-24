@@ -72,4 +72,4 @@ The package ships a Class for each Google pass type:
 - `OfferPassClass`
 - `GenericPassClass`
 
-See [Object methods](/docs/laravel-mobile-pass/v1/google-wallet/object-methods) for how to issue a per-user pass once your Class is declared.
+See [Object methods](google-wallet/object-methods) for how to issue a per-user pass once your Class is declared.
