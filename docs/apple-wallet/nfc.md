@@ -36,4 +36,4 @@ $builder->setNfc(
 );
 ```
 
-See Apple's [Pass.NFC](https://developer.apple.com/documentation/walletpasses/pass/nfc-data) reference for the full field spec.
+See Apple's [Pass.NFC](https://developer.apple.com/documentation/walletpasses/pass/nfc-data.dictionary) reference for the full field spec.
