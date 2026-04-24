@@ -2,6 +2,24 @@
 
 All notable changes to `laravel-mobile-pass` will be documented in this file.
 
+## 1.0.1 - 2026-04-24
+
+### What's Changed
+
+* Fix broken links in documentation by @injektion in https://github.com/spatie/laravel-mobile-pass/pull/18
+* Update generating-your-first-pass.md by @MattiaMarchiorato in https://github.com/spatie/laravel-mobile-pass/pull/23
+* Update Apple Pass.NFC link in documentation by @BrookeDot in https://github.com/spatie/laravel-mobile-pass/pull/22
+* Fix: emit backFields for StoreCard and Coupon passes by @Alibaghaee in https://github.com/spatie/laravel-mobile-pass/pull/20
+
+### New Contributors
+
+* @injektion made their first contribution in https://github.com/spatie/laravel-mobile-pass/pull/18
+* @MattiaMarchiorato made their first contribution in https://github.com/spatie/laravel-mobile-pass/pull/23
+* @BrookeDot made their first contribution in https://github.com/spatie/laravel-mobile-pass/pull/22
+* @Alibaghaee made their first contribution in https://github.com/spatie/laravel-mobile-pass/pull/20
+
+**Full Changelog**: https://github.com/spatie/laravel-mobile-pass/compare/1.0.0...1.0.1
+
 ## 1.0.0 - 2026-04-23
 
 **Full Changelog**: https://github.com/spatie/laravel-mobile-pass/compare/0.2.0...1.0.0
