@@ -11,8 +11,8 @@ If you want to see finished passes first, the [live demo](https://mobile-pass-de
 
 Grab credentials for the platform(s) you want to support. Each walkthrough lists the environment variables you need to set:
 
-- [Getting credentials from Apple](getting-credentials-from-apple)
-- [Getting credentials from Google](getting-credentials-from-google)
+- [Getting credentials from Apple](../getting-credentials-from-apple)
+- [Getting credentials from Google](../getting-credentials-from-google)
 
 If you want to link passes to a user (or any other model) so you can look them up later, add the `HasMobilePasses` trait to that model:
 
