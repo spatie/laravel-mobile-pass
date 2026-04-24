@@ -25,6 +25,7 @@ class GenericPassBuilder extends ApplePassBuilder
                     'secondaryFields' => $this->secondaryFields?->values()->toArray(),
                     'headerFields' => $this->headerFields?->values()->toArray(),
                     'auxiliaryFields' => $this->auxiliaryFields?->values()->toArray(),
+                    'backFields' => $this->backFields?->values()->toArray(),
                 ]),
             ],
         );
