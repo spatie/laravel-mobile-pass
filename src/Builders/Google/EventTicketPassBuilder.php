@@ -2,6 +2,7 @@
 
 namespace Spatie\LaravelMobilePass\Builders\Google;
 
+use Spatie\LaravelMobilePass\Builders\Google\Entities\LocalizedString;
 use Spatie\LaravelMobilePass\Builders\Google\Validators\EventTicketObjectValidator;
 use Spatie\LaravelMobilePass\Builders\Google\Validators\GooglePassObjectValidator;
 use Spatie\LaravelMobilePass\Enums\PassType;
@@ -12,11 +13,11 @@ class EventTicketPassBuilder extends GooglePassBuilder
 
     protected ?string $attendeeName = null;
 
-    protected ?string $section = null;
+    protected ?LocalizedString $section = null;
 
-    protected ?string $row = null;
+    protected ?LocalizedString $row = null;
 
-    protected ?string $seat = null;
+    protected ?LocalizedString $seat = null;
 
     protected static function validator(): GooglePassObjectValidator
     {
@@ -40,12 +41,13 @@ class EventTicketPassBuilder extends GooglePassBuilder
         return $this;
     }
 
-    public function setSection(string $section): self
+    public function setSection(string $section, string $language = 'en-US'): self
     {
-        $this->section = $section;
-
+        $this->section = LocalizedString::of($section, $language);
+        
         return $this;
     }
+
 
     public function setRow(string $row): self
     {
@@ -65,10 +67,11 @@ class EventTicketPassBuilder extends GooglePassBuilder
     protected function compileData(): array
     {
         $seatInfo = $this->filterEmpty([
-            'section' => $this->section,
-            'row' => $this->row,
-            'seat' => $this->seat,
+            'section' => $this->section?->toArray(),
+            'row' => $this->row?->toArray(),
+            'seat' => $this->seat?->toArray(),
         ]);
+
 
         return $this->filterEmpty([
             'ticketHolderName' => $this->attendeeName,
