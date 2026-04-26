@@ -27,7 +27,9 @@ it('saves the expected payload to Google', function () {
     Http::assertSent(function ($request) {
         expect($request['id'])->toBe('3388.ts-2026');
         expect($request['eventName']['defaultValue']['value'])->toBe('The Eras Tour');
+        expect($request['eventName']['defaultValue']['language'])->toBe('en-US');
         expect($request['venue']['name']['defaultValue']['value'])->toBe('King Baudouin Stadium');
+        expect($request['venue']['name']['defaultValue']['language'])->toBe('en-US');
         expect($request['logo']['sourceUri']['uri'])->toBe('https://cdn.example.com/logo.png');
 
         return true;

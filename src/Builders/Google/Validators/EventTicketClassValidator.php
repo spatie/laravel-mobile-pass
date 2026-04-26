@@ -11,6 +11,7 @@ class EventTicketClassValidator extends GooglePassClassValidator
             'issuerName' => ['nullable', 'string'],
             'eventName' => ['required', 'array'],
             'eventName.defaultValue.value' => ['required', 'string'],
+            'eventName.defaultValue.language' => ['required', 'string'],
             'venue' => ['nullable', 'array'],
             'venue.name' => ['nullable', 'array'],
             'venue.address' => ['nullable', 'array'],
