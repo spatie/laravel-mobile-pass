@@ -44,21 +44,20 @@ class EventTicketPassBuilder extends GooglePassBuilder
     public function setSection(string $section, string $language = 'en-US'): self
     {
         $this->section = LocalizedString::of($section, $language);
-        
-        return $this;
-    }
-
-
-    public function setRow(string $row): self
-    {
-        $this->row = $row;
 
         return $this;
     }
 
-    public function setSeat(string $seat): self
+    public function setRow(string $row, string $language = 'en-US'): self
     {
-        $this->seat = $seat;
+        $this->row = LocalizedString::of($row, $language);
+
+        return $this;
+    }
+
+    public function setSeat(string $seat, string $language = 'en-US'): self
+    {
+        $this->seat = LocalizedString::of($seat, $language);
 
         return $this;
     }
@@ -71,7 +70,6 @@ class EventTicketPassBuilder extends GooglePassBuilder
             'row' => $this->row?->toArray(),
             'seat' => $this->seat?->toArray(),
         ]);
-
 
         return $this->filterEmpty([
             'ticketHolderName' => $this->attendeeName,

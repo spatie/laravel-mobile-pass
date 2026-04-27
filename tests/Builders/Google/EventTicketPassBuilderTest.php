@@ -35,9 +35,9 @@ it('creates a MobilePass row and POSTs the object to Google', function () {
         expect($request['classId'])->toBe('3388.ts-2026');
         expect($request['id'])->toBe('3388.john');
         expect($request['ticketHolderName'])->toBe('John Smith');
-        expect($request['seatInfo']['section'])->toBe('B12');
-        expect($request['seatInfo']['row'])->toBe('8');
-        expect($request['seatInfo']['seat'])->toBe('22');
+        expect($request['seatInfo']['section'])->toBe(['defaultValue' => ['language' => 'en-US', 'value' => 'B12']]);
+        expect($request['seatInfo']['row'])->toBe(['defaultValue' => ['language' => 'en-US', 'value' => '8']]);
+        expect($request['seatInfo']['seat'])->toBe(['defaultValue' => ['language' => 'en-US', 'value' => '22']]);
         expect($request['barcode']['type'])->toBe('QR_CODE');
         expect($request['barcode']['value'])->toBe('TS-JS');
 
