@@ -2,6 +2,19 @@
 
 All notable changes to `laravel-mobile-pass` will be documented in this file.
 
+## 1.0.2 - 2026-04-27
+
+### What's Changed
+
+* Include language to payload of Google EventTicketClass by @niekbr in https://github.com/spatie/laravel-mobile-pass/pull/26
+* Update EventTicketPassBuilder.php by @MattiaMarchiorato in https://github.com/spatie/laravel-mobile-pass/pull/24
+
+### New Contributors
+
+* @niekbr made their first contribution in https://github.com/spatie/laravel-mobile-pass/pull/26
+
+**Full Changelog**: https://github.com/spatie/laravel-mobile-pass/compare/1.0.1...1.0.2
+
 ## 1.0.1 - 2026-04-24
 
 ### What's Changed
