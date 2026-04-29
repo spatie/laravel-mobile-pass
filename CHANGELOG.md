@@ -2,6 +2,14 @@
 
 All notable changes to `laravel-mobile-pass` will be documented in this file.
 
+## 1.0.3 - 2026-04-29
+
+### What's Changed
+
+* Fix #28: hash certificate contents in cached temp filename by @freekmurze in https://github.com/spatie/laravel-mobile-pass/pull/29
+
+**Full Changelog**: https://github.com/spatie/laravel-mobile-pass/compare/1.0.2...1.0.3
+
 ## 1.0.2 - 2026-04-27
 
 ### What's Changed
