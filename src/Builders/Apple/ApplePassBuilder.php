@@ -420,7 +420,9 @@ abstract class ApplePassBuilder
             return self::appleConfig('certificate_path');
         }
 
-        $path = sys_get_temp_dir().'/LaravelMobilePass.p12';
+        $hash = md5($contents);
+
+        $path = sys_get_temp_dir()."/LaravelMobilePass-{$hash}.p12";
 
         if (file_exists($path)) {
             return $path;
