@@ -2,6 +2,14 @@
 
 All notable changes to `laravel-mobile-pass` will be documented in this file.
 
+## 1.0.4 - 2026-05-01
+
+### What's Changed
+
+* fill timeStyle on re-hydration by @niekbr in https://github.com/spatie/laravel-mobile-pass/pull/31
+
+**Full Changelog**: https://github.com/spatie/laravel-mobile-pass/compare/1.0.3...1.0.4
+
 ## 1.0.3 - 2026-04-29
 
 ### What's Changed
