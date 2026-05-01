@@ -58,6 +58,7 @@ class FieldContent implements Arrayable
         $fieldContent->currencyCode = $fields['currencyCode'] ?? null;
         $fieldContent->dataDetectorType = ! empty($fields['dataDetectorTypes']) ? DataDetectorType::tryFrom($fields['dataDetectorTypes']) : null;
         $fieldContent->dateStyle = ! empty($fields['dateStyle']) ? DateType::tryFrom($fields['dateStyle']) : null;
+        $fieldContent->timeStyle = ! empty($fields['timeStyle']) ? TimeStyleType::tryFrom($fields['timeStyle']) : null;
         $fieldContent->ignoresTimezone = $fields['ignoresTimezone'] ?? null;
         $fieldContent->isRelative = $fields['isRelative'] ?? null;
         $fieldContent->textAlignment = ! empty($fields['textAlignment']) ? TextAlignmentType::tryFrom($fields['textAlignment']) : null;

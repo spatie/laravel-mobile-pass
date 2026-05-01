@@ -4,6 +4,8 @@ namespace Spatie\LaravelMobilePass\Tests\Feature;
 
 use Illuminate\Validation\ValidationException;
 use Spatie\LaravelMobilePass\Builders\Apple\GenericPassBuilder;
+use Spatie\LaravelMobilePass\Enums\DateType;
+use Spatie\LaravelMobilePass\Enums\TimeStyleType;
 use Spatie\LaravelMobilePass\Exceptions\InvalidPass;
 
 it('can create a mobile pass', function () {
@@ -79,4 +81,27 @@ it('keeps the serial number stable when re-hydrated', function () {
     $pass->updateField('flight-no', 'UPDATED');
     $pass->refresh();
     expect($pass->content['serialNumber'])->toBe('stable-serial-123');
+});
+
+it('keeps the data stable when re-hydrated', function () {
+    $passBuilder = GenericPassBuilder::make()
+        ->setOrganizationName('Spatie')
+        ->setDescription('Hello!')
+        ->setSerialNumber('stable-serial-123')
+        ->setIconImage(getTestSupportPath('images/spatie-thumbnail.png'))
+        ->addHeaderField('flight-no', 'EY066', label: 'Flight')
+        ->addField('date', now()->toIso8601String(), dateStyle: DateType::Medium)
+        ->addField('time', now()->toIso8601String(), timeStyle: TimeStyleType::Short);
+
+    $model = $passBuilder->save();
+
+    $builderData = $passBuilder->data();
+    $modelData = $model->builder()->data();
+
+    expect($modelData)->toBe($builderData);
+
+    $builderGenerated = $passBuilder->generate();
+    $modelGenerated = $model->generate();
+
+    expect($modelGenerated)->toBe($builderGenerated);
 });
