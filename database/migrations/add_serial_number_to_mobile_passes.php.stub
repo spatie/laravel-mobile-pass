@@ -1,0 +1,31 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::table('mobile_passes', function (Blueprint $table) {
+            $table->string('serial_number')->nullable()->after('id');
+        });
+
+        DB::table('mobile_passes')
+            ->whereNull('serial_number')
+            ->update(['serial_number' => DB::raw('id')]);
+
+        Schema::table('mobile_passes', function (Blueprint $table) {
+            $table->string('serial_number')->nullable(false)->change();
+            $table->unique('serial_number');
+        });
+
+        Schema::table('apple_mobile_pass_registrations', function (Blueprint $table) {
+            $table->dropForeign(['pass_serial']);
+            $table->string('pass_serial')->change();
+            $table->foreign('pass_serial')->references('serial_number')->on('mobile_passes');
+        });
+    }
+};

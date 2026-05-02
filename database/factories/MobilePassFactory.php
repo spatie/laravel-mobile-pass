@@ -3,6 +3,7 @@
 namespace Spatie\LaravelMobilePass\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\Image;
 use Spatie\LaravelMobilePass\Enums\Platform;
 use Spatie\LaravelMobilePass\Models\Apple\AppleMobilePassDevice;
@@ -15,7 +16,10 @@ class MobilePassFactory extends Factory
 
     public function definition(): array
     {
+        $serialNumber = (string) Str::uuid();
+
         return [
+            'serial_number' => $serialNumber,
             'builder_name' => 'generic',
             'type' => 'generic',
             'platform' => Platform::Apple,
@@ -29,7 +33,7 @@ class MobilePassFactory extends Factory
                 'webServiceURL' => '/passkit/',
                 'teamIdentifier' => '2SQU7LWHMY',
                 'description' => 'Laravel Exclusive Coupon',
-                'serialNumber' => '0195cd4a-9f78-717f-b397-59cad6b78a27',
+                'serialNumber' => $serialNumber,
                 'backgroundColor' => 'rgb(81, 35, 20)',
                 'foregroundColor' => 'rgb(255, 134, 41)',
                 'labelColor' => 'rgb(245, 235, 220)',

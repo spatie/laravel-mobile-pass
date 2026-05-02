@@ -15,7 +15,10 @@ class MobilePassServiceProvider extends PackageServiceProvider
             ->name('laravel-mobile-pass')
             ->hasConfigFile()
             ->hasRoutes('mobile-pass')
-            ->hasMigration('create_mobile_pass_tables');
+            ->hasMigrations([
+                'create_mobile_pass_tables',
+                'add_serial_number_to_mobile_passes',
+            ]);
     }
 
     public function registeringPackage(): void

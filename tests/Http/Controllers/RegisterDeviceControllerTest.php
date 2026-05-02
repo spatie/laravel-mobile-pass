@@ -15,7 +15,7 @@ it('stores the registration', function () {
     $this
         ->withoutMiddleware()
         ->postJson(route('mobile-pass.register-device', [
-            'passSerial' => $pass->getKey(),
+            'passSerial' => $pass->serial_number,
             'deviceId' => '12345',
             'passTypeId' => 'pass.com.example',
         ]), [
@@ -25,13 +25,13 @@ it('stores the registration', function () {
 
     $this->assertModelExists(AppleMobilePassDevice::class, [
         'device_id' => '12345',
-        'pass_serial' => $pass->getKey(),
+        'pass_serial' => $pass->serial_number,
         'push_token' => '12345',
     ]);
 
     $this->assertModelExists(AppleMobilePassRegistration::class, [
         'device_id' => '12345',
-        'pass_serial' => $pass->getKey(),
+        'pass_serial' => $pass->serial_number,
         'pass_type_id' => 'pass.com.example',
     ]);
 });
@@ -47,7 +47,7 @@ it('doesnt trigger a change notification to Apple', function () {
     $this
         ->withoutMiddleware()
         ->postJson(route('mobile-pass.register-device', [
-            'passSerial' => $pass->getKey(),
+            'passSerial' => $pass->serial_number,
             'deviceId' => '12345',
             'passTypeId' => 'pass.com.example',
         ]), [
@@ -61,7 +61,7 @@ it('doesnt create duplicate entries for the same device', function () {
     $this
         ->withoutMiddleware()
         ->postJson(route('mobile-pass.register-device', [
-            'passSerial' => $registration->pass->getKey(),
+            'passSerial' => $registration->pass->serial_number,
             'deviceId' => $registration->device->getKey(),
             'passTypeId' => 'pass.com.example',
         ]), [
@@ -81,7 +81,7 @@ it('fires MobilePassAdded when a new registration is created', function () {
     $this
         ->withoutMiddleware()
         ->postJson(route('mobile-pass.register-device', [
-            'passSerial' => $pass->getKey(),
+            'passSerial' => $pass->serial_number,
             'deviceId' => '12345',
             'passTypeId' => 'pass.com.example',
         ]), ['pushToken' => '12345']);
@@ -99,7 +99,7 @@ it('does not fire MobilePassAdded when the same device re-registers', function (
     $this
         ->withoutMiddleware()
         ->postJson(route('mobile-pass.register-device', [
-            'passSerial' => $registration->pass->getKey(),
+            'passSerial' => $registration->pass->serial_number,
             'deviceId' => $registration->device->getKey(),
             'passTypeId' => 'pass.com.example',
         ]), ['pushToken' => '12345']);

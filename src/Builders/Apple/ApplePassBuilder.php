@@ -441,6 +441,8 @@ abstract class ApplePassBuilder
     public function save(): MobilePass
     {
         if ($this->model) {
+            $this->serialNumber = $this->model->serial_number;
+
             $this->model->update([
                 'content' => $this->data(),
                 'images' => $this->images,
@@ -450,7 +452,12 @@ abstract class ApplePassBuilder
             return $this->model;
         }
 
+        if (empty($this->serialNumber)) {
+            $this->serialNumber = (string) Str::uuid();
+        }
+
         return MobilePass::query()->create([
+            'serial_number' => $this->serialNumber,
             'type' => $this->type->value,
             'platform' => static::platform(),
             'builder_name' => static::name(),

@@ -25,7 +25,7 @@ class AppleMobilePassRegistration extends Model
 
     public function pass(): BelongsTo
     {
-        return $this->belongsTo(Config::mobilePassModel(), 'pass_serial');
+        return $this->belongsTo(Config::mobilePassModel(), 'pass_serial', 'serial_number');
     }
 
     public function device(): BelongsTo

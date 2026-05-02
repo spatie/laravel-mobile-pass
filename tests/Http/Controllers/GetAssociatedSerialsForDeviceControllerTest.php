@@ -22,7 +22,7 @@ it('returns pass serials associated with a device', function () {
         ->assertSuccessful()
         ->assertJson([
             'serialNumbers' => [
-                $registration->pass->getKey(),
+                $registration->pass->serial_number,
             ],
         ]);
 });
@@ -71,7 +71,7 @@ it('only returns passes that have been updated since the given timestamp', funct
         ->assertSuccessful()
         ->assertJson([
             'serialNumbers' => [
-                $secondPass->getKey(),
+                $secondPass->serial_number,
             ],
         ]);
 });

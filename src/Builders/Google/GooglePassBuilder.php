@@ -125,6 +125,7 @@ abstract class GooglePassBuilder
         $mobilePassClass = Config::mobilePassModel();
 
         return $mobilePassClass::query()->create([
+            'serial_number' => $this->objectId(),
             'type' => $this->type->value,
             'platform' => Platform::Google,
             'builder_name' => static::name(),

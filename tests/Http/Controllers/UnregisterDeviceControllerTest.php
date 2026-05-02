@@ -13,7 +13,7 @@ it('deletes the registration', function () {
     $this
         ->withoutMiddleware()
         ->deleteJson(route('mobile-pass.unregister-device', [
-            'passSerial' => $registration->pass->getKey(),
+            'passSerial' => $registration->pass->serial_number,
             'deviceId' => $registration->device->getKey(),
             'passTypeId' => $registration->pass_type_id,
         ]))
@@ -28,7 +28,7 @@ it('doesnt delete the device', function () {
     $this
         ->withoutMiddleware()
         ->deleteJson(route('mobile-pass.unregister-device', [
-            'passSerial' => $registration->pass->getKey(),
+            'passSerial' => $registration->pass->serial_number,
             'deviceId' => $registration->device->getKey(),
             'passTypeId' => $registration->pass_type_id,
         ]))
@@ -58,7 +58,7 @@ it('fires MobilePassRemoved when a registration is deleted', function () {
     $this
         ->withoutMiddleware()
         ->deleteJson(route('mobile-pass.unregister-device', [
-            'passSerial' => $registration->pass->getKey(),
+            'passSerial' => $registration->pass->serial_number,
             'deviceId' => $registration->device->getKey(),
             'passTypeId' => $registration->pass_type_id,
         ]));

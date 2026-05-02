@@ -16,7 +16,7 @@ class AppleMobilePassRegistrationFactory extends Factory
         return [
             'device_id' => AppleMobilePassDevice::factory(),
             'pass_type_id' => 'pass.com.example',
-            'pass_serial' => MobilePass::factory(),
+            'pass_serial' => fn () => MobilePass::factory()->create()->serial_number,
         ];
     }
 }
