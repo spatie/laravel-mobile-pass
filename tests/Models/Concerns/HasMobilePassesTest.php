@@ -90,3 +90,12 @@ it('narrows firstApplePass and firstGooglePass by pass type', function () {
     expect($this->testModel->refresh()->firstApplePass(PassType::Generic))->not()->toBeNull();
     expect($this->testModel->refresh()->firstApplePass(PassType::BoardingPass))->toBeNull();
 });
+
+it('can get the reverse relationship', function () {
+    $mobilePass = MobilePass::factory()->create();
+    $this->testModel->addMobilePass($mobilePass);
+
+    expect($mobilePass->model?->id)
+        ->not->toBeNull()
+        ->toEqual($this->testModel->id);
+});
