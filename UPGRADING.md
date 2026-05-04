@@ -1,10 +1,8 @@
-# Upgrading from v1 to v2
+# Upgrading
 
-v2 splits a pass's primary key from its serial number. In v1 the routes Apple's PassKit webservice calls (register-device, check-for-updates, unregister-device) looked up a pass by `mobile_passes.id`, but Apple sends the pass's `serialNumber` (the value baked into `pass.json`) which had no relation to the model's auto-generated UUID. Every webservice request returned 404, including for passes created via the documented `->setSerialNumber('...')` API.
+This release fixes the Apple PassKit webservice routes (#32). Previously, register-device, check-for-updates, and unregister-device looked up a `MobilePass` by its primary key, but Apple sends the value of `pass.json.serialNumber` as the `passSerial` route parameter. That value had no relation to the auto-generated UUID `id`, so every webservice request returned 404. This affected all installs, including those following the documented `->setSerialNumber('...')` API.
 
-In v2 there is a new `mobile_passes.pass_serial` column. It holds the value passed to `->setSerialNumber('...')` (or a UUID when none is set), and that is what the webservice routes look up. `mobile_passes.id` keeps the same UUID it had in v1 and stays opaque, so it remains safe to expose via route model binding (e.g. when building a REST API on top of `MobilePass`).
-
-The `apple_mobile_pass_registrations.pass_serial` column has also been renamed to `mobile_pass_id` to reflect what it actually stores: a foreign key to `mobile_passes.id`.
+The fix introduces a dedicated `pass_serial` column on `mobile_passes` and renames `apple_mobile_pass_registrations.pass_serial` to `mobile_pass_id` (which always referenced the pass's id, not the serial). `mobile_passes.id` keeps the same UUID and stays opaque, so it remains safe to expose via route model binding.
 
 ## Run the migration below
 
@@ -49,12 +47,12 @@ return new class extends Migration
 };
 ```
 
-## Update relations and queries that joined on `pass_serial`
+## Update queries that joined on `pass_serial`
 
-The `apple_mobile_pass_registrations.pass_serial` column is now `mobile_pass_id` and references `mobile_passes.id` directly. Custom queries that joined on `pass_serial` need to be updated to use `mobile_pass_id`.
+Custom queries that joined `mobile_passes.id` to `apple_mobile_pass_registrations.pass_serial` need to switch to `apple_mobile_pass_registrations.mobile_pass_id` (which still references `mobile_passes.id`).
 
-Code using the package's `MobilePass::registrations()`, `MobilePass::devices()`, or `AppleMobilePassRegistration::pass()` relations does not need changes; the package wires the new keys internally.
+Code that uses the package's `MobilePass::registrations()`, `MobilePass::devices()`, or `AppleMobilePassRegistration::pass()` relations does not need changes; the package wires the new keys internally.
 
-## If you previously worked around the v1 bug
+## If you previously worked around the bug
 
-Some applications worked around the v1 bug by calling `->setSerialNumber('pending')`, then rewriting `$pass->content['serialNumber']` to `$pass->id` after `save()`. That workaround can be removed. Calling `->setSerialNumber($yourSerial)` once before `save()` now does the right thing on its own, and `$pass->pass_serial` is the value Apple will send back in webservice calls.
+Some applications worked around this bug by calling `->setSerialNumber('pending')` and then rewriting `$pass->content['serialNumber']` to `$pass->id` after `save()`. That workaround can be removed. Calling `->setSerialNumber($yourSerial)` once before `save()` now does the right thing on its own, and `$pass->pass_serial` is the value Apple will send back in webservice calls.
