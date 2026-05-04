@@ -40,12 +40,12 @@ return new class extends Migration
 
             $table->string('pass_type_id');
 
-            $table->string('pass_serial');
-            $table->foreign('pass_serial')->references('pass_serial')->on('mobile_passes');
+            $table->foreignUuid('mobile_pass_id')
+                ->constrained('mobile_passes', 'id');
 
             $table->timestamps();
 
-            $table->index(['device_id', 'pass_serial']);
+            $table->index(['device_id', 'mobile_pass_id']);
             $table->index(['device_id', 'pass_type_id']);
         });
 

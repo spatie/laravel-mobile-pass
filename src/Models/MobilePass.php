@@ -69,7 +69,7 @@ class MobilePass extends Model implements Attachable, Responsable
     {
         $modelClass = Config::appleMobilePassRegistrationModel();
 
-        return $this->hasMany($modelClass, 'pass_serial', 'pass_serial');
+        return $this->hasMany($modelClass, 'mobile_pass_id');
     }
 
     public function devices(): HasManyThrough
@@ -77,7 +77,7 @@ class MobilePass extends Model implements Attachable, Responsable
         $modelClass = Config::appleMobilePassRegistrationModel();
         $deviceModelClass = Config::appleDeviceModel();
 
-        return $this->hasManyThrough($deviceModelClass, $modelClass, 'pass_serial', 'id', 'pass_serial', 'device_id');
+        return $this->hasManyThrough($deviceModelClass, $modelClass, 'mobile_pass_id', 'id', 'id', 'device_id');
     }
 
     /** @return HasMany<GoogleMobilePassEvent, $this> */

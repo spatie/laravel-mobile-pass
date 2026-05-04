@@ -25,13 +25,12 @@ it('stores the registration', function () {
 
     $this->assertModelExists(AppleMobilePassDevice::class, [
         'device_id' => '12345',
-        'pass_serial' => $pass->pass_serial,
         'push_token' => '12345',
     ]);
 
     $this->assertModelExists(AppleMobilePassRegistration::class, [
         'device_id' => '12345',
-        'pass_serial' => $pass->pass_serial,
+        'mobile_pass_id' => $pass->getKey(),
         'pass_type_id' => 'pass.com.example',
     ]);
 });

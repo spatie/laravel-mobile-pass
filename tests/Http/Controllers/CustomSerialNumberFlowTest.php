@@ -31,7 +31,7 @@ it('lets Apple register, list, look up, and unregister a pass that uses a custom
 
     $this->assertModelExists(AppleMobilePassRegistration::class, [
         'device_id' => 'device-1',
-        'pass_serial' => $customSerial,
+        'mobile_pass_id' => $pass->getKey(),
         'pass_type_id' => 'pass.com.example',
     ]);
 

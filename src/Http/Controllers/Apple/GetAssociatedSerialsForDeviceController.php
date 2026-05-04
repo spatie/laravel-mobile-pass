@@ -22,6 +22,7 @@ class GetAssociatedSerialsForDeviceController extends Controller
 
         $registrations = $request
             ->registrationsQuery()
+            ->with('pass')
             ->when($updatedSince, fn (Builder $query) => $query->whereHas(
                 'pass',
                 fn (Builder $passQuery) => $passQuery->where('updated_at', '>', $updatedSince),
@@ -47,7 +48,7 @@ class GetAssociatedSerialsForDeviceController extends Controller
 
         return [
             'lastUpdated' => $lastUpdated,
-            'serialNumbers' => $registrations->pluck('pass_serial')->all(),
+            'serialNumbers' => $registrations->pluck('pass.pass_serial')->all(),
         ];
     }
 }

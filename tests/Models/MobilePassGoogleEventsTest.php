@@ -44,7 +44,7 @@ it('isCurrentlySavedToGoogleWallet returns false when there are no events', func
 it('isCurrentlyInWallet is true for Apple passes with at least one registration', function () {
     $pass = MobilePass::factory()->create(['platform' => Platform::Apple]);
 
-    AppleMobilePassRegistration::factory()->create(['pass_serial' => $pass->pass_serial]);
+    AppleMobilePassRegistration::factory()->create(['mobile_pass_id' => $pass->getKey()]);
 
     expect($pass->isCurrentlyInWallet())->toBeTrue();
 });

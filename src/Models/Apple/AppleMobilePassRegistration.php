@@ -11,7 +11,7 @@ use Spatie\LaravelMobilePass\Support\Config;
 
 /**
  * @property string $pass_type_id
- * @property string $pass_serial
+ * @property string $mobile_pass_id
  * @property string $device_id
  * @property MobilePass $pass
  * @property AppleMobilePassDevice $device
@@ -25,7 +25,7 @@ class AppleMobilePassRegistration extends Model
 
     public function pass(): BelongsTo
     {
-        return $this->belongsTo(Config::mobilePassModel(), 'pass_serial', 'pass_serial');
+        return $this->belongsTo(Config::mobilePassModel(), 'mobile_pass_id');
     }
 
     public function device(): BelongsTo

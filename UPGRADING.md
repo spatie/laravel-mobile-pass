@@ -4,9 +4,11 @@ v2 splits a pass's primary key from its serial number. In v1 the routes Apple's 
 
 In v2 there is a new `mobile_passes.pass_serial` column. It holds the value passed to `->setSerialNumber('...')` (or a UUID when none is set), and that is what the webservice routes look up. `mobile_passes.id` keeps the same UUID it had in v1 and stays opaque, so it remains safe to expose via route model binding (e.g. when building a REST API on top of `MobilePass`).
 
+The `apple_mobile_pass_registrations.pass_serial` column has also been renamed to `mobile_pass_id` to reflect what it actually stores: a foreign key to `mobile_passes.id`.
+
 ## Run the migration below
 
-Existing UUID values in `mobile_passes.id` can satisfy `pass_serial`, so the upgrade backfills the new column from the existing `id`.
+The existing UUID values in `mobile_passes.id` populate the new `pass_serial` column, and `apple_mobile_pass_registrations.pass_serial` is renamed to `mobile_pass_id` (its values are already mobile pass ids).
 
 Create a new migration in your application and paste the following:
 
@@ -24,6 +26,11 @@ return new class extends Migration
     {
         Schema::table('apple_mobile_pass_registrations', function (Blueprint $table) {
             $table->dropForeign(['pass_serial']);
+            $table->renameColumn('pass_serial', 'mobile_pass_id');
+        });
+
+        Schema::table('apple_mobile_pass_registrations', function (Blueprint $table) {
+            $table->foreign('mobile_pass_id')->references('id')->on('mobile_passes');
         });
 
         Schema::table('mobile_passes', function (Blueprint $table) {
@@ -38,18 +45,13 @@ return new class extends Migration
             $table->string('pass_serial')->nullable(false)->change();
             $table->unique('pass_serial');
         });
-
-        Schema::table('apple_mobile_pass_registrations', function (Blueprint $table) {
-            $table->string('pass_serial')->change();
-            $table->foreign('pass_serial')->references('pass_serial')->on('mobile_passes');
-        });
     }
 };
 ```
 
-## Update relations and queries that joined on `mobile_passes.id`
+## Update relations and queries that joined on `pass_serial`
 
-The `apple_mobile_pass_registrations.pass_serial` foreign key now references `mobile_passes.pass_serial` instead of `mobile_passes.id`. Custom queries that joined `mobile_passes.id` to `apple_mobile_pass_registrations.pass_serial` need to be updated to join on `pass_serial` on both sides.
+The `apple_mobile_pass_registrations.pass_serial` column is now `mobile_pass_id` and references `mobile_passes.id` directly. Custom queries that joined on `pass_serial` need to be updated to use `mobile_pass_id`.
 
 Code using the package's `MobilePass::registrations()`, `MobilePass::devices()`, or `AppleMobilePassRegistration::pass()` relations does not need changes; the package wires the new keys internally.
 
