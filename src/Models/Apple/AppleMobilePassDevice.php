@@ -18,6 +18,8 @@ class AppleMobilePassDevice extends Model
 
     public $incrementing = false;
 
+    public $keyType = 'string';
+
     public function registrations(): HasMany
     {
         return $this->hasMany(Config::appleMobilePassRegistrationModel(), 'device_id');
