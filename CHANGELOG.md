@@ -2,6 +2,18 @@
 
 All notable changes to `laravel-mobile-pass` will be documented in this file.
 
+## 1.0.5 - 2026-05-04
+
+### What's Changed
+
+* Fix #32: route Apple webservice lookups by `pass_serial` by @freekmurze in https://github.com/spatie/laravel-mobile-pass/pull/34
+* Add reverse relationship for `MobilePass` model by https://github.com/spatie/laravel-mobile-pass/pull/35
+* Add `\$keyType = 'string'` so Apple device can resolve id by @pmartelletti in https://github.com/spatie/laravel-mobile-pass/pull/36
+
+PR #34 includes a required schema migration. See [UPGRADING.md](https://github.com/spatie/laravel-mobile-pass/blob/main/UPGRADING.md) for the paste-in migration.
+
+**Full Changelog**: https://github.com/spatie/laravel-mobile-pass/compare/1.0.4...1.0.5
+
 ## 1.0.4 - 2026-05-01
 
 ### What's Changed
