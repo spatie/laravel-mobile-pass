@@ -15,8 +15,9 @@ it('lets Apple register, list, look up, and unregister a pass that uses a custom
         ->setIconImage(getTestSupportPath('images/spatie-thumbnail.png'))
         ->save();
 
-    expect($pass->getKey())->toBe($customSerial);
+    expect($pass->pass_serial)->toBe($customSerial);
     expect($pass->content['serialNumber'])->toBe($customSerial);
+    expect($pass->getKey())->not->toBe($customSerial);
 
     // Apple registers the device for this serial
     $this
@@ -66,19 +67,20 @@ it('lets Apple register, list, look up, and unregister a pass that uses a custom
     expect(AppleMobilePassRegistration::count())->toBe(0);
 });
 
-it('falls back to a UUID id when no serial is set', function () {
+it('falls back to a UUID pass_serial when no serial is set', function () {
     $pass = CouponPassBuilder::make()
         ->setOrganizationName('Acme')
         ->setDescription('Default-serial Coupon')
         ->setIconImage(getTestSupportPath('images/spatie-thumbnail.png'))
         ->save();
 
-    expect($pass->getKey())->toBe($pass->content['serialNumber']);
+    expect($pass->pass_serial)->toBe($pass->content['serialNumber']);
+    expect($pass->getKey())->not->toBe($pass->pass_serial);
 
     $this
         ->withoutMiddleware()
         ->getJson(route('mobile-pass.check-for-updates', [
-            'passSerial' => $pass->getKey(),
+            'passSerial' => $pass->pass_serial,
             'passTypeId' => 'pass.com.example',
         ]))
         ->assertSuccessful();

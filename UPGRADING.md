@@ -1,12 +1,12 @@
 # Upgrading from v1 to v2
 
-v2 makes the pass `serialNumber` the primary key of the `mobile_passes` table. In v1 the routes Apple's PassKit webservice calls (register-device, check-for-updates, unregister-device) looked up a pass by the model's auto-generated UUID `id`, which had no relation to the `serialNumber` baked into `pass.json`. That meant every webservice request returned 404, including for passes created via the documented `->setSerialNumber('...')` API.
+v2 splits a pass's primary key from its serial number. In v1 the routes Apple's PassKit webservice calls (register-device, check-for-updates, unregister-device) looked up a pass by `mobile_passes.id`, but Apple sends the pass's `serialNumber` (the value baked into `pass.json`) which had no relation to the model's auto-generated UUID. Every webservice request returned 404, including for passes created via the documented `->setSerialNumber('...')` API.
 
-In v2, the value passed to `->setSerialNumber('...')` becomes the model's `id`. When you do not call `setSerialNumber()`, the package generates a UUID and uses it as both the id and the serial. Either way, the value Apple sends back in `passSerial` always matches a row.
+In v2 there is a new `mobile_passes.pass_serial` column. It holds the value passed to `->setSerialNumber('...')` (or a UUID when none is set), and that is what the webservice routes look up. `mobile_passes.id` keeps the same UUID it had in v1 and stays opaque, so it remains safe to expose via route model binding (e.g. when building a REST API on top of `MobilePass`).
 
 ## Run the migration below
 
-The columns `mobile_passes.id` and `apple_mobile_pass_registrations.pass_serial` change from `uuid` to `string`. Existing UUID values fit unchanged in the new string columns, so no data backfill is needed.
+Existing UUID values in `mobile_passes.id` can satisfy `pass_serial`, so the upgrade backfills the new column from the existing `id`.
 
 Create a new migration in your application and paste the following:
 
@@ -15,6 +15,7 @@ Create a new migration in your application and paste the following:
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -26,23 +27,32 @@ return new class extends Migration
         });
 
         Schema::table('mobile_passes', function (Blueprint $table) {
-            $table->string('id')->change();
+            $table->string('pass_serial')->nullable()->after('id');
+        });
+
+        DB::table('mobile_passes')
+            ->whereNull('pass_serial')
+            ->update(['pass_serial' => DB::raw('id')]);
+
+        Schema::table('mobile_passes', function (Blueprint $table) {
+            $table->string('pass_serial')->nullable(false)->change();
+            $table->unique('pass_serial');
         });
 
         Schema::table('apple_mobile_pass_registrations', function (Blueprint $table) {
             $table->string('pass_serial')->change();
-            $table->foreign('pass_serial')->references('id')->on('mobile_passes');
+            $table->foreign('pass_serial')->references('pass_serial')->on('mobile_passes');
         });
     }
 };
 ```
 
-## Drop assumptions about UUID-typed ids
+## Update relations and queries that joined on `mobile_passes.id`
 
-`mobile_passes.id` and `apple_mobile_pass_registrations.pass_serial` are now plain strings. If you had application code that type-asserted the id as a UUID (Postgres `uuid` casts, custom validation rules, type hints), allow arbitrary strings instead.
+The `apple_mobile_pass_registrations.pass_serial` foreign key now references `mobile_passes.pass_serial` instead of `mobile_passes.id`. Custom queries that joined `mobile_passes.id` to `apple_mobile_pass_registrations.pass_serial` need to be updated to join on `pass_serial` on both sides.
 
-Custom queries that joined `mobile_passes.id` to `apple_mobile_pass_registrations.pass_serial` continue to work. The relationship between those two columns has not changed, only their column type.
+Code using the package's `MobilePass::registrations()`, `MobilePass::devices()`, or `AppleMobilePassRegistration::pass()` relations does not need changes; the package wires the new keys internally.
 
 ## If you previously worked around the v1 bug
 
-Some applications worked around the v1 bug by calling `->setSerialNumber('pending')`, then rewriting `$pass->content['serialNumber']` to `$pass->id` after `save()`. That workaround can be removed. Calling `->setSerialNumber($yourSerial)` once before `save()` now does the right thing on its own.
+Some applications worked around the v1 bug by calling `->setSerialNumber('pending')`, then rewriting `$pass->content['serialNumber']` to `$pass->id` after `save()`. That workaround can be removed. Calling `->setSerialNumber($yourSerial)` once before `save()` now does the right thing on its own, and `$pass->pass_serial` is the value Apple will send back in webservice calls.

@@ -9,7 +9,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('mobile_passes', function (Blueprint $table) {
-            $table->string('id')->primary();
+            $table->uuid('id')->primary();
+
+            $table->string('pass_serial')->unique();
 
             $table->string('type');
             $table->string('platform');
@@ -39,7 +41,7 @@ return new class extends Migration
             $table->string('pass_type_id');
 
             $table->string('pass_serial');
-            $table->foreign('pass_serial')->references('id')->on('mobile_passes');
+            $table->foreign('pass_serial')->references('pass_serial')->on('mobile_passes');
 
             $table->timestamps();
 

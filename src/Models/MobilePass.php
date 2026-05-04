@@ -29,6 +29,7 @@ use Spatie\LaravelMobilePass\Support\Google\GoogleJwtSigner;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
+ * @property string $pass_serial
  * @property string $builder_name
  * @property Platform $platform
  * @property array $images
@@ -68,7 +69,7 @@ class MobilePass extends Model implements Attachable, Responsable
     {
         $modelClass = Config::appleMobilePassRegistrationModel();
 
-        return $this->hasMany($modelClass, 'pass_serial');
+        return $this->hasMany($modelClass, 'pass_serial', 'pass_serial');
     }
 
     public function devices(): HasManyThrough
@@ -76,7 +77,7 @@ class MobilePass extends Model implements Attachable, Responsable
         $modelClass = Config::appleMobilePassRegistrationModel();
         $deviceModelClass = Config::appleDeviceModel();
 
-        return $this->hasManyThrough($deviceModelClass, $modelClass, 'pass_serial', 'id', 'id', 'device_id');
+        return $this->hasManyThrough($deviceModelClass, $modelClass, 'pass_serial', 'id', 'pass_serial', 'device_id');
     }
 
     /** @return HasMany<GoogleMobilePassEvent, $this> */
