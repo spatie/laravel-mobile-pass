@@ -441,6 +441,8 @@ abstract class ApplePassBuilder
     public function save(): MobilePass
     {
         if ($this->model) {
+            $this->serialNumber = $this->model->pass_serial;
+
             $this->model->update([
                 'content' => $this->data(),
                 'images' => $this->images,
@@ -450,11 +452,14 @@ abstract class ApplePassBuilder
             return $this->model;
         }
 
+        $content = $this->data();
+
         return MobilePass::query()->create([
+            'pass_serial' => $this->serialNumber,
             'type' => $this->type->value,
             'platform' => static::platform(),
             'builder_name' => static::name(),
-            'content' => $this->data(),
+            'content' => $content,
             'images' => $this->images,
             'download_name' => $this->downloadName,
         ]);

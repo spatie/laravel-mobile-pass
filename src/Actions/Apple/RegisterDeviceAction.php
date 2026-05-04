@@ -22,7 +22,6 @@ class RegisterDeviceAction
         $registration = $pass->registrations()->firstOrCreate([
             'device_id' => $device->getKey(),
             'pass_type_id' => $passTypeId,
-            'pass_serial' => $passSerial,
         ]);
 
         if ($registration->wasRecentlyCreated) {
@@ -36,7 +35,9 @@ class RegisterDeviceAction
     {
         $mobilePassModel = Config::mobilePassModel();
 
-        return $mobilePassModel::query()->findOrFail($passSerial);
+        return $mobilePassModel::query()
+            ->where('pass_serial', $passSerial)
+            ->firstOrFail();
     }
 
     protected function device(string $deviceId, string $pushToken): AppleMobilePassDevice
