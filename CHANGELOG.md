@@ -2,6 +2,18 @@
 
 All notable changes to `laravel-mobile-pass` will be documented in this file.
 
+## 1.1.0 - 2026-05-05
+
+### What's Changed
+
+* Add support for remote images by @chatisk in https://github.com/spatie/laravel-mobile-pass/pull/38
+
+### New Contributors
+
+* @chatisk made their first contribution in https://github.com/spatie/laravel-mobile-pass/pull/38
+
+**Full Changelog**: https://github.com/spatie/laravel-mobile-pass/compare/1.0.5...1.1.0
+
 ## 1.0.5 - 2026-05-04
 
 ### What's Changed
