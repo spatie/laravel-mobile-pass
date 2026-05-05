@@ -9,8 +9,13 @@ class Image
     public function __construct(
         public string $x1Path,
         public ?string $x2Path = null,
-        public ?string $x3Path = null
+        public ?string $x3Path = null,
+        public bool $isRemote = false,
     ) {
+        if ($this->isRemote) {
+            return;
+        }
+
         self::assertFileExists($x1Path);
 
         if ($x2Path !== null) {
@@ -30,13 +35,22 @@ class Image
         return new self($x1Path, $x2Path, $x3Path);
     }
 
-    /** @param  array<string, string|null>  $image */
+    public static function makeRemote(
+        string $x1Url,
+        ?string $x2Url = null,
+        ?string $x3Url = null,
+    ): self {
+        return new self($x1Url, $x2Url, $x3Url, isRemote: true);
+    }
+
+    /** @param  array<string, string|bool|null>  $image */
     public static function fromArray(array $image): self
     {
         return new self(
             $image['x1Path'],
             $image['x2Path'] ?? null,
             $image['x3Path'] ?? null,
+            $image['isRemote'] ?? false,
         );
     }
 

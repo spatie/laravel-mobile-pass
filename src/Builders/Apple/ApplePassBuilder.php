@@ -140,6 +140,48 @@ abstract class ApplePassBuilder
         return $this;
     }
 
+    public function setStripImage(string $x1Path, ?string $x2Path = null, ?string $x3Path = null): self
+    {
+        $this->images['strip'] = new Image($x1Path, $x2Path, $x3Path);
+
+        return $this;
+    }
+
+    public function setThumbnailImage(string $x1Path, ?string $x2Path = null, ?string $x3Path = null): self
+    {
+        $this->images['thumbnail'] = new Image($x1Path, $x2Path, $x3Path);
+
+        return $this;
+    }
+
+    public function setRemoteLogoImage(string $x1Url, ?string $x2Url = null, ?string $x3Url = null): self
+    {
+        $this->images['logo'] = Image::makeRemote($x1Url, $x2Url, $x3Url);
+
+        return $this;
+    }
+
+    public function setRemoteIconImage(string $x1Url, ?string $x2Url = null, ?string $x3Url = null): self
+    {
+        $this->images['icon'] = Image::makeRemote($x1Url, $x2Url, $x3Url);
+
+        return $this;
+    }
+
+    public function setRemoteStripImage(string $x1Url, ?string $x2Url = null, ?string $x3Url = null): self
+    {
+        $this->images['strip'] = Image::makeRemote($x1Url, $x2Url, $x3Url);
+
+        return $this;
+    }
+
+    public function setRemoteThumbnailImage(string $x1Url, ?string $x2Url = null, ?string $x3Url = null): self
+    {
+        $this->images['thumbnail'] = Image::makeRemote($x1Url, $x2Url, $x3Url);
+
+        return $this;
+    }
+
     public function addHeaderField(
         string $key,
         string $value,
@@ -393,19 +435,21 @@ abstract class ApplePassBuilder
     {
         foreach ($this->images as $filename => $image) {
             if (! $image instanceof Image) {
-                $image = Image::make($image['x1Path'], $image['x2Path'], $image['x3Path']);
+                $image = Image::fromArray($image);
             }
 
+            $addFile = $image->isRemote ? 'addRemoteFile' : 'addFile';
+
             if ($image->x1Path) {
-                $pkPass->addFile($image->x1Path, "{$filename}.png");
+                $pkPass->{$addFile}($image->x1Path, "{$filename}.png");
             }
 
             if ($image->x2Path) {
-                $pkPass->addFile($image->x2Path, "{$filename}@2x.png");
+                $pkPass->{$addFile}($image->x2Path, "{$filename}@2x.png");
             }
 
             if ($image->x3Path) {
-                $pkPass->addFile($image->x3Path, "{$filename}@3x.png");
+                $pkPass->{$addFile}($image->x3Path, "{$filename}@3x.png");
             }
         }
 
