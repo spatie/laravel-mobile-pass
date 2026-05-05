@@ -1,11 +1,11 @@
 ---
 title: Reading stored passes
-weight: 3
+weight: 4
 ---
 
-The package contains a `PkPassReader` class that can be used to read Apple passes from a file or a string. 
+The package ships a `PkPassReader` class that reads Apple passes, either from a file or from a string.
 
-Here's how you can instantiate the `PkPassReader` class:
+Here's how you instantiate it:
 
 ```php
 use Spatie\LaravelMobilePass\Support\Apple\PkPassReader;
@@ -17,12 +17,14 @@ $reader = PkPassReader::fromFile('path/to/pass.pkpass');
 $reader = PkPassReader::fromString($passData);
 ```
 
-The `PkPassReader` class has the following methods:
+Once you have a reader, you can call:
 
-- `containingFiles()`: Returns an array of files contained in the pass.
-- `containsFile(string $filename)`: Returns a boolean indicating whether the pass contains a file with the given filename.
-- `manifestProperties()`: Returns an array of properties from the pass manifest.
-- `manifestProperty(string $key)`: Returns the value of the given property from the pass manifest.
-- `passProperties()`: Returns an array of properties from the pass.json file.
-- `passProperty(string $key)`: Returns the value of the given property from the pass.json file.
-- `toArray()`: Returns an array representation of the pass.
+- `containingFiles()`: returns an array of files contained in the pass.
+- `containsFile(string $filename)`: returns a boolean indicating whether the pass contains a file with the given filename.
+- `manifestProperties()`: returns an array of properties from the pass manifest.
+- `manifestProperty(string $key)`: returns the value of the given property from the pass manifest.
+- `passProperties()`: returns an array of properties from the pass.json file.
+- `passProperty(string $key)`: returns the value of the given property from the pass.json file.
+- `toArray()`: returns an array representation of the pass.
+
+The reader is also handy in your test suite. When you're asserting against a generated pass, pull it through `PkPassReader` and poke at the fields and manifest directly instead of eyeballing the raw bytes.

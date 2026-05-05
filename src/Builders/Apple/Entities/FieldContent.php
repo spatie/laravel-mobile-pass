@@ -10,6 +10,8 @@ use Spatie\LaravelMobilePass\Enums\TextAlignmentType;
 use Spatie\LaravelMobilePass\Enums\TimeStyleType;
 
 /**
+ * @internal Use the `add*Field` and `updateField` methods on the Apple builder.
+ *
  * https://developer.apple.com/documentation/walletpasses/passfieldcontent
  */
 class FieldContent implements Arrayable
@@ -42,9 +44,9 @@ class FieldContent implements Arrayable
         public string $key
     ) {}
 
-    public static function fromArray(array $fields): static
+    public static function fromArray(array $fields): self
     {
-        $fieldContent = new static(
+        $fieldContent = new self(
             $fields['key'],
         );
 
@@ -54,8 +56,9 @@ class FieldContent implements Arrayable
         $fieldContent->numberStyle = ! empty($fields['numberStyle']) ? NumberStyleType::tryFrom($fields['numberStyle']) : null;
         $fieldContent->changeMessage = $fields['changeMessage'] ?? null;
         $fieldContent->currencyCode = $fields['currencyCode'] ?? null;
-        $fieldContent->dataDetectorType = ! empty($fields['dataDetectorTypes']) ? DataDetectorType::tryFrom($fields['dataDetectorType']) : null;
+        $fieldContent->dataDetectorType = ! empty($fields['dataDetectorTypes']) ? DataDetectorType::tryFrom($fields['dataDetectorTypes']) : null;
         $fieldContent->dateStyle = ! empty($fields['dateStyle']) ? DateType::tryFrom($fields['dateStyle']) : null;
+        $fieldContent->timeStyle = ! empty($fields['timeStyle']) ? TimeStyleType::tryFrom($fields['timeStyle']) : null;
         $fieldContent->ignoresTimezone = $fields['ignoresTimezone'] ?? null;
         $fieldContent->isRelative = $fields['isRelative'] ?? null;
         $fieldContent->textAlignment = ! empty($fields['textAlignment']) ? TextAlignmentType::tryFrom($fields['textAlignment']) : null;
@@ -63,9 +66,9 @@ class FieldContent implements Arrayable
         return $fieldContent;
     }
 
-    public static function make(string $key): static
+    public static function make(string $key): self
     {
-        return new static(
+        return new self(
             key: $key,
         );
     }
@@ -114,7 +117,7 @@ class FieldContent implements Arrayable
 
     public function showMessageWhenChanged(string $changeMessage): self
     {
-        $this->changeMessage = $changeMessage;
+        $this->changeMessage = str_replace(':value', '%@', $changeMessage);
 
         return $this;
     }

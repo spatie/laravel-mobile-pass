@@ -2,7 +2,9 @@
 
 namespace Spatie\LaravelMobilePass\Actions\Apple;
 
+use Spatie\LaravelMobilePass\Events\MobilePassAdded;
 use Spatie\LaravelMobilePass\Models\Apple\AppleMobilePassDevice;
+use Spatie\LaravelMobilePass\Models\Apple\AppleMobilePassRegistration;
 use Spatie\LaravelMobilePass\Models\MobilePass;
 use Spatie\LaravelMobilePass\Support\Config;
 
@@ -13,41 +15,38 @@ class RegisterDeviceAction
         string $pushToken,
         string $passTypeId,
         string $passSerial,
-    ) {
+    ): AppleMobilePassRegistration {
         $pass = $this->mobilePass($passSerial);
-
         $device = $this->device($deviceId, $pushToken);
 
-        $registrationProperties = $this->registrationProperties(
-            $device, $passTypeId, $passSerial
-        );
+        $registration = $pass->registrations()->firstOrCreate([
+            'device_id' => $device->getKey(),
+            'pass_type_id' => $passTypeId,
+        ]);
 
-        return $pass->registrations()->firstOrCreate($registrationProperties);
+        if ($registration->wasRecentlyCreated) {
+            event(new MobilePassAdded($pass));
+        }
+
+        return $registration;
     }
 
     protected function mobilePass(string $passSerial): MobilePass
     {
         $mobilePassModel = Config::mobilePassModel();
 
-        return $mobilePassModel::findOrFail($passSerial);
+        return $mobilePassModel::query()
+            ->where('pass_serial', $passSerial)
+            ->firstOrFail();
     }
 
     protected function device(string $deviceId, string $pushToken): AppleMobilePassDevice
     {
         $mobilePassDeviceModel = Config::appleDeviceModel();
 
-        return $mobilePassDeviceModel::updateOrCreate(
+        return $mobilePassDeviceModel::query()->updateOrCreate(
             ['id' => $deviceId],
             ['push_token' => $pushToken],
         );
-    }
-
-    protected function registrationProperties(AppleMobilePassDevice $device, string $passTypeId, string $passSerial): array
-    {
-        return [
-            'device_id' => $device->getKey(),
-            'pass_type_id' => $passTypeId,
-            'pass_serial' => $passSerial,
-        ];
     }
 }

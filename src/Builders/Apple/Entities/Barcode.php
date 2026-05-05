@@ -15,21 +15,18 @@ class Barcode implements Arrayable
         public string $messageEncoding = 'iso-8859-1'
     ) {}
 
-    public static function make(BarcodeType $format, string $message, string $messageEncoding = 'iso-8859-1'): static
+    public static function make(BarcodeType $format, string $message, string $messageEncoding = 'iso-8859-1'): self
     {
-        return new static(
-            format: $format,
-            message: $message,
-            messageEncoding: $messageEncoding
-        );
+        return new self($format, $message, $messageEncoding);
     }
 
-    public static function fromArray(array $fields): static
+    /** @param  array<string, mixed>  $fields */
+    public static function fromArray(array $fields): self
     {
-        $barcode = new static(
+        $barcode = new self(
             BarcodeType::tryFrom($fields['format']),
             $fields['message'],
-            $fields['messageEncoding']
+            $fields['messageEncoding'],
         );
 
         $barcode->altText = $fields['altText'] ?? null;

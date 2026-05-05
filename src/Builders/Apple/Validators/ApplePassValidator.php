@@ -2,6 +2,8 @@
 
 namespace Spatie\LaravelMobilePass\Builders\Apple\Validators;
 
+use Spatie\LaravelMobilePass\Exceptions\InvalidPass;
+
 abstract class ApplePassValidator
 {
     protected function rules(): array
@@ -17,6 +19,11 @@ abstract class ApplePassValidator
             'teamIdentifier' => ['required', 'string'],
             'logoText' => ['nullable', 'string'],
             'barcode' => [],
+            'barcodes' => [],
+            'relevantDate' => [],
+            'locations' => [],
+            'maxDistance' => [],
+            'nfc' => [],
             'semantics' => [],
             'primaryFields' => [],
 
@@ -35,6 +42,12 @@ abstract class ApplePassValidator
 
     public function validate(array $compiledData): array
     {
-        return validator($compiledData, $this->rules())->validate();
+        $validator = validator($compiledData, $this->rules());
+
+        if ($validator->fails()) {
+            throw new InvalidPass($validator);
+        }
+
+        return $validator->validated();
     }
 }

@@ -3,6 +3,7 @@
 namespace Spatie\LaravelMobilePass\Support\Apple;
 
 use Illuminate\Contracts\Support\Responsable;
+use Illuminate\Http\Response;
 use Illuminate\Support\Str;
 
 class DownloadableMobilePass implements Responsable
@@ -14,16 +15,11 @@ class DownloadableMobilePass implements Responsable
         $this->downloadName = Str::beforeLast($this->downloadName, '.pkpass');
     }
 
-    protected function headers()
+    public function toResponse($request): Response
     {
-        return [
+        return response($this->passContent)->withHeaders([
             'Content-Type' => 'application/vnd.apple.pkpass',
-            'Content-Disposition' => "attachment; filename=\"{$this->downloadName}.pkpass\"",
-        ];
-    }
-
-    public function toResponse($request)
-    {
-        return response($this->passContent)->withHeaders($this->headers());
+            'Content-Disposition' => "inline; filename=\"{$this->downloadName}.pkpass\"",
+        ]);
     }
 }

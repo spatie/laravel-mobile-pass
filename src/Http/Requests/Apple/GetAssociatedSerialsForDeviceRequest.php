@@ -27,7 +27,6 @@ class GetAssociatedSerialsForDeviceRequest extends FormRequest
             return null;
         }
 
-        return Carbon::parse($this->query('passesUpdatedSince'));
-
+        return Carbon::parse($queryValue);
     }
 }

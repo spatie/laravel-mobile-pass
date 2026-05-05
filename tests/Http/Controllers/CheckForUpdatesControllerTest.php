@@ -11,7 +11,7 @@ it('returns the generated pass when no If-Modified-Since header is passed', func
     $this
         ->withoutMiddleware()
         ->getJson(route('mobile-pass.check-for-updates', [
-            'passSerial' => $pass->getKey(),
+            'passSerial' => $pass->pass_serial,
             'passTypeId' => 'pass.com.example',
         ]))
         ->assertSuccessful();
@@ -26,7 +26,7 @@ it('returns the generated pass if pass was updated after given time', function (
             'If-Modified-Since' => now()->subMinutes(5)->toRfc7231String(),
         ])
         ->getJson(route('mobile-pass.check-for-updates', [
-            'passSerial' => $pass->getKey(),
+            'passSerial' => $pass->pass_serial,
             'passTypeId' => 'pass.com.example',
         ]))
         ->assertSuccessful();
@@ -41,7 +41,7 @@ it('returns 304 if pass was not updated after given time', function () {
             'If-Modified-Since' => $pass->updated_at->toRfc7231String(),
         ])
         ->getJson(route('mobile-pass.check-for-updates', [
-            'passSerial' => $pass->getKey(),
+            'passSerial' => $pass->pass_serial,
             'passTypeId' => 'pass.com.example',
         ]))
         ->assertNotModified();
@@ -58,7 +58,7 @@ it('doesnt trigger an update to Apple', function () {
     $this
         ->withoutMiddleware()
         ->getJson(route('mobile-pass.check-for-updates', [
-            'passSerial' => $pass->getKey(),
+            'passSerial' => $pass->pass_serial,
             'passTypeId' => 'pass.com.example',
         ]))
         ->assertSuccessful();

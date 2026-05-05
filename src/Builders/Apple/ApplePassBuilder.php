@@ -2,30 +2,41 @@
 
 namespace Spatie\LaravelMobilePass\Builders\Apple;
 
-use Closure;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use PKPass\PKPass;
+use PKPass\PKPassException;
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\Barcode;
-use Spatie\LaravelMobilePass\Builders\Apple\Entities\Colour;
+use Spatie\LaravelMobilePass\Builders\Apple\Entities\Color;
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\FieldContent;
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\Image;
+use Spatie\LaravelMobilePass\Builders\Apple\Entities\Location;
+use Spatie\LaravelMobilePass\Builders\Apple\Entities\NfcPayload;
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\Price;
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\WifiNetwork;
 use Spatie\LaravelMobilePass\Builders\Apple\Validators\ApplePassValidator;
+use Spatie\LaravelMobilePass\Enums\BarcodeType;
+use Spatie\LaravelMobilePass\Enums\DateType;
+use Spatie\LaravelMobilePass\Enums\FieldType;
 use Spatie\LaravelMobilePass\Enums\PassType;
 use Spatie\LaravelMobilePass\Enums\Platform;
+use Spatie\LaravelMobilePass\Enums\TimeStyleType;
+use Spatie\LaravelMobilePass\Exceptions\InvalidCertificate;
+use Spatie\LaravelMobilePass\Exceptions\InvalidConfig;
 use Spatie\LaravelMobilePass\Models\MobilePass;
+use Spatie\LaravelMobilePass\Support\WifiUri;
 
+/**
+ * @phpstan-consistent-constructor
+ */
 abstract class ApplePassBuilder
 {
-    protected ?array $data = null;
-
     protected PassType $type;
 
     protected ?string $serialNumber = null;
 
-    protected ?string $organisationName = null;
+    protected ?string $organizationName = null;
 
     protected ?string $passTypeIdentifier = null;
 
@@ -33,11 +44,11 @@ abstract class ApplePassBuilder
 
     protected ?string $teamIdentifier = null;
 
-    protected ?Colour $backgroundColour = null;
+    protected ?Color $backgroundColor = null;
 
-    protected ?Colour $foregroundColour = null;
+    protected ?Color $foregroundColor = null;
 
-    protected ?Colour $labelColour = null;
+    protected ?Color $labelColor = null;
 
     protected ?string $description = null;
 
@@ -55,17 +66,30 @@ abstract class ApplePassBuilder
 
     protected ?Collection $backFields = null;
 
-    protected array $images = [];
+    protected ?string $downloadName = null;
 
     protected ?Barcode $barcode = null;
 
-    protected ?string $downloadName = null;
+    protected ?Carbon $relevantDate = null;
+
+    protected ?int $maxDistance = null;
+
+    /** @var array<int, Location> */
+    protected array $locations = [];
+
+    protected ?NfcPayload $nfc = null;
 
     abstract protected static function validator(): ApplePassValidator;
 
-    public static function make(array $data = [], array $images = [], ?MobilePass $model = null): static
+    public static function make(): static
     {
-        return new static($data, $images, $model);
+        return new static;
+    }
+
+    /** @internal */
+    public static function hydrate(MobilePass $model): static
+    {
+        return new static($model->content, $model->images, $model);
     }
 
     public static function name(): string
@@ -80,13 +104,19 @@ abstract class ApplePassBuilder
         return Platform::Apple;
     }
 
-    public function __construct(array $data = [], array $images = [], protected ?MobilePass $model = null)
-    {
-        $this->data = $data;
-        $this->images = $images;
+    public function __construct(
+        protected array $data = [],
+        protected array $images = [],
+        protected ?MobilePass $model = null,
+    ) {
         $this->downloadName = $model?->download_name;
 
         $this->uncompileContent();
+    }
+
+    protected static function appleConfig(string $key): mixed
+    {
+        return config("mobile-pass.apple.{$key}");
     }
 
     public function setDownloadName(string $downloadName): self
@@ -96,105 +126,188 @@ abstract class ApplePassBuilder
         return $this;
     }
 
-    public function setLogoImage(Image $image): self
+    public function setLogoImage(string $x1Path, ?string $x2Path = null, ?string $x3Path = null): self
     {
-        $this->images['logo'] = $image;
+        $this->images['logo'] = new Image($x1Path, $x2Path, $x3Path);
 
         return $this;
     }
 
-    public function setIconImage(Image $image): self
+    public function setIconImage(string $x1Path, ?string $x2Path = null, ?string $x3Path = null): self
     {
-        $this->images['icon'] = $image;
+        $this->images['icon'] = new Image($x1Path, $x2Path, $x3Path);
 
         return $this;
     }
 
-    /**
-     * Set the strip (banner) image. Displayed as a wide image across the pass.
-     * Recommended size: 375×123 pt (750×246 px @2x, 1125×369 px @3x).
-     */
-    public function setStripImage(Image $image): self
+    public function setStripImage(string $x1Path, ?string $x2Path = null, ?string $x3Path = null): self
     {
-        $this->images['strip'] = $image;
+        $this->images['strip'] = new Image($x1Path, $x2Path, $x3Path);
 
         return $this;
     }
 
-    /**
-     * Set the thumbnail image. On generic passes, shown on the right side of the header.
-     * Recommended size: 90×90 pt (180×180 px @2x, 270×270 px @3x) or 3:4 aspect.
-     */
-    public function setThumbnailImage(Image $image): self
+    public function setThumbnailImage(string $x1Path, ?string $x2Path = null, ?string $x3Path = null): self
     {
-        $this->images['thumbnail'] = $image;
+        $this->images['thumbnail'] = new Image($x1Path, $x2Path, $x3Path);
 
         return $this;
     }
 
-    public function setPrimaryFields(FieldContent ...$primaryField): self
+    public function setRemoteLogoImage(string $x1Url, ?string $x2Url = null, ?string $x3Url = null): self
     {
-        $this->primaryFields = collect($primaryField);
+        $this->images['logo'] = Image::makeRemote($x1Url, $x2Url, $x3Url);
 
         return $this;
     }
 
-    public function setSecondaryFields(FieldContent ...$secondaryField): self
+    public function setRemoteIconImage(string $x1Url, ?string $x2Url = null, ?string $x3Url = null): self
     {
-        $this->secondaryFields = collect($secondaryField);
+        $this->images['icon'] = Image::makeRemote($x1Url, $x2Url, $x3Url);
 
         return $this;
     }
 
-    public function setAuxiliaryFields(FieldContent ...$auxiliaryField): self
+    public function setRemoteStripImage(string $x1Url, ?string $x2Url = null, ?string $x3Url = null): self
     {
-        $this->auxiliaryFields = collect($auxiliaryField);
+        $this->images['strip'] = Image::makeRemote($x1Url, $x2Url, $x3Url);
 
         return $this;
     }
 
-    public function setHeaderFields(FieldContent ...$headerField): self
+    public function setRemoteThumbnailImage(string $x1Url, ?string $x2Url = null, ?string $x3Url = null): self
     {
-        $this->headerFields = collect($headerField);
+        $this->images['thumbnail'] = Image::makeRemote($x1Url, $x2Url, $x3Url);
 
         return $this;
     }
 
-    public function setBackFields(FieldContent ...$backField): self
-    {
-        $this->backFields = collect($backField);
+    public function addHeaderField(
+        string $key,
+        string $value,
+        ?string $label = null,
+        ?string $changeMessage = null,
+        ?DateType $dateStyle = null,
+        ?TimeStyleType $timeStyle = null,
+        ?bool $showDateAsRelative = null,
+    ): self {
+        return $this->addField($key, $value, FieldType::Header, $label, $changeMessage, $dateStyle, $timeStyle, $showDateAsRelative);
+    }
+
+    public function addSecondaryField(
+        string $key,
+        string $value,
+        ?string $label = null,
+        ?string $changeMessage = null,
+        ?DateType $dateStyle = null,
+        ?TimeStyleType $timeStyle = null,
+        ?bool $showDateAsRelative = null,
+    ): self {
+        return $this->addField($key, $value, FieldType::Secondary, $label, $changeMessage, $dateStyle, $timeStyle, $showDateAsRelative);
+    }
+
+    public function addAuxiliaryField(
+        string $key,
+        string $value,
+        ?string $label = null,
+        ?string $changeMessage = null,
+        ?DateType $dateStyle = null,
+        ?TimeStyleType $timeStyle = null,
+        ?bool $showDateAsRelative = null,
+    ): self {
+        return $this->addField($key, $value, FieldType::Auxiliary, $label, $changeMessage, $dateStyle, $timeStyle, $showDateAsRelative);
+    }
+
+    public function addBackField(
+        string $key,
+        string $value,
+        ?string $label = null,
+        ?string $changeMessage = null,
+        ?DateType $dateStyle = null,
+        ?TimeStyleType $timeStyle = null,
+        ?bool $showDateAsRelative = null,
+    ): self {
+        return $this->addField($key, $value, FieldType::Back, $label, $changeMessage, $dateStyle, $timeStyle, $showDateAsRelative);
+    }
+
+    public function addField(
+        string $key,
+        string $value,
+        FieldType $type = FieldType::Primary,
+        ?string $label = null,
+        ?string $changeMessage = null,
+        ?DateType $dateStyle = null,
+        ?TimeStyleType $timeStyle = null,
+        ?bool $showDateAsRelative = null,
+    ): self {
+        $field = FieldContent::make($key)
+            ->withValue($value)
+            ->withLabel($label ?? Str::headline($key));
+
+        if ($changeMessage !== null) {
+            $field->showMessageWhenChanged($changeMessage);
+        }
+
+        if ($dateStyle !== null) {
+            $field->usingDateType($dateStyle);
+        }
+
+        if ($timeStyle !== null) {
+            $field->usingTimeType($timeStyle);
+        }
+
+        if ($showDateAsRelative) {
+            $field->showDateAsRelative();
+        }
+
+        $property = $type->value;
+
+        $this->{$property} ??= collect();
+        $this->{$property}[$key] = $field;
 
         return $this;
     }
 
-    public function setBarcode(Barcode $barcode): self
-    {
-        $this->barcode = $barcode;
+    public function updateField(
+        string $key,
+        string $value,
+        ?string $changeMessage = null,
+        ?string $label = null,
+    ): self {
+        foreach (FieldType::cases() as $type) {
+            $property = $type->value;
 
-        return $this;
-    }
+            if ($this->{$property} === null) {
+                continue;
+            }
 
-    public function updateField(string $key, Closure $fieldContent)
-    {
-        $fieldTypes = [
-            'headerFields',
-            'primaryFields',
-            'secondaryFields',
-            'auxiliaryFields',
-            'backFields',
-        ];
-
-        foreach ($fieldTypes as $fieldType) {
-            $this->$fieldType = $this->$fieldType->map(function ($existingField) use ($key, $fieldContent) {
-                if ($existingField->key === $key) {
-                    return $fieldContent($existingField);
-                }
-
-                return $existingField;
-            });
+            $this->{$property} = $this->{$property}->map(
+                fn (FieldContent $field) => $field->key === $key
+                    ? $this->applyFieldUpdate($field, $value, $changeMessage, $label)
+                    : $field,
+            );
         }
 
         return $this;
+    }
+
+    protected function applyFieldUpdate(
+        FieldContent $field,
+        string $value,
+        ?string $changeMessage,
+        ?string $label,
+    ): FieldContent {
+        $field->withValue($value);
+
+        if ($changeMessage !== null) {
+            $field->showMessageWhenChanged($changeMessage);
+        }
+
+        if ($label !== null) {
+            $field->withLabel($label);
+        }
+
+        return $field;
     }
 
     public function setSerialNumber(string $serialNumber): self
@@ -204,9 +317,9 @@ abstract class ApplePassBuilder
         return $this;
     }
 
-    public function setOrganisationName(string $organisationName): self
+    public function setOrganizationName(string $organizationName): self
     {
-        $this->organisationName = $organisationName;
+        $this->organizationName = $organizationName;
 
         return $this;
     }
@@ -214,6 +327,27 @@ abstract class ApplePassBuilder
     public function setDescription(string $description): self
     {
         $this->description = $description;
+
+        return $this;
+    }
+
+    public function setBackgroundColor(string $hex): self
+    {
+        $this->backgroundColor = Color::makeFromHex($hex);
+
+        return $this;
+    }
+
+    public function setForegroundColor(string $hex): self
+    {
+        $this->foregroundColor = Color::makeFromHex($hex);
+
+        return $this;
+    }
+
+    public function setLabelColor(string $hex): self
+    {
+        $this->labelColor = Color::makeFromHex($hex);
 
         return $this;
     }
@@ -228,9 +362,71 @@ abstract class ApplePassBuilder
         return $this;
     }
 
-    public function setWifiDetails(WifiNetwork ...$wifiNetwork): self
+    public function addWifiNetwork(string $ssid, string $password): self
     {
-        $this->wifiDetails = collect($wifiNetwork);
+        $this->wifiDetails ??= collect();
+        $this->wifiDetails->push(new WifiNetwork($ssid, $password));
+
+        return $this;
+    }
+
+    public function setBarcode(BarcodeType $format, string $message, ?string $altText = null): self
+    {
+        $barcode = Barcode::make($format, $message);
+
+        if ($altText !== null) {
+            $barcode->withAltText($altText);
+        }
+
+        $this->barcode = $barcode;
+
+        return $this;
+    }
+
+    public function setWifiBarcode(
+        string $ssid,
+        ?string $password = null,
+        bool $hidden = false,
+        ?string $altText = null,
+    ): self {
+        return $this->setBarcode(
+            BarcodeType::Qr,
+            WifiUri::build($ssid, $password, $hidden),
+            $altText ?? $ssid,
+        );
+    }
+
+    public function setRelevantDate(Carbon $date): self
+    {
+        $this->relevantDate = $date;
+
+        return $this;
+    }
+
+    public function addLocation(
+        float $latitude,
+        float $longitude,
+        ?float $altitude = null,
+        ?string $relevantText = null,
+    ): self {
+        $this->locations[] = new Location($latitude, $longitude, $altitude, $relevantText);
+
+        return $this;
+    }
+
+    public function setMaxDistance(int $meters): self
+    {
+        $this->maxDistance = $meters;
+
+        return $this;
+    }
+
+    public function setNfc(
+        string $message,
+        string $encryptionPublicKey,
+        bool $requiresAuthentication = false,
+    ): self {
+        $this->nfc = new NfcPayload($message, $encryptionPublicKey, $requiresAuthentication);
 
         return $this;
     }
@@ -238,24 +434,22 @@ abstract class ApplePassBuilder
     protected function addImagesToFile(PKPass $pkPass): PKPass
     {
         foreach ($this->images as $filename => $image) {
-            // The $image Image entity could contain up to three
-            // images in different resolutions.
             if (! $image instanceof Image) {
                 $image = Image::fromArray($image);
             }
 
-            $addFileMethod = $image->isRemote ? 'addRemoteFile' : 'addFile';
+            $addFile = $image->isRemote ? 'addRemoteFile' : 'addFile';
 
             if ($image->x1Path) {
-                $pkPass->{$addFileMethod}($image->x1Path, "$filename.png");
+                $pkPass->{$addFile}($image->x1Path, "{$filename}.png");
             }
 
             if ($image->x2Path) {
-                $pkPass->{$addFileMethod}($image->x2Path, "$filename@2x.png");
+                $pkPass->{$addFile}($image->x2Path, "{$filename}@2x.png");
             }
 
             if ($image->x3Path) {
-                $pkPass->{$addFileMethod}($image->x3Path, "$filename@3x.png");
+                $pkPass->{$addFile}($image->x3Path, "{$filename}@3x.png");
             }
         }
 
@@ -264,32 +458,35 @@ abstract class ApplePassBuilder
 
     public static function getCertificatePath(): string
     {
-        if (! empty(config('mobile-pass.apple.certificate_contents'))) {
-            $path = sys_get_temp_dir().'/LaravelMobilePass.p12';
+        $contents = self::appleConfig('certificate');
 
-            if (! file_exists($path)) {
-                file_put_contents(
-                    $path,
-                    base64_decode(
-                        config('mobile-pass.apple.certificate_contents')
-                    )
-                );
-            }
+        if (empty($contents)) {
+            return self::appleConfig('certificate_path');
+        }
 
+        $hash = md5($contents);
+
+        $path = sys_get_temp_dir()."/LaravelMobilePass-{$hash}.p12";
+
+        if (file_exists($path)) {
             return $path;
         }
 
-        return config('mobile-pass.apple.certificate_path');
+        file_put_contents($path, base64_decode($contents));
+
+        return $path;
     }
 
     public static function getCertificatePassword(): string
     {
-        return config('mobile-pass.apple.certificate_password');
+        return self::appleConfig('certificate_password');
     }
 
     public function save(): MobilePass
     {
         if ($this->model) {
+            $this->serialNumber = $this->model->pass_serial;
+
             $this->model->update([
                 'content' => $this->data(),
                 'images' => $this->images,
@@ -299,11 +496,14 @@ abstract class ApplePassBuilder
             return $this->model;
         }
 
-        return MobilePass::create([
+        $content = $this->data();
+
+        return MobilePass::query()->create([
+            'pass_serial' => $this->serialNumber,
             'type' => $this->type->value,
             'platform' => static::platform(),
             'builder_name' => static::name(),
-            'content' => $this->data(),
+            'content' => $content,
             'images' => $this->images,
             'download_name' => $this->downloadName,
         ]);
@@ -311,41 +511,42 @@ abstract class ApplePassBuilder
 
     public function data(): array
     {
-        if (empty($this->organisationName)) {
-            $this->setOrganisationName(
-                config('mobile-pass.apple.organisation_name')
-            );
+        $configuredOrganizationName = self::appleConfig('organization_name');
+
+        if (empty($this->organizationName)) {
+            if (! empty($configuredOrganizationName)) {
+                $this->setOrganizationName($configuredOrganizationName);
+            }
         }
 
-        // Remove any null keys or keys where the value is an empty array.
-        // TODO: do this recursively.
+        if (empty($this->serialNumber)) {
+            $this->serialNumber = (string) Str::uuid();
+        }
+
         $compiledData = array_filter(
             $this->compileData(),
-            fn ($value) => ! empty($value)
+            fn ($value) => ! empty($value),
         );
 
-        $data = $this->validator()->validate(
-            $compiledData
-        );
-
-        // The icon image is always required.
-        // TODO: validate this.
-
-        return $data;
+        return $this->validator()->validate($compiledData);
     }
 
-    public function generate()
+    public function generate(): string
     {
-        $pkPass = new PKPass(
-            self::getCertificatePath(),
-            self::getCertificatePassword(),
-        );
+        try {
+            $pkPass = new PKPass(
+                self::getCertificatePath(),
+                self::getCertificatePassword(),
+            );
 
-        $pkPass->setData($this->data());
+            $pkPass->setData($this->data());
 
-        $this->addImagesToFile($pkPass);
+            $this->addImagesToFile($pkPass);
 
-        return $pkPass->create(output: false);
+            return $pkPass->create(output: false);
+        } catch (PKPassException $exception) {
+            throw InvalidCertificate::fromPkPassException($exception);
+        }
     }
 
     protected function compileSemantics(): ?array
@@ -358,57 +559,127 @@ abstract class ApplePassBuilder
 
     protected function compileData(): array
     {
-        return array_merge($this->data ?? [], array_filter([
+        $barcode = $this->barcode?->toArray();
+
+        return array_merge($this->data, array_filter([
             'formatVersion' => 1,
-            'organizationName' => $this->organisationName,
-            'passTypeIdentifier' => config('mobile-pass.apple.type_identifier'),
+            'organizationName' => $this->organizationName,
+            'passTypeIdentifier' => self::appleConfig('type_identifier'),
             'serialNumber' => $this->serialNumber,
-            'authenticationToken' => config('mobile-pass.apple.webservice.secret'),
-            'teamIdentifier' => config('mobile-pass.apple.team_identifier'),
+            'authenticationToken' => self::appleConfig('webservice.secret'),
+            'webServiceURL' => $this->webServiceURL(),
+            'teamIdentifier' => self::appleConfig('team_identifier'),
             'description' => $this->description,
-            'barcode' => $this->barcode?->toArray(),
             'semantics' => $this->compileSemantics(),
+            'backgroundColor' => (string) $this->backgroundColor,
+            'foregroundColor' => (string) $this->foregroundColor,
+            'labelColor' => (string) $this->labelColor,
+            'barcode' => $barcode,
+            'barcodes' => $barcode ? [$barcode] : null,
+            'relevantDate' => $this->relevantDate?->toIso8601String(),
+            'locations' => empty($this->locations) ? null : array_map(
+                fn (Location $location) => $location->toArray(),
+                $this->locations,
+            ),
+            'maxDistance' => $this->maxDistance,
+            'nfc' => $this->nfc?->toArray(),
             'userInfo' => [
                 'passType' => $this->type->value,
             ],
         ]));
     }
 
-    protected function uncompileSemantics()
+    protected function webServiceURL(): ?string
     {
-        $this->totalPrice = ! empty($this->data['semantics']['totalPrice']) ? Price::fromArray($this->data['semantics']['totalPrice']) : null;
-        $this->wifiDetails = ! empty($this->data['semantics']['wifiAccess']) ? collect(
-            array_map(fn ($wifi) => WifiNetwork::fromArray($wifi), $this->data['semantics']['wifiAccess'])
-        ) : null;
+        $host = $this->resolveWebServiceHost();
+
+        if ($host === null) {
+            return null;
+        }
+
+        return rtrim($host, '/').'/passkit';
+    }
+
+    protected function resolveWebServiceHost(): ?string
+    {
+        $configuredHost = self::appleConfig('webservice.host');
+
+        if (is_string($configuredHost)) {
+            if ($configuredHost !== '') {
+                if (! str_starts_with($configuredHost, 'https://')) {
+                    throw InvalidConfig::webserviceHostMustBeHttps($configuredHost);
+                }
+
+                return $configuredHost;
+            }
+        }
+
+        $appUrl = (string) config('app.url');
+
+        if (! str_starts_with($appUrl, 'https://')) {
+            return null;
+        }
+
+        return $appUrl;
+    }
+
+    protected function uncompileSemantics(): void
+    {
+        $semantics = $this->data['semantics'] ?? [];
+
+        $this->totalPrice = empty($semantics['totalPrice'])
+            ? null
+            : Price::fromArray($semantics['totalPrice']);
+
+        $this->wifiDetails = empty($semantics['wifiAccess'])
+            ? null
+            : collect($semantics['wifiAccess'])->map(fn (array $wifi) => WifiNetwork::fromArray($wifi));
     }
 
     protected function uncompileContent(): void
     {
-        $this->organisationName = $this->data['organizationName'] ?? null;
+        $this->organizationName = $this->data['organizationName'] ?? null;
         $this->passTypeIdentifier = $this->data['passTypeIdentifier'] ?? null;
+        $this->serialNumber = $this->data['serialNumber'] ?? null;
         $this->authenticationToken = $this->data['authenticationToken'] ?? null;
         $this->teamIdentifier = $this->data['teamIdentifier'] ?? null;
         $this->description = $this->data['description'] ?? null;
-        $this->backgroundColour = Colour::makeFromRgbString($this->data['backgroundColor'] ?? null);
-        $this->foregroundColour = Colour::makeFromRgbString($this->data['foregroundColor'] ?? null);
-        $this->labelColour = Colour::makeFromRgbString($this->data['labelColor'] ?? null);
+        $this->backgroundColor = Color::makeFromRgbString($this->data['backgroundColor'] ?? null);
+        $this->foregroundColor = Color::makeFromRgbString($this->data['foregroundColor'] ?? null);
+        $this->labelColor = Color::makeFromRgbString($this->data['labelColor'] ?? null);
+
+        $this->barcode = empty($this->data['barcode'])
+            ? null
+            : Barcode::fromArray($this->data['barcode']);
+
+        $this->relevantDate = empty($this->data['relevantDate'])
+            ? null
+            : Carbon::parse($this->data['relevantDate']);
+
+        $this->locations = array_map(
+            fn (array $location) => Location::fromArray($location),
+            $this->data['locations'] ?? [],
+        );
+
+        $this->maxDistance = $this->data['maxDistance'] ?? null;
+
+        $this->nfc = empty($this->data['nfc'])
+            ? null
+            : NfcPayload::fromArray($this->data['nfc']);
 
         $this->uncompileSemantics();
-        $this->barcode = ! empty($this->data['barcode']) ? Barcode::fromArray($this->data['barcode']) : null;
 
-        $this->uncompileFieldSet('headerFields');
-        $this->uncompileFieldSet('primaryFields');
-        $this->uncompileFieldSet('secondaryFields');
-        $this->uncompileFieldSet('auxiliaryFields');
-        $this->uncompileFieldSet('backFields');
+        foreach (FieldType::cases() as $fieldType) {
+            $this->uncompileFieldSet($fieldType->value);
+        }
     }
 
     protected function uncompileFieldSet(string $fieldSetName): void
     {
-        $this->$fieldSetName = collect();
+        $this->{$fieldSetName} = collect();
 
         foreach ($this->data[$this->type->value][$fieldSetName] ?? [] as $field) {
-            $this->$fieldSetName[$field['key']] = FieldContent::fromArray($field);
+            $this->{$fieldSetName}[$field['key']] = FieldContent::fromArray($field);
         }
     }
 }

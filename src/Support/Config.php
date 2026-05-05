@@ -2,32 +2,72 @@
 
 namespace Spatie\LaravelMobilePass\Support;
 
+use Spatie\LaravelMobilePass\Builders\Apple\AirlinePassBuilder;
 use Spatie\LaravelMobilePass\Builders\Apple\ApplePassBuilder;
+use Spatie\LaravelMobilePass\Builders\Apple\BoardingPassBuilder as AppleBoardingPassBuilder;
+use Spatie\LaravelMobilePass\Builders\Apple\CouponPassBuilder;
+use Spatie\LaravelMobilePass\Builders\Apple\EventTicketPassBuilder as AppleEventTicketPassBuilder;
+use Spatie\LaravelMobilePass\Builders\Apple\GenericPassBuilder as AppleGenericPassBuilder;
+use Spatie\LaravelMobilePass\Builders\Apple\StoreCardPassBuilder;
+use Spatie\LaravelMobilePass\Builders\Google\BoardingPassBuilder as GoogleBoardingPassBuilder;
+use Spatie\LaravelMobilePass\Builders\Google\EventTicketPassBuilder as GoogleEventTicketPassBuilder;
+use Spatie\LaravelMobilePass\Builders\Google\GenericPassBuilder as GoogleGenericPassBuilder;
 use Spatie\LaravelMobilePass\Builders\Google\GooglePassBuilder;
+use Spatie\LaravelMobilePass\Builders\Google\LoyaltyPassBuilder;
+use Spatie\LaravelMobilePass\Builders\Google\OfferPassBuilder;
 use Spatie\LaravelMobilePass\Enums\Platform;
 use Spatie\LaravelMobilePass\Exceptions\InvalidConfig;
 use Spatie\LaravelMobilePass\Models\Apple\AppleMobilePassDevice;
 use Spatie\LaravelMobilePass\Models\Apple\AppleMobilePassRegistration;
+use Spatie\LaravelMobilePass\Models\Google\GoogleMobilePassEvent;
 use Spatie\LaravelMobilePass\Models\MobilePass;
 
 class Config
 {
-    /** @return class-string<\Spatie\LaravelMobilePass\Models\MobilePass> */
+    /** @return array<string, array<string, class-string>> */
+    protected static function defaultBuilders(): array
+    {
+        return [
+            'apple' => [
+                'airline' => AirlinePassBuilder::class,
+                'boarding' => AppleBoardingPassBuilder::class,
+                'coupon' => CouponPassBuilder::class,
+                'event_ticket' => AppleEventTicketPassBuilder::class,
+                'generic' => AppleGenericPassBuilder::class,
+                'store_card' => StoreCardPassBuilder::class,
+            ],
+            'google' => [
+                'boarding' => GoogleBoardingPassBuilder::class,
+                'event_ticket' => GoogleEventTicketPassBuilder::class,
+                'generic' => GoogleGenericPassBuilder::class,
+                'loyalty' => LoyaltyPassBuilder::class,
+                'offer' => OfferPassBuilder::class,
+            ],
+        ];
+    }
+
+    /** @return class-string<MobilePass> */
     public static function mobilePassModel(): string
     {
         return self::getModelClass('mobile_pass', MobilePass::class);
     }
 
-    /** @return class-string<\Spatie\LaravelMobilePass\Models\MobilePass> */
+    /** @return class-string<AppleMobilePassRegistration> */
     public static function appleMobilePassRegistrationModel(): string
     {
         return self::getModelClass('apple_mobile_pass_registration', AppleMobilePassRegistration::class);
     }
 
-    /** @return class-string<\Spatie\LaravelMobilePass\Models\Apple\AppleMobilePassDevice> */
+    /** @return class-string<AppleMobilePassDevice> */
     public static function appleDeviceModel(): string
     {
         return self::getModelClass('apple_mobile_pass_device', AppleMobilePassDevice::class);
+    }
+
+    /** @return class-string<GoogleMobilePassEvent> */
+    public static function googleMobilePassEventModel(): string
+    {
+        return self::getModelClass('google_mobile_pass_event', GoogleMobilePassEvent::class);
     }
 
     protected static function getModelClass(string $modelName, string $defaultClass): string
@@ -56,15 +96,13 @@ class Config
         return $actionClass;
     }
 
-    /** @return class-string<\Spatie\LaravelMobilePass\Builders\Apple\ApplePassBuilder|\Spatie\LaravelMobilePass\Builders\Google\GooglePassBuilder> */
+    /** @return class-string<ApplePassBuilder|GooglePassBuilder> */
     public static function getPassBuilderClass(string $passBuilderName, Platform $platform): string
     {
-        $passBuilderClass = config("mobile-pass.builders.{$platform->value}.{$passBuilderName}");
+        $configuredClass = config("mobile-pass.builders.{$platform->value}.{$passBuilderName}");
+        $defaultClass = self::defaultBuilders()[$platform->value][$passBuilderName] ?? null;
 
-        $classToExtend = match ($platform) {
-            Platform::Apple => ApplePassBuilder::class,
-            Platform::Google => GooglePassBuilder::class,
-        };
+        $passBuilderClass = $configuredClass ?? $defaultClass;
 
         if (! $passBuilderClass) {
             throw InvalidConfig::passBuilderNotRegistered($passBuilderName, $platform);
@@ -73,6 +111,11 @@ class Config
         if (! class_exists($passBuilderClass)) {
             throw InvalidConfig::passBuilderNotFound($passBuilderName, $passBuilderClass);
         }
+
+        $classToExtend = match ($platform) {
+            Platform::Apple => ApplePassBuilder::class,
+            Platform::Google => GooglePassBuilder::class,
+        };
 
         if (! is_a($passBuilderClass, $classToExtend, true)) {
             throw InvalidConfig::invalidPassBuilderClass($passBuilderName, $passBuilderClass, $platform);

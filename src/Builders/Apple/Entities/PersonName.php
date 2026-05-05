@@ -24,7 +24,7 @@ class PersonName implements Arrayable
         ?string $nameSuffix = null,
         ?string $nickname = null,
         ?string $phoneticRepresentation = null
-    ): static {
+    ): self {
         return new self(
             familyName: $familyName,
             givenName: $givenName,
@@ -36,7 +36,8 @@ class PersonName implements Arrayable
         );
     }
 
-    public static function fromArray(array $values): static
+    /** @param  array<string, mixed>  $values */
+    public static function fromArray(array $values): self
     {
         return new self(
             familyName: $values['familyName'] ?? null,

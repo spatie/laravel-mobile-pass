@@ -10,7 +10,9 @@ class CheckForUpdatesRequest extends FormRequest
 {
     public function mobilePass(): MobilePass
     {
-        return MobilePass::findOrFail($this->route('passSerial'));
+        return MobilePass::query()
+            ->where('pass_serial', $this->route('passSerial'))
+            ->firstOrFail();
     }
 
     public function lastModifiedSinceHeaderValue(): ?Carbon

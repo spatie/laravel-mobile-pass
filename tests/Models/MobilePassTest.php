@@ -18,7 +18,7 @@ it('can return a downloadable pass', function (?string $customName) {
         ->get('test')
         ->assertSuccessful()
         ->assertHeader('Content-Type', 'application/vnd.apple.pkpass')
-        ->assertDownload("{$expectedName}.pkpass");
+        ->assertHeader('Content-Disposition', "inline; filename=\"{$expectedName}.pkpass\"");
 })->with([
     null,
     'customName',
@@ -37,7 +37,7 @@ it('implements responsible and uses download_name as the download name', functio
         ->get('test')
         ->assertSuccessful()
         ->assertHeader('Content-Type', 'application/vnd.apple.pkpass')
-        ->assertDownload("{$expectedName}.pkpass");
+        ->assertHeader('Content-Disposition', "inline; filename=\"{$expectedName}.pkpass\"");
 })->with([
     null,
     'customName',

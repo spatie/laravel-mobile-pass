@@ -1,52 +1,22 @@
 <?php
 
 use Spatie\LaravelMobilePass\Builders\Apple\AirlinePassBuilder;
-use Spatie\LaravelMobilePass\Builders\Apple\Entities\FieldContent;
-use Spatie\LaravelMobilePass\Builders\Apple\Entities\Image;
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\Seat;
 
 it('builds a basic airline boarding pass', function () {
     $airlinePassBuilder = AirlinePassBuilder::make()
-        ->setOrganisationName('My organisation')
+        ->setOrganizationName('My organization')
         ->setSerialNumber(123456)
         ->setDescription('Hello!')
-        ->setHeaderFields(
-            FieldContent::make('flight-no')
-                ->withLabel('Flight')
-                ->withValue('EY066'),
-            FieldContent::make('seat')
-                ->withLabel('Seat')
-                ->withValue('66F')
-        )
-        ->setPrimaryFields(
-            FieldContent::make('departure')
-                ->withLabel('Abu Dhabi International')
-                ->withValue('ABU'),
-            FieldContent::make('destination')
-                ->withLabel('London Heathrow')
-                ->withValue('LHR'),
-        )
-        ->setSecondaryFields(
-            FieldContent::make('name')
-                ->withLabel('Name')
-                ->withValue('Dan Johnson'),
-            FieldContent::make('gate')
-                ->withLabel('Gate')
-                ->withValue('D68')
-        )
-        ->setAuxiliaryFields(
-            FieldContent::make('departs')
-                ->withLabel('Departs')
-                ->withValue(now()->toIso8601String()),
-            FieldContent::make('class')
-                ->withLabel('Class')
-                ->withValue('Economy'),
-        )
-        ->setIconImage(
-            Image::make(
-                x1Path: getTestSupportPath('images/spatie-thumbnail.png')
-            )
-        )
+        ->addHeaderField('flight-no', 'EY066', label: 'Flight')
+        ->addHeaderField('seat', '66F')
+        ->addField('departure', 'ABU', label: 'Abu Dhabi International')
+        ->addField('destination', 'LHR', label: 'London Heathrow')
+        ->addSecondaryField('name', 'Dan Johnson')
+        ->addSecondaryField('gate', 'D68')
+        ->addAuxiliaryField('departs', now()->toIso8601String())
+        ->addAuxiliaryField('class', 'Economy')
+        ->setIconImage(getTestSupportPath('images/spatie-thumbnail.png'))
 
         // Now set the semantic fields.
         ->setDepartureAirportCode('AUH')
@@ -67,11 +37,12 @@ it('builds a basic airline boarding pass', function () {
     $mobilePass = $airlinePassBuilder->save();
 
     // second save, model gets updated
-    $mobilePass
-        ->airlinePassBuilder()
-        ->setSeats(Seat::make(
-            number: '123DAN',
-        ))->save();
+    /** @var AirlinePassBuilder $rebuilder */
+    $rebuilder = $mobilePass->builder();
+
+    $rebuilder
+        ->setSeats(Seat::make(number: '123DAN'))
+        ->save();
 
     expect($mobilePass->generate())->toMatchMobilePassSnapshot();
 });

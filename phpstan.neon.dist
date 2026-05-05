@@ -7,6 +7,13 @@ parameters:
         - src
         - config
         - database
+    bootstrapFiles:
+        - phpstan-stubs.php
     tmpDir: build/phpstan
     checkOctaneCompatibility: true
     checkModelProperties: true
+    ignoreErrors:
+        - identifier: larastan.noEnvCallsOutsideOfConfig
+          path: config/mobile-pass.php
+        - identifier: trait.unused
+          path: src/Models/Concerns/HasMobilePasses.php

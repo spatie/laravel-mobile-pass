@@ -14,9 +14,7 @@ class PkPassReader implements Arrayable
 
     public static function fromFile(string $path): self
     {
-        $content = file_get_contents($path);
-
-        return self::fromString($content);
+        return self::fromString(file_get_contents($path));
     }
 
     public static function fromString(string $content): self
@@ -35,16 +33,13 @@ class PkPassReader implements Arrayable
         $this->contentZip->open($this->tempFile);
     }
 
+    /** @return array<int, string> */
     public function containingFiles(): array
     {
-        if ($this->contentZip->numFiles === 0) {
-            return [];
-        }
-
         $files = [];
 
-        foreach (range(0, $this->contentZip->numFiles - 1) as $i) {
-            $files[] = $this->contentZip->getNameIndex($i);
+        for ($index = 0; $index < $this->contentZip->numFiles; $index++) {
+            $files[] = $this->contentZip->getNameIndex($index);
         }
 
         return $files;
@@ -77,15 +72,13 @@ class PkPassReader implements Arrayable
 
     protected function getJsonProperties(string $fileName, ?string $key = null): mixed
     {
-        $json = $this->contentZip->getFromName($fileName);
+        $properties = json_decode($this->contentZip->getFromName($fileName), true);
 
-        $properties = json_decode($json, true);
-
-        if ($key) {
-            $properties = Arr::get($properties, $key);
+        if ($key === null) {
+            return $properties;
         }
 
-        return $properties;
+        return Arr::get($properties, $key);
     }
 
     public function __destruct()

@@ -1,5 +1,3 @@
-**IN DEVELOPMENT: DO NOT USE IN PRODUCTION (YET)**
-
 # Generate mobile passes for iOS and Android
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/spatie/laravel-mobile-pass.svg?style=flat-square)](https://packagist.org/packages/spatie/laravel-mobile-pass)
@@ -7,7 +5,7 @@
 [![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/spatie/laravel-mobile-pass/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/spatie/laravel-mobile-pass/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
 [![Total Downloads](https://img.shields.io/packagist/dt/spatie/laravel-mobile-pass.svg?style=flat-square)](https://packagist.org/packages/spatie/laravel-mobile-pass)
 
-Using this package you can generate mobile passes for Apple Wallet. Possible use cases are boarding passes, event tickets, coupons, store cards, membership cards, gift cards etc.
+Using this package you can generate mobile passes for Apple Wallet and Google Wallet. Possible use cases are boarding passes, event tickets, coupons, store cards, membership cards, gift cards etc.
 
 You can even push out updates to issued passes, making sure that they are always up-to-date on your users devices.
 
@@ -19,7 +17,11 @@ And here's an example of a coupon.
 
 ![coupon](https://github.com/spatie/laravel-mobile-pass/blob/main/docs/images/coupon.jpg?raw=true)
 
-This package has been made in collaboration with [Dan Johnson](DanJohnson.xyz).
+## Try it live
+
+A live demo of the package runs at [mobile-pass-demo.spatie.be](https://mobile-pass-demo.spatie.be). Generate every pass type, install it on your iPhone, and push a live update to your device. Source: [spatie/laravel-mobile-pass-demo](https://github.com/spatie/laravel-mobile-pass-demo).
+
+This package has been made in collaboration with [Dan Johnson](https://github.com/danjohnson95).
 
 ## Support us
 
@@ -54,7 +56,7 @@ Please review [our security policy](../../security/policy) on how to report secu
 ## Credits
 
 - [Dan Johnson](https://github.com/danjohnson95)
-- [Freek Van der Herten](https//github.com/freekmurze)
+- [Freek Van der Herten](https://github.com/freekmurze)
 - [All Contributors](../../contributors)
 
 ## License

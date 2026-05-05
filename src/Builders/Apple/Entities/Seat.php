@@ -22,7 +22,7 @@ class Seat implements Arrayable
         ?string $row = null,
         ?string $section = null,
         ?string $type = null,
-    ): static {
+    ): self {
         return new self(
             description: $description,
             identifier: $identifier,
@@ -33,7 +33,8 @@ class Seat implements Arrayable
         );
     }
 
-    public static function fromArray(array $values): static
+    /** @param  array<string, mixed>  $values */
+    public static function fromArray(array $values): self
     {
         return new self(
             description: $values['description'] ?? null,

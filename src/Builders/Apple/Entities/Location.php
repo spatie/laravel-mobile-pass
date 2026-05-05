@@ -7,33 +7,39 @@ use Illuminate\Contracts\Support\Arrayable;
 class Location implements Arrayable
 {
     public function __construct(
-        public string $latitude,
-        public string $longitude
+        public float $latitude,
+        public float $longitude,
+        public ?float $altitude = null,
+        public ?string $relevantText = null,
     ) {}
 
     public static function make(
         float $latitude,
-        float $longitude
-    ): static {
-        return new self(
-            latitude: $latitude,
-            longitude: $longitude,
-        );
+        float $longitude,
+        ?float $altitude = null,
+        ?string $relevantText = null,
+    ): self {
+        return new self($latitude, $longitude, $altitude, $relevantText);
     }
 
-    public static function fromArray(array $values)
+    /** @param  array<string, mixed>  $values */
+    public static function fromArray(array $values): self
     {
         return new self(
-            latitude: $values['latitude'],
-            longitude: $values['longitude'],
+            (float) $values['latitude'],
+            (float) $values['longitude'],
+            isset($values['altitude']) ? (float) $values['altitude'] : null,
+            $values['relevantText'] ?? null,
         );
     }
 
     public function toArray(): array
     {
-        return [
+        return array_filter([
             'latitude' => $this->latitude,
             'longitude' => $this->longitude,
-        ];
+            'altitude' => $this->altitude,
+            'relevantText' => $this->relevantText,
+        ], fn ($value) => $value !== null);
     }
 }

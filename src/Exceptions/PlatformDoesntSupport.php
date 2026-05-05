@@ -5,10 +5,10 @@ namespace Spatie\LaravelMobilePass\Exceptions;
 use Exception;
 use Spatie\LaravelMobilePass\Enums\Platform;
 
-class PlatformDoesntSupport extends Exception
+class PlatformDoesntSupport extends Exception implements MobilePassException
 {
-    public static function cannotDownload(Platform $platform)
+    public static function cannotUpdateFields(Platform $platform): self
     {
-        return new static("Platform {$platform->value} doesn't support downloading passes.");
+        return new self("Platform {$platform->value} doesn't support updating fields by key. Use the platform-specific builder instead.");
     }
 }

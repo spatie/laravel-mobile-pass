@@ -1,6 +1,7 @@
 <?php
 
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\Image;
+use Spatie\LaravelMobilePass\Exceptions\ImageNotFound;
 
 it('builds a basic Image entity', function () {
     $image = Image::make(
@@ -17,7 +18,7 @@ it('throws an exception when the image does not exist', function () {
     Image::make(
         getTestSupportPath('images/non-existing.png')
     );
-})->throws(InvalidArgumentException::class, 'File not found at path: '.getTestSupportPath('images/non-existing.png'));
+})->throws(ImageNotFound::class, 'No image file found at path `'.getTestSupportPath('images/non-existing.png').'`.');
 
 it('allows building a remote Image without local files', function () {
     $image = Image::makeRemote(

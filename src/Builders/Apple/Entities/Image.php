@@ -2,6 +2,8 @@
 
 namespace Spatie\LaravelMobilePass\Builders\Apple\Entities;
 
+use Spatie\LaravelMobilePass\Exceptions\ImageNotFound;
+
 class Image
 {
     public function __construct(
@@ -10,16 +12,18 @@ class Image
         public ?string $x3Path = null,
         public bool $isRemote = false,
     ) {
-        if (! $this->isRemote && ! file_exists($x1Path)) {
-            throw new \InvalidArgumentException("File not found at path: {$x1Path}");
+        if ($this->isRemote) {
+            return;
         }
 
-        if (! $this->isRemote && $x2Path && ! file_exists($x2Path)) {
-            throw new \InvalidArgumentException("File not found at path: {$x2Path}");
+        self::assertFileExists($x1Path);
+
+        if ($x2Path !== null) {
+            self::assertFileExists($x2Path);
         }
 
-        if (! $this->isRemote && $x3Path && ! file_exists($x3Path)) {
-            throw new \InvalidArgumentException("File not found at path: {$x3Path}");
+        if ($x3Path !== null) {
+            self::assertFileExists($x3Path);
         }
     }
 
@@ -27,36 +31,33 @@ class Image
         string $x1Path,
         ?string $x2Path = null,
         ?string $x3Path = null,
-        bool $isRemote = false,
-    ): static {
-        return new self(
-            x1Path: $x1Path,
-            x2Path: $x2Path,
-            x3Path: $x3Path,
-            isRemote: $isRemote,
-        );
+    ): self {
+        return new self($x1Path, $x2Path, $x3Path);
     }
 
     public static function makeRemote(
         string $x1Url,
         ?string $x2Url = null,
         ?string $x3Url = null,
-    ): static {
-        return new self(
-            x1Path: $x1Url,
-            x2Path: $x2Url,
-            x3Path: $x3Url,
-            isRemote: true,
-        );
+    ): self {
+        return new self($x1Url, $x2Url, $x3Url, isRemote: true);
     }
 
+    /** @param  array<string, string|bool|null>  $image */
     public static function fromArray(array $image): self
     {
         return new self(
-            x1Path: $image['x1Path'],
-            x2Path: $image['x2Path'] ?? null,
-            x3Path: $image['x3Path'] ?? null,
-            isRemote: $image['isRemote'] ?? false,
+            $image['x1Path'],
+            $image['x2Path'] ?? null,
+            $image['x3Path'] ?? null,
+            $image['isRemote'] ?? false,
         );
+    }
+
+    private static function assertFileExists(string $path): void
+    {
+        if (! file_exists($path)) {
+            throw ImageNotFound::atPath($path);
+        }
     }
 }

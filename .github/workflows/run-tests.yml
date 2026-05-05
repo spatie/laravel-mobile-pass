@@ -17,12 +17,14 @@ jobs:
       fail-fast: true
       matrix:
         os: [ubuntu-latest]
-        php: [8.4, 8.3]
-        laravel: [12.*]
+        php: [8.5, 8.4, 8.3]
+        laravel: [13.*, 12.*]
         stability: [prefer-stable]
         include:
           - laravel: 12.*
             testbench: 10.*
+          - laravel: 13.*
+            testbench: 11.*
 
     name: P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.stability }} - ${{ matrix.os }}
 
@@ -52,8 +54,3 @@ jobs:
 
       - name: Execute tests
         run: vendor/bin/pest --ci
-        env:
-          MOBILE_PASS_APPLE_CERTIFICATE_CONTENTS: ${{ secrets.MOBILE_PASS_APPLE_CERTIFICATE_CONTENTS }}
-          MOBILE_PASS_APPLE_CERTIFICATE_PASSWORD: ${{ secrets.MOBILE_PASS_APPLE_CERTIFICATE_PASSWORD }}
-          MOBILE_PASS_APPLE_TEAM_IDENTIFIER: ${{ secrets.MOBILE_PASS_TEAM_IDENTIFIER }}
-          MOBILE_PASS_APPLE_TYPE_IDENTIFIER: ${{ secrets.MOBILE_PASS_TYPE_IDENTIFIER }}

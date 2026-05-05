@@ -6,8 +6,16 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Spatie\LaravelMobilePass\Models\MobilePass;
 use Spatie\LaravelMobilePass\Support\Config;
 
+/**
+ * @property string $pass_type_id
+ * @property string $mobile_pass_id
+ * @property string $device_id
+ * @property MobilePass $pass
+ * @property AppleMobilePassDevice $device
+ */
 class AppleMobilePassRegistration extends Model
 {
     use HasFactory;
@@ -17,20 +25,18 @@ class AppleMobilePassRegistration extends Model
 
     public function pass(): BelongsTo
     {
-        $modelClass = Config::mobilePassModel();
-
-        return $this->belongsTo($modelClass, 'pass_serial');
+        return $this->belongsTo(Config::mobilePassModel(), 'mobile_pass_id');
     }
 
     public function device(): BelongsTo
     {
-        $modelClass = Config::appleDeviceModel();
-
-        return $this->belongsTo($modelClass, 'device_id');
+        return $this->belongsTo(Config::appleDeviceModel(), 'device_id');
     }
 
     public function appleUpdateUrl(): string
     {
-        return config('mobile-pass.apple.apple_push_base_url')."/{$this->device->push_token}";
+        $baseUrl = config('mobile-pass.apple.apple_push_base_url');
+
+        return "{$baseUrl}/{$this->device->push_token}";
     }
 }
