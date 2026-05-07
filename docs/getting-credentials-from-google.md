@@ -53,18 +53,12 @@ MOBILE_PASS_GOOGLE_KEY=ewogICJ0eXBlIjogInNlcnZpY2VfYWNjb3VudCIsCi...
 
 When both `MOBILE_PASS_GOOGLE_KEY` and `MOBILE_PASS_GOOGLE_KEY_PATH` are set, inline contents win.
 
-## Configure the callback signing key
+## Verifying save/remove callbacks
 
-When a user saves or removes a pass, Google sends a signed request to your app. To verify those requests, you need Google's public signing key.
+When a user saves or removes a pass, Google sends a signed request to your app using the [ECv2SigningOnly](https://developers.google.com/wallet/generic/use-cases/use-callbacks-for-saves-and-deletions) protocol. The package middleware verifies that signature against Google's published root keys (cached locally, refreshed when they expire), so there's no signing key to copy into your `.env`.
 
-You'll find it in the Business Console under Settings, then API access. Copy the PEM-encoded public key and set it as:
+What the middleware does need is your issuer ID — it's the `recipientId` baked into the signed payload. As long as `MOBILE_PASS_GOOGLE_ISSUER_ID` is set (see the previous section), you're done. The callback endpoint will be live at `POST /mobile-pass/passkit/v1/google/callbacks` once you call `Route::mobilePass()`.
 
-```bash
-MOBILE_PASS_GOOGLE_CALLBACK_SIGNING_KEY="-----BEGIN PUBLIC KEY-----
-MIIB...
------END PUBLIC KEY-----"
-```
+Make sure your app is allowed to make outbound HTTPS requests to `pay.google.com` so the middleware can fetch the root keys. See [Events](advanced-usage/events) for the full callback flow.
 
-Without this key, the callback route rejects every incoming request. See [Events](advanced-usage/events) for the full callback flow.
-
-The service account key and the callback signing key are both sensitive. Keep them out of version control.
+Keep the service account key out of version control.
