@@ -2,6 +2,14 @@
 
 All notable changes to `laravel-mobile-pass` will be documented in this file.
 
+## 1.2.0 - 2026-05-11
+
+### What's Changed
+
+* Switch Google callback verification to ECv2SigningOnly. by @pmartelletti in https://github.com/spatie/laravel-mobile-pass/pull/41
+
+**Full Changelog**: https://github.com/spatie/laravel-mobile-pass/compare/1.1.0...1.2.0
+
 ## 1.1.0 - 2026-05-05
 
 ### What's Changed
