@@ -66,8 +66,6 @@ return [
             'MOBILE_PASS_GOOGLE_API_BASE_URL',
             'https://walletobjects.googleapis.com/walletobjects/v1'
         ),
-
-        'callback_signing_key' => env('MOBILE_PASS_GOOGLE_CALLBACK_SIGNING_KEY'),
     ],
 
     /*

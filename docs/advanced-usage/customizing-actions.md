@@ -72,7 +72,7 @@ Runs after a `MobilePass` row is updated for a Google pass. It sends a PATCH req
 
 Default: `Spatie\LaravelMobilePass\Actions\Google\HandleGoogleCallbackAction`
 
-Runs when Google calls back to your app with a save or remove event. It resolves the `MobilePass`, stores a `GoogleMobilePassEvent` row with the raw JWT claims, then fires `MobilePassAdded` or `MobilePassRemoved`. Override to change how callbacks are recorded (say, if you want to keep them in a separate audit table) or to enrich the resolved pass before the event fires.
+Runs when Google calls back to your app with a save or remove event. The package middleware verifies the ECv2SigningOnly signature against Google's published root keys and parses the signed message into a claims array. The action resolves the `MobilePass` for the `objectId` in those claims, stores a `GoogleMobilePassEvent` row with the parsed payload, then fires `MobilePassAdded` or `MobilePassRemoved`. Override to change how callbacks are recorded (say, if you want to keep them in a separate audit table) or to enrich the resolved pass before the event fires.
 
 ## Which action to override
 

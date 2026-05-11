@@ -54,7 +54,7 @@ Http::assertSent(fn ($request) => str_contains($request->url(), '/eventTicketObj
 
 Priming the access token cache is important. Without it, the first request triggers a real call to Google's OAuth endpoint even under `Http::fake()`.
 
-To test the save/remove callbacks, sign a JWT against a throwaway keypair and post it to the callback URL. See `tests/Http/Controllers/Google/HandleCallbackControllerTest.php` for the full pattern.
+To test the save/remove callbacks, build an ECv2SigningOnly payload signed with a throwaway P-256 keypair, fake Google's root keys endpoint with the matching public key, and post the payload to the callback URL. See `tests/Http/Controllers/Google/HandleCallbackControllerTest.php` for the full pattern, and `tests/TestSupport/Google/GoogleFixtures.php` for the helpers (`generateEcKeypair`, `buildEcv2CallbackPayload`, `rootKeysResponse`) that produce a valid signed payload end to end.
 
 ## Manually verifying a pass renders
 
