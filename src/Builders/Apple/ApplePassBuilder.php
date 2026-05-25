@@ -25,6 +25,7 @@ use Spatie\LaravelMobilePass\Enums\TimeStyleType;
 use Spatie\LaravelMobilePass\Exceptions\InvalidCertificate;
 use Spatie\LaravelMobilePass\Exceptions\InvalidConfig;
 use Spatie\LaravelMobilePass\Models\MobilePass;
+use Spatie\LaravelMobilePass\Support\Config;
 use Spatie\LaravelMobilePass\Support\WifiUri;
 
 /**
@@ -498,7 +499,9 @@ abstract class ApplePassBuilder
 
         $content = $this->data();
 
-        return MobilePass::query()->create([
+        $mobilePassClass = Config::mobilePassModel();
+
+        return $mobilePassClass::query()->create([
             'pass_serial' => $this->serialNumber,
             'type' => $this->type->value,
             'platform' => static::platform(),

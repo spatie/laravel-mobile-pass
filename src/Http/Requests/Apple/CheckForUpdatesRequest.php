@@ -5,12 +5,15 @@ namespace Spatie\LaravelMobilePass\Http\Requests\Apple;
 use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
 use Spatie\LaravelMobilePass\Models\MobilePass;
+use Spatie\LaravelMobilePass\Support\Config;
 
 class CheckForUpdatesRequest extends FormRequest
 {
     public function mobilePass(): MobilePass
     {
-        return MobilePass::query()
+        $mobilePassClass = Config::mobilePassModel();
+
+        return $mobilePassClass::query()
             ->where('pass_serial', $this->route('passSerial'))
             ->firstOrFail();
     }
