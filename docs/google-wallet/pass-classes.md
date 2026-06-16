@@ -54,6 +54,29 @@ $classes = EventTicketPassClass::all();
 
 Both methods return instances with the fields Google sends back hydrated onto them.
 
+## Adding locations, links, and modules
+
+Every Google class type supports a few extra building blocks that show up on the back of the pass: geographic locations, a links module (the "main page URL" and any other URIs), text modules, and image modules. Because these are shared across all class types, the same methods are available on every Class builder.
+
+```php
+EventTicketPassClass::make('beatles-shea-1965')
+    ->setIssuerName('Fab Four Promotions')
+    ->setEventName('The Beatles | Live at Shea')
+    ->addLocation(40.7569, -73.8458)
+    ->addLink('https://fabfour.example.com', 'Official site')
+    ->addLink('tel:+15551234567')
+    ->addTextModule('Doors', 'Doors open at 18:30')
+    ->addImageModule('https://example.com/seating-chart.png', 'seating')
+    ->save();
+```
+
+- `addLocation(float $latitude, float $longitude)` adds a point to the class's `locations`.
+- `addLink(string $uri, ?string $description = null)` adds a URI to the links module. The description is optional.
+- `addTextModule(string $header, string $body, ?string $id = null)` adds a text module.
+- `addImageModule(string $imageUrl, ?string $id = null)` adds an image module. The image must be a hosted URL.
+
+Each method can be called multiple times to add more than one entry. When you fetch a class back with `find()` or `all()`, these are hydrated onto the instance and readable through `getLocations()`, `getLinks()`, `getTextModules()`, and `getImageModules()`.
+
 ## Retiring a class
 
 Google has no hard delete for classes. What you can do is call `retire()`, which flips the class's `reviewStatus` to `REJECTED`. Google will stop promoting it, but every pass you've already issued against it keeps working.
