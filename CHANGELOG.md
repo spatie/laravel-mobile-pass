@@ -2,6 +2,28 @@
 
 All notable changes to `laravel-mobile-pass` will be documented in this file.
 
+## 1.3.0 - 2026-06-16
+
+### What's new
+
+Google Wallet pass classes now support the shared building blocks that the Google Pay & Wallet console exposes: geographic locations, the links module (the "main page URL" and any other URIs), text modules, and image modules.
+
+These are available on every class type (`GenericPassClass`, `LoyaltyPassClass`, `OfferPassClass`, `EventTicketPassClass`, `BoardingPassClass`):
+
+```php
+EventTicketPassClass::make('beatles-shea-1965')
+    ->setEventName('The Beatles | Live at Shea')
+    ->addLocation(40.7569, -73.8458)
+    ->addLink('https://fabfour.example.com', 'Official site')
+    ->addTextModule('Doors', 'Doors open at 18:30')
+    ->addImageModule('https://example.com/seating-chart.png', 'seating')
+    ->save();
+
+```
+Values hydrate back when fetching a class through `find()` or `all()`, readable via `getLocations()`, `getLinks()`, `getTextModules()`, and `getImageModules()`. The change is fully backwards compatible.
+
+Implemented in #48, closes #47.
+
 ## 1.2.1 - 2026-05-25
 
 ### What's Changed
