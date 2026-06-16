@@ -201,12 +201,20 @@ abstract class GooglePassClass
     {
         return $this->filterEmpty([
             'locations' => array_map(fn (Location $location) => $location->toArray(), $this->locations),
-            'linksModuleData' => $this->links === []
-                ? []
-                : ['uris' => array_map(fn (Link $link) => $link->toArray(), $this->links)],
+            'linksModuleData' => $this->compileLinks(),
             'textModulesData' => array_map(fn (TextModule $module) => $module->toArray(), $this->textModules),
             'imageModulesData' => array_map(fn (ImageModule $module) => $module->toArray(), $this->imageModules),
         ]);
+    }
+
+    /** @return array<string, mixed> */
+    protected function compileLinks(): array
+    {
+        if ($this->links === []) {
+            return [];
+        }
+
+        return ['uris' => array_map(fn (Link $link) => $link->toArray(), $this->links)];
     }
 
     /** @param array<string, mixed> $payload */
