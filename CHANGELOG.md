@@ -2,6 +2,23 @@
 
 All notable changes to `laravel-mobile-pass` will be documented in this file.
 
+## 1.4.0 - 2026-06-19
+
+### What's new
+
+Apple pass builders can now set a background image, matching what the docs and Apple's pass spec describe for event tickets. Previously only `setStripImage` and `setThumbnailImage` were available.
+
+```php
+EventTicketPassBuilder::make()
+    // ...
+    ->setBackgroundImage(public_path('images/background.png'))
+    ->save();
+
+```
+A remote variant, `setRemoteBackgroundImage()`, is available as well. The image (along with its @2x and @3x densities) is bundled into the generated `.pkpass`.
+
+Implemented in #50, closes #49.
+
 ## 1.3.0 - 2026-06-16
 
 ### What's new
@@ -18,6 +35,7 @@ EventTicketPassClass::make('beatles-shea-1965')
     ->addTextModule('Doors', 'Doors open at 18:30')
     ->addImageModule('https://example.com/seating-chart.png', 'seating')
     ->save();
+
 
 ```
 Values hydrate back when fetching a class through `find()` or `all()`, readable via `getLocations()`, `getLinks()`, `getTextModules()`, and `getImageModules()`. The change is fully backwards compatible.
