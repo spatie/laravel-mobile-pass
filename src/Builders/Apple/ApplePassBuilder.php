@@ -155,6 +155,13 @@ abstract class ApplePassBuilder
         return $this;
     }
 
+    public function setBackgroundImage(string $x1Path, ?string $x2Path = null, ?string $x3Path = null): self
+    {
+        $this->images['background'] = new Image($x1Path, $x2Path, $x3Path);
+
+        return $this;
+    }
+
     public function setRemoteLogoImage(string $x1Url, ?string $x2Url = null, ?string $x3Url = null): self
     {
         $this->images['logo'] = Image::makeRemote($x1Url, $x2Url, $x3Url);
@@ -179,6 +186,13 @@ abstract class ApplePassBuilder
     public function setRemoteThumbnailImage(string $x1Url, ?string $x2Url = null, ?string $x3Url = null): self
     {
         $this->images['thumbnail'] = Image::makeRemote($x1Url, $x2Url, $x3Url);
+
+        return $this;
+    }
+
+    public function setRemoteBackgroundImage(string $x1Url, ?string $x2Url = null, ?string $x3Url = null): self
+    {
+        $this->images['background'] = Image::makeRemote($x1Url, $x2Url, $x3Url);
 
         return $this;
     }
