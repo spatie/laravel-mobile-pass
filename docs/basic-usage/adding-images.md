@@ -17,6 +17,12 @@ $builder
     ->setIconImage(public_path('images/icon.png'));
 ```
 
+Alongside the logo and icon, you can set a strip, thumbnail, or background image with `setStripImage()`, `setThumbnailImage()`, and `setBackgroundImage()`. The background image is rendered behind event tickets:
+
+```php
+$builder->setBackgroundImage(public_path('images/background.png'));
+```
+
 Apple renders passes at 1x, 2x, and 3x pixel densities. Providing higher-density versions gives you crisper results; pass them as extra arguments:
 
 ```php
