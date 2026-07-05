@@ -23,6 +23,7 @@ abstract class ApplePassValidator
             'relevantDate' => [],
             'locations' => [],
             'maxDistance' => [],
+            'beacons' => [],
             'nfc' => [],
             'semantics' => [],
             'primaryFields' => [],

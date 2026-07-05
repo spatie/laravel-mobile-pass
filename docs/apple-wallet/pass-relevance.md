@@ -53,6 +53,30 @@ $builder->setMaxDistance(500);
 
 Pick a radius that matches the venue: larger for an airport, tighter for a coffee shop.
 
+## Beacons
+
+Locations use GPS. For indoor precision — a specific department in a store, a stand inside a stadium — attach one or more iBeacons instead. The pass surfaces when the device comes within Bluetooth range of a beacon broadcasting a matching identifier:
+
+```php
+$builder->addBeacon(
+    proximityUUID: 'f7826da6-4fa2-4e98-8024-bc5b71e0893e',
+    relevantText: 'Show this pass at the counter',
+);
+```
+
+The optional `major` and `minor` arguments narrow the match to a specific beacon or group of beacons sharing a UUID:
+
+```php
+$builder->addBeacon(
+    proximityUUID: 'f7826da6-4fa2-4e98-8024-bc5b71e0893e',
+    major: 12, // e.g. a store
+    minor: 3,  // e.g. a department
+    relevantText: 'Welcome to the flagship store',
+);
+```
+
+Apple allows up to ten beacons per pass. Omitting `major` and `minor` makes the entry match every beacon broadcasting that UUID, so a single entry can cover an entire fleet of beacons — one per store of a retail chain, for example — sidestepping the ten-location limit. When several entries match, the system shows the `relevantText` of the most specific one.
+
 ## Combining them
 
 Relevance is strongest when a date and a location agree. A concert ticket with both the showtime and the stadium coordinates will surface before the show on the way to the venue, and drop out again once the event is over.

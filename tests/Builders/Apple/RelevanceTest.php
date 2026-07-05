@@ -64,3 +64,49 @@ it('round-trips relevance data through the uncompile path', function () {
     expect($data['locations'][0]['relevantText'])->toBe('Shea Stadium');
     expect($data['maxDistance'])->toBe(750);
 });
+
+it('serialises beacons onto the pass', function () {
+    $data = EventTicketPassBuilder::make()
+        ->setOrganizationName('Fab Four Promotions')
+        ->setSerialNumber('BTL-SHEA-0042')
+        ->setDescription('The Beatles at Shea Stadium')
+        ->addBeacon(proximityUUID: 'f7826da6-4fa2-4e98-8024-bc5b71e0893e', major: 1, minor: 42, relevantText: 'Welcome to the merch stand')
+        ->addBeacon(proximityUUID: 'e2c56db5-dffb-48d2-b060-d0f5a71096e0')
+        ->setIconImage(getTestSupportPath('images/spatie-thumbnail.png'))
+        ->data();
+
+    expect($data)->toHaveKey('beacons');
+    expect($data['beacons'])->toHaveCount(2);
+    expect($data['beacons'][0])->toMatchArray([
+        'proximityUUID' => 'f7826da6-4fa2-4e98-8024-bc5b71e0893e',
+        'major' => 1,
+        'minor' => 42,
+        'relevantText' => 'Welcome to the merch stand',
+    ]);
+    expect($data['beacons'][1])->toMatchArray([
+        'proximityUUID' => 'e2c56db5-dffb-48d2-b060-d0f5a71096e0',
+    ]);
+    expect($data['beacons'][1])->not->toHaveKeys(['major', 'minor', 'relevantText']);
+});
+
+it('round-trips beacons through the uncompile path', function () {
+    $model = MobilePass::factory()->make([
+        'builder_name' => EventTicketPassBuilder::name(),
+        'content' => [
+            'organizationName' => 'Fab Four Promotions',
+            'serialNumber' => 'BTL-SHEA-0042',
+            'description' => 'The Beatles at Shea Stadium',
+            'beacons' => [
+                ['proximityUUID' => 'f7826da6-4fa2-4e98-8024-bc5b71e0893e', 'major' => 0, 'minor' => 7, 'relevantText' => 'Merch stand'],
+            ],
+        ],
+    ]);
+
+    $data = EventTicketPassBuilder::hydrate($model)->data();
+
+    expect($data['beacons'])->toHaveCount(1);
+    expect($data['beacons'][0]['proximityUUID'])->toBe('f7826da6-4fa2-4e98-8024-bc5b71e0893e');
+    expect($data['beacons'][0]['major'])->toBe(0);
+    expect($data['beacons'][0]['minor'])->toBe(7);
+    expect($data['beacons'][0]['relevantText'])->toBe('Merch stand');
+});

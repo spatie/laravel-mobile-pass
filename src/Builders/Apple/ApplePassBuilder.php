@@ -8,6 +8,7 @@ use Illuminate\Support\Str;
 use PKPass\PKPass;
 use PKPass\PKPassException;
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\Barcode;
+use Spatie\LaravelMobilePass\Builders\Apple\Entities\Beacon;
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\Color;
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\FieldContent;
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\Image;
@@ -77,6 +78,9 @@ abstract class ApplePassBuilder
 
     /** @var array<int, Location> */
     protected array $locations = [];
+
+    /** @var array<int, Beacon> */
+    protected array $beacons = [];
 
     protected ?NfcPayload $nfc = null;
 
@@ -429,6 +433,17 @@ abstract class ApplePassBuilder
         return $this;
     }
 
+    public function addBeacon(
+        string $proximityUUID,
+        ?int $major = null,
+        ?int $minor = null,
+        ?string $relevantText = null,
+    ): self {
+        $this->beacons[] = new Beacon($proximityUUID, $major, $minor, $relevantText);
+
+        return $this;
+    }
+
     public function setMaxDistance(int $meters): self
     {
         $this->maxDistance = $meters;
@@ -599,6 +614,10 @@ abstract class ApplePassBuilder
                 $this->locations,
             ),
             'maxDistance' => $this->maxDistance,
+            'beacons' => empty($this->beacons) ? null : array_map(
+                fn (Beacon $beacon) => $beacon->toArray(),
+                $this->beacons,
+            ),
             'nfc' => $this->nfc?->toArray(),
             'userInfo' => [
                 'passType' => $this->type->value,
@@ -679,6 +698,11 @@ abstract class ApplePassBuilder
         );
 
         $this->maxDistance = $this->data['maxDistance'] ?? null;
+
+        $this->beacons = array_map(
+            fn (array $beacon) => Beacon::fromArray($beacon),
+            $this->data['beacons'] ?? [],
+        );
 
         $this->nfc = empty($this->data['nfc'])
             ? null
