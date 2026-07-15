@@ -6,6 +6,10 @@ use Illuminate\Support\Str;
 use RuntimeException;
 use Spatie\LaravelMobilePass\Actions\Google\CreateGoogleObjectAction;
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\Barcode;
+use Spatie\LaravelMobilePass\Builders\Google\Entities\Image;
+use Spatie\LaravelMobilePass\Builders\Google\Entities\ImageModule;
+use Spatie\LaravelMobilePass\Builders\Google\Entities\Link;
+use Spatie\LaravelMobilePass\Builders\Google\Entities\TextModule;
 use Spatie\LaravelMobilePass\Builders\Google\Validators\GooglePassObjectValidator;
 use Spatie\LaravelMobilePass\Enums\BarcodeType;
 use Spatie\LaravelMobilePass\Enums\PassType;
@@ -29,6 +33,15 @@ abstract class GooglePassBuilder
     protected string $state = 'ACTIVE';
 
     protected PassType $type;
+
+    /** @var array<int, Link> */
+    protected array $links = [];
+
+    /** @var array<int, TextModule> */
+    protected array $textModules = [];
+
+    /** @var array<int, ImageModule> */
+    protected array $imageModules = [];
 
     abstract protected static function validator(): GooglePassObjectValidator;
 
@@ -94,6 +107,45 @@ abstract class GooglePassBuilder
         );
     }
 
+    public function addLink(string $uri, ?string $description = null): static
+    {
+        $this->links[] = new Link($uri, $description);
+
+        return $this;
+    }
+
+    public function addTextModule(string $header, string $body, ?string $id = null): static
+    {
+        $this->textModules[] = new TextModule($header, $body, $id);
+
+        return $this;
+    }
+
+    public function addImageModule(string $imageUrl, ?string $id = null): static
+    {
+        $this->imageModules[] = new ImageModule(Image::fromUrl($imageUrl), $id);
+
+        return $this;
+    }
+
+    /** @return array<int, Link> */
+    public function getLinks(): array
+    {
+        return $this->links;
+    }
+
+    /** @return array<int, TextModule> */
+    public function getTextModules(): array
+    {
+        return $this->textModules;
+    }
+
+    /** @return array<int, ImageModule> */
+    public function getImageModules(): array
+    {
+        return $this->imageModules;
+    }
+
     public function objectId(): string
     {
         $this->objectSuffix ??= (string) Str::uuid();
@@ -147,7 +199,27 @@ abstract class GooglePassBuilder
             'classId' => $this->classId(),
             'state' => $this->state,
             'barcode' => $this->compileBarcode(),
-        ], $this->compileData()));
+        ], $this->compileData(), $this->compileModules()));
+    }
+
+    /** @return array<string, mixed> */
+    protected function compileModules(): array
+    {
+        return $this->filterEmpty([
+            'linksModuleData' => $this->compileLinks(),
+            'textModulesData' => array_map(fn (TextModule $module) => $module->toArray(), $this->textModules),
+            'imageModulesData' => array_map(fn (ImageModule $module) => $module->toArray(), $this->imageModules),
+        ]);
+    }
+
+    /** @return array<string, mixed> */
+    protected function compileLinks(): array
+    {
+        if ($this->links === []) {
+            return [];
+        }
+
+        return ['uris' => array_map(fn (Link $link) => $link->toArray(), $this->links)];
     }
 
     /** @return array<string, mixed>|null */

@@ -15,12 +15,35 @@ abstract class GooglePassObjectValidator
      */
     public function validate(array $payload): array
     {
-        $validator = validator($payload, $this->rules());
+        $validator = validator($payload, $this->rules() + $this->moduleRules());
 
         if ($validator->fails()) {
             throw new InvalidPass($validator);
         }
 
         return $validator->validated();
+    }
+
+    /**
+     * Module fields are shared by every Google object type, so they live here
+     * instead of being repeated in each object validator.
+     *
+     * @return array<string, array<int, string>>
+     */
+    protected function moduleRules(): array
+    {
+        return [
+            'linksModuleData' => ['nullable', 'array'],
+            'linksModuleData.uris' => ['nullable', 'array'],
+            'linksModuleData.uris.*.uri' => ['nullable', 'string'],
+            'linksModuleData.uris.*.description' => ['nullable', 'string'],
+            'textModulesData' => ['nullable', 'array'],
+            'textModulesData.*.header' => ['nullable', 'string'],
+            'textModulesData.*.body' => ['nullable', 'string'],
+            'textModulesData.*.id' => ['nullable', 'string'],
+            'imageModulesData' => ['nullable', 'array'],
+            'imageModulesData.*.mainImage' => ['nullable', 'array'],
+            'imageModulesData.*.id' => ['nullable', 'string'],
+        ];
     }
 }
