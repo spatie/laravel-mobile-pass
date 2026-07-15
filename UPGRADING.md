@@ -42,7 +42,7 @@ This release adds Apple Wallet i18n support via a new `locales` nullable JSON co
 **Existing installs** — publish and run the new migration:
 
 ```bash
-php artisan vendor:publish --tag="laravel-mobile-pass-migrations"
+php artisan vendor:publish --provider="Spatie\LaravelMobilePass\MobilePassServiceProvider"
 php artisan migrate
 ```
 
