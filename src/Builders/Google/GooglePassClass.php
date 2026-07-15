@@ -321,7 +321,15 @@ abstract class GooglePassClass
         }
 
         $language = $payload[$key]['defaultValue']['language'] ?? 'en-US';
+        $localized = LocalizedString::of((string) $value, (string) $language);
 
-        return LocalizedString::of((string) $value, (string) $language);
+        foreach ($payload[$key]['translatedValues'] ?? [] as $translation) {
+            $localized->addTranslation(
+                (string) $translation['language'],
+                (string) $translation['value']
+            );
+        }
+
+        return $localized;
     }
 }
