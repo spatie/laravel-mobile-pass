@@ -1,0 +1,4 @@
+laravel: '@testbench'
+
+providers:
+  - Spatie\LaravelMobilePass\MobilePassServiceProvider
