@@ -32,9 +32,17 @@ class EventTicketPassClass extends GooglePassClass
         return new EventTicketClassValidator;
     }
 
-    public function setEventName(string $value, string $language = 'en-US'): self
+    public function setEventName(LocalizedString|string $value, string $language = 'en-US'): self
     {
-        $this->eventName = LocalizedString::of($value, $language);
+        if ($value instanceof LocalizedString && $language !== 'en-US') {
+            throw new \InvalidArgumentException(
+                'Do not pass $language when $value is already a LocalizedString — set the language via LocalizedString::of() instead.'
+            );
+        }
+
+        $this->eventName = $value instanceof LocalizedString
+            ? $value
+            : LocalizedString::of($value, $language);
 
         return $this;
     }
@@ -44,16 +52,32 @@ class EventTicketPassClass extends GooglePassClass
         return $this->eventName?->defaultValue;
     }
 
-    public function setVenueName(string $value, string $language = 'en-US'): self
+    public function setVenueName(LocalizedString|string $value, string $language = 'en-US'): self
     {
-        $this->venueName = LocalizedString::of($value, $language);
+        if ($value instanceof LocalizedString && $language !== 'en-US') {
+            throw new \InvalidArgumentException(
+                'Do not pass $language when $value is already a LocalizedString — set the language via LocalizedString::of() instead.'
+            );
+        }
+
+        $this->venueName = $value instanceof LocalizedString
+            ? $value
+            : LocalizedString::of($value, $language);
 
         return $this;
     }
 
-    public function setVenueAddress(string $value, string $language = 'en-US'): self
+    public function setVenueAddress(LocalizedString|string $value, string $language = 'en-US'): self
     {
-        $this->venueAddress = LocalizedString::of($value, $language);
+        if ($value instanceof LocalizedString && $language !== 'en-US') {
+            throw new \InvalidArgumentException(
+                'Do not pass $language when $value is already a LocalizedString — set the language via LocalizedString::of() instead.'
+            );
+        }
+
+        $this->venueAddress = $value instanceof LocalizedString
+            ? $value
+            : LocalizedString::of($value, $language);
 
         return $this;
     }

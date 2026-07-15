@@ -41,23 +41,47 @@ class EventTicketPassBuilder extends GooglePassBuilder
         return $this;
     }
 
-    public function setSection(string $section, string $language = 'en-US'): self
+    public function setSection(LocalizedString|string $section, string $language = 'en-US'): self
     {
-        $this->section = LocalizedString::of($section, $language);
+        if ($section instanceof LocalizedString && $language !== 'en-US') {
+            throw new \InvalidArgumentException(
+                'Do not pass $language when $value is already a LocalizedString — set the language via LocalizedString::of() instead.'
+            );
+        }
+
+        $this->section = $section instanceof LocalizedString
+            ? $section
+            : LocalizedString::of($section, $language);
 
         return $this;
     }
 
-    public function setRow(string $row, string $language = 'en-US'): self
+    public function setRow(LocalizedString|string $row, string $language = 'en-US'): self
     {
-        $this->row = LocalizedString::of($row, $language);
+        if ($row instanceof LocalizedString && $language !== 'en-US') {
+            throw new \InvalidArgumentException(
+                'Do not pass $language when $value is already a LocalizedString — set the language via LocalizedString::of() instead.'
+            );
+        }
+
+        $this->row = $row instanceof LocalizedString
+            ? $row
+            : LocalizedString::of($row, $language);
 
         return $this;
     }
 
-    public function setSeat(string $seat, string $language = 'en-US'): self
+    public function setSeat(LocalizedString|string $seat, string $language = 'en-US'): self
     {
-        $this->seat = LocalizedString::of($seat, $language);
+        if ($seat instanceof LocalizedString && $language !== 'en-US') {
+            throw new \InvalidArgumentException(
+                'Do not pass $language when $value is already a LocalizedString — set the language via LocalizedString::of() instead.'
+            );
+        }
+
+        $this->seat = $seat instanceof LocalizedString
+            ? $seat
+            : LocalizedString::of($seat, $language);
 
         return $this;
     }

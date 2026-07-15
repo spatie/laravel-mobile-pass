@@ -32,12 +32,13 @@ it('saves the expected payload to Google', function () {
     Http::assertSent(function ($request) {
         expect($request['id'])->toBe('3388.spatie-club');
         expect($request['issuerName'])->toBe('Spatie');
-        expect($request['programName'])->toBe('Spatie Club');
+        expect($request['programName']['defaultValue']['value'])->toBe('Spatie Club');
+        expect($request['programName']['defaultValue']['language'])->toBe('en-US');
         expect($request['programLogo']['sourceUri']['uri'])->toBe('https://cdn.example.com/logo.png');
-        expect($request['rewardsTier'])->toBe('Gold');
-        expect($request['rewardsTierLabel'])->toBe('Tier');
-        expect($request['accountNameLabel'])->toBe('Member');
-        expect($request['accountIdLabel'])->toBe('Membership ID');
+        expect($request['rewardsTier']['defaultValue']['value'])->toBe('Gold');
+        expect($request['rewardsTierLabel']['defaultValue']['value'])->toBe('Tier');
+        expect($request['accountNameLabel']['defaultValue']['value'])->toBe('Member');
+        expect($request['accountIdLabel']['defaultValue']['value'])->toBe('Membership ID');
         expect($request['hexBackgroundColor'])->toBe('#000000');
 
         return true;
@@ -63,8 +64,8 @@ it('find() returns null on 404', function () {
 it('all() returns a collection hydrated from resources', function () {
     Http::fake(['*/loyaltyClass*' => Http::response([
         'resources' => [
-            ['id' => '3388.a', 'programName' => 'Club A'],
-            ['id' => '3388.b', 'programName' => 'Club B'],
+            ['id' => '3388.a', 'programName' => ['defaultValue' => ['language' => 'en-US', 'value' => 'Club A']]],
+            ['id' => '3388.b', 'programName' => ['defaultValue' => ['language' => 'en-US', 'value' => 'Club B']]],
         ],
     ], 200)]);
 

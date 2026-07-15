@@ -16,6 +16,7 @@ beforeEach(function () {
         $table->string('builder_name');
         $table->json('content');
         $table->json('images');
+        $table->json('locales')->nullable();
         $table->string('download_name')->nullable();
         $table->nullableMorphs('model');
         $table->timestamp('expired_at')->nullable();

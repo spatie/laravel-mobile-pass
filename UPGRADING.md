@@ -1,5 +1,38 @@
 # Upgrading
 
+## Google Wallet i18n — LocalizedString for Loyalty and Offer pass classes
+
+`LoyaltyPassClass` and `OfferPassClass` fields that previously serialized as plain
+strings now serialize as `LocalizedString` objects (Google Wallet's native format):
+
+| Class | Affected fields |
+|---|---|
+| `LoyaltyPassClass` | `programName`, `rewardsTier`, `rewardsTierLabel`, `accountNameLabel`, `accountIdLabel` |
+| `OfferPassClass` | `title`, `details`, `finePrint`, `provider` |
+
+**If you call `save()` on an existing pass class**, the next update to Google Wallet
+will send these fields in `LocalizedString` format. Google Wallet accepts both
+formats, so no data is lost — but if you assert on the raw API payload in your
+own tests you will need to update those assertions.
+
+Plain-string callers require no code changes:
+
+```php
+// still works — no change required
+$class->setProgramName('Spatie Club');
+```
+
+To add translations, pass a `LocalizedString` directly:
+
+```php
+$class->setProgramName(
+    LocalizedString::of('Spatie Club', 'en-US')
+        ->addTranslation('it', 'Club Spatie')
+);
+```
+
+---
+
 ## Apple Wallet Internationalization
 
 This release adds Apple Wallet i18n support via a new `locales` nullable JSON column on the `mobile_passes` table.
