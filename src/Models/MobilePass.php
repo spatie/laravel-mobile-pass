@@ -35,6 +35,7 @@ use Symfony\Component\HttpFoundation\Response;
  * @property Platform $platform
  * @property array $images
  * @property array $content
+ * @property ?array $locales
  * @property ?string $download_name
  * @property Carbon $updated_at
  * @property ?Carbon $expired_at
@@ -126,6 +127,7 @@ class MobilePass extends Model implements Attachable, Responsable
             'platform' => Platform::class,
             'content' => 'json',
             'images' => 'json',
+            'locales' => 'json',
             'expired_at' => 'datetime',
         ];
     }

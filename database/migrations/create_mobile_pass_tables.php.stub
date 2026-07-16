@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('builder_name');
             $table->json('content');
             $table->json('images');
+            $table->json('locales')->nullable();
             $table->string('download_name')->nullable();
             $table->nullableMorphs('model');
 

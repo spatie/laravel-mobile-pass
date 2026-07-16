@@ -301,6 +301,20 @@ abstract class BoardingPassBuilder extends ApplePassBuilder
         return $this;
     }
 
+    public function setLocaleFooterImage(string $language, string $x1Path, ?string $x2Path = null, ?string $x3Path = null): self
+    {
+        $this->locales[$language]['images']['footer'] = new Image($x1Path, $x2Path, $x3Path);
+
+        return $this;
+    }
+
+    public function setRemoteLocaleFooterImage(string $language, string $x1Url, ?string $x2Url = null, ?string $x3Url = null): self
+    {
+        $this->locales[$language]['images']['footer'] = Image::makeRemote($x1Url, $x2Url, $x3Url);
+
+        return $this;
+    }
+
     protected function uncompileSemantics(): void
     {
         parent::uncompileSemantics();

@@ -94,7 +94,7 @@ abstract class ApplePassBuilder
     /** @internal */
     public static function hydrate(MobilePass $model): static
     {
-        return new static($model->content, $model->images, $model);
+        return new static($model->content, $model->images, $model, $model->locales ?? []);
     }
 
     public static function name(): string
@@ -113,6 +113,7 @@ abstract class ApplePassBuilder
         protected array $data = [],
         protected array $images = [],
         protected ?MobilePass $model = null,
+        protected array $locales = [],
     ) {
         $this->downloadName = $model?->download_name;
 
@@ -451,6 +452,84 @@ abstract class ApplePassBuilder
         return $this;
     }
 
+    public function addLocaleStrings(string $language, array $strings): self
+    {
+        $existing = $this->locales[$language]['strings'] ?? [];
+        $this->locales[$language]['strings'] = array_merge($existing, $strings);
+
+        return $this;
+    }
+
+    public function setLocaleLogoImage(string $language, string $x1Path, ?string $x2Path = null, ?string $x3Path = null): self
+    {
+        $this->locales[$language]['images']['logo'] = new Image($x1Path, $x2Path, $x3Path);
+
+        return $this;
+    }
+
+    public function setLocaleIconImage(string $language, string $x1Path, ?string $x2Path = null, ?string $x3Path = null): self
+    {
+        $this->locales[$language]['images']['icon'] = new Image($x1Path, $x2Path, $x3Path);
+
+        return $this;
+    }
+
+    public function setLocaleStripImage(string $language, string $x1Path, ?string $x2Path = null, ?string $x3Path = null): self
+    {
+        $this->locales[$language]['images']['strip'] = new Image($x1Path, $x2Path, $x3Path);
+
+        return $this;
+    }
+
+    public function setLocaleThumbnailImage(string $language, string $x1Path, ?string $x2Path = null, ?string $x3Path = null): self
+    {
+        $this->locales[$language]['images']['thumbnail'] = new Image($x1Path, $x2Path, $x3Path);
+
+        return $this;
+    }
+
+    public function setLocaleBackgroundImage(string $language, string $x1Path, ?string $x2Path = null, ?string $x3Path = null): self
+    {
+        $this->locales[$language]['images']['background'] = new Image($x1Path, $x2Path, $x3Path);
+
+        return $this;
+    }
+
+    public function setRemoteLocaleLogoImage(string $language, string $x1Url, ?string $x2Url = null, ?string $x3Url = null): self
+    {
+        $this->locales[$language]['images']['logo'] = Image::makeRemote($x1Url, $x2Url, $x3Url);
+
+        return $this;
+    }
+
+    public function setRemoteLocaleIconImage(string $language, string $x1Url, ?string $x2Url = null, ?string $x3Url = null): self
+    {
+        $this->locales[$language]['images']['icon'] = Image::makeRemote($x1Url, $x2Url, $x3Url);
+
+        return $this;
+    }
+
+    public function setRemoteLocaleStripImage(string $language, string $x1Url, ?string $x2Url = null, ?string $x3Url = null): self
+    {
+        $this->locales[$language]['images']['strip'] = Image::makeRemote($x1Url, $x2Url, $x3Url);
+
+        return $this;
+    }
+
+    public function setRemoteLocaleThumbnailImage(string $language, string $x1Url, ?string $x2Url = null, ?string $x3Url = null): self
+    {
+        $this->locales[$language]['images']['thumbnail'] = Image::makeRemote($x1Url, $x2Url, $x3Url);
+
+        return $this;
+    }
+
+    public function setRemoteLocaleBackgroundImage(string $language, string $x1Url, ?string $x2Url = null, ?string $x3Url = null): self
+    {
+        $this->locales[$language]['images']['background'] = Image::makeRemote($x1Url, $x2Url, $x3Url);
+
+        return $this;
+    }
+
     public function setNfc(
         string $message,
         string $encryptionPublicKey,
@@ -484,6 +563,31 @@ abstract class ApplePassBuilder
         }
 
         return $pkPass;
+    }
+
+    protected function addLocaleDataToPass(PKPass $pkPass): void
+    {
+        foreach ($this->locales as $language => $localeData) {
+            if (! empty($localeData['strings'])) {
+                $pkPass->addLocaleStrings($language, $localeData['strings']);
+            }
+
+            foreach ($localeData['images'] ?? [] as $name => $image) {
+                if (! $image instanceof Image) {
+                    $image = Image::fromArray($image);
+                }
+                $method = $image->isRemote ? 'addLocaleRemoteFile' : 'addLocaleFile';
+                if ($image->x1Path) {
+                    $pkPass->{$method}($language, $image->x1Path, "{$name}.png");
+                }
+                if ($image->x2Path) {
+                    $pkPass->{$method}($language, $image->x2Path, "{$name}@2x.png");
+                }
+                if ($image->x3Path) {
+                    $pkPass->{$method}($language, $image->x3Path, "{$name}@3x.png");
+                }
+            }
+        }
     }
 
     public static function getCertificatePath(): string
@@ -520,6 +624,7 @@ abstract class ApplePassBuilder
             $this->model->update([
                 'content' => $this->data(),
                 'images' => $this->images,
+                'locales' => empty($this->locales) ? null : $this->locales,
                 'download_name' => $this->downloadName,
             ]);
 
@@ -537,6 +642,7 @@ abstract class ApplePassBuilder
             'builder_name' => static::name(),
             'content' => $content,
             'images' => $this->images,
+            'locales' => empty($this->locales) ? null : $this->locales,
             'download_name' => $this->downloadName,
         ]);
     }
@@ -574,6 +680,7 @@ abstract class ApplePassBuilder
             $pkPass->setData($this->data());
 
             $this->addImagesToFile($pkPass);
+            $this->addLocaleDataToPass($pkPass);
 
             return $pkPass->create(output: false);
         } catch (PKPassException $exception) {

@@ -70,6 +70,13 @@ class PkPassReader implements Arrayable
         return $this->passProperties($key);
     }
 
+    public function fileContent(string $filename): ?string
+    {
+        $content = $this->contentZip->getFromName($filename);
+
+        return $content === false ? null : $content;
+    }
+
     protected function getJsonProperties(string $fileName, ?string $key = null): mixed
     {
         $properties = json_decode($this->contentZip->getFromName($fileName), true);
