@@ -29,9 +29,17 @@ class GenericPassClass extends GooglePassClass
         return new GenericClassValidator;
     }
 
-    public function setCardTitle(string $value, string $language = 'en-US'): self
+    public function setCardTitle(LocalizedString|string $value, string $language = 'en-US'): self
     {
-        $this->cardTitle = LocalizedString::of($value, $language);
+        if ($value instanceof LocalizedString && $language !== 'en-US') {
+            throw new \InvalidArgumentException(
+                'Do not pass $language when $value is already a LocalizedString — set the language via LocalizedString::of() instead.'
+            );
+        }
+
+        $this->cardTitle = $value instanceof LocalizedString
+            ? $value
+            : LocalizedString::of($value, $language);
 
         return $this;
     }
@@ -41,16 +49,32 @@ class GenericPassClass extends GooglePassClass
         return $this->cardTitle?->defaultValue;
     }
 
-    public function setSubheader(string $value, string $language = 'en-US'): self
+    public function setSubheader(LocalizedString|string $value, string $language = 'en-US'): self
     {
-        $this->subheader = LocalizedString::of($value, $language);
+        if ($value instanceof LocalizedString && $language !== 'en-US') {
+            throw new \InvalidArgumentException(
+                'Do not pass $language when $value is already a LocalizedString — set the language via LocalizedString::of() instead.'
+            );
+        }
+
+        $this->subheader = $value instanceof LocalizedString
+            ? $value
+            : LocalizedString::of($value, $language);
 
         return $this;
     }
 
-    public function setHeader(string $value, string $language = 'en-US'): self
+    public function setHeader(LocalizedString|string $value, string $language = 'en-US'): self
     {
-        $this->header = LocalizedString::of($value, $language);
+        if ($value instanceof LocalizedString && $language !== 'en-US') {
+            throw new \InvalidArgumentException(
+                'Do not pass $language when $value is already a LocalizedString — set the language via LocalizedString::of() instead.'
+            );
+        }
+
+        $this->header = $value instanceof LocalizedString
+            ? $value
+            : LocalizedString::of($value, $language);
 
         return $this;
     }

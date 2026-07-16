@@ -51,6 +51,9 @@ class TestCase extends Orchestra
         $migration = include __DIR__.'/../database/migrations/create_mobile_pass_tables.php.stub';
         $migration->up();
 
+        $migration = include __DIR__.'/../database/migrations/add_locales_to_mobile_passes_table.php.stub';
+        $migration->up();
+
         Schema::create('test_models', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
