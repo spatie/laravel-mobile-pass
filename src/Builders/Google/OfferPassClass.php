@@ -115,11 +115,15 @@ class OfferPassClass extends GooglePassClass
     {
         return $this->filterEmpty([
             'issuerName' => $this->issuerName,
-            'title' => $this->title?->toArray(),
+            'title' => $this->title?->defaultValue,
+            'localizedTitle' => $this->title?->toArray(),
             'redemptionChannel' => $this->redemptionChannel,
-            'provider' => $this->provider?->toArray(),
-            'details' => $this->details?->toArray(),
-            'finePrint' => $this->finePrint?->toArray(),
+            'provider' => $this->provider?->defaultValue,
+            'localizedProvider' => $this->provider?->toArray(),
+            'details' => $this->details?->defaultValue,
+            'localizedDetails' => $this->details?->toArray(),
+            'finePrint' => $this->finePrint?->defaultValue,
+            'localizedFinePrint' => $this->finePrint?->toArray(),
             'logo' => $this->logo?->toArray(),
             'hexBackgroundColor' => $this->backgroundColor,
             'reviewStatus' => $this->reviewStatus,
@@ -131,10 +135,10 @@ class OfferPassClass extends GooglePassClass
     {
         $this->hydrateCommonFields($payload);
 
-        $this->title = $this->hydrateLocalizedString($payload, 'title');
-        $this->provider = $this->hydrateLocalizedString($payload, 'provider');
-        $this->details = $this->hydrateLocalizedString($payload, 'details');
-        $this->finePrint = $this->hydrateLocalizedString($payload, 'finePrint');
+        $this->title = $this->hydrateLocalizedString($payload, 'localizedTitle', 'title');
+        $this->provider = $this->hydrateLocalizedString($payload, 'localizedProvider', 'provider');
+        $this->details = $this->hydrateLocalizedString($payload, 'localizedDetails', 'details');
+        $this->finePrint = $this->hydrateLocalizedString($payload, 'localizedFinePrint', 'finePrint');
 
         if (isset($payload['redemptionChannel'])) {
             $this->redemptionChannel = (string) $payload['redemptionChannel'];

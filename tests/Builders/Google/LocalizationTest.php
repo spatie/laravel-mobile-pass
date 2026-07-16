@@ -45,6 +45,7 @@ it('hydrateLocalizedString restores translatedValues via all()', function () {
         expect($request['eventName']['translatedValues'])
             ->toHaveCount(2)
             ->toContain(['language' => 'it', 'value' => 'Concerto Rock']);
+
         return true;
     });
 });
@@ -65,6 +66,7 @@ it('EventTicketPassClass::setEventName accepts a LocalizedString with translatio
         expect($request['eventName']['defaultValue']['value'])->toBe('Rock Concert');
         expect($request['eventName']['translatedValues'])
             ->toContain(['language' => 'it', 'value' => 'Concerto Rock']);
+
         return true;
     });
 });
@@ -83,6 +85,7 @@ it('GenericPassClass::setCardTitle accepts a LocalizedString with translations',
         expect($request['cardTitle']['defaultValue']['value'])->toBe('My Card');
         expect($request['cardTitle']['translatedValues'])
             ->toContain(['language' => 'it', 'value' => 'La Mia Carta']);
+
         return true;
     });
 });
@@ -102,6 +105,7 @@ it('EventTicketPassBuilder::setSection accepts a LocalizedString with translatio
         expect($request['seatInfo']['section']['defaultValue']['value'])->toBe('Floor');
         expect($request['seatInfo']['section']['translatedValues'])
             ->toContain(['language' => 'it', 'value' => 'Platea']);
+
         return true;
     });
 });
@@ -111,17 +115,17 @@ it('EventTicketPassBuilder::setSection accepts a LocalizedString with translatio
 it('throws when LocalizedString and non-default language are both passed to setEventName', function () {
     EventTicketPassClass::make('ts-001')
         ->setEventName(LocalizedString::of('Rock Concert', 'en-US'), 'it');
-})->throws(\InvalidArgumentException::class);
+})->throws(InvalidArgumentException::class);
 
 it('throws when LocalizedString and non-default language are both passed to setCardTitle', function () {
     GenericPassClass::make('gc-001')
         ->setCardTitle(LocalizedString::of('My Card', 'en-US'), 'it');
-})->throws(\InvalidArgumentException::class);
+})->throws(InvalidArgumentException::class);
 
 it('throws when LocalizedString and non-default language are both passed to setSection', function () {
     EventTicketPassBuilder::make()
         ->setSection(LocalizedString::of('Floor', 'en-US'), 'it');
-})->throws(\InvalidArgumentException::class);
+})->throws(InvalidArgumentException::class);
 
 // --- Backward compat ---
 
@@ -136,6 +140,7 @@ it('plain string still works on setEventName', function () {
         expect($request['eventName']['defaultValue']['value'])->toBe('Rock Concert');
         expect($request['eventName']['defaultValue']['language'])->toBe('en-US');
         expect($request['eventName'])->not->toHaveKey('translatedValues');
+
         return true;
     });
 });
@@ -153,9 +158,10 @@ it('LoyaltyPassClass::setProgramName accepts a LocalizedString with translations
         ->save();
 
     Http::assertSent(function ($request) {
-        expect($request['programName']['defaultValue']['value'])->toBe('Spatie Club');
-        expect($request['programName']['translatedValues'])
+        expect($request['programName'])->toBe('Spatie Club');
+        expect($request['localizedProgramName']['translatedValues'])
             ->toContain(['language' => 'it', 'value' => 'Club Spatie']);
+
         return true;
     });
 });
@@ -168,8 +174,10 @@ it('LoyaltyPassClass plain string backward compat', function () {
         ->save();
 
     Http::assertSent(function ($request) {
-        expect($request['programName']['defaultValue']['value'])->toBe('Spatie Club');
-        expect($request['programName'])->not->toHaveKey('translatedValues');
+        expect($request['programName'])->toBe('Spatie Club');
+        expect($request['localizedProgramName']['defaultValue']['value'])->toBe('Spatie Club');
+        expect($request['localizedProgramName'])->not->toHaveKey('translatedValues');
+
         return true;
     });
 });
@@ -178,7 +186,8 @@ it('LoyaltyPassClass hydration restores programName translations', function () {
     Http::fake(['*/loyaltyClass*' => Http::response([
         'resources' => [[
             'id' => '3388.spatie-club',
-            'programName' => [
+            'programName' => 'Spatie Club',
+            'localizedProgramName' => [
                 'defaultValue' => ['language' => 'en-US', 'value' => 'Spatie Club'],
                 'translatedValues' => [['language' => 'it', 'value' => 'Club Spatie']],
             ],
@@ -193,8 +202,10 @@ it('LoyaltyPassClass hydration restores programName translations', function () {
     $classes[0]->save();
 
     Http::assertSent(function ($request) {
-        expect($request['programName']['translatedValues'])
+        expect($request['programName'])->toBe('Spatie Club');
+        expect($request['localizedProgramName']['translatedValues'])
             ->toContain(['language' => 'it', 'value' => 'Club Spatie']);
+
         return true;
     });
 });
@@ -202,7 +213,7 @@ it('LoyaltyPassClass hydration restores programName translations', function () {
 it('throws when LocalizedString and non-default language are both passed to setProgramName', function () {
     LoyaltyPassClass::make('spatie-club')
         ->setProgramName(LocalizedString::of('Spatie Club', 'en-US'), 'it');
-})->throws(\InvalidArgumentException::class);
+})->throws(InvalidArgumentException::class);
 
 // --- OfferPassClass ---
 
@@ -217,9 +228,10 @@ it('OfferPassClass::setTitle accepts a LocalizedString with translations', funct
         ->save();
 
     Http::assertSent(function ($request) {
-        expect($request['title']['defaultValue']['value'])->toBe('Summer Sale');
-        expect($request['title']['translatedValues'])
+        expect($request['title'])->toBe('Summer Sale');
+        expect($request['localizedTitle']['translatedValues'])
             ->toContain(['language' => 'it', 'value' => 'Saldi Estivi']);
+
         return true;
     });
 });
@@ -232,8 +244,10 @@ it('OfferPassClass plain string backward compat', function () {
         ->save();
 
     Http::assertSent(function ($request) {
-        expect($request['title']['defaultValue']['value'])->toBe('Summer Sale');
-        expect($request['title'])->not->toHaveKey('translatedValues');
+        expect($request['title'])->toBe('Summer Sale');
+        expect($request['localizedTitle']['defaultValue']['value'])->toBe('Summer Sale');
+        expect($request['localizedTitle'])->not->toHaveKey('translatedValues');
+
         return true;
     });
 });
@@ -242,7 +256,8 @@ it('OfferPassClass hydration restores title translations', function () {
     Http::fake(['*/offerClass*' => Http::response([
         'resources' => [[
             'id' => '3388.summer-sale',
-            'title' => [
+            'title' => 'Summer Sale',
+            'localizedTitle' => [
                 'defaultValue' => ['language' => 'en-US', 'value' => 'Summer Sale'],
                 'translatedValues' => [['language' => 'it', 'value' => 'Saldi Estivi']],
             ],
@@ -257,8 +272,10 @@ it('OfferPassClass hydration restores title translations', function () {
     $classes[0]->save();
 
     Http::assertSent(function ($request) {
-        expect($request['title']['translatedValues'])
+        expect($request['title'])->toBe('Summer Sale');
+        expect($request['localizedTitle']['translatedValues'])
             ->toContain(['language' => 'it', 'value' => 'Saldi Estivi']);
+
         return true;
     });
 });
@@ -266,4 +283,4 @@ it('OfferPassClass hydration restores title translations', function () {
 it('throws when LocalizedString and non-default language are both passed to setTitle', function () {
     OfferPassClass::make('summer-sale')
         ->setTitle(LocalizedString::of('Summer Sale', 'en-US'), 'it');
-})->throws(\InvalidArgumentException::class);
+})->throws(InvalidArgumentException::class);

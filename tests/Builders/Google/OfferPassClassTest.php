@@ -32,12 +32,16 @@ it('saves the expected payload to Google', function () {
     Http::assertSent(function ($request) {
         expect($request['id'])->toBe('3388.summer-sale');
         expect($request['issuerName'])->toBe('Spatie');
-        expect($request['title']['defaultValue']['value'])->toBe('Summer Sale');
-        expect($request['title']['defaultValue']['language'])->toBe('en-US');
+        expect($request['title'])->toBe('Summer Sale');
+        expect($request['localizedTitle']['defaultValue']['value'])->toBe('Summer Sale');
+        expect($request['localizedTitle']['defaultValue']['language'])->toBe('en-US');
         expect($request['redemptionChannel'])->toBe('ONLINE');
-        expect($request['provider']['defaultValue']['value'])->toBe('Spatie Shop');
-        expect($request['details']['defaultValue']['value'])->toBe('50% off all packages');
-        expect($request['finePrint']['defaultValue']['value'])->toBe('Not combinable with other offers');
+        expect($request['provider'])->toBe('Spatie Shop');
+        expect($request['localizedProvider']['defaultValue']['value'])->toBe('Spatie Shop');
+        expect($request['details'])->toBe('50% off all packages');
+        expect($request['localizedDetails']['defaultValue']['value'])->toBe('50% off all packages');
+        expect($request['finePrint'])->toBe('Not combinable with other offers');
+        expect($request['localizedFinePrint']['defaultValue']['value'])->toBe('Not combinable with other offers');
         expect($request['logo']['sourceUri']['uri'])->toBe('https://cdn.example.com/logo.png');
         expect($request['hexBackgroundColor'])->toBe('#ff0000');
 
@@ -64,8 +68,8 @@ it('find() returns null on 404', function () {
 it('all() returns a collection hydrated from resources', function () {
     Http::fake(['*/offerClass*' => Http::response([
         'resources' => [
-            ['id' => '3388.a', 'title' => ['defaultValue' => ['language' => 'en-US', 'value' => 'Offer A']]],
-            ['id' => '3388.b', 'title' => ['defaultValue' => ['language' => 'en-US', 'value' => 'Offer B']]],
+            ['id' => '3388.a', 'title' => 'Offer A'],
+            ['id' => '3388.b', 'title' => 'Offer B'],
         ],
     ], 200)]);
 

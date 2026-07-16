@@ -123,12 +123,17 @@ class LoyaltyPassClass extends GooglePassClass
     {
         return $this->filterEmpty([
             'issuerName' => $this->issuerName,
-            'programName' => $this->programName?->toArray(),
+            'programName' => $this->programName?->defaultValue,
+            'localizedProgramName' => $this->programName?->toArray(),
             'programLogo' => $this->programLogo?->toArray(),
-            'rewardsTier' => $this->rewardsTier?->toArray(),
-            'rewardsTierLabel' => $this->rewardsTierLabel?->toArray(),
-            'accountNameLabel' => $this->accountNameLabel?->toArray(),
-            'accountIdLabel' => $this->accountIdLabel?->toArray(),
+            'rewardsTier' => $this->rewardsTier?->defaultValue,
+            'localizedRewardsTier' => $this->rewardsTier?->toArray(),
+            'rewardsTierLabel' => $this->rewardsTierLabel?->defaultValue,
+            'localizedRewardsTierLabel' => $this->rewardsTierLabel?->toArray(),
+            'accountNameLabel' => $this->accountNameLabel?->defaultValue,
+            'localizedAccountNameLabel' => $this->accountNameLabel?->toArray(),
+            'accountIdLabel' => $this->accountIdLabel?->defaultValue,
+            'localizedAccountIdLabel' => $this->accountIdLabel?->toArray(),
             'hexBackgroundColor' => $this->backgroundColor,
             'reviewStatus' => $this->reviewStatus,
         ]);
@@ -139,11 +144,11 @@ class LoyaltyPassClass extends GooglePassClass
     {
         $this->hydrateCommonFields($payload);
 
-        $this->programName = $this->hydrateLocalizedString($payload, 'programName');
+        $this->programName = $this->hydrateLocalizedString($payload, 'localizedProgramName', 'programName');
         $this->programLogo = $this->hydrateImage($payload, 'programLogo');
-        $this->rewardsTier = $this->hydrateLocalizedString($payload, 'rewardsTier');
-        $this->rewardsTierLabel = $this->hydrateLocalizedString($payload, 'rewardsTierLabel');
-        $this->accountNameLabel = $this->hydrateLocalizedString($payload, 'accountNameLabel');
-        $this->accountIdLabel = $this->hydrateLocalizedString($payload, 'accountIdLabel');
+        $this->rewardsTier = $this->hydrateLocalizedString($payload, 'localizedRewardsTier', 'rewardsTier');
+        $this->rewardsTierLabel = $this->hydrateLocalizedString($payload, 'localizedRewardsTierLabel', 'rewardsTierLabel');
+        $this->accountNameLabel = $this->hydrateLocalizedString($payload, 'localizedAccountNameLabel', 'accountNameLabel');
+        $this->accountIdLabel = $this->hydrateLocalizedString($payload, 'localizedAccountIdLabel', 'accountIdLabel');
     }
 }
