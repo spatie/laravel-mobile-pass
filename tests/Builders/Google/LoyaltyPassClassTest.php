@@ -33,11 +33,17 @@ it('saves the expected payload to Google', function () {
         expect($request['id'])->toBe('3388.spatie-club');
         expect($request['issuerName'])->toBe('Spatie');
         expect($request['programName'])->toBe('Spatie Club');
+        expect($request['localizedProgramName']['defaultValue']['value'])->toBe('Spatie Club');
+        expect($request['localizedProgramName']['defaultValue']['language'])->toBe('en-US');
         expect($request['programLogo']['sourceUri']['uri'])->toBe('https://cdn.example.com/logo.png');
         expect($request['rewardsTier'])->toBe('Gold');
+        expect($request['localizedRewardsTier']['defaultValue']['value'])->toBe('Gold');
         expect($request['rewardsTierLabel'])->toBe('Tier');
+        expect($request['localizedRewardsTierLabel']['defaultValue']['value'])->toBe('Tier');
         expect($request['accountNameLabel'])->toBe('Member');
+        expect($request['localizedAccountNameLabel']['defaultValue']['value'])->toBe('Member');
         expect($request['accountIdLabel'])->toBe('Membership ID');
+        expect($request['localizedAccountIdLabel']['defaultValue']['value'])->toBe('Membership ID');
         expect($request['hexBackgroundColor'])->toBe('#000000');
 
         return true;

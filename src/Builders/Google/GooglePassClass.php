@@ -312,16 +312,34 @@ abstract class GooglePassClass
     }
 
     /** @param array<string, mixed> $payload */
-    protected function hydrateLocalizedString(array $payload, string $key): ?LocalizedString
+    protected function hydrateLocalizedString(array $payload, string $key, ?string $fallbackKey = null): ?LocalizedString
     {
-        $value = $payload[$key]['defaultValue']['value'] ?? null;
+        $localizedValue = $payload[$key] ?? null;
 
-        if ($value === null) {
-            return null;
+        if (is_array($localizedValue)) {
+            $value = $localizedValue['defaultValue']['value'] ?? null;
+
+            if ($value !== null) {
+                $language = $localizedValue['defaultValue']['language'] ?? 'en-US';
+                $localized = LocalizedString::of((string) $value, (string) $language);
+
+                foreach ($localizedValue['translatedValues'] ?? [] as $translation) {
+                    $localized->addTranslation(
+                        (string) $translation['language'],
+                        (string) $translation['value']
+                    );
+                }
+
+                return $localized;
+            }
         }
 
-        $language = $payload[$key]['defaultValue']['language'] ?? 'en-US';
+        $fallbackValue = $fallbackKey === null
+            ? $localizedValue
+            : ($payload[$fallbackKey] ?? null);
 
-        return LocalizedString::of((string) $value, (string) $language);
+        return is_string($fallbackValue)
+            ? LocalizedString::of($fallbackValue)
+            : null;
     }
 }

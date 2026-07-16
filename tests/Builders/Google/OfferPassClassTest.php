@@ -33,10 +33,15 @@ it('saves the expected payload to Google', function () {
         expect($request['id'])->toBe('3388.summer-sale');
         expect($request['issuerName'])->toBe('Spatie');
         expect($request['title'])->toBe('Summer Sale');
+        expect($request['localizedTitle']['defaultValue']['value'])->toBe('Summer Sale');
+        expect($request['localizedTitle']['defaultValue']['language'])->toBe('en-US');
         expect($request['redemptionChannel'])->toBe('ONLINE');
         expect($request['provider'])->toBe('Spatie Shop');
+        expect($request['localizedProvider']['defaultValue']['value'])->toBe('Spatie Shop');
         expect($request['details'])->toBe('50% off all packages');
+        expect($request['localizedDetails']['defaultValue']['value'])->toBe('50% off all packages');
         expect($request['finePrint'])->toBe('Not combinable with other offers');
+        expect($request['localizedFinePrint']['defaultValue']['value'])->toBe('Not combinable with other offers');
         expect($request['logo']['sourceUri']['uri'])->toBe('https://cdn.example.com/logo.png');
         expect($request['hexBackgroundColor'])->toBe('#ff0000');
 
