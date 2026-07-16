@@ -3,20 +3,21 @@
 namespace Spatie\LaravelMobilePass\Builders\Google;
 
 use Spatie\LaravelMobilePass\Builders\Google\Entities\Image;
+use Spatie\LaravelMobilePass\Builders\Google\Entities\LocalizedString;
 use Spatie\LaravelMobilePass\Builders\Google\Validators\GooglePassClassValidator;
 use Spatie\LaravelMobilePass\Builders\Google\Validators\OfferClassValidator;
 
 class OfferPassClass extends GooglePassClass
 {
-    protected ?string $title = null;
+    protected ?LocalizedString $title = null;
 
     protected ?string $redemptionChannel = null;
 
-    protected ?string $provider = null;
+    protected ?LocalizedString $provider = null;
 
-    protected ?string $details = null;
+    protected ?LocalizedString $details = null;
 
-    protected ?string $finePrint = null;
+    protected ?LocalizedString $finePrint = null;
 
     protected ?Image $logo = null;
 
@@ -30,16 +31,24 @@ class OfferPassClass extends GooglePassClass
         return new OfferClassValidator;
     }
 
-    public function setTitle(string $title): self
+    public function setTitle(LocalizedString|string $title, string $language = 'en-US'): self
     {
-        $this->title = $title;
+        if ($title instanceof LocalizedString && $language !== 'en-US') {
+            throw new \InvalidArgumentException(
+                'Do not pass $language when $value is already a LocalizedString — set the language via LocalizedString::of() instead.'
+            );
+        }
+
+        $this->title = $title instanceof LocalizedString
+            ? $title
+            : LocalizedString::of($title, $language);
 
         return $this;
     }
 
     public function getTitle(): ?string
     {
-        return $this->title;
+        return $this->title?->defaultValue;
     }
 
     public function setRedemptionChannel(string $redemptionChannel): self
@@ -49,23 +58,47 @@ class OfferPassClass extends GooglePassClass
         return $this;
     }
 
-    public function setProvider(string $provider): self
+    public function setProvider(LocalizedString|string $provider, string $language = 'en-US'): self
     {
-        $this->provider = $provider;
+        if ($provider instanceof LocalizedString && $language !== 'en-US') {
+            throw new \InvalidArgumentException(
+                'Do not pass $language when $value is already a LocalizedString — set the language via LocalizedString::of() instead.'
+            );
+        }
+
+        $this->provider = $provider instanceof LocalizedString
+            ? $provider
+            : LocalizedString::of($provider, $language);
 
         return $this;
     }
 
-    public function setDetails(string $details): self
+    public function setDetails(LocalizedString|string $details, string $language = 'en-US'): self
     {
-        $this->details = $details;
+        if ($details instanceof LocalizedString && $language !== 'en-US') {
+            throw new \InvalidArgumentException(
+                'Do not pass $language when $value is already a LocalizedString — set the language via LocalizedString::of() instead.'
+            );
+        }
+
+        $this->details = $details instanceof LocalizedString
+            ? $details
+            : LocalizedString::of($details, $language);
 
         return $this;
     }
 
-    public function setFinePrint(string $finePrint): self
+    public function setFinePrint(LocalizedString|string $finePrint, string $language = 'en-US'): self
     {
-        $this->finePrint = $finePrint;
+        if ($finePrint instanceof LocalizedString && $language !== 'en-US') {
+            throw new \InvalidArgumentException(
+                'Do not pass $language when $value is already a LocalizedString — set the language via LocalizedString::of() instead.'
+            );
+        }
+
+        $this->finePrint = $finePrint instanceof LocalizedString
+            ? $finePrint
+            : LocalizedString::of($finePrint, $language);
 
         return $this;
     }
@@ -82,11 +115,15 @@ class OfferPassClass extends GooglePassClass
     {
         return $this->filterEmpty([
             'issuerName' => $this->issuerName,
-            'title' => $this->title,
+            'title' => $this->title?->defaultValue,
+            'localizedTitle' => $this->title?->toArray(),
             'redemptionChannel' => $this->redemptionChannel,
-            'provider' => $this->provider,
-            'details' => $this->details,
-            'finePrint' => $this->finePrint,
+            'provider' => $this->provider?->defaultValue,
+            'localizedProvider' => $this->provider?->toArray(),
+            'details' => $this->details?->defaultValue,
+            'localizedDetails' => $this->details?->toArray(),
+            'finePrint' => $this->finePrint?->defaultValue,
+            'localizedFinePrint' => $this->finePrint?->toArray(),
             'logo' => $this->logo?->toArray(),
             'hexBackgroundColor' => $this->backgroundColor,
             'reviewStatus' => $this->reviewStatus,
@@ -98,24 +135,13 @@ class OfferPassClass extends GooglePassClass
     {
         $this->hydrateCommonFields($payload);
 
-        if (isset($payload['title'])) {
-            $this->title = (string) $payload['title'];
-        }
+        $this->title = $this->hydrateLocalizedString($payload, 'localizedTitle', 'title');
+        $this->provider = $this->hydrateLocalizedString($payload, 'localizedProvider', 'provider');
+        $this->details = $this->hydrateLocalizedString($payload, 'localizedDetails', 'details');
+        $this->finePrint = $this->hydrateLocalizedString($payload, 'localizedFinePrint', 'finePrint');
 
         if (isset($payload['redemptionChannel'])) {
             $this->redemptionChannel = (string) $payload['redemptionChannel'];
-        }
-
-        if (isset($payload['provider'])) {
-            $this->provider = (string) $payload['provider'];
-        }
-
-        if (isset($payload['details'])) {
-            $this->details = (string) $payload['details'];
-        }
-
-        if (isset($payload['finePrint'])) {
-            $this->finePrint = (string) $payload['finePrint'];
         }
 
         $this->logo = $this->hydrateImage($payload, 'logo');
