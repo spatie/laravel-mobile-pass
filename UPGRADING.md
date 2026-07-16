@@ -2,18 +2,18 @@
 
 ## Google Wallet i18n — LocalizedString for Loyalty and Offer pass classes
 
-`LoyaltyPassClass` and `OfferPassClass` fields that previously serialized as plain
-strings now serialize as `LocalizedString` objects (Google Wallet's native format):
+`LoyaltyPassClass` and `OfferPassClass` now send Google Wallet's localized
+counterparts alongside their existing plain-string fields:
 
 | Class | Affected fields |
 |---|---|
 | `LoyaltyPassClass` | `programName`, `rewardsTier`, `rewardsTierLabel`, `accountNameLabel`, `accountIdLabel` |
 | `OfferPassClass` | `title`, `details`, `finePrint`, `provider` |
 
-**If you call `save()` on an existing pass class**, the next update to Google Wallet
-will send these fields in `LocalizedString` format. Google Wallet accepts both
-formats, so no data is lost — but if you assert on the raw API payload in your
-own tests you will need to update those assertions.
+The existing fields (`programName`, `title`, and so on) keep their plain-string
+format. Their `localizedProgramName`, `localizedTitle`, and related counterparts
+contain the `LocalizedString` payload, so existing integrations remain compatible
+with Google Wallet's API schema.
 
 Plain-string callers require no code changes:
 
@@ -37,12 +37,13 @@ $class->setProgramName(
 
 This release adds Apple Wallet i18n support via a new `locales` nullable JSON column on the `mobile_passes` table.
 
-**New installs** — the column is included in `create_mobile_pass_tables` automatically.
+**New installs** — publish and run the package migrations normally. The create-table
+migration runs before the migration that adds the `locales` column.
 
 **Existing installs** — publish and run the new migration:
 
 ```bash
-php artisan vendor:publish --tag="laravel-mobile-pass-migrations"
+php artisan vendor:publish --tag="mobile-pass-migrations"
 php artisan migrate
 ```
 
