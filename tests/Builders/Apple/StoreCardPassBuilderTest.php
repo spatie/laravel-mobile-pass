@@ -20,6 +20,22 @@ it('compiles back fields into the store card payload', function () {
     ]);
 });
 
+it('keeps a zero-valued primary field in the compiled payload', function () {
+    $compiledData = StoreCardPassBuilder::make()
+        ->setOrganizationName('My organization')
+        ->setSerialNumber(123456)
+        ->setDescription('Hello!')
+        ->addField('balance', '0', label: 'Points')
+        ->setIconImage(getTestSupportPath('images/spatie-thumbnail.png'))
+        ->data();
+
+    expect($compiledData['storeCard']['primaryFields'][0])->toMatchArray([
+        'key' => 'balance',
+        'label' => 'Points',
+        'value' => '0',
+    ]);
+});
+
 it('has a name', function () {
     expect(StoreCardPassBuilder::name())->toBe('store_card');
 });

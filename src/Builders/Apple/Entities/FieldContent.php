@@ -166,6 +166,6 @@ class FieldContent implements Arrayable
             'numberStyle' => $this->numberStyle?->value,
             'textAlignment' => $this->textAlignment?->value,
             'timeStyle' => $this->timeStyle?->value,
-        ]);
+        ], fn ($value) => $value !== null);
     }
 }

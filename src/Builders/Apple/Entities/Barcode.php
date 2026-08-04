@@ -48,6 +48,6 @@ class Barcode implements Arrayable
             'message' => $this->message,
             'messageEncoding' => $this->messageEncoding,
             'altText' => $this->altText,
-        ]);
+        ], fn ($value) => $value !== null);
     }
 }

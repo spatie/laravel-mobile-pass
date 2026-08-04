@@ -55,6 +55,6 @@ class Seat implements Arrayable
             'row' => $this->row,
             'section' => $this->section,
             'type' => $this->type,
-        ]);
+        ], fn ($value) => $value !== null);
     }
 }
