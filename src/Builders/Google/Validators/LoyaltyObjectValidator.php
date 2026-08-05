@@ -13,6 +13,7 @@ class LoyaltyObjectValidator extends GooglePassObjectValidator
             'accountId' => ['nullable', 'string'],
             'accountName' => ['nullable', 'string'],
             'loyaltyPoints' => ['nullable', 'array'],
+            'secondaryLoyaltyPoints' => ['nullable', 'array'],
             'barcode' => ['nullable', 'array'],
         ];
     }

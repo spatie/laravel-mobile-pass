@@ -42,6 +42,44 @@ it('creates a MobilePass row and POSTs the loyalty object to Google', function (
     });
 });
 
+it('compiles points labels and secondary loyalty points', function () {
+    Http::fake(['*/loyaltyObject' => Http::response([], 200)]);
+
+    LoyaltyPassBuilder::make()
+        ->setClass('lp-2026')
+        ->setObjectSuffix('jane')
+        ->setBalanceString('125')
+        ->setBalanceLabel('Points')
+        ->setSecondaryBalanceString('Gold')
+        ->setSecondaryBalanceLabel('Tier')
+        ->save();
+
+    Http::assertSent(function ($request) {
+        expect($request['loyaltyPoints']['label'])->toBe('Points');
+        expect($request['loyaltyPoints']['balance']['string'])->toBe('125');
+        expect($request['secondaryLoyaltyPoints']['label'])->toBe('Tier');
+        expect($request['secondaryLoyaltyPoints']['balance']['string'])->toBe('Gold');
+
+        return true;
+    });
+});
+
+it('omits secondaryLoyaltyPoints when no secondary balance is set', function () {
+    Http::fake(['*/loyaltyObject' => Http::response([], 200)]);
+
+    LoyaltyPassBuilder::make()
+        ->setClass('lp-2026')
+        ->setObjectSuffix('jane')
+        ->setBalanceString('125')
+        ->save();
+
+    Http::assertSent(function ($request) {
+        expect($request->data())->not->toHaveKey('secondaryLoyaltyPoints');
+
+        return true;
+    });
+});
+
 it('throws when setClass() is not called', function () {
     LoyaltyPassBuilder::make()->setAccountId('AC-42')->save();
 })->throws(RuntimeException::class);
