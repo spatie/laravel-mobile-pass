@@ -18,6 +18,14 @@ class LoyaltyPassBuilder extends GooglePassBuilder
 
     protected ?string $balanceString = null;
 
+    protected ?string $balanceLabel = null;
+
+    protected ?int $secondaryBalanceMicros = null;
+
+    protected ?string $secondaryBalanceString = null;
+
+    protected ?string $secondaryBalanceLabel = null;
+
     protected static function validator(): GooglePassObjectValidator
     {
         return new LoyaltyObjectValidator;
@@ -61,22 +69,62 @@ class LoyaltyPassBuilder extends GooglePassBuilder
         return $this;
     }
 
+    public function setBalanceLabel(string $label): self
+    {
+        $this->balanceLabel = $label;
+
+        return $this;
+    }
+
+    public function setSecondaryBalanceMicros(int $micros): self
+    {
+        $this->secondaryBalanceMicros = $micros;
+
+        return $this;
+    }
+
+    public function setSecondaryBalanceString(string $value): self
+    {
+        $this->secondaryBalanceString = $value;
+
+        return $this;
+    }
+
+    public function setSecondaryBalanceLabel(string $label): self
+    {
+        $this->secondaryBalanceLabel = $label;
+
+        return $this;
+    }
+
     /** @return array<string, mixed> */
     protected function compileData(): array
     {
-        $balance = $this->filterEmpty([
-            'micros' => $this->balanceMicros,
-            'string' => $this->balanceString,
-        ]);
-
-        $loyaltyPoints = $this->filterEmpty([
-            'balance' => $balance,
-        ]);
-
         return $this->filterEmpty([
             'accountId' => $this->accountId,
             'accountName' => $this->accountName,
-            'loyaltyPoints' => $loyaltyPoints,
+            'loyaltyPoints' => $this->compilePoints(
+                $this->balanceLabel,
+                $this->balanceMicros,
+                $this->balanceString,
+            ),
+            'secondaryLoyaltyPoints' => $this->compilePoints(
+                $this->secondaryBalanceLabel,
+                $this->secondaryBalanceMicros,
+                $this->secondaryBalanceString,
+            ),
+        ]);
+    }
+
+    /** @return array<string, mixed> */
+    protected function compilePoints(?string $label, ?int $micros, ?string $string): array
+    {
+        return $this->filterEmpty([
+            'label' => $label,
+            'balance' => $this->filterEmpty([
+                'micros' => $micros,
+                'string' => $string,
+            ]),
         ]);
     }
 }
