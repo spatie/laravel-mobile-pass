@@ -2,6 +2,18 @@
 
 All notable changes to `laravel-mobile-pass` will be documented in this file.
 
+## 1.8.0 - 2026-08-07
+
+### What's Changed
+
+* Add points labels and secondaryLoyaltyPoints to the loyalty builder by @matthias-deschoenmacker in https://github.com/spatie/laravel-mobile-pass/pull/60
+
+### New Contributors
+
+* @matthias-deschoenmacker made their first contribution in https://github.com/spatie/laravel-mobile-pass/pull/60
+
+**Full Changelog**: https://github.com/spatie/laravel-mobile-pass/compare/1.7.1...1.8.0
+
 ## 1.7.1 - 2026-07-16
 
 ### What's Changed
@@ -59,6 +71,7 @@ EventTicketPassBuilder::make()
 
 
 
+
 ```
 A remote variant, `setRemoteBackgroundImage()`, is available as well. The image (along with its @2x and @3x densities) is bundled into the generated `.pkpass`.
 
@@ -80,6 +93,7 @@ EventTicketPassClass::make('beatles-shea-1965')
     ->addTextModule('Doors', 'Doors open at 18:30')
     ->addImageModule('https://example.com/seating-chart.png', 'seating')
     ->save();
+
 
 
 
