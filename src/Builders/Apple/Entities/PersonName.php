@@ -59,6 +59,6 @@ class PersonName implements Arrayable
             'namePrefix' => $this->namePrefix,
             'nickname' => $this->nickname,
             'phoneticRepresentation' => $this->phoneticRepresentation,
-        ]);
+        ], fn ($value) => $value !== null);
     }
 }
