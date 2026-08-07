@@ -46,3 +46,20 @@ LoyaltyPassBuilder::make()
     ->setBalanceString('1,250 points')
     ->save();
 ```
+
+### Labels and a second value on the card face
+
+`setBalanceLabel()` sets the caption above the balance. Without it, Google falls back to a locale default.
+
+`setSecondaryBalanceString()` (or `setSecondaryBalanceMicros()`) together with `setSecondaryBalanceLabel()` render a second label/value pair next to the balance on the card face. This is the only way to show a second value there. `setAccountName()` is rendered in the details section below the card instead.
+
+```php
+LoyaltyPassBuilder::make()
+    ->setClass('spatie-rewards')
+    ->setAccountId('USER-7842')
+    ->setBalanceString('1,250')
+    ->setBalanceLabel('Points')
+    ->setSecondaryBalanceString('Gold')
+    ->setSecondaryBalanceLabel('Tier')
+    ->save();
+```
