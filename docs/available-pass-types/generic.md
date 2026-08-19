@@ -19,7 +19,7 @@ GenericPassBuilder::make()
     ->save();
 ```
 
-Generic passes also support Apple's poster layout via a separate set of fields — `addPosterHeaderField()`, `addPosterPrimaryField()`, `addPosterFooterField()`, and `addPosterBackField()` — which populate a `posterGeneric` block shown alongside the classic layout. Set an `artwork` image (see [Adding images](../basic-usage/adding-images)) for it to render correctly:
+Generic passes also support Apple's poster layout via a separate set of fields — `addPosterHeaderField()`, `addPosterPrimaryField()`, `addPosterFooterField()`, and `addPosterBackField()` — which populate a `posterGeneric` block, shipped alongside the existing `generic` block so the pass still renders correctly on devices that don't support the poster layout. Set an `artwork` image (see [Adding images](../basic-usage/adding-images)) for it to render correctly:
 
 ```php
 GenericPassBuilder::make()

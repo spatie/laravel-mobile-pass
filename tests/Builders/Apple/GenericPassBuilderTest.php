@@ -64,7 +64,7 @@ it('bundles poster fields into the posterGeneric block', function () {
         ->setDescription('Hello!')
         ->setIconImage(getTestSupportPath('images/spatie-thumbnail.png'))
         ->addPosterHeaderField('event', 'Laracon EU')
-        ->addPosterPrimaryField('venue', 'Amsterdam')
+        ->addPosterPrimaryField('venue', 'Amsterdam', label: 'Venue Name')
         ->addPosterFooterField('note', 'Doors open at 6pm')
         ->addPosterBackField('terms', 'Terms and conditions apply.')
         ->data();
@@ -80,9 +80,38 @@ it('bundles poster fields into the posterGeneric block', function () {
         'key' => 'event',
         'value' => 'Laracon EU',
     ]);
+    expect($compiledData['posterGeneric']['primaryFields'][0])->toMatchArray([
+        'key' => 'venue',
+        'value' => 'Amsterdam',
+        'label' => 'Venue Name',
+    ]);
     expect($compiledData['posterGeneric']['footerFields'][0])->toMatchArray([
         'key' => 'note',
         'value' => 'Doors open at 6pm',
+    ]);
+});
+
+it('updates matching keys in both the generic and posterGeneric blocks', function () {
+    $model = GenericPassBuilder::make()
+        ->setOrganizationName('My organization')
+        ->setSerialNumber(123456)
+        ->setDescription('Hello!')
+        ->setIconImage(getTestSupportPath('images/spatie-thumbnail.png'))
+        ->addAuxiliaryField('seat', '12A')
+        ->addPosterPrimaryField('seat', '12A')
+        ->save();
+
+    $model->updateField('seat', '13A');
+
+    $hydratedData = $model->builder()->data();
+
+    expect($hydratedData['generic']['auxiliaryFields'][0])->toMatchArray([
+        'key' => 'seat',
+        'value' => '13A',
+    ]);
+    expect($hydratedData['posterGeneric']['primaryFields'][0])->toMatchArray([
+        'key' => 'seat',
+        'value' => '13A',
     ]);
 });
 

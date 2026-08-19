@@ -99,6 +99,31 @@ class GenericPassBuilder extends ApplePassBuilder
         return $this;
     }
 
+    public function updateField(
+        string $key,
+        string $value,
+        ?string $changeMessage = null,
+        ?string $label = null,
+    ): self {
+        parent::updateField($key, $value, $changeMessage, $label);
+
+        foreach (PosterFieldType::cases() as $type) {
+            $property = $type->value;
+
+            if ($this->{$property} === null) {
+                continue;
+            }
+
+            $this->{$property} = $this->{$property}->map(
+                fn (FieldContent $field) => $field->key === $key
+                    ? $this->applyFieldUpdate($field, $value, $changeMessage, $label)
+                    : $field,
+            );
+        }
+
+        return $this;
+    }
+
     protected function compileData(): array
     {
         return array_merge(

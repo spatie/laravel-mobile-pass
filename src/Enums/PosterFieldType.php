@@ -2,6 +2,9 @@
 
 namespace Spatie\LaravelMobilePass\Enums;
 
+/**
+ * @internal
+ */
 enum PosterFieldType: string
 {
     case Header = 'posterHeaderFields';

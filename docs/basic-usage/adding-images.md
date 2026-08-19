@@ -29,7 +29,7 @@ Event tickets and generic passes also support an artwork image, which Apple rend
 $builder->setArtworkImage(public_path('images/artwork.png'));
 ```
 
-Set the artwork image *before* opting a pass into the poster layout (`EventTicketPassBuilder::usePosterLayout()`, or any `GenericPassBuilder::addPoster*Field()` call) — Wallet silently falls back to the classic layout if no artwork is present, rather than raising an error.
+If you opt a pass into a poster layout (`EventTicketPassBuilder::usePosterLayout()`, or any `GenericPassBuilder::addPoster*Field()` call), set an artwork image too — the package doesn't require one, but a poster pass without artwork won't render as intended. The order you call the builder methods in doesn't matter.
 
 Apple renders passes at 1x, 2x, and 3x pixel densities. Providing higher-density versions gives you crisper results; pass them as extra arguments:
 
