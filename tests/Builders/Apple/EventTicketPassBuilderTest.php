@@ -209,15 +209,43 @@ it('round-trips venue semantics through save and hydrate', function () {
         ->setIconImage(getTestSupportPath('images/spatie-thumbnail.png'))
         ->setVenueName('Amsterdam ArenA')
         ->setVenueLocation(Location::make(52.3143, 4.9416))
+        ->setVenueEntrance('Gate A')
+        ->setVenueEntranceDoor('Door 3')
+        ->setVenueEntranceGate('Gate A')
+        ->setVenueEntrancePortal('Portal 1')
+        ->setVenuePhoneNumber('+31 20 311 1333')
+        ->setVenueRoom('Main Hall')
+        ->setVenueRegionName('Amsterdam')
         ->setVenueOpenDate(Carbon::parse('2026-08-19T18:00:00+00:00'))
+        ->setVenueCloseDate(Carbon::parse('2026-08-19T23:00:00+00:00'))
+        ->setVenueDoorsOpenDate(Carbon::parse('2026-08-19T18:30:00+00:00'))
+        ->setVenueGatesOpenDate(Carbon::parse('2026-08-19T18:00:00+00:00'))
+        ->setVenueFanZoneOpenDate(Carbon::parse('2026-08-19T17:00:00+00:00'))
+        ->setVenueBoxOfficeOpenDate(Carbon::parse('2026-08-19T16:00:00+00:00'))
+        ->setVenueParkingLotsOpenDate(Carbon::parse('2026-08-19T15:00:00+00:00'))
         ->save();
 
     $hydratedData = $model->builder()->data();
 
-    expect($hydratedData['semantics']['venueName'])->toBe('Amsterdam ArenA');
+    expect($hydratedData['semantics'])->toMatchArray([
+        'venueName' => 'Amsterdam ArenA',
+        'venueEntrance' => 'Gate A',
+        'venueEntranceDoor' => 'Door 3',
+        'venueEntranceGate' => 'Gate A',
+        'venueEntrancePortal' => 'Portal 1',
+        'venuePhoneNumber' => '+31 20 311 1333',
+        'venueRoom' => 'Main Hall',
+        'venueRegionName' => 'Amsterdam',
+        'venueOpenDate' => '2026-08-19T18:00:00+00:00',
+        'venueCloseDate' => '2026-08-19T23:00:00+00:00',
+        'venueDoorsOpenDate' => '2026-08-19T18:30:00+00:00',
+        'venueGatesOpenDate' => '2026-08-19T18:00:00+00:00',
+        'venueFanZoneOpenDate' => '2026-08-19T17:00:00+00:00',
+        'venueBoxOfficeOpenDate' => '2026-08-19T16:00:00+00:00',
+        'venueParkingLotsOpenDate' => '2026-08-19T15:00:00+00:00',
+    ]);
     expect($hydratedData['semantics']['venueLocation'])->toMatchArray([
         'latitude' => 52.3143,
         'longitude' => 4.9416,
     ]);
-    expect($hydratedData['semantics']['venueOpenDate'])->toBe('2026-08-19T18:00:00+00:00');
 });
