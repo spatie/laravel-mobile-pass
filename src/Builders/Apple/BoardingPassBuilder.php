@@ -358,16 +358,6 @@ abstract class BoardingPassBuilder extends ApplePassBuilder
         $this->vehicleType = $semantics['vehicleType'] ?? null;
     }
 
-    /** @param  array<string, mixed>  $semantics */
-    private function parseSemanticDate(array $semantics, string $key): ?Carbon
-    {
-        if (empty($semantics[$key])) {
-            return null;
-        }
-
-        return Carbon::parse($semantics[$key]);
-    }
-
     protected function compileSemantics(): array
     {
         return array_merge(

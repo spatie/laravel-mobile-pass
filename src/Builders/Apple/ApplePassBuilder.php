@@ -793,6 +793,16 @@ abstract class ApplePassBuilder
             : collect($semantics['wifiAccess'])->map(fn (array $wifi) => WifiNetwork::fromArray($wifi));
     }
 
+    /** @param  array<string, mixed>  $semantics */
+    protected function parseSemanticDate(array $semantics, string $key): ?Carbon
+    {
+        if (empty($semantics[$key])) {
+            return null;
+        }
+
+        return Carbon::parse($semantics[$key]);
+    }
+
     protected function uncompileContent(): void
     {
         $this->organizationName = $this->data['organizationName'] ?? null;
