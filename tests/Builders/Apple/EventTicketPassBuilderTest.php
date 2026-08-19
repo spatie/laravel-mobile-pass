@@ -65,6 +65,42 @@ it('registers a remote background image', function () {
         ]);
 });
 
+it('bundles an artwork image into the generated pass', function () {
+    $generatedPass = EventTicketPassBuilder::make()
+        ->setOrganizationName('My organization')
+        ->setSerialNumber(123456)
+        ->setDescription('Hello!')
+        ->setIconImage(getTestSupportPath('images/spatie-thumbnail.png'))
+        ->setArtworkImage(
+            getTestSupportPath('images/spatie-thumbnail.png'),
+            getTestSupportPath('images/spatie-thumbnail.png'),
+            getTestSupportPath('images/spatie-thumbnail.png'),
+        )
+        ->generate();
+
+    $reader = PkPassReader::fromString($generatedPass);
+
+    expect($reader->containsFile('artwork.png'))->toBeTrue()
+        ->and($reader->containsFile('artwork@2x.png'))->toBeTrue()
+        ->and($reader->containsFile('artwork@3x.png'))->toBeTrue();
+});
+
+it('registers a remote artwork image', function () {
+    $pass = EventTicketPassBuilder::make()
+        ->setOrganizationName('My organization')
+        ->setSerialNumber(123456)
+        ->setDescription('Hello!')
+        ->setIconImage(getTestSupportPath('images/spatie-thumbnail.png'))
+        ->setRemoteArtworkImage('https://example.com/pass/artwork.png')
+        ->save();
+
+    expect($pass->images['artwork'])
+        ->toMatchArray([
+            'x1Path' => 'https://example.com/pass/artwork.png',
+            'isRemote' => true,
+        ]);
+});
+
 it('has a name', function () {
     expect(EventTicketPassBuilder::name())->toBe('event_ticket');
 });

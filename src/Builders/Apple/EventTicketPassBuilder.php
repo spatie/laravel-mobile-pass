@@ -2,12 +2,15 @@
 
 namespace Spatie\LaravelMobilePass\Builders\Apple;
 
+use Spatie\LaravelMobilePass\Builders\Apple\Concerns\HasArtworkImage;
 use Spatie\LaravelMobilePass\Builders\Apple\Validators\ApplePassValidator;
 use Spatie\LaravelMobilePass\Builders\Apple\Validators\EventTicketApplePassValidator;
 use Spatie\LaravelMobilePass\Enums\PassType;
 
 class EventTicketPassBuilder extends ApplePassBuilder
 {
+    use HasArtworkImage;
+
     protected PassType $type = PassType::EventTicket;
 
     protected static function validator(): ApplePassValidator
