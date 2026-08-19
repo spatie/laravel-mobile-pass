@@ -55,6 +55,7 @@ Apple publishes the exact sizes it expects. The values below are for the 1x dens
 | Strip | 375 × 123 (coupon) / 375 × 98 (event ticket) | Full-width image behind the primary fields. |
 | Background | 180 × 220 | Event tickets only. Blurred and stretched by Wallet. |
 | Artwork | Varies (portrait) | Event tickets and generic passes only. Large portrait image for Apple's poster-style layouts. This is a newer image type without a long-settled spec, so check Apple's current Wallet documentation for the exact current dimensions. |
+| Venue map | Varies | Event tickets only. Shown in the pass's event guide panel. This is a newer image type without a long-settled spec, so check Apple's current Wallet documentation for the exact current dimensions. |
 | Footer | 286 × 15 | Boarding passes only. Sits above the barcode. |
 
 Apple's docs don't strictly require any of these, but passes feel unfinished without an icon (it's what shows up on the lock screen and in Mail), so treat that one as mandatory in practice.

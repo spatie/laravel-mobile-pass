@@ -30,6 +30,19 @@ EventTicketPassBuilder::make()
     ->save();
 ```
 
+Event tickets can also carry venue details via Apple's semantic tags — `setVenueName()`, `setVenueLocation()`, `setVenueEntrance()`, `setVenueEntranceDoor()`, `setVenueEntranceGate()`, `setVenueEntrancePortal()`, `setVenuePhoneNumber()`, `setVenueRoom()`, `setVenueRegionName()`, and a handful of `setVenue*OpenDate()`/`setVenueCloseDate()` methods — plus a `venueMap` image via `setVenueMapImage()`. Apple's Wallet app shows these in the pass's event guide panel:
+
+```php
+use Spatie\LaravelMobilePass\Builders\Apple\Entities\Location;
+
+EventTicketPassBuilder::make()
+    // ...
+    ->setVenueName('Amsterdam ArenA')
+    ->setVenueLocation(Location::make(52.3143, 4.9416))
+    ->setVenueMapImage(public_path('images/venue-map.png'))
+    ->save();
+```
+
 ## Google
 
 Declare the Class once per event (the venue, the show, the shared visuals), then create an Object per ticket.
