@@ -12,6 +12,7 @@ class EventTicketApplePassValidator extends ApplePassValidator
             'eventTicket.secondaryFields' => ['nullable', 'array'],
             'eventTicket.auxiliaryFields' => ['nullable', 'array'],
             'eventTicket.backFields' => ['nullable', 'array'],
+            'preferredStyleSchemes' => ['nullable', 'array'],
         ]);
     }
 }

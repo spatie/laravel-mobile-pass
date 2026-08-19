@@ -101,6 +101,42 @@ it('registers a remote artwork image', function () {
         ]);
 });
 
+it('activates the poster layout via preferredStyleSchemes', function () {
+    $compiledData = EventTicketPassBuilder::make()
+        ->setOrganizationName('My organization')
+        ->setSerialNumber(123456)
+        ->setDescription('Hello!')
+        ->setIconImage(getTestSupportPath('images/spatie-thumbnail.png'))
+        ->usePosterLayout()
+        ->data();
+
+    expect($compiledData['preferredStyleSchemes'])->toBe(['posterEventTicket', 'eventTicket']);
+});
+
+it('omits preferredStyleSchemes when the poster layout is not used', function () {
+    $compiledData = EventTicketPassBuilder::make()
+        ->setOrganizationName('My organization')
+        ->setSerialNumber(123456)
+        ->setDescription('Hello!')
+        ->setIconImage(getTestSupportPath('images/spatie-thumbnail.png'))
+        ->data();
+
+    expect($compiledData)->not->toHaveKey('preferredStyleSchemes');
+});
+
+it('round-trips preferredStyleSchemes through save and hydrate', function () {
+    $model = EventTicketPassBuilder::make()
+        ->setOrganizationName('My organization')
+        ->setSerialNumber(123456)
+        ->setDescription('Hello!')
+        ->setIconImage(getTestSupportPath('images/spatie-thumbnail.png'))
+        ->usePosterLayout()
+        ->save();
+
+    expect($model->builder()->data()['preferredStyleSchemes'])
+        ->toBe(['posterEventTicket', 'eventTicket']);
+});
+
 it('has a name', function () {
     expect(EventTicketPassBuilder::name())->toBe('event_ticket');
 });

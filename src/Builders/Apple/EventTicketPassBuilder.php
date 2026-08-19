@@ -13,9 +13,18 @@ class EventTicketPassBuilder extends ApplePassBuilder
 
     protected PassType $type = PassType::EventTicket;
 
+    protected ?array $preferredStyleSchemes = null;
+
     protected static function validator(): ApplePassValidator
     {
         return new EventTicketApplePassValidator;
+    }
+
+    public function usePosterLayout(): self
+    {
+        $this->preferredStyleSchemes = ['posterEventTicket', 'eventTicket'];
+
+        return $this;
     }
 
     protected function compileData(): array
@@ -30,7 +39,15 @@ class EventTicketPassBuilder extends ApplePassBuilder
                     'auxiliaryFields' => $this->auxiliaryFields?->values()->toArray(),
                     'backFields' => $this->backFields?->values()->toArray(),
                 ]),
+                'preferredStyleSchemes' => $this->preferredStyleSchemes,
             ],
         );
+    }
+
+    protected function uncompileContent(): void
+    {
+        parent::uncompileContent();
+
+        $this->preferredStyleSchemes = $this->data['preferredStyleSchemes'] ?? null;
     }
 }
