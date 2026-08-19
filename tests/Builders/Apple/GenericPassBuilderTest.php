@@ -57,6 +57,68 @@ it('registers a remote artwork image', function () {
         ]);
 });
 
+it('bundles poster fields into the posterGeneric block', function () {
+    $compiledData = GenericPassBuilder::make()
+        ->setOrganizationName('My organization')
+        ->setSerialNumber(123456)
+        ->setDescription('Hello!')
+        ->setIconImage(getTestSupportPath('images/spatie-thumbnail.png'))
+        ->addPosterHeaderField('event', 'Laracon EU')
+        ->addPosterPrimaryField('venue', 'Amsterdam')
+        ->addPosterFooterField('note', 'Doors open at 6pm')
+        ->addPosterBackField('terms', 'Terms and conditions apply.')
+        ->data();
+
+    expect($compiledData)->toHaveKey('posterGeneric');
+    expect($compiledData['posterGeneric'])->toHaveKeys([
+        'headerFields',
+        'primaryFields',
+        'footerFields',
+        'backFields',
+    ]);
+    expect($compiledData['posterGeneric']['headerFields'][0])->toMatchArray([
+        'key' => 'event',
+        'value' => 'Laracon EU',
+    ]);
+    expect($compiledData['posterGeneric']['footerFields'][0])->toMatchArray([
+        'key' => 'note',
+        'value' => 'Doors open at 6pm',
+    ]);
+});
+
+it('omits posterGeneric when no poster fields are added', function () {
+    $compiledData = GenericPassBuilder::make()
+        ->setOrganizationName('My organization')
+        ->setSerialNumber(123456)
+        ->setDescription('Hello!')
+        ->setIconImage(getTestSupportPath('images/spatie-thumbnail.png'))
+        ->data();
+
+    expect($compiledData)->not->toHaveKey('posterGeneric');
+});
+
+it('round-trips poster fields through save and hydrate', function () {
+    $model = GenericPassBuilder::make()
+        ->setOrganizationName('My organization')
+        ->setSerialNumber(123456)
+        ->setDescription('Hello!')
+        ->setIconImage(getTestSupportPath('images/spatie-thumbnail.png'))
+        ->addPosterHeaderField('event', 'Laracon EU')
+        ->addPosterBackField('terms', 'Terms and conditions apply.')
+        ->save();
+
+    $hydratedData = $model->builder()->data();
+
+    expect($hydratedData['posterGeneric']['headerFields'][0])->toMatchArray([
+        'key' => 'event',
+        'value' => 'Laracon EU',
+    ]);
+    expect($hydratedData['posterGeneric']['backFields'][0])->toMatchArray([
+        'key' => 'terms',
+        'value' => 'Terms and conditions apply.',
+    ]);
+});
+
 it('has a name', function () {
     expect(GenericPassBuilder::name())->toBe('generic');
 });
