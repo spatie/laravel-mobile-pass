@@ -224,6 +224,23 @@ it('bundles localized footer images into boarding passes', function () {
     expect($reader->containsFile('en.lproj/footer@2x.png'))->toBeTrue();
 });
 
+it('bundles localized artwork images into event tickets', function () {
+    $imagePath = getTestSupportPath('images/spatie-thumbnail.png');
+
+    $pass = EventTicketPassBuilder::make()
+        ->setOrganizationName('My Org')
+        ->setSerialNumber('123')
+        ->setDescription('Test Pass')
+        ->setIconImage($imagePath)
+        ->setLocaleArtworkImage('en', $imagePath, $imagePath)
+        ->generate();
+
+    $reader = PkPassReader::fromString($pass);
+
+    expect($reader->containsFile('en.lproj/artwork.png'))->toBeTrue();
+    expect($reader->containsFile('en.lproj/artwork@2x.png'))->toBeTrue();
+});
+
 it('stores remote locale footer images on boarding pass model', function () {
     $model = AirlinePassBuilder::make()
         ->setOrganizationName('My Airline')
