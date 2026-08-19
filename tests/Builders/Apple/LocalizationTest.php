@@ -241,6 +241,19 @@ it('bundles localized artwork images into event tickets', function () {
     expect($reader->containsFile('en.lproj/artwork@2x.png'))->toBeTrue();
 });
 
+it('stores remote locale artwork images on event ticket model', function () {
+    $model = EventTicketPassBuilder::make()
+        ->setOrganizationName('My Org')
+        ->setSerialNumber('123')
+        ->setDescription('Test Pass')
+        ->setIconImage(getTestSupportPath('images/spatie-thumbnail.png'))
+        ->setRemoteLocaleArtworkImage('en', 'https://example.com/pass/artwork-en.png')
+        ->save();
+
+    expect($model->locales['en']['images']['artwork'])
+        ->toMatchArray(['x1Path' => 'https://example.com/pass/artwork-en.png', 'isRemote' => true]);
+});
+
 it('stores remote locale footer images on boarding pass model', function () {
     $model = AirlinePassBuilder::make()
         ->setOrganizationName('My Airline')

@@ -29,6 +29,8 @@ Event tickets and generic passes also support an artwork image, which Apple rend
 $builder->setArtworkImage(public_path('images/artwork.png'));
 ```
 
+Opting a pass into the poster layout (`preferredStyleSchemes`) isn't supported by this package yet, so the artwork image is bundled into the pass but won't be rendered as a poster until that's added — the file is there and ready for when it is.
+
 Apple renders passes at 1x, 2x, and 3x pixel densities. Providing higher-density versions gives you crisper results; pass them as extra arguments:
 
 ```php
@@ -52,7 +54,7 @@ Apple publishes the exact sizes it expects. The values below are for the 1x dens
 | Thumbnail | up to 90 × 90 | Square artwork next to primary fields on event tickets and generic passes. |
 | Strip | 375 × 123 (coupon) / 375 × 98 (event ticket) | Full-width image behind the primary fields. |
 | Background | 180 × 220 | Event tickets only. Blurred and stretched by Wallet. |
-| Artwork | up to 1074 × 1344 | Event tickets and generic passes only. Large portrait image for Apple's poster-style layouts. |
+| Artwork | Varies (portrait) | Event tickets and generic passes only. Large portrait image for Apple's poster-style layouts. This is a newer image type without a long-settled spec, so check Apple's current Wallet documentation for the exact current dimensions. |
 | Footer | 286 × 15 | Boarding passes only. Sits above the barcode. |
 
 Apple's docs don't strictly require any of these, but passes feel unfinished without an icon (it's what shows up on the lock screen and in Mail), so treat that one as mandatory in practice.
