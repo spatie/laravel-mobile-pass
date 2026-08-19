@@ -311,6 +311,7 @@ git commit -m "Add usePosterLayout to EventTicketPassBuilder"
 ### Task 3: `addPoster*Field()` family on `GenericPassBuilder`
 
 **Files:**
+- Create: `src/Enums/PosterFieldType.php`
 - Modify: `src/Builders/Apple/GenericPassBuilder.php`
 - Modify: `src/Builders/Apple/Validators/GenericApplePassValidator.php`
 - Test: `tests/Builders/Apple/GenericPassBuilderTest.php`
@@ -318,6 +319,8 @@ git commit -m "Add usePosterLayout to EventTicketPassBuilder"
 **Interfaces:**
 - Consumes: `ApplePassBuilder::makeFieldContent(string $key, string $value, ?string $label = null, ?string $changeMessage = null, ?DateType $dateStyle = null, ?TimeStyleType $timeStyle = null, ?bool $showDateAsRelative = null): FieldContent` from Task 1.
 - Produces: `GenericPassBuilder::addPosterHeaderField()`, `addPosterPrimaryField()`, `addPosterFooterField()`, `addPosterBackField()` — all `(string $key, string $value, ?string $label = null, ?string $changeMessage = null, ?DateType $dateStyle = null, ?TimeStyleType $timeStyle = null, ?bool $showDateAsRelative = null): self`. Not consumed by any other task.
+
+This task mirrors the existing `addHeaderField()`/`addSecondaryField()`/`addAuxiliaryField()`/`addBackField()` pattern on `ApplePassBuilder`, which are all thin wrappers around a single `addField(..., FieldType $type)` dispatcher — rather than four independent methods with duplicated bodies, this task adds a `PosterFieldType` enum (mirroring the existing `FieldType` enum) and a single `addPosterField(..., PosterFieldType $type)` dispatcher, with the four public methods as thin wrappers around it.
 
 - [ ] **Step 1: Write the failing tests**
 
@@ -392,7 +395,27 @@ it('round-trips poster fields through save and hydrate', function () {
 Run: `vendor/bin/pest tests/Builders/Apple/GenericPassBuilderTest.php`
 Expected: FAIL — `Call to undefined method Spatie\LaravelMobilePass\Builders\Apple\GenericPassBuilder::addPosterHeaderField()`.
 
-- [ ] **Step 3: Add the properties, methods, `compileData()` change, and `uncompileContent()` override**
+- [ ] **Step 3: Create the `PosterFieldType` enum**
+
+Create `src/Enums/PosterFieldType.php`:
+
+```php
+<?php
+
+namespace Spatie\LaravelMobilePass\Enums;
+
+enum PosterFieldType: string
+{
+    case Header = 'posterHeaderFields';
+    case Primary = 'posterPrimaryFields';
+    case Footer = 'posterFooterFields';
+    case Back = 'posterBackFields';
+}
+```
+
+The enum's value is the PHP property name on `GenericPassBuilder` (matching the existing `FieldType` enum's convention, where the value is also the property name it dispatches to).
+
+- [ ] **Step 4: Add the properties, dispatcher, wrapper methods, `compileData()` change, and `uncompileContent()` override**
 
 Replace the full contents of `src/Builders/Apple/GenericPassBuilder.php` with:
 
@@ -408,6 +431,7 @@ use Spatie\LaravelMobilePass\Builders\Apple\Validators\ApplePassValidator;
 use Spatie\LaravelMobilePass\Builders\Apple\Validators\GenericApplePassValidator;
 use Spatie\LaravelMobilePass\Enums\DateType;
 use Spatie\LaravelMobilePass\Enums\PassType;
+use Spatie\LaravelMobilePass\Enums\PosterFieldType;
 use Spatie\LaravelMobilePass\Enums\TimeStyleType;
 
 class GenericPassBuilder extends ApplePassBuilder
@@ -438,12 +462,7 @@ class GenericPassBuilder extends ApplePassBuilder
         ?TimeStyleType $timeStyle = null,
         ?bool $showDateAsRelative = null,
     ): self {
-        $field = $this->makeFieldContent($key, $value, $label, $changeMessage, $dateStyle, $timeStyle, $showDateAsRelative);
-
-        $this->posterHeaderFields ??= collect();
-        $this->posterHeaderFields[$key] = $field;
-
-        return $this;
+        return $this->addPosterField($key, $value, PosterFieldType::Header, $label, $changeMessage, $dateStyle, $timeStyle, $showDateAsRelative);
     }
 
     public function addPosterPrimaryField(
@@ -455,12 +474,7 @@ class GenericPassBuilder extends ApplePassBuilder
         ?TimeStyleType $timeStyle = null,
         ?bool $showDateAsRelative = null,
     ): self {
-        $field = $this->makeFieldContent($key, $value, $label, $changeMessage, $dateStyle, $timeStyle, $showDateAsRelative);
-
-        $this->posterPrimaryFields ??= collect();
-        $this->posterPrimaryFields[$key] = $field;
-
-        return $this;
+        return $this->addPosterField($key, $value, PosterFieldType::Primary, $label, $changeMessage, $dateStyle, $timeStyle, $showDateAsRelative);
     }
 
     public function addPosterFooterField(
@@ -472,12 +486,7 @@ class GenericPassBuilder extends ApplePassBuilder
         ?TimeStyleType $timeStyle = null,
         ?bool $showDateAsRelative = null,
     ): self {
-        $field = $this->makeFieldContent($key, $value, $label, $changeMessage, $dateStyle, $timeStyle, $showDateAsRelative);
-
-        $this->posterFooterFields ??= collect();
-        $this->posterFooterFields[$key] = $field;
-
-        return $this;
+        return $this->addPosterField($key, $value, PosterFieldType::Footer, $label, $changeMessage, $dateStyle, $timeStyle, $showDateAsRelative);
     }
 
     public function addPosterBackField(
@@ -489,10 +498,25 @@ class GenericPassBuilder extends ApplePassBuilder
         ?TimeStyleType $timeStyle = null,
         ?bool $showDateAsRelative = null,
     ): self {
+        return $this->addPosterField($key, $value, PosterFieldType::Back, $label, $changeMessage, $dateStyle, $timeStyle, $showDateAsRelative);
+    }
+
+    protected function addPosterField(
+        string $key,
+        string $value,
+        PosterFieldType $type,
+        ?string $label = null,
+        ?string $changeMessage = null,
+        ?DateType $dateStyle = null,
+        ?TimeStyleType $timeStyle = null,
+        ?bool $showDateAsRelative = null,
+    ): self {
         $field = $this->makeFieldContent($key, $value, $label, $changeMessage, $dateStyle, $timeStyle, $showDateAsRelative);
 
-        $this->posterBackFields ??= collect();
-        $this->posterBackFields[$key] = $field;
+        $property = $type->value;
+
+        $this->{$property} ??= collect();
+        $this->{$property}[$key] = $field;
 
         return $this;
     }
@@ -543,7 +567,7 @@ class GenericPassBuilder extends ApplePassBuilder
 }
 ```
 
-- [ ] **Step 4: Add the validator rules**
+- [ ] **Step 5: Add the validator rules**
 
 Modify `src/Builders/Apple/Validators/GenericApplePassValidator.php`:
 
@@ -571,15 +595,15 @@ class GenericApplePassValidator extends ApplePassValidator
 }
 ```
 
-- [ ] **Step 5: Run tests to verify they pass**
+- [ ] **Step 6: Run tests to verify they pass**
 
 Run: `vendor/bin/pest tests/Builders/Apple/GenericPassBuilderTest.php`
 Expected: PASS (all tests in the file, including the three new ones).
 
-- [ ] **Step 6: Commit**
+- [ ] **Step 7: Commit**
 
 ```bash
-git add src/Builders/Apple/GenericPassBuilder.php src/Builders/Apple/Validators/GenericApplePassValidator.php tests/Builders/Apple/GenericPassBuilderTest.php
+git add src/Enums/PosterFieldType.php src/Builders/Apple/GenericPassBuilder.php src/Builders/Apple/Validators/GenericApplePassValidator.php tests/Builders/Apple/GenericPassBuilderTest.php
 git commit -m "Add addPoster*Field family and posterGeneric block to GenericPassBuilder"
 ```
 
