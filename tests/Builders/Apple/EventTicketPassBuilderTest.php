@@ -249,3 +249,39 @@ it('round-trips venue semantics through save and hydrate', function () {
         'longitude' => 4.9416,
     ]);
 });
+
+it('bundles a venue map image into the generated pass', function () {
+    $generatedPass = EventTicketPassBuilder::make()
+        ->setOrganizationName('My organization')
+        ->setSerialNumber(123456)
+        ->setDescription('Hello!')
+        ->setIconImage(getTestSupportPath('images/spatie-thumbnail.png'))
+        ->setVenueMapImage(
+            getTestSupportPath('images/spatie-thumbnail.png'),
+            getTestSupportPath('images/spatie-thumbnail.png'),
+            getTestSupportPath('images/spatie-thumbnail.png'),
+        )
+        ->generate();
+
+    $reader = PkPassReader::fromString($generatedPass);
+
+    expect($reader->containsFile('venueMap.png'))->toBeTrue()
+        ->and($reader->containsFile('venueMap@2x.png'))->toBeTrue()
+        ->and($reader->containsFile('venueMap@3x.png'))->toBeTrue();
+});
+
+it('registers a remote venue map image', function () {
+    $pass = EventTicketPassBuilder::make()
+        ->setOrganizationName('My organization')
+        ->setSerialNumber(123456)
+        ->setDescription('Hello!')
+        ->setIconImage(getTestSupportPath('images/spatie-thumbnail.png'))
+        ->setRemoteVenueMapImage('https://example.com/pass/venue-map.png')
+        ->save();
+
+    expect($pass->images['venueMap'])
+        ->toMatchArray([
+            'x1Path' => 'https://example.com/pass/venue-map.png',
+            'isRemote' => true,
+        ]);
+});

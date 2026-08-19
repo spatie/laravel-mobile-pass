@@ -241,6 +241,23 @@ it('bundles localized artwork images into event tickets', function () {
     expect($reader->containsFile('en.lproj/artwork@2x.png'))->toBeTrue();
 });
 
+it('bundles localized venue map images into event tickets', function () {
+    $imagePath = getTestSupportPath('images/spatie-thumbnail.png');
+
+    $pass = EventTicketPassBuilder::make()
+        ->setOrganizationName('My Org')
+        ->setSerialNumber('123')
+        ->setDescription('Test Pass')
+        ->setIconImage($imagePath)
+        ->setLocaleVenueMapImage('en', $imagePath, $imagePath)
+        ->generate();
+
+    $reader = PkPassReader::fromString($pass);
+
+    expect($reader->containsFile('en.lproj/venueMap.png'))->toBeTrue();
+    expect($reader->containsFile('en.lproj/venueMap@2x.png'))->toBeTrue();
+});
+
 it('stores remote locale artwork images on event ticket model', function () {
     $model = EventTicketPassBuilder::make()
         ->setOrganizationName('My Org')

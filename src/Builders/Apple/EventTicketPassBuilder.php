@@ -4,6 +4,7 @@ namespace Spatie\LaravelMobilePass\Builders\Apple;
 
 use Illuminate\Support\Carbon;
 use Spatie\LaravelMobilePass\Builders\Apple\Concerns\HasArtworkImage;
+use Spatie\LaravelMobilePass\Builders\Apple\Entities\Image;
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\Location;
 use Spatie\LaravelMobilePass\Builders\Apple\Validators\ApplePassValidator;
 use Spatie\LaravelMobilePass\Builders\Apple\Validators\EventTicketApplePassValidator;
@@ -57,6 +58,34 @@ class EventTicketPassBuilder extends ApplePassBuilder
     public function usePosterLayout(): self
     {
         $this->preferredStyleSchemes = ['posterEventTicket', 'eventTicket'];
+
+        return $this;
+    }
+
+    public function setVenueMapImage(string $x1Path, ?string $x2Path = null, ?string $x3Path = null): self
+    {
+        $this->images['venueMap'] = new Image($x1Path, $x2Path, $x3Path);
+
+        return $this;
+    }
+
+    public function setRemoteVenueMapImage(string $x1Url, ?string $x2Url = null, ?string $x3Url = null): self
+    {
+        $this->images['venueMap'] = Image::makeRemote($x1Url, $x2Url, $x3Url);
+
+        return $this;
+    }
+
+    public function setLocaleVenueMapImage(string $language, string $x1Path, ?string $x2Path = null, ?string $x3Path = null): self
+    {
+        $this->locales[$language]['images']['venueMap'] = new Image($x1Path, $x2Path, $x3Path);
+
+        return $this;
+    }
+
+    public function setRemoteLocaleVenueMapImage(string $language, string $x1Url, ?string $x2Url = null, ?string $x3Url = null): self
+    {
+        $this->locales[$language]['images']['venueMap'] = Image::makeRemote($x1Url, $x2Url, $x3Url);
 
         return $this;
     }
