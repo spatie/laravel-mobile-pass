@@ -250,16 +250,15 @@ abstract class ApplePassBuilder
         return $this->addField($key, $value, FieldType::Back, $label, $changeMessage, $dateStyle, $timeStyle, $showDateAsRelative);
     }
 
-    public function addField(
+    protected function makeFieldContent(
         string $key,
         string $value,
-        FieldType $type = FieldType::Primary,
         ?string $label = null,
         ?string $changeMessage = null,
         ?DateType $dateStyle = null,
         ?TimeStyleType $timeStyle = null,
         ?bool $showDateAsRelative = null,
-    ): self {
+    ): FieldContent {
         $field = FieldContent::make($key)
             ->withValue($value)
             ->withLabel($label ?? Str::headline($key));
@@ -279,6 +278,21 @@ abstract class ApplePassBuilder
         if ($showDateAsRelative) {
             $field->showDateAsRelative();
         }
+
+        return $field;
+    }
+
+    public function addField(
+        string $key,
+        string $value,
+        FieldType $type = FieldType::Primary,
+        ?string $label = null,
+        ?string $changeMessage = null,
+        ?DateType $dateStyle = null,
+        ?TimeStyleType $timeStyle = null,
+        ?bool $showDateAsRelative = null,
+    ): self {
+        $field = $this->makeFieldContent($key, $value, $label, $changeMessage, $dateStyle, $timeStyle, $showDateAsRelative);
 
         $property = $type->value;
 
