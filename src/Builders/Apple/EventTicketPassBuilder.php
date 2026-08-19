@@ -256,7 +256,7 @@ class EventTicketPassBuilder extends ApplePassBuilder
                 'venueFanZoneOpenDate' => $this->venueFanZoneOpenDate?->toIso8601String(),
                 'venueBoxOfficeOpenDate' => $this->venueBoxOfficeOpenDate?->toIso8601String(),
                 'venueParkingLotsOpenDate' => $this->venueParkingLotsOpenDate?->toIso8601String(),
-            ]),
+            ], fn ($value) => $value !== null),
         );
     }
 

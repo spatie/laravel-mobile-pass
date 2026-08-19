@@ -258,6 +258,19 @@ it('bundles localized venue map images into event tickets', function () {
     expect($reader->containsFile('en.lproj/venueMap@2x.png'))->toBeTrue();
 });
 
+it('stores remote locale venue map images on event ticket model', function () {
+    $model = EventTicketPassBuilder::make()
+        ->setOrganizationName('My Org')
+        ->setSerialNumber('123')
+        ->setDescription('Test Pass')
+        ->setIconImage(getTestSupportPath('images/spatie-thumbnail.png'))
+        ->setRemoteLocaleVenueMapImage('en', 'https://example.com/pass/venue-map-en.png')
+        ->save();
+
+    expect($model->locales['en']['images']['venueMap'])
+        ->toMatchArray(['x1Path' => 'https://example.com/pass/venue-map-en.png', 'isRemote' => true]);
+});
+
 it('stores remote locale artwork images on event ticket model', function () {
     $model = EventTicketPassBuilder::make()
         ->setOrganizationName('My Org')

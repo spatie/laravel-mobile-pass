@@ -31,6 +31,8 @@ $builder->setArtworkImage(public_path('images/artwork.png'));
 
 If you opt a pass into a poster layout (`EventTicketPassBuilder::usePosterLayout()`, or any `GenericPassBuilder::addPoster*Field()` call), set an artwork image too — the package doesn't require one, but a poster pass without artwork won't render as intended. The order you call the builder methods in doesn't matter.
 
+Event tickets also support a `venueMap` image via `setVenueMapImage()`, shown in the pass's event guide panel. Like artwork, it's only rendered as part of the poster layout, so pair it with `usePosterLayout()` as well.
+
 Apple renders passes at 1x, 2x, and 3x pixel densities. Providing higher-density versions gives you crisper results; pass them as extra arguments:
 
 ```php

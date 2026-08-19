@@ -390,7 +390,7 @@ abstract class BoardingPassBuilder extends ApplePassBuilder
                 'vehicleName' => $this->vehicleName,
                 'vehicleNumber' => $this->vehicleNumber,
                 'vehicleType' => $this->vehicleType,
-            ]),
+            ], fn ($value) => $value !== null),
         );
     }
 
