@@ -19,6 +19,17 @@ GenericPassBuilder::make()
     ->save();
 ```
 
+Generic passes also support Apple's poster layout via a separate set of fields — `addPosterHeaderField()`, `addPosterPrimaryField()`, `addPosterFooterField()`, and `addPosterBackField()` — which populate a `posterGeneric` block shown alongside the classic layout. Set an `artwork` image (see [Adding images](../basic-usage/adding-images)) for it to render correctly:
+
+```php
+GenericPassBuilder::make()
+    // ...
+    ->setArtworkImage(public_path('images/artwork.png'))
+    ->addPosterHeaderField('event', 'Spatie Conference 2026')
+    ->addPosterPrimaryField('track', 'All-access')
+    ->save();
+```
+
 ## Google
 
 Declare the Class once per use case (the brand, the visuals, the card title), then create an Object per person.

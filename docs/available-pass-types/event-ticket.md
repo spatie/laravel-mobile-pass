@@ -20,6 +20,16 @@ EventTicketPassBuilder::make()
     ->save();
 ```
 
+Call `usePosterLayout()` to opt into Apple's poster-style layout on supported devices, which renders the `artwork` image (see [Adding images](../basic-usage/adding-images)) as a full-bleed background. Older devices fall back to the classic layout automatically:
+
+```php
+EventTicketPassBuilder::make()
+    // ...
+    ->setArtworkImage(public_path('images/artwork.png'))
+    ->usePosterLayout()
+    ->save();
+```
+
 ## Google
 
 Declare the Class once per event (the venue, the show, the shared visuals), then create an Object per ticket.
