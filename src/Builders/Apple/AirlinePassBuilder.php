@@ -2,6 +2,7 @@
 
 namespace Spatie\LaravelMobilePass\Builders\Apple;
 
+use Spatie\LaravelMobilePass\Enums\PassengerCapability;
 use Spatie\LaravelMobilePass\Enums\TransitType;
 
 class AirlinePassBuilder extends BoardingPassBuilder
@@ -29,6 +30,18 @@ class AirlinePassBuilder extends BoardingPassBuilder
     protected ?string $destinationGate = null;
 
     protected ?string $destinationTerminal = null;
+
+    /** @var array<int, string>|null */
+    protected ?array $passengerAirlineSsrs = null;
+
+    /** @var array<int, PassengerCapability>|null */
+    protected ?array $passengerCapabilities = null;
+
+    /** @var array<int, string>|null */
+    protected ?array $passengerInformationSsrs = null;
+
+    /** @var array<int, string>|null */
+    protected ?array $passengerServiceSsrs = null;
 
     /**
      * The IATA airline code, such as EX for flightCode EX123.
@@ -138,5 +151,88 @@ class AirlinePassBuilder extends BoardingPassBuilder
         $this->flightNumber = $flightNumber;
 
         return $this;
+    }
+
+    /** An array of airline-specific SSRs that apply to the ticketed passenger. */
+    public function setPassengerAirlineSsrs(string ...$passengerAirlineSsrs): static
+    {
+        $this->passengerAirlineSsrs = $passengerAirlineSsrs;
+
+        return $this;
+    }
+
+    /** A list of capabilities the passenger has. */
+    public function setPassengerCapabilities(PassengerCapability ...$passengerCapabilities): static
+    {
+        $this->passengerCapabilities = $passengerCapabilities;
+
+        return $this;
+    }
+
+    /** An array of IATA information SSRs that apply to the ticketed passenger. */
+    public function setPassengerInformationSsrs(string ...$passengerInformationSsrs): static
+    {
+        $this->passengerInformationSsrs = $passengerInformationSsrs;
+
+        return $this;
+    }
+
+    /** An array of IATA SSRs that apply to the ticketed passenger. */
+    public function setPassengerServiceSsrs(string ...$passengerServiceSsrs): static
+    {
+        $this->passengerServiceSsrs = $passengerServiceSsrs;
+
+        return $this;
+    }
+
+    protected function compileSemantics(): array
+    {
+        return array_merge(
+            parent::compileSemantics(),
+            array_filter([
+                'airlineCode' => $this->airlineCode,
+                'flightCode' => $this->flightCode,
+                'flightNumber' => $this->flightNumber,
+                'departureGate' => $this->departureGate,
+                'departureTerminal' => $this->departureTerminal,
+                'departureAirportCode' => $this->departureAirportCode,
+                'departureAirportName' => $this->departureAirportName,
+                'destinationAirportCode' => $this->destinationAirportCode,
+                'destinationAirportName' => $this->destinationAirportName,
+                'destinationGate' => $this->destinationGate,
+                'destinationTerminal' => $this->destinationTerminal,
+                'passengerAirlineSSRs' => $this->passengerAirlineSsrs,
+                'passengerCapabilities' => $this->passengerCapabilities !== null
+                    ? array_map(fn (PassengerCapability $c) => $c->value, $this->passengerCapabilities)
+                    : null,
+                'passengerInformationSSRs' => $this->passengerInformationSsrs,
+                'passengerServiceSSRs' => $this->passengerServiceSsrs,
+            ], fn ($value) => $value !== null),
+        );
+    }
+
+    protected function uncompileSemantics(): void
+    {
+        parent::uncompileSemantics();
+
+        $semantics = $this->data['semantics'] ?? [];
+
+        $this->airlineCode = $semantics['airlineCode'] ?? null;
+        $this->flightCode = $semantics['flightCode'] ?? null;
+        $this->flightNumber = $semantics['flightNumber'] ?? null;
+        $this->departureGate = $semantics['departureGate'] ?? null;
+        $this->departureTerminal = $semantics['departureTerminal'] ?? null;
+        $this->departureAirportCode = $semantics['departureAirportCode'] ?? null;
+        $this->departureAirportName = $semantics['departureAirportName'] ?? null;
+        $this->destinationAirportCode = $semantics['destinationAirportCode'] ?? null;
+        $this->destinationAirportName = $semantics['destinationAirportName'] ?? null;
+        $this->destinationGate = $semantics['destinationGate'] ?? null;
+        $this->destinationTerminal = $semantics['destinationTerminal'] ?? null;
+        $this->passengerAirlineSsrs = $semantics['passengerAirlineSSRs'] ?? null;
+        $this->passengerCapabilities = isset($semantics['passengerCapabilities'])
+            ? array_map(fn (string $v) => PassengerCapability::from($v), $semantics['passengerCapabilities'])
+            : null;
+        $this->passengerInformationSsrs = $semantics['passengerInformationSSRs'] ?? null;
+        $this->passengerServiceSsrs = $semantics['passengerServiceSSRs'] ?? null;
     }
 }

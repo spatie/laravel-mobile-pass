@@ -2,6 +2,7 @@
 
 use Spatie\LaravelMobilePass\Builders\Apple\AirlinePassBuilder;
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\Seat;
+use Spatie\LaravelMobilePass\Enums\PassengerCapability;
 use Spatie\LaravelMobilePass\Enums\TransitSecurityProgram;
 
 it('builds a basic airline boarding pass', function () {
@@ -89,6 +90,18 @@ it('round-trips general boarding semantics through save and hydrate', function (
     expect($model->builder()->data()['semantics'])->toMatchArray(expectedGeneralBoardingSemantics());
 });
 
+it('compiles airline semantics into the semantics payload', function () {
+    $compiledData = builderWithEveryAirlineDetail()->data();
+
+    expect($compiledData['semantics'])->toMatchArray(expectedAirlineSemantics());
+});
+
+it('round-trips airline semantics through save and hydrate', function () {
+    $model = builderWithEveryAirlineDetail()->save();
+
+    expect($model->builder()->data()['semantics'])->toMatchArray(expectedAirlineSemantics());
+});
+
 it('has a name', function () {
     expect(AirlinePassBuilder::name())->toBe('airline');
 });
@@ -131,5 +144,50 @@ function expectedGeneralBoardingSemantics(): array
         'departureLocationTimeZone' => 'Asia/Dubai',
         'destinationLocationTimeZone' => 'Europe/London',
         'loungePlaceIDs' => ['lounge-1', 'lounge-2'],
+    ];
+}
+
+function builderWithEveryAirlineDetail(): AirlinePassBuilder
+{
+    return AirlinePassBuilder::make()
+        ->setOrganizationName('My organization')
+        ->setSerialNumber(123456)
+        ->setDescription('Hello!')
+        ->setIconImage(getTestSupportPath('images/spatie-thumbnail.png'))
+        ->setAirlineCode('EY')
+        ->setFlightCode('EY066')
+        ->setFlightNumber('66')
+        ->setDepartureGate('D68')
+        ->setDepartureTerminal('1')
+        ->setDepartureAirportCode('AUH')
+        ->setDepartureAirportName('Abu Dhabi Intl')
+        ->setDestinationAirportCode('LHR')
+        ->setDestinationAirportName('London Heathrow')
+        ->setDestinationGate('A10')
+        ->setDestinationTerminal('5')
+        ->setPassengerAirlineSsrs('WCHR')
+        ->setPassengerCapabilities(PassengerCapability::PriorityBoarding, PassengerCapability::Carryon)
+        ->setPassengerInformationSsrs('VGML')
+        ->setPassengerServiceSsrs('SPEQ');
+}
+
+function expectedAirlineSemantics(): array
+{
+    return [
+        'airlineCode' => 'EY',
+        'flightCode' => 'EY066',
+        'flightNumber' => '66',
+        'departureGate' => 'D68',
+        'departureTerminal' => '1',
+        'departureAirportCode' => 'AUH',
+        'departureAirportName' => 'Abu Dhabi Intl',
+        'destinationAirportCode' => 'LHR',
+        'destinationAirportName' => 'London Heathrow',
+        'destinationGate' => 'A10',
+        'destinationTerminal' => '5',
+        'passengerAirlineSSRs' => ['WCHR'],
+        'passengerCapabilities' => ['PKPassengerCapabilityPriorityBoarding', 'PKPassengerCapabilityCarryon'],
+        'passengerInformationSSRs' => ['VGML'],
+        'passengerServiceSSRs' => ['SPEQ'],
     ];
 }
