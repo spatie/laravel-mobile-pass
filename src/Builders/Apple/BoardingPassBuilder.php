@@ -79,7 +79,7 @@ abstract class BoardingPassBuilder extends ApplePassBuilder
     }
 
     /** A group number for boarding. */
-    public function setBoardingGroup(string $boardingGroup): self
+    public function setBoardingGroup(string $boardingGroup): static
     {
         $this->boardingGroup = $boardingGroup;
 
@@ -87,7 +87,7 @@ abstract class BoardingPassBuilder extends ApplePassBuilder
     }
 
     /** A sequence number for boarding. */
-    public function setBoardingSequenceNumber(string $boardingSequenceNumber): self
+    public function setBoardingSequenceNumber(string $boardingSequenceNumber): static
     {
         $this->boardingSequenceNumber = $boardingSequenceNumber;
 
@@ -95,7 +95,7 @@ abstract class BoardingPassBuilder extends ApplePassBuilder
     }
 
     /** A booking or reservation confirmation number. */
-    public function setConfirmationNumber(string $confirmationNumber): self
+    public function setConfirmationNumber(string $confirmationNumber): static
     {
         $this->confirmationNumber = $confirmationNumber;
 
@@ -103,7 +103,7 @@ abstract class BoardingPassBuilder extends ApplePassBuilder
     }
 
     /** The updated date and time of arrival, if different from the originally scheduled date and time. */
-    public function setCurrentArrivalDate(Carbon $currentArrivalDate): self
+    public function setCurrentArrivalDate(Carbon $currentArrivalDate): static
     {
         $this->currentArrivalDate = $currentArrivalDate;
 
@@ -111,7 +111,7 @@ abstract class BoardingPassBuilder extends ApplePassBuilder
     }
 
     /** The updated date and time of boarding, if different from the originally scheduled date and time. */
-    public function setCurrentBoardingDate(Carbon $currentBoardingDate): self
+    public function setCurrentBoardingDate(Carbon $currentBoardingDate): static
     {
         $this->currentBoardingDate = $currentBoardingDate;
 
@@ -119,7 +119,7 @@ abstract class BoardingPassBuilder extends ApplePassBuilder
     }
 
     /** The updated departure date and time, if different from the originally scheduled date and time. */
-    public function setCurrentDepartureDate(Carbon $currentDepartureDate): self
+    public function setCurrentDepartureDate(Carbon $currentDepartureDate): static
     {
         $this->currentDepartureDate = $currentDepartureDate;
 
@@ -127,7 +127,7 @@ abstract class BoardingPassBuilder extends ApplePassBuilder
     }
 
     /** An object that represents the geographic coordinates of the transit departure location, suitable for display on a map. If possible, use precise locations, which are more useful to travelers; for example, the specific location of an airport gate. */
-    public function setDepartureLocation(Location $departureLocation): self
+    public function setDepartureLocation(Location $departureLocation): static
     {
         $this->departureLocation = $departureLocation;
 
@@ -135,7 +135,7 @@ abstract class BoardingPassBuilder extends ApplePassBuilder
     }
 
     /** A brief description of the departure location. For example, for a flight departing from an airport that has a code of LHR, an appropriate description might be London, Heathrow. */
-    public function setDepartureLocationDescription(string $departureLocationDescription): self
+    public function setDepartureLocationDescription(string $departureLocationDescription): static
     {
         $this->departureLocationDescription = $departureLocationDescription;
 
@@ -143,7 +143,7 @@ abstract class BoardingPassBuilder extends ApplePassBuilder
     }
 
     /** An object that represents the geographic coordinates of the transit departure location, suitable for display on a map. */
-    public function setDestinationLocation(Location $destinationLocation): self
+    public function setDestinationLocation(Location $destinationLocation): static
     {
         $this->destinationLocation = $destinationLocation;
 
@@ -151,7 +151,7 @@ abstract class BoardingPassBuilder extends ApplePassBuilder
     }
 
     /** A brief description of the destination location. For example, for a flight arriving at an airport that has a code of MPM, Maputo might be an appropriate description. */
-    public function setDestinationLocationDescription(string $destinationLocationDescription): self
+    public function setDestinationLocationDescription(string $destinationLocationDescription): static
     {
         $this->destinationLocationDescription = $destinationLocationDescription;
 
@@ -159,7 +159,7 @@ abstract class BoardingPassBuilder extends ApplePassBuilder
     }
 
     /** The duration of the transit journey, in seconds. */
-    public function setDuration(int $durationInSeconds): self
+    public function setDuration(int $durationInSeconds): static
     {
         $this->durationInSeconds = $durationInSeconds;
 
@@ -167,7 +167,7 @@ abstract class BoardingPassBuilder extends ApplePassBuilder
     }
 
     /** The name of a frequent flyer or loyalty program. */
-    public function setMembershipProgramName(string $membershipProgramName): self
+    public function setMembershipProgramName(string $membershipProgramName): static
     {
         $this->membershipProgramName = $membershipProgramName;
 
@@ -175,7 +175,7 @@ abstract class BoardingPassBuilder extends ApplePassBuilder
     }
 
     /** The ticketed passenger’s frequent flyer or loyalty number. */
-    public function setMembershipProgramNumber(string $membershipProgramNumber): self
+    public function setMembershipProgramNumber(string $membershipProgramNumber): static
     {
         $this->membershipProgramNumber = $membershipProgramNumber;
 
@@ -183,7 +183,7 @@ abstract class BoardingPassBuilder extends ApplePassBuilder
     }
 
     /** The originally scheduled date and time of arrival. */
-    public function setOriginalArrivalDate(Carbon $originalArrivalDate): self
+    public function setOriginalArrivalDate(Carbon $originalArrivalDate): static
     {
         $this->originalArrivalDate = $originalArrivalDate;
 
@@ -191,7 +191,7 @@ abstract class BoardingPassBuilder extends ApplePassBuilder
     }
 
     /** The originally scheduled date and time of boarding. */
-    public function setOriginalBoardingDate(Carbon $originalBoardingDate): self
+    public function setOriginalBoardingDate(Carbon $originalBoardingDate): static
     {
         $this->originalBoardingDate = $originalBoardingDate;
 
@@ -199,7 +199,7 @@ abstract class BoardingPassBuilder extends ApplePassBuilder
     }
 
     /** The originally scheduled date and time of departure. */
-    public function setOriginalDepartureDate(Carbon $originalDepartureDate): self
+    public function setOriginalDepartureDate(Carbon $originalDepartureDate): static
     {
         $this->originalDepartureDate = $originalDepartureDate;
 
@@ -207,7 +207,7 @@ abstract class BoardingPassBuilder extends ApplePassBuilder
     }
 
     /** An object that represents the name of the passenger. */
-    public function setPassengerName(PersonName $passengerName): self
+    public function setPassengerName(PersonName $passengerName): static
     {
         $this->passengerName = $passengerName;
 
@@ -215,7 +215,7 @@ abstract class BoardingPassBuilder extends ApplePassBuilder
     }
 
     /** The priority status the ticketed passenger holds, such as “Gold” or “Silver”. */
-    public function setPriorityStatus(string $priorityStatus): self
+    public function setPriorityStatus(string $priorityStatus): static
     {
         $this->priorityStatus = $priorityStatus;
 
@@ -223,7 +223,7 @@ abstract class BoardingPassBuilder extends ApplePassBuilder
     }
 
     /** An object that represents the details for each seat on a transit journey. */
-    public function setSeats(Seat ...$seat): self
+    public function setSeats(Seat ...$seat): static
     {
         $this->seats = collect($seat);
 
@@ -231,7 +231,7 @@ abstract class BoardingPassBuilder extends ApplePassBuilder
     }
 
     /** The type of security screening for the ticketed passenger, such as “Priority”. */
-    public function setSecurityScreening(string $securityScreening): self
+    public function setSecurityScreening(string $securityScreening): static
     {
         $this->securityScreening = $securityScreening;
 
@@ -239,7 +239,7 @@ abstract class BoardingPassBuilder extends ApplePassBuilder
     }
 
     /** A Boolean value that determines whether the user’s device remains silent during a transit journey. The system may override the key and determine the length of the period of silence. */
-    public function setSilenceRequested(bool $silenceRequested): self
+    public function setSilenceRequested(bool $silenceRequested): static
     {
         $this->silenceRequested = $silenceRequested;
 
@@ -247,7 +247,7 @@ abstract class BoardingPassBuilder extends ApplePassBuilder
     }
 
     /** The name of the transit company. */
-    public function setTransitProvider(string $transitProvider): self
+    public function setTransitProvider(string $transitProvider): static
     {
         $this->transitProvider = $transitProvider;
 
@@ -255,7 +255,7 @@ abstract class BoardingPassBuilder extends ApplePassBuilder
     }
 
     /** A brief description of the current boarding status for the vessel, such as “On Time” or “Delayed”. For delayed status, provide currentBoardingDate, currentDepartureDate, and currentArrivalDate where available. */
-    public function setTransitStatus(string $transitStatus): self
+    public function setTransitStatus(string $transitStatus): static
     {
         $this->transitStatus = $transitStatus;
 
@@ -263,7 +263,7 @@ abstract class BoardingPassBuilder extends ApplePassBuilder
     }
 
     /** A brief description that explains the reason for the current transitStatus, such as “Thunderstorms”. */
-    public function setTransitStatusReason(string $transitStatusReason): self
+    public function setTransitStatusReason(string $transitStatusReason): static
     {
         $this->transitStatusReason = $transitStatusReason;
 
@@ -271,7 +271,7 @@ abstract class BoardingPassBuilder extends ApplePassBuilder
     }
 
     /** The name of the vehicle to board, such as the name of a boat. */
-    public function setVehicleName(string $vehicleName): self
+    public function setVehicleName(string $vehicleName): static
     {
         $this->vehicleName = $vehicleName;
 
@@ -279,7 +279,7 @@ abstract class BoardingPassBuilder extends ApplePassBuilder
     }
 
     /** The identifier of the vehicle to board, such as the aircraft registration number or train number. */
-    public function setVehicleNumber(string $vehicleNumber): self
+    public function setVehicleNumber(string $vehicleNumber): static
     {
         $this->vehicleNumber = $vehicleNumber;
 
@@ -287,28 +287,28 @@ abstract class BoardingPassBuilder extends ApplePassBuilder
     }
 
     /** A brief description of the type of vehicle to board, such as the model and manufacturer of a plane or the class of a boat. */
-    public function setVehicleType(string $vehicleType): self
+    public function setVehicleType(string $vehicleType): static
     {
         $this->vehicleType = $vehicleType;
 
         return $this;
     }
 
-    public function setFooterImage(string $x1Path, ?string $x2Path = null, ?string $x3Path = null): self
+    public function setFooterImage(string $x1Path, ?string $x2Path = null, ?string $x3Path = null): static
     {
         $this->images['footer'] = new Image($x1Path, $x2Path, $x3Path);
 
         return $this;
     }
 
-    public function setLocaleFooterImage(string $language, string $x1Path, ?string $x2Path = null, ?string $x3Path = null): self
+    public function setLocaleFooterImage(string $language, string $x1Path, ?string $x2Path = null, ?string $x3Path = null): static
     {
         $this->locales[$language]['images']['footer'] = new Image($x1Path, $x2Path, $x3Path);
 
         return $this;
     }
 
-    public function setRemoteLocaleFooterImage(string $language, string $x1Url, ?string $x2Url = null, ?string $x3Url = null): self
+    public function setRemoteLocaleFooterImage(string $language, string $x1Url, ?string $x2Url = null, ?string $x3Url = null): static
     {
         $this->locales[$language]['images']['footer'] = Image::makeRemote($x1Url, $x2Url, $x3Url);
 

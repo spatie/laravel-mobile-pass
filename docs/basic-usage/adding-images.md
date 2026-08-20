@@ -29,9 +29,9 @@ Event tickets and generic passes also support an artwork image, which Apple rend
 $builder->setArtworkImage(public_path('images/artwork.png'));
 ```
 
-If you opt a pass into a poster layout (`EventTicketPassBuilder::usePosterLayout()`, or any `GenericPassBuilder::addPoster*Field()` call), set an artwork image too — the package doesn't require one, but a poster pass without artwork won't render as intended. The order you call the builder methods in doesn't matter.
+If you opt a pass into a poster layout (`EventTicketPassBuilder::usePosterLayout()`, or any `GenericPassBuilder::addPoster*Field()` call), set an artwork image too. The package doesn't require one, but a poster pass without artwork won't render as intended.
 
-Event tickets also support a `venueMap` image via `setVenueMapImage()`, shown in the pass's event guide panel. Like artwork, it's only rendered as part of the poster layout, so pair it with `usePosterLayout()` as well.
+Event tickets also support a `venueMap` image via `setVenueMapImage()`, shown in the event guide panel of a poster-style event ticket. See [Event ticket](../available-pass-types/event-ticket) for what else that panel needs.
 
 Apple renders passes at 1x, 2x, and 3x pixel densities. Providing higher-density versions gives you crisper results; pass them as extra arguments:
 
@@ -56,9 +56,11 @@ Apple publishes the exact sizes it expects. The values below are for the 1x dens
 | Thumbnail | up to 90 × 90 | Square artwork next to primary fields on event tickets and generic passes. |
 | Strip | 375 × 123 (coupon) / 375 × 98 (event ticket) | Full-width image behind the primary fields. |
 | Background | 180 × 220 | Event tickets only. Blurred and stretched by Wallet. |
-| Artwork | Varies (portrait) | Event tickets and generic passes only. Large portrait image for Apple's poster-style layouts. This is a newer image type without a long-settled spec, so check Apple's current Wallet documentation for the exact current dimensions. |
-| Venue map | Varies | Event tickets only. Shown in the pass's event guide panel. This is a newer image type without a long-settled spec, so check Apple's current Wallet documentation for the exact current dimensions. |
+| Artwork | see below | Event tickets and generic passes only. Large portrait image for Apple's poster-style layouts. |
+| Venue map | see below | Event tickets only. Shown in the pass's event guide panel. |
 | Footer | 286 × 15 | Boarding passes only. Sits above the barcode. |
+
+Artwork and venue map are newer image types without a long-settled spec, so check Apple's Wallet documentation for the dimensions it expects today.
 
 Apple's docs don't strictly require any of these, but passes feel unfinished without an icon (it's what shows up on the lock screen and in Mail), so treat that one as mandatory in practice.
 

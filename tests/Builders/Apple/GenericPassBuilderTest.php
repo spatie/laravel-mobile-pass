@@ -91,6 +91,26 @@ it('bundles poster fields into the posterGeneric block', function () {
     ]);
 });
 
+it('ships the generic block alongside posterGeneric so older devices keep working', function () {
+    $compiledData = GenericPassBuilder::make()
+        ->setOrganizationName('My organization')
+        ->setSerialNumber(123456)
+        ->setDescription('Hello!')
+        ->setIconImage(getTestSupportPath('images/spatie-thumbnail.png'))
+        ->addHeaderField('event', 'Laracon EU')
+        ->addPosterHeaderField('event', 'Laracon EU')
+        ->data();
+
+    expect($compiledData['generic']['headerFields'][0])->toMatchArray([
+        'key' => 'event',
+        'value' => 'Laracon EU',
+    ]);
+    expect($compiledData['posterGeneric']['headerFields'][0])->toMatchArray([
+        'key' => 'event',
+        'value' => 'Laracon EU',
+    ]);
+});
+
 it('updates matching keys in both the generic and posterGeneric blocks', function () {
     $model = GenericPassBuilder::make()
         ->setOrganizationName('My organization')

@@ -2,6 +2,7 @@
 
 use Spatie\LaravelMobilePass\Builders\Apple\AirlinePassBuilder;
 use Spatie\LaravelMobilePass\Builders\Apple\EventTicketPassBuilder;
+use Spatie\LaravelMobilePass\Builders\Apple\GenericPassBuilder;
 use Spatie\LaravelMobilePass\Support\Apple\PkPassReader;
 
 it('can read arbitrary file content from a pkpass zip', function () {
@@ -228,6 +229,23 @@ it('bundles localized artwork images into event tickets', function () {
     $imagePath = getTestSupportPath('images/spatie-thumbnail.png');
 
     $pass = EventTicketPassBuilder::make()
+        ->setOrganizationName('My Org')
+        ->setSerialNumber('123')
+        ->setDescription('Test Pass')
+        ->setIconImage($imagePath)
+        ->setLocaleArtworkImage('en', $imagePath, $imagePath)
+        ->generate();
+
+    $reader = PkPassReader::fromString($pass);
+
+    expect($reader->containsFile('en.lproj/artwork.png'))->toBeTrue();
+    expect($reader->containsFile('en.lproj/artwork@2x.png'))->toBeTrue();
+});
+
+it('bundles localized artwork images into generic passes', function () {
+    $imagePath = getTestSupportPath('images/spatie-thumbnail.png');
+
+    $pass = GenericPassBuilder::make()
         ->setOrganizationName('My Org')
         ->setSerialNumber('123')
         ->setDescription('Test Pass')

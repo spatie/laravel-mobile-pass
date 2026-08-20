@@ -47,6 +47,22 @@ it('builds a basic airline boarding pass', function () {
     expect($mobilePass->generate())->toMatchMobilePassSnapshot();
 });
 
+it('keeps semantics that are falsy but meaningful', function () {
+    $compiledData = AirlinePassBuilder::make()
+        ->setOrganizationName('My organization')
+        ->setSerialNumber(123456)
+        ->setDescription('Hello!')
+        ->setIconImage(getTestSupportPath('images/spatie-thumbnail.png'))
+        ->setSilenceRequested(false)
+        ->setDuration(0)
+        ->data();
+
+    expect($compiledData['semantics'])->toMatchArray([
+        'silenceRequested' => false,
+        'duration' => 0,
+    ]);
+});
+
 it('has a name', function () {
     expect(AirlinePassBuilder::name())->toBe('airline');
 });
