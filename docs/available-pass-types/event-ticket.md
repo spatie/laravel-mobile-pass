@@ -59,6 +59,38 @@ EventTicketPassBuilder::make()
 
 The event guide only shows up when the pass is relevant for a date, so call `setRelevantDate()` as well (see [Pass relevance](../apple-wallet/pass-relevance)). Note that `setVenueLocation()` only carries the coordinates: the altitude and relevant text a `Location` can hold are used by `addLocation()`, not by this semantic tag.
 
+Event tickets can also carry event details Wallet shows alongside the venue guide. Tags valid for any event:
+
+- `setEventName()`, `setEventType()`, `setEventStartDate()`, `setEventStartDateInfo()`, `setEventEndDate()`
+- `setAdmissionLevel()`, `setAdmissionLevelAbbreviation()`, `setAttendeeName()`
+- `setAdditionalTicketAttributes()`, `setEntranceDescription()`, `setGenre()`
+- `setTailgatingAllowed()`, `setDuration()`, `setSilenceRequested()`
+- `setSeats()`
+
+For live performances:
+
+- `setPerformerNames()`, `setArtistIds()`, `setAlbumIds()`, `setPlaylistIds()`
+
+For sports events:
+
+- `setAwayTeamAbbreviation()`, `setAwayTeamName()`, `setAwayTeamLocation()`
+- `setHomeTeamAbbreviation()`, `setHomeTeamName()`, `setHomeTeamLocation()`
+- `setLeagueAbbreviation()`, `setLeagueName()`, `setSportName()`
+
+```php
+use Spatie\LaravelMobilePass\Builders\Apple\Entities\EventDateInfo;
+use Spatie\LaravelMobilePass\Enums\EventType;
+
+EventTicketPassBuilder::make()
+    // ...
+    ->setEventType(EventType::LivePerformance)
+    ->setEventStartDateInfo(EventDateInfo::make(
+        date: Carbon::parse('2026-08-19 18:00'),
+        timeZone: 'America/New_York',
+    ))
+    ->save();
+```
+
 ## Google
 
 Declare the Class once per event (the venue, the show, the shared visuals), then create an Object per ticket.
