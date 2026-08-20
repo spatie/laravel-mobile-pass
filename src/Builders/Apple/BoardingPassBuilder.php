@@ -10,6 +10,7 @@ use Spatie\LaravelMobilePass\Builders\Apple\Entities\PersonName;
 use Spatie\LaravelMobilePass\Builders\Apple\Validators\ApplePassValidator;
 use Spatie\LaravelMobilePass\Builders\Apple\Validators\BoardingApplePassValidator;
 use Spatie\LaravelMobilePass\Enums\PassType;
+use Spatie\LaravelMobilePass\Enums\TransitSecurityProgram;
 use Spatie\LaravelMobilePass\Enums\TransitType;
 
 abstract class BoardingPassBuilder extends ApplePassBuilder
@@ -71,6 +72,36 @@ abstract class BoardingPassBuilder extends ApplePassBuilder
     protected ?string $vehicleNumber = null;
 
     protected ?string $vehicleType = null;
+
+    protected ?string $boardingZone = null;
+
+    protected ?string $departureCityName = null;
+
+    protected ?string $destinationCityName = null;
+
+    protected ?string $membershipProgramStatus = null;
+
+    protected ?string $ticketFareClass = null;
+
+    protected ?bool $internationalDocumentsAreVerified = null;
+
+    protected ?string $internationalDocumentsVerifiedDeclarationName = null;
+
+    /** @var array<int, TransitSecurityProgram>|null */
+    protected ?array $departureLocationSecurityPrograms = null;
+
+    /** @var array<int, TransitSecurityProgram>|null */
+    protected ?array $destinationLocationSecurityPrograms = null;
+
+    /** @var array<int, TransitSecurityProgram>|null */
+    protected ?array $passengerEligibleSecurityPrograms = null;
+
+    protected ?string $departureLocationTimeZone = null;
+
+    protected ?string $destinationLocationTimeZone = null;
+
+    /** @var array<int, string>|null */
+    protected ?array $loungePlaceIds = null;
 
     protected static function validator(): ApplePassValidator
     {
@@ -285,6 +316,110 @@ abstract class BoardingPassBuilder extends ApplePassBuilder
         return $this;
     }
 
+    /** A zone number for boarding. Don't include the word "zone". */
+    public function setBoardingZone(string $boardingZone): static
+    {
+        $this->boardingZone = $boardingZone;
+
+        return $this;
+    }
+
+    /** The name of the departure city to display on the boarding pass, such as London or Shanghai. */
+    public function setDepartureCityName(string $departureCityName): static
+    {
+        $this->departureCityName = $departureCityName;
+
+        return $this;
+    }
+
+    /** The name of the destination city to display on the boarding pass, such as London or Shanghai. */
+    public function setDestinationCityName(string $destinationCityName): static
+    {
+        $this->destinationCityName = $destinationCityName;
+
+        return $this;
+    }
+
+    /** The ticketed passenger's frequent flyer or loyalty program status. */
+    public function setMembershipProgramStatus(string $membershipProgramStatus): static
+    {
+        $this->membershipProgramStatus = $membershipProgramStatus;
+
+        return $this;
+    }
+
+    /** A localizable string that denotes the ticket class, such as "Saver", "Economy", "First". This value displays as a badge on the boarding pass. */
+    public function setTicketFareClass(string $ticketFareClass): static
+    {
+        $this->ticketFareClass = $ticketFareClass;
+
+        return $this;
+    }
+
+    /** An optional Boolean value that indicates whether the passenger's international documents are verified. */
+    public function setInternationalDocumentsAreVerified(bool $internationalDocumentsAreVerified): static
+    {
+        $this->internationalDocumentsAreVerified = $internationalDocumentsAreVerified;
+
+        return $this;
+    }
+
+    /** The name of the declaration given once the passenger's international documents are verified, such as "DOCS OK" or "Travel Ready". */
+    public function setInternationalDocumentsVerifiedDeclarationName(string $internationalDocumentsVerifiedDeclarationName): static
+    {
+        $this->internationalDocumentsVerifiedDeclarationName = $internationalDocumentsVerifiedDeclarationName;
+
+        return $this;
+    }
+
+    /** A list of security programs that exist at the departure location. */
+    public function setDepartureLocationSecurityPrograms(TransitSecurityProgram ...$departureLocationSecurityPrograms): static
+    {
+        $this->departureLocationSecurityPrograms = $departureLocationSecurityPrograms;
+
+        return $this;
+    }
+
+    /** A list of security programs that exist at the destination location. */
+    public function setDestinationLocationSecurityPrograms(TransitSecurityProgram ...$destinationLocationSecurityPrograms): static
+    {
+        $this->destinationLocationSecurityPrograms = $destinationLocationSecurityPrograms;
+
+        return $this;
+    }
+
+    /** A list of security programs the passenger is eligible for. */
+    public function setPassengerEligibleSecurityPrograms(TransitSecurityProgram ...$passengerEligibleSecurityPrograms): static
+    {
+        $this->passengerEligibleSecurityPrograms = $passengerEligibleSecurityPrograms;
+
+        return $this;
+    }
+
+    /** The time zone of the departure location, such as "America/Chicago". */
+    public function setDepartureLocationTimeZone(string $departureLocationTimeZone): static
+    {
+        $this->departureLocationTimeZone = $departureLocationTimeZone;
+
+        return $this;
+    }
+
+    /** The time zone of the destination location, such as "America/Los_Angeles". */
+    public function setDestinationLocationTimeZone(string $destinationLocationTimeZone): static
+    {
+        $this->destinationLocationTimeZone = $destinationLocationTimeZone;
+
+        return $this;
+    }
+
+    /** The MapKit Place IDs that reference the transit provider lounge locations. */
+    public function setLoungePlaceIds(string ...$loungePlaceIds): static
+    {
+        $this->loungePlaceIds = $loungePlaceIds;
+
+        return $this;
+    }
+
     public function setFooterImage(string $x1Path, ?string $x2Path = null, ?string $x3Path = null): static
     {
         $this->images['footer'] = new Image($x1Path, $x2Path, $x3Path);
@@ -345,6 +480,25 @@ abstract class BoardingPassBuilder extends ApplePassBuilder
         $this->vehicleName = $semantics['vehicleName'] ?? null;
         $this->vehicleNumber = $semantics['vehicleNumber'] ?? null;
         $this->vehicleType = $semantics['vehicleType'] ?? null;
+        $this->boardingZone = $semantics['boardingZone'] ?? null;
+        $this->departureCityName = $semantics['departureCityName'] ?? null;
+        $this->destinationCityName = $semantics['destinationCityName'] ?? null;
+        $this->membershipProgramStatus = $semantics['membershipProgramStatus'] ?? null;
+        $this->ticketFareClass = $semantics['ticketFareClass'] ?? null;
+        $this->internationalDocumentsAreVerified = $semantics['internationalDocumentsAreVerified'] ?? null;
+        $this->internationalDocumentsVerifiedDeclarationName = $semantics['internationalDocumentsVerifiedDeclarationName'] ?? null;
+        $this->departureLocationSecurityPrograms = isset($semantics['departureLocationSecurityPrograms'])
+            ? array_map(fn (string $v) => TransitSecurityProgram::from($v), $semantics['departureLocationSecurityPrograms'])
+            : null;
+        $this->destinationLocationSecurityPrograms = isset($semantics['destinationLocationSecurityPrograms'])
+            ? array_map(fn (string $v) => TransitSecurityProgram::from($v), $semantics['destinationLocationSecurityPrograms'])
+            : null;
+        $this->passengerEligibleSecurityPrograms = isset($semantics['passengerEligibleSecurityPrograms'])
+            ? array_map(fn (string $v) => TransitSecurityProgram::from($v), $semantics['passengerEligibleSecurityPrograms'])
+            : null;
+        $this->departureLocationTimeZone = $semantics['departureLocationTimeZone'] ?? null;
+        $this->destinationLocationTimeZone = $semantics['destinationLocationTimeZone'] ?? null;
+        $this->loungePlaceIds = $semantics['loungePlaceIDs'] ?? null;
     }
 
     protected function compileSemantics(): array
@@ -379,6 +533,25 @@ abstract class BoardingPassBuilder extends ApplePassBuilder
                 'vehicleName' => $this->vehicleName,
                 'vehicleNumber' => $this->vehicleNumber,
                 'vehicleType' => $this->vehicleType,
+                'boardingZone' => $this->boardingZone,
+                'departureCityName' => $this->departureCityName,
+                'destinationCityName' => $this->destinationCityName,
+                'membershipProgramStatus' => $this->membershipProgramStatus,
+                'ticketFareClass' => $this->ticketFareClass,
+                'internationalDocumentsAreVerified' => $this->internationalDocumentsAreVerified,
+                'internationalDocumentsVerifiedDeclarationName' => $this->internationalDocumentsVerifiedDeclarationName,
+                'departureLocationSecurityPrograms' => $this->departureLocationSecurityPrograms !== null
+                    ? array_map(fn (TransitSecurityProgram $p) => $p->value, $this->departureLocationSecurityPrograms)
+                    : null,
+                'destinationLocationSecurityPrograms' => $this->destinationLocationSecurityPrograms !== null
+                    ? array_map(fn (TransitSecurityProgram $p) => $p->value, $this->destinationLocationSecurityPrograms)
+                    : null,
+                'passengerEligibleSecurityPrograms' => $this->passengerEligibleSecurityPrograms !== null
+                    ? array_map(fn (TransitSecurityProgram $p) => $p->value, $this->passengerEligibleSecurityPrograms)
+                    : null,
+                'departureLocationTimeZone' => $this->departureLocationTimeZone,
+                'destinationLocationTimeZone' => $this->destinationLocationTimeZone,
+                'loungePlaceIDs' => $this->loungePlaceIds,
             ], fn ($value) => $value !== null),
         );
     }
