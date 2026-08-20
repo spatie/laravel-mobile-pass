@@ -3,12 +3,13 @@ title: Boarding pass
 weight: 2
 ---
 
-Boarding passes cover flights, trains, buses, and boats. Apple's `AirlinePassBuilder` is the flight-specific one; the more general `BoardingPassBuilder` lets you pick a `TransitType` if you're issuing trains or buses. Google has a single `BoardingPassBuilder` that works for flights.
+Boarding passes cover flights, trains, buses, and boats. Apple ships two first-party builders — `AirlinePassBuilder` for flights and `TrainPassBuilder` for trains — and the more general `BoardingPassBuilder` is what you subclass yourself, picking a `TransitType`, for buses or boats. Google has a single `BoardingPassBuilder` that works for flights.
 
 ## Apple
 
 ```php
 use Spatie\LaravelMobilePass\Builders\Apple\AirlinePassBuilder;
+use Spatie\LaravelMobilePass\Builders\Apple\Entities\PersonName;
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\Seat;
 
 AirlinePassBuilder::make()
@@ -17,7 +18,7 @@ AirlinePassBuilder::make()
     ->setDescription('Etihad flight EY066 boarding pass')
     ->setDepartureAirportCode('AUH')
     ->setDestinationAirportCode('LHR')
-    ->setPassengerName('Paul McCartney')
+    ->setPassengerName(PersonName::make(givenName: 'Paul', familyName: 'McCartney'))
     ->setSeats(Seat::make(number: '12A'))
     ->addField('departure', 'AUH', label: 'Abu Dhabi')
     ->addField('destination', 'LHR', label: 'London')
