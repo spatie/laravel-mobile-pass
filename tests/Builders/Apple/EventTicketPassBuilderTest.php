@@ -1,8 +1,11 @@
 <?php
 
 use Illuminate\Support\Carbon;
+use Spatie\LaravelMobilePass\Builders\Apple\Entities\EventDateInfo;
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\Location;
+use Spatie\LaravelMobilePass\Builders\Apple\Entities\Seat;
 use Spatie\LaravelMobilePass\Builders\Apple\EventTicketPassBuilder;
+use Spatie\LaravelMobilePass\Enums\EventType;
 use Spatie\LaravelMobilePass\Support\Apple\PkPassReader;
 
 it('builds a basic event ticket', function () {
@@ -213,6 +216,34 @@ it('registers a remote venue map image', function () {
         ]);
 });
 
+it('compiles event semantics into the semantics payload', function () {
+    $compiledData = builderWithEveryEventDetail()->data();
+
+    expect($compiledData['semantics'])->toMatchArray(expectedEventDetailSemantics());
+});
+
+it('round-trips event semantics through save and hydrate', function () {
+    $model = builderWithEveryEventDetail()->save();
+
+    expect($model->builder()->data()['semantics'])->toMatchArray(expectedEventDetailSemantics());
+});
+
+it('keeps event semantics that are falsy but meaningful', function () {
+    $compiledData = EventTicketPassBuilder::make()
+        ->setOrganizationName('My organization')
+        ->setSerialNumber(123456)
+        ->setDescription('Hello!')
+        ->setIconImage(getTestSupportPath('images/spatie-thumbnail.png'))
+        ->setTailgatingAllowed(false)
+        ->setDuration(0)
+        ->data();
+
+    expect($compiledData['semantics'])->toMatchArray([
+        'tailgatingAllowed' => false,
+        'duration' => 0,
+    ]);
+});
+
 it('has a name', function () {
     expect(EventTicketPassBuilder::name())->toBe('event_ticket');
 });
@@ -261,5 +292,90 @@ function expectedVenueSemantics(): array
         'venueFanZoneOpenDate' => '2026-08-19T17:00:00+00:00',
         'venueBoxOfficeOpenDate' => '2026-08-19T16:00:00+00:00',
         'venueParkingLotsOpenDate' => '2026-08-19T15:00:00+00:00',
+    ];
+}
+
+function builderWithEveryEventDetail(): EventTicketPassBuilder
+{
+    return EventTicketPassBuilder::make()
+        ->setOrganizationName('My organization')
+        ->setSerialNumber(123456)
+        ->setDescription('Hello!')
+        ->setIconImage(getTestSupportPath('images/spatie-thumbnail.png'))
+        ->setEventName('Beatles Live at Shea')
+        ->setEventType(EventType::LivePerformance)
+        ->setEventStartDate(Carbon::parse('2026-08-19T18:00:00+00:00'))
+        ->setEventStartDateInfo(EventDateInfo::make(
+            date: Carbon::parse('2026-08-19T18:00:00+00:00'),
+            ignoreTimeComponents: false,
+            timeZone: 'America/New_York',
+            unannounced: false,
+            undetermined: false,
+        ))
+        ->setEventEndDate(Carbon::parse('2026-08-19T23:00:00+00:00'))
+        ->setAdmissionLevel('General Admission')
+        ->setAdmissionLevelAbbreviation('GA')
+        ->setAttendeeName('Dan Johnson')
+        ->setAdditionalTicketAttributes('VIP parking included')
+        ->setEntranceDescription('Gate A')
+        ->setGenre('Rock')
+        ->setTailgatingAllowed(true)
+        ->setDuration(7200)
+        ->setSilenceRequested(true)
+        ->setPerformerNames('The Beatles', 'The Remains')
+        ->setArtistIds('artist-1', 'artist-2')
+        ->setAlbumIds('album-1')
+        ->setPlaylistIds('playlist-1')
+        ->setAwayTeamAbbreviation('NYY')
+        ->setAwayTeamName('Yankees')
+        ->setAwayTeamLocation('New York')
+        ->setHomeTeamAbbreviation('BOS')
+        ->setHomeTeamName('Red Sox')
+        ->setHomeTeamLocation('Boston')
+        ->setLeagueAbbreviation('MLB')
+        ->setLeagueName('Major League Baseball')
+        ->setSportName('Baseball')
+        ->setSeats(Seat::make(number: '22', row: '8', section: 'B12'));
+}
+
+function expectedEventDetailSemantics(): array
+{
+    return [
+        'eventName' => 'Beatles Live at Shea',
+        'eventType' => 'PKEventTypeLivePerformance',
+        'eventStartDate' => '2026-08-19T18:00:00+00:00',
+        'eventStartDateInfo' => [
+            'date' => '2026-08-19T18:00:00+00:00',
+            'ignoreTimeComponents' => false,
+            'timeZone' => 'America/New_York',
+            'unannounced' => false,
+            'undetermined' => false,
+        ],
+        'eventEndDate' => '2026-08-19T23:00:00+00:00',
+        'admissionLevel' => 'General Admission',
+        'admissionLevelAbbreviation' => 'GA',
+        'attendeeName' => 'Dan Johnson',
+        'additionalTicketAttributes' => 'VIP parking included',
+        'entranceDescription' => 'Gate A',
+        'genre' => 'Rock',
+        'tailgatingAllowed' => true,
+        'duration' => 7200,
+        'silenceRequested' => true,
+        'performerNames' => ['The Beatles', 'The Remains'],
+        'artistIDs' => ['artist-1', 'artist-2'],
+        'albumIDs' => ['album-1'],
+        'playlistIDs' => ['playlist-1'],
+        'awayTeamAbbreviation' => 'NYY',
+        'awayTeamName' => 'Yankees',
+        'awayTeamLocation' => 'New York',
+        'homeTeamAbbreviation' => 'BOS',
+        'homeTeamName' => 'Red Sox',
+        'homeTeamLocation' => 'Boston',
+        'leagueAbbreviation' => 'MLB',
+        'leagueName' => 'Major League Baseball',
+        'sportName' => 'Baseball',
+        'seats' => [
+            ['number' => '22', 'row' => '8', 'section' => 'B12'],
+        ],
     ];
 }
