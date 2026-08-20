@@ -3,11 +3,9 @@
 namespace Spatie\LaravelMobilePass\Builders\Apple;
 
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Collection;
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\Image;
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\Location;
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\PersonName;
-use Spatie\LaravelMobilePass\Builders\Apple\Entities\Seat;
 use Spatie\LaravelMobilePass\Builders\Apple\Validators\ApplePassValidator;
 use Spatie\LaravelMobilePass\Builders\Apple\Validators\BoardingApplePassValidator;
 use Spatie\LaravelMobilePass\Enums\PassType;
@@ -15,6 +13,8 @@ use Spatie\LaravelMobilePass\Enums\TransitType;
 
 abstract class BoardingPassBuilder extends ApplePassBuilder
 {
+    use Concerns\HasSeats;
+
     protected PassType $type = PassType::BoardingPass;
 
     protected ?TransitType $transitType = null;
@@ -54,8 +54,6 @@ abstract class BoardingPassBuilder extends ApplePassBuilder
     protected ?PersonName $passengerName = null;
 
     protected ?string $priorityStatus = null;
-
-    protected ?Collection $seats = null;
 
     protected ?string $securityScreening = null;
 
@@ -222,14 +220,6 @@ abstract class BoardingPassBuilder extends ApplePassBuilder
         return $this;
     }
 
-    /** An object that represents the details for each seat on a transit journey. */
-    public function setSeats(Seat ...$seat): static
-    {
-        $this->seats = collect($seat);
-
-        return $this;
-    }
-
     /** The type of security screening for the ticketed passenger, such as “Priority”. */
     public function setSecurityScreening(string $securityScreening): static
     {
@@ -345,9 +335,7 @@ abstract class BoardingPassBuilder extends ApplePassBuilder
             ? null
             : PersonName::fromArray($semantics['passengerName']);
         $this->priorityStatus = $semantics['priorityStatus'] ?? null;
-        $this->seats = empty($semantics['seats'])
-            ? null
-            : collect($semantics['seats'])->map(fn (array $seat) => Seat::fromArray($seat));
+        $this->uncompileSeats($semantics);
         $this->securityScreening = $semantics['securityScreening'] ?? null;
         $this->silenceRequested = $semantics['silenceRequested'] ?? null;
         $this->transitProvider = $semantics['transitProvider'] ?? null;
