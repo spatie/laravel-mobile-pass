@@ -29,7 +29,7 @@ Event tickets and generic passes also support an artwork image, which Apple rend
 $builder->setArtworkImage(public_path('images/artwork.png'));
 ```
 
-If you opt a pass into a poster layout (`EventTicketPassBuilder::usePosterLayout()`, or any `GenericPassBuilder::addPoster*Field()` call), set an artwork image too — the package doesn't require one, but a poster pass without artwork won't render as intended. The order you call the builder methods in doesn't matter.
+If you opt a pass into a poster layout (`EventTicketPassBuilder::usePosterLayout()`, or any `GenericPassBuilder::addPoster*Field()` call), set an artwork image too. The package doesn't require one, but a poster pass without artwork won't render as intended. The order you call the builder methods in doesn't matter.
 
 Event tickets also support a `venueMap` image via `setVenueMapImage()`, shown in the pass's event guide panel. Like artwork, it's only rendered as part of the poster layout, so pair it with `usePosterLayout()` as well.
 

@@ -20,7 +20,7 @@ EventTicketPassBuilder::make()
     ->save();
 ```
 
-Call `usePosterLayout()` to opt into Apple's poster-style layout on supported devices, which renders the `artwork` image (see [Adding images](../basic-usage/adding-images)) as a full-bleed background. Older devices fall back to the classic layout automatically:
+Call `usePosterLayout()` to opt into Apple's poster-style layout, which renders the `artwork` image (see [Adding images](../basic-usage/adding-images)) as a full-bleed background. Devices that don't support it fall back to the classic layout automatically:
 
 ```php
 EventTicketPassBuilder::make()
@@ -30,7 +30,9 @@ EventTicketPassBuilder::make()
     ->save();
 ```
 
-Event tickets can also carry venue details via Apple's semantic tags — `setVenueName()`, `setVenueLocation()`, `setVenueEntrance()`, `setVenueEntranceDoor()`, `setVenueEntranceGate()`, `setVenueEntrancePortal()`, `setVenuePhoneNumber()`, `setVenueRoom()`, `setVenueRegionName()`, and a handful of `setVenue*OpenDate()`/`setVenueCloseDate()` methods — plus a `venueMap` image via `setVenueMapImage()`. Apple's Wallet app shows these in the pass's event guide panel:
+Apple gates this layout behind an entitlement. Your pass needs to be NFC-enabled, and the layout has to be enabled for your team, so expect `usePosterLayout()` to do nothing until Apple has approved you. Check [Apple's Wallet documentation](https://developer.apple.com/documentation/walletpasses) for the current requirements.
+
+Event tickets can also carry venue details via Apple's semantic tags: `setVenueName()`, `setVenueLocation()`, `setVenueEntrance()`, `setVenueEntranceDoor()`, `setVenueEntranceGate()`, `setVenueEntrancePortal()`, `setVenuePhoneNumber()`, `setVenueRoom()`, `setVenueRegionName()`, and a handful of `setVenue*OpenDate()`/`setVenueCloseDate()` methods. There's also a `venueMap` image via `setVenueMapImage()`. Apple's Wallet app shows these in the pass's event guide panel:
 
 ```php
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\Location;
@@ -42,6 +44,8 @@ EventTicketPassBuilder::make()
     ->setVenueMapImage(public_path('images/venue-map.png'))
     ->save();
 ```
+
+The event guide only shows up when the pass is relevant for a date, so call `setRelevantDate()` as well (see [Pass relevance](../apple-wallet/pass-relevance)). Note that `setVenueLocation()` only carries the coordinates: the altitude and relevant text a `Location` can hold are used by `addLocation()`, not by this semantic tag.
 
 ## Google
 

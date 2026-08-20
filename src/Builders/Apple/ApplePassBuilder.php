@@ -294,12 +294,25 @@ abstract class ApplePassBuilder
     ): self {
         $field = $this->makeFieldContent($key, $value, $label, $changeMessage, $dateStyle, $timeStyle, $showDateAsRelative);
 
-        $property = $type->value;
-
-        $this->{$property} ??= collect();
-        $this->{$property}[$key] = $field;
+        $this->storeField($type->value, $field);
 
         return $this;
+    }
+
+    protected function storeField(string $property, FieldContent $field): void
+    {
+        $this->{$property} ??= collect();
+        $this->{$property}[$field->key] = $field;
+    }
+
+    /**
+     * The builder properties that hold field collections, so `updateField()` reaches all of them.
+     *
+     * @return array<int, string>
+     */
+    protected function fieldProperties(): array
+    {
+        return array_column(FieldType::cases(), 'value');
     }
 
     public function updateField(
@@ -308,9 +321,7 @@ abstract class ApplePassBuilder
         ?string $changeMessage = null,
         ?string $label = null,
     ): self {
-        foreach (FieldType::cases() as $type) {
-            $property = $type->value;
-
+        foreach ($this->fieldProperties() as $property) {
             if ($this->{$property} === null) {
                 continue;
             }
@@ -702,12 +713,12 @@ abstract class ApplePassBuilder
         }
     }
 
-    protected function compileSemantics(): ?array
+    protected function compileSemantics(): array
     {
         return array_filter([
             'totalPrice' => $this->totalPrice?->toArray(),
             'wifiAccess' => $this->wifiDetails?->toArray(),
-        ]);
+        ], fn ($value) => $value !== null);
     }
 
     protected function compileData(): array

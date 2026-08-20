@@ -79,10 +79,10 @@ class GenericPassBuilder extends ApplePassBuilder
         return $this->addPosterField($key, $value, PosterFieldType::Back, $label, $changeMessage, $dateStyle, $timeStyle, $showDateAsRelative);
     }
 
-    protected function addPosterField(
+    public function addPosterField(
         string $key,
         string $value,
-        PosterFieldType $type,
+        PosterFieldType $type = PosterFieldType::Primary,
         ?string $label = null,
         ?string $changeMessage = null,
         ?DateType $dateStyle = null,
@@ -91,37 +91,17 @@ class GenericPassBuilder extends ApplePassBuilder
     ): self {
         $field = $this->makeFieldContent($key, $value, $label, $changeMessage, $dateStyle, $timeStyle, $showDateAsRelative);
 
-        $property = $type->value;
-
-        $this->{$property} ??= collect();
-        $this->{$property}[$key] = $field;
+        $this->storeField($type->value, $field);
 
         return $this;
     }
 
-    public function updateField(
-        string $key,
-        string $value,
-        ?string $changeMessage = null,
-        ?string $label = null,
-    ): self {
-        parent::updateField($key, $value, $changeMessage, $label);
-
-        foreach (PosterFieldType::cases() as $type) {
-            $property = $type->value;
-
-            if ($this->{$property} === null) {
-                continue;
-            }
-
-            $this->{$property} = $this->{$property}->map(
-                fn (FieldContent $field) => $field->key === $key
-                    ? $this->applyFieldUpdate($field, $value, $changeMessage, $label)
-                    : $field,
-            );
-        }
-
-        return $this;
+    protected function fieldProperties(): array
+    {
+        return array_merge(
+            parent::fieldProperties(),
+            array_column(PosterFieldType::cases(), 'value'),
+        );
     }
 
     protected function compileData(): array
@@ -136,14 +116,21 @@ class GenericPassBuilder extends ApplePassBuilder
                     'auxiliaryFields' => $this->auxiliaryFields?->values()->toArray(),
                     'backFields' => $this->backFields?->values()->toArray(),
                 ]),
-                'posterGeneric' => array_filter([
-                    'headerFields' => $this->posterHeaderFields?->values()->toArray(),
-                    'primaryFields' => $this->posterPrimaryFields?->values()->toArray(),
-                    'footerFields' => $this->posterFooterFields?->values()->toArray(),
-                    'backFields' => $this->posterBackFields?->values()->toArray(),
-                ]),
+                'posterGeneric' => array_filter($this->compilePosterFields()),
             ],
         );
+    }
+
+    /** @return array<string, array<int, array<string, mixed>>|null> */
+    protected function compilePosterFields(): array
+    {
+        $posterFields = [];
+
+        foreach (PosterFieldType::cases() as $type) {
+            $posterFields[$type->jsonKey()] = $this->{$type->value}?->values()->toArray();
+        }
+
+        return $posterFields;
     }
 
     protected function uncompileContent(): void
@@ -152,18 +139,11 @@ class GenericPassBuilder extends ApplePassBuilder
 
         $posterGeneric = $this->data['posterGeneric'] ?? [];
 
-        $propertyToJsonKey = [
-            'posterHeaderFields' => 'headerFields',
-            'posterPrimaryFields' => 'primaryFields',
-            'posterFooterFields' => 'footerFields',
-            'posterBackFields' => 'backFields',
-        ];
+        foreach (PosterFieldType::cases() as $type) {
+            $this->{$type->value} = collect();
 
-        foreach ($propertyToJsonKey as $property => $jsonKey) {
-            $this->{$property} = collect();
-
-            foreach ($posterGeneric[$jsonKey] ?? [] as $field) {
-                $this->{$property}[$field['key']] = FieldContent::fromArray($field);
+            foreach ($posterGeneric[$type->jsonKey()] ?? [] as $field) {
+                $this->{$type->value}[$field['key']] = FieldContent::fromArray($field);
             }
         }
     }

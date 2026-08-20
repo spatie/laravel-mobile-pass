@@ -16,6 +16,7 @@ class EventTicketPassBuilder extends ApplePassBuilder
 
     protected PassType $type = PassType::EventTicket;
 
+    /** @var array<int, string>|null */
     protected ?array $preferredStyleSchemes = null;
 
     protected ?string $venueName = null;
@@ -90,7 +91,6 @@ class EventTicketPassBuilder extends ApplePassBuilder
         return $this;
     }
 
-    /** The full name of the venue. */
     public function setVenueName(string $venueName): self
     {
         $this->venueName = $venueName;
@@ -98,7 +98,6 @@ class EventTicketPassBuilder extends ApplePassBuilder
         return $this;
     }
 
-    /** An object that represents the geographic coordinates of the venue. */
     public function setVenueLocation(Location $venueLocation): self
     {
         $this->venueLocation = $venueLocation;
@@ -114,7 +113,6 @@ class EventTicketPassBuilder extends ApplePassBuilder
         return $this;
     }
 
-    /** The venue entrance door. */
     public function setVenueEntranceDoor(string $venueEntranceDoor): self
     {
         $this->venueEntranceDoor = $venueEntranceDoor;
@@ -122,7 +120,6 @@ class EventTicketPassBuilder extends ApplePassBuilder
         return $this;
     }
 
-    /** The venue entrance gate. */
     public function setVenueEntranceGate(string $venueEntranceGate): self
     {
         $this->venueEntranceGate = $venueEntranceGate;
@@ -130,7 +127,6 @@ class EventTicketPassBuilder extends ApplePassBuilder
         return $this;
     }
 
-    /** The venue entrance portal. */
     public function setVenueEntrancePortal(string $venueEntrancePortal): self
     {
         $this->venueEntrancePortal = $venueEntrancePortal;
@@ -138,7 +134,6 @@ class EventTicketPassBuilder extends ApplePassBuilder
         return $this;
     }
 
-    /** The phone number for inquiries about the venue's ticketed event. */
     public function setVenuePhoneNumber(string $venuePhoneNumber): self
     {
         $this->venuePhoneNumber = $venuePhoneNumber;
@@ -146,7 +141,6 @@ class EventTicketPassBuilder extends ApplePassBuilder
         return $this;
     }
 
-    /** The full name of the room where the ticketed event is to take place. */
     public function setVenueRoom(string $venueRoom): self
     {
         $this->venueRoom = $venueRoom;
@@ -154,7 +148,6 @@ class EventTicketPassBuilder extends ApplePassBuilder
         return $this;
     }
 
-    /** The name of the city or hosting region of the venue. */
     public function setVenueRegionName(string $venueRegionName): self
     {
         $this->venueRegionName = $venueRegionName;
@@ -170,7 +163,6 @@ class EventTicketPassBuilder extends ApplePassBuilder
         return $this;
     }
 
-    /** The date when the venue closes. */
     public function setVenueCloseDate(Carbon $venueCloseDate): self
     {
         $this->venueCloseDate = $venueCloseDate;
@@ -178,7 +170,6 @@ class EventTicketPassBuilder extends ApplePassBuilder
         return $this;
     }
 
-    /** The date the doors to the venue open. */
     public function setVenueDoorsOpenDate(Carbon $venueDoorsOpenDate): self
     {
         $this->venueDoorsOpenDate = $venueDoorsOpenDate;
@@ -186,7 +177,6 @@ class EventTicketPassBuilder extends ApplePassBuilder
         return $this;
     }
 
-    /** The date the gates to the venue open. */
     public function setVenueGatesOpenDate(Carbon $venueGatesOpenDate): self
     {
         $this->venueGatesOpenDate = $venueGatesOpenDate;
@@ -194,7 +184,6 @@ class EventTicketPassBuilder extends ApplePassBuilder
         return $this;
     }
 
-    /** The date the fan zone opens. */
     public function setVenueFanZoneOpenDate(Carbon $venueFanZoneOpenDate): self
     {
         $this->venueFanZoneOpenDate = $venueFanZoneOpenDate;
@@ -202,7 +191,6 @@ class EventTicketPassBuilder extends ApplePassBuilder
         return $this;
     }
 
-    /** The date the box office opens. */
     public function setVenueBoxOfficeOpenDate(Carbon $venueBoxOfficeOpenDate): self
     {
         $this->venueBoxOfficeOpenDate = $venueBoxOfficeOpenDate;
@@ -210,7 +198,6 @@ class EventTicketPassBuilder extends ApplePassBuilder
         return $this;
     }
 
-    /** The date the parking lots open. */
     public function setVenueParkingLotsOpenDate(Carbon $venueParkingLotsOpenDate): self
     {
         $this->venueParkingLotsOpenDate = $venueParkingLotsOpenDate;
@@ -241,7 +228,7 @@ class EventTicketPassBuilder extends ApplePassBuilder
             parent::compileSemantics(),
             array_filter([
                 'venueName' => $this->venueName,
-                'venueLocation' => $this->venueLocation?->toArray(),
+                'venueLocation' => $this->compileVenueLocation(),
                 'venueEntrance' => $this->venueEntrance,
                 'venueEntranceDoor' => $this->venueEntranceDoor,
                 'venueEntranceGate' => $this->venueEntranceGate,
@@ -258,6 +245,24 @@ class EventTicketPassBuilder extends ApplePassBuilder
                 'venueParkingLotsOpenDate' => $this->venueParkingLotsOpenDate?->toIso8601String(),
             ], fn ($value) => $value !== null),
         );
+    }
+
+    /**
+     * Apple's `venueLocation` tag only carries coordinates, so the altitude and relevant text
+     * a `Location` may hold for `addLocation()` are dropped here.
+     *
+     * @return array<string, float>|null
+     */
+    protected function compileVenueLocation(): ?array
+    {
+        if ($this->venueLocation === null) {
+            return null;
+        }
+
+        return [
+            'latitude' => $this->venueLocation->latitude,
+            'longitude' => $this->venueLocation->longitude,
+        ];
     }
 
     protected function uncompileContent(): void
