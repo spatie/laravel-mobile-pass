@@ -24,33 +24,56 @@ AirlinePassBuilder::make()
     ->save();
 ```
 
-For non-airline transit (trains, boats, buses), `BoardingPassBuilder` is abstract. Subclass it yourself and set `$transitType` to whichever `TransitType` case fits:
+For trains, `TrainPassBuilder` ships with the package and works exactly like `AirlinePassBuilder`:
 
 ```php
-use Spatie\LaravelMobilePass\Builders\Apple\BoardingPassBuilder;
-use Spatie\LaravelMobilePass\Enums\TransitType;
+use Spatie\LaravelMobilePass\Builders\Apple\TrainPassBuilder;
+use Spatie\LaravelMobilePass\Builders\Apple\Entities\PersonName;
+use Spatie\LaravelMobilePass\Builders\Apple\Entities\Seat;
 
-class TrainPassBuilder extends BoardingPassBuilder
-{
-    protected ?TransitType $transitType = TransitType::Train;
-}
-```
-
-Once that class exists, build a pass with it exactly the same way as `AirlinePassBuilder`:
-
-```php
 TrainPassBuilder::make()
     ->setOrganizationName('SNCB')
     ->setSerialNumber('TICKET-456')
     ->setDescription('Brussels to Antwerp, coach 3')
     ->setPassengerName(PersonName::make(givenName: 'George', familyName: 'Harrison'))
+    ->setCarNumber('3')
+    ->setDeparturePlatform('A')
+    ->setDepartureStationName('Brussels-Central')
+    ->setDestinationPlatform('2')
+    ->setDestinationStationName('Antwerp-Central')
     ->setSeats(Seat::make(number: '24B'))
     ->addField('departure', 'BRU', label: 'Brussels-Central')
     ->addField('destination', 'ANT', label: 'Antwerp-Central')
     ->save();
 ```
 
+For other non-airline transit (buses, boats), `BoardingPassBuilder` is abstract. Subclass it yourself and set `$transitType` to whichever `TransitType` case fits:
+
+```php
+use Spatie\LaravelMobilePass\Builders\Apple\BoardingPassBuilder;
+use Spatie\LaravelMobilePass\Enums\TransitType;
+
+class BusPassBuilder extends BoardingPassBuilder
+{
+    protected ?TransitType $transitType = TransitType::Bus;
+}
+```
+
 `TransitType` has `Air`, `Train`, `Bus`, `Boat`, and `Generic` cases.
+
+Any boarding pass — airline, train, or a DIY bus/boat subclass — can also carry these general tags:
+
+- `setBoardingZone()`, `setTicketFareClass()`, `setMembershipProgramStatus()`
+- `setDepartureCityName()`, `setDestinationCityName()`
+- `setDepartureLocationTimeZone()`, `setDestinationLocationTimeZone()`
+- `setInternationalDocumentsAreVerified()`, `setInternationalDocumentsVerifiedDeclarationName()`
+- `setDepartureLocationSecurityPrograms()`, `setDestinationLocationSecurityPrograms()`, `setPassengerEligibleSecurityPrograms()` (all take `TransitSecurityProgram` cases)
+- `setLoungePlaceIds()`
+
+`AirlinePassBuilder` adds four more, airline-only:
+
+- `setPassengerAirlineSsrs()`, `setPassengerInformationSsrs()`, `setPassengerServiceSsrs()`
+- `setPassengerCapabilities()` (takes `PassengerCapability` cases)
 
 ## Google
 
