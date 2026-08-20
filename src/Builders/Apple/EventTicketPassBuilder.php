@@ -8,7 +8,6 @@ use Spatie\LaravelMobilePass\Builders\Apple\Concerns\HasSeats;
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\EventDateInfo;
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\Image;
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\Location;
-use Spatie\LaravelMobilePass\Builders\Apple\Entities\Seat;
 use Spatie\LaravelMobilePass\Builders\Apple\Validators\ApplePassValidator;
 use Spatie\LaravelMobilePass\Builders\Apple\Validators\EventTicketApplePassValidator;
 use Spatie\LaravelMobilePass\Enums\EventType;
@@ -388,7 +387,7 @@ class EventTicketPassBuilder extends ApplePassBuilder
         return $this;
     }
 
-    /** An array of unique identifiers for the performers or players featured at the event, in decreasing order of significance. */
+    /** An array of the Apple Music persistent ID for each artist performing at the event, in decreasing order of significance. */
     public function setArtistIds(string ...$artistIds): static
     {
         $this->artistIds = $artistIds;
@@ -396,7 +395,7 @@ class EventTicketPassBuilder extends ApplePassBuilder
         return $this;
     }
 
-    /** An array of unique identifiers for the albums associated with the event. */
+    /** An array of the Apple Music persistent ID for each album associated with the event. */
     public function setAlbumIds(string ...$albumIds): static
     {
         $this->albumIds = $albumIds;
@@ -404,7 +403,7 @@ class EventTicketPassBuilder extends ApplePassBuilder
         return $this;
     }
 
-    /** An array of unique identifiers for the playlists associated with the event. */
+    /** An array of the Apple Music persistent ID for each playlist associated with the event. */
     public function setPlaylistIds(string ...$playlistIds): static
     {
         $this->playlistIds = $playlistIds;
@@ -604,7 +603,7 @@ class EventTicketPassBuilder extends ApplePassBuilder
         $this->venueBoxOfficeOpenDate = $this->parseSemanticDate($semantics, 'venueBoxOfficeOpenDate');
         $this->venueParkingLotsOpenDate = $this->parseSemanticDate($semantics, 'venueParkingLotsOpenDate');
         $this->eventName = $semantics['eventName'] ?? null;
-        $this->eventType = isset($semantics['eventType']) ? EventType::from($semantics['eventType']) : null;
+        $this->eventType = ! empty($semantics['eventType']) ? EventType::tryFrom($semantics['eventType']) : null;
         $this->eventStartDate = $this->parseSemanticDate($semantics, 'eventStartDate');
         $this->eventStartDateInfo = empty($semantics['eventStartDateInfo'])
             ? null

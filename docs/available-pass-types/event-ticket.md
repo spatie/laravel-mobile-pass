@@ -79,6 +79,7 @@ For sports events:
 
 ```php
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\EventDateInfo;
+use Spatie\LaravelMobilePass\Builders\Apple\Entities\Seat;
 use Spatie\LaravelMobilePass\Enums\EventType;
 
 EventTicketPassBuilder::make()
@@ -88,6 +89,7 @@ EventTicketPassBuilder::make()
         date: Carbon::parse('2026-08-19 18:00'),
         timeZone: 'America/New_York',
     ))
+    ->setSeats(Seat::make(number: '22', row: '8', section: 'B12'))
     ->save();
 ```
 

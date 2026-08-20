@@ -3,6 +3,7 @@
 namespace Spatie\LaravelMobilePass\Builders\Apple;
 
 use Illuminate\Support\Carbon;
+use Spatie\LaravelMobilePass\Builders\Apple\Concerns\HasSeats;
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\Image;
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\Location;
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\PersonName;
@@ -13,7 +14,7 @@ use Spatie\LaravelMobilePass\Enums\TransitType;
 
 abstract class BoardingPassBuilder extends ApplePassBuilder
 {
-    use Concerns\HasSeats;
+    use HasSeats;
 
     protected PassType $type = PassType::BoardingPass;
 
