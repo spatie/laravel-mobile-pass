@@ -30,3 +30,16 @@ addBackField(string $key, string $value, ...)
 `$changeMessage` is the notification the user's device shows when the value of this field changes. Use `:value` as a placeholder for the new value (for example, `'Your gate has changed to :value'`).
 
 `$dateStyle` and `$timeStyle` let you format a value Apple recognises as a date. Pass a `DateType` (none, short, medium, long, or full) and/or a `TimeStyleType` case. Combine with `$showDateAsRelative: true` to render the date as "in 2 hours" rather than an absolute timestamp.
+
+## Poster zones
+
+Apple's poster layout for generic passes uses its own set of zones, which don't line up with the five above. `GenericPassBuilder` exposes them separately, and they take the same arguments:
+
+```php
+addPosterHeaderField(string $key, string $value, ...)
+addPosterPrimaryField(string $key, string $value, ...)
+addPosterFooterField(string $key, string $value, ...)
+addPosterBackField(string $key, string $value, ...)
+```
+
+Note the footer zone, which has no classic equivalent, and that there are no secondary or auxiliary zones. These fields live in their own block, so a key you add to both zone sets is stored twice. See [Generic](../available-pass-types/generic) for why you usually want to do that.

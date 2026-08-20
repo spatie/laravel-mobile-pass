@@ -19,9 +19,11 @@ GenericPassBuilder::make()
     ->save();
 ```
 
-Generic passes also support Apple's poster layout, added in iOS 27, via a separate set of fields: `addPosterHeaderField()`, `addPosterPrimaryField()`, `addPosterFooterField()`, and `addPosterBackField()`. These populate a `posterGeneric` block. Adding any poster field is what makes that block appear, there's no separate toggle. Set an `artwork` image (see [Adding images](../basic-usage/adding-images)) too, since the poster layout renders it as a full-bleed background.
+Generic passes also support Apple's poster layout via a separate set of fields: `addPosterHeaderField()`, `addPosterPrimaryField()`, `addPosterFooterField()`, and `addPosterBackField()`. These populate a `posterGeneric` block. There's no separate toggle: adding any poster field is what makes that block appear. Wallet renders only the first poster footer field and ignores the rest.
 
-Keep filling the regular fields as well. Devices below iOS 27 don't understand `posterGeneric`, and a pass that only has poster fields won't install on them at all:
+Set an `artwork` image (see [Adding images](../basic-usage/adding-images)) too, since the poster layout renders it as a full-bleed background.
+
+Keep filling the regular fields as well. Older devices don't understand `posterGeneric`, and this package won't stop you from shipping a pass that only carries poster fields:
 
 ```php
 GenericPassBuilder::make()
@@ -33,8 +35,6 @@ GenericPassBuilder::make()
     ->addPosterPrimaryField('track', 'All-access')
     ->save();
 ```
-
-Wallet only renders the first poster footer field and ignores the rest.
 
 ## Google
 

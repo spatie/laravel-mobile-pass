@@ -30,9 +30,21 @@ EventTicketPassBuilder::make()
     ->save();
 ```
 
-Apple gates this layout behind an entitlement. Your pass needs to be NFC-enabled, and the layout has to be enabled for your team, so expect `usePosterLayout()` to do nothing until Apple has approved you. Check [Apple's Wallet documentation](https://developer.apple.com/documentation/walletpasses) for the current requirements.
+Apple gates this layout behind an entitlement: your pass needs to be NFC-enabled, and the layout has to be enabled for your team. Until Apple has approved you, `usePosterLayout()` has no visible effect and Wallet keeps showing the classic layout. Check [Apple's Wallet documentation](https://developer.apple.com/documentation/walletpasses) for the current requirements.
 
-Event tickets can also carry venue details via Apple's semantic tags: `setVenueName()`, `setVenueLocation()`, `setVenueEntrance()`, `setVenueEntranceDoor()`, `setVenueEntranceGate()`, `setVenueEntrancePortal()`, `setVenuePhoneNumber()`, `setVenueRoom()`, `setVenueRegionName()`, and a handful of `setVenue*OpenDate()`/`setVenueCloseDate()` methods. There's also a `venueMap` image via `setVenueMapImage()`. Apple's Wallet app shows these in the pass's event guide panel:
+Event tickets can also carry venue details, which Wallet shows in the pass's event guide panel. Where the venue is:
+
+- `setVenueName()`, `setVenueRegionName()`, `setVenueRoom()`
+- `setVenueLocation()`, `setVenuePhoneNumber()`
+- `setVenueEntrance()`, `setVenueEntranceDoor()`, `setVenueEntranceGate()`, `setVenueEntrancePortal()`
+
+And when things happen there:
+
+- `setVenueOpenDate()` and `setVenueCloseDate()`
+- `setVenueDoorsOpenDate()`, `setVenueGatesOpenDate()`
+- `setVenueFanZoneOpenDate()`, `setVenueBoxOfficeOpenDate()`, `setVenueParkingLotsOpenDate()`
+
+There's also a `venueMap` image via `setVenueMapImage()`:
 
 ```php
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\Location;

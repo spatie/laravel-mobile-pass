@@ -15,6 +15,8 @@ For Apple passes, use `updateField` on the model. It replaces the value for the 
 $mobilePass->updateField('seat', '13A');
 ```
 
+It updates every zone the key appears in. On a generic pass that carries the same key in both the classic and the [poster zones](../apple-wallet/field-zones), one call keeps both in sync, so the poster layout never shows a stale value.
+
 The package notifies Apple through APNs, Apple pings the user's device, and the device fetches the new version from your server. The user sees the updated pass in Wallet without any second download or re-sent email.
 
 If you want the user's device to display a notification when the value changes, pass a `changeMessage:`:

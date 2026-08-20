@@ -39,7 +39,7 @@ class GenericPassBuilder extends ApplePassBuilder
         ?DateType $dateStyle = null,
         ?TimeStyleType $timeStyle = null,
         ?bool $showDateAsRelative = null,
-    ): self {
+    ): static {
         return $this->addPosterField($key, $value, PosterFieldType::Header, $label, $changeMessage, $dateStyle, $timeStyle, $showDateAsRelative);
     }
 
@@ -51,7 +51,7 @@ class GenericPassBuilder extends ApplePassBuilder
         ?DateType $dateStyle = null,
         ?TimeStyleType $timeStyle = null,
         ?bool $showDateAsRelative = null,
-    ): self {
+    ): static {
         return $this->addPosterField($key, $value, PosterFieldType::Primary, $label, $changeMessage, $dateStyle, $timeStyle, $showDateAsRelative);
     }
 
@@ -63,7 +63,7 @@ class GenericPassBuilder extends ApplePassBuilder
         ?DateType $dateStyle = null,
         ?TimeStyleType $timeStyle = null,
         ?bool $showDateAsRelative = null,
-    ): self {
+    ): static {
         return $this->addPosterField($key, $value, PosterFieldType::Footer, $label, $changeMessage, $dateStyle, $timeStyle, $showDateAsRelative);
     }
 
@@ -75,7 +75,7 @@ class GenericPassBuilder extends ApplePassBuilder
         ?DateType $dateStyle = null,
         ?TimeStyleType $timeStyle = null,
         ?bool $showDateAsRelative = null,
-    ): self {
+    ): static {
         return $this->addPosterField($key, $value, PosterFieldType::Back, $label, $changeMessage, $dateStyle, $timeStyle, $showDateAsRelative);
     }
 
@@ -88,7 +88,7 @@ class GenericPassBuilder extends ApplePassBuilder
         ?DateType $dateStyle = null,
         ?TimeStyleType $timeStyle = null,
         ?bool $showDateAsRelative = null,
-    ): self {
+    ): static {
         $field = $this->makeFieldContent($key, $value, $label, $changeMessage, $dateStyle, $timeStyle, $showDateAsRelative);
 
         $this->storeField($type->value, $field);
@@ -96,6 +96,7 @@ class GenericPassBuilder extends ApplePassBuilder
         return $this;
     }
 
+    /** @return array<int, string> */
     protected function fieldProperties(): array
     {
         return array_merge(

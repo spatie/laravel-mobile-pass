@@ -56,49 +56,49 @@ class EventTicketPassBuilder extends ApplePassBuilder
         return new EventTicketApplePassValidator;
     }
 
-    public function usePosterLayout(): self
+    public function usePosterLayout(): static
     {
         $this->preferredStyleSchemes = ['posterEventTicket', 'eventTicket'];
 
         return $this;
     }
 
-    public function setVenueMapImage(string $x1Path, ?string $x2Path = null, ?string $x3Path = null): self
+    public function setVenueMapImage(string $x1Path, ?string $x2Path = null, ?string $x3Path = null): static
     {
         $this->images['venueMap'] = new Image($x1Path, $x2Path, $x3Path);
 
         return $this;
     }
 
-    public function setRemoteVenueMapImage(string $x1Url, ?string $x2Url = null, ?string $x3Url = null): self
+    public function setRemoteVenueMapImage(string $x1Url, ?string $x2Url = null, ?string $x3Url = null): static
     {
         $this->images['venueMap'] = Image::makeRemote($x1Url, $x2Url, $x3Url);
 
         return $this;
     }
 
-    public function setLocaleVenueMapImage(string $language, string $x1Path, ?string $x2Path = null, ?string $x3Path = null): self
+    public function setLocaleVenueMapImage(string $language, string $x1Path, ?string $x2Path = null, ?string $x3Path = null): static
     {
         $this->locales[$language]['images']['venueMap'] = new Image($x1Path, $x2Path, $x3Path);
 
         return $this;
     }
 
-    public function setRemoteLocaleVenueMapImage(string $language, string $x1Url, ?string $x2Url = null, ?string $x3Url = null): self
+    public function setRemoteLocaleVenueMapImage(string $language, string $x1Url, ?string $x2Url = null, ?string $x3Url = null): static
     {
         $this->locales[$language]['images']['venueMap'] = Image::makeRemote($x1Url, $x2Url, $x3Url);
 
         return $this;
     }
 
-    public function setVenueName(string $venueName): self
+    public function setVenueName(string $venueName): static
     {
         $this->venueName = $venueName;
 
         return $this;
     }
 
-    public function setVenueLocation(Location $venueLocation): self
+    public function setVenueLocation(Location $venueLocation): static
     {
         $this->venueLocation = $venueLocation;
 
@@ -106,49 +106,49 @@ class EventTicketPassBuilder extends ApplePassBuilder
     }
 
     /** The full name of the entrance, such as "Gate A", to use to gain access to the ticketed event. */
-    public function setVenueEntrance(string $venueEntrance): self
+    public function setVenueEntrance(string $venueEntrance): static
     {
         $this->venueEntrance = $venueEntrance;
 
         return $this;
     }
 
-    public function setVenueEntranceDoor(string $venueEntranceDoor): self
+    public function setVenueEntranceDoor(string $venueEntranceDoor): static
     {
         $this->venueEntranceDoor = $venueEntranceDoor;
 
         return $this;
     }
 
-    public function setVenueEntranceGate(string $venueEntranceGate): self
+    public function setVenueEntranceGate(string $venueEntranceGate): static
     {
         $this->venueEntranceGate = $venueEntranceGate;
 
         return $this;
     }
 
-    public function setVenueEntrancePortal(string $venueEntrancePortal): self
+    public function setVenueEntrancePortal(string $venueEntrancePortal): static
     {
         $this->venueEntrancePortal = $venueEntrancePortal;
 
         return $this;
     }
 
-    public function setVenuePhoneNumber(string $venuePhoneNumber): self
+    public function setVenuePhoneNumber(string $venuePhoneNumber): static
     {
         $this->venuePhoneNumber = $venuePhoneNumber;
 
         return $this;
     }
 
-    public function setVenueRoom(string $venueRoom): self
+    public function setVenueRoom(string $venueRoom): static
     {
         $this->venueRoom = $venueRoom;
 
         return $this;
     }
 
-    public function setVenueRegionName(string $venueRegionName): self
+    public function setVenueRegionName(string $venueRegionName): static
     {
         $this->venueRegionName = $venueRegionName;
 
@@ -156,49 +156,49 @@ class EventTicketPassBuilder extends ApplePassBuilder
     }
 
     /** The date when the venue opens. Use this if none of the more specific venue open tags apply. */
-    public function setVenueOpenDate(Carbon $venueOpenDate): self
+    public function setVenueOpenDate(Carbon $venueOpenDate): static
     {
         $this->venueOpenDate = $venueOpenDate;
 
         return $this;
     }
 
-    public function setVenueCloseDate(Carbon $venueCloseDate): self
+    public function setVenueCloseDate(Carbon $venueCloseDate): static
     {
         $this->venueCloseDate = $venueCloseDate;
 
         return $this;
     }
 
-    public function setVenueDoorsOpenDate(Carbon $venueDoorsOpenDate): self
+    public function setVenueDoorsOpenDate(Carbon $venueDoorsOpenDate): static
     {
         $this->venueDoorsOpenDate = $venueDoorsOpenDate;
 
         return $this;
     }
 
-    public function setVenueGatesOpenDate(Carbon $venueGatesOpenDate): self
+    public function setVenueGatesOpenDate(Carbon $venueGatesOpenDate): static
     {
         $this->venueGatesOpenDate = $venueGatesOpenDate;
 
         return $this;
     }
 
-    public function setVenueFanZoneOpenDate(Carbon $venueFanZoneOpenDate): self
+    public function setVenueFanZoneOpenDate(Carbon $venueFanZoneOpenDate): static
     {
         $this->venueFanZoneOpenDate = $venueFanZoneOpenDate;
 
         return $this;
     }
 
-    public function setVenueBoxOfficeOpenDate(Carbon $venueBoxOfficeOpenDate): self
+    public function setVenueBoxOfficeOpenDate(Carbon $venueBoxOfficeOpenDate): static
     {
         $this->venueBoxOfficeOpenDate = $venueBoxOfficeOpenDate;
 
         return $this;
     }
 
-    public function setVenueParkingLotsOpenDate(Carbon $venueParkingLotsOpenDate): self
+    public function setVenueParkingLotsOpenDate(Carbon $venueParkingLotsOpenDate): static
     {
         $this->venueParkingLotsOpenDate = $venueParkingLotsOpenDate;
 
