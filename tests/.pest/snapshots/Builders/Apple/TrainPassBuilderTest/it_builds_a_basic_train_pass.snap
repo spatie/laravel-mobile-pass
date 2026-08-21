@@ -1,0 +1,58 @@
+{
+    "files": [
+        "signature",
+        "manifest.json",
+        "pass.json",
+        "icon.png"
+    ],
+    "manifest": {
+        "pass.json": "<random>",
+        "icon.png": "<random>"
+    },
+    "pass": {
+        "description": "Brussels to Antwerp, coach 3",
+        "formatVersion": 1,
+        "organizationName": "SNCB",
+        "passTypeIdentifier": "pass.com.example",
+        "serialNumber": "<random>",
+        "teamIdentifier": "ABCD1234EF",
+        "semantics": {
+            "passengerName": {
+                "familyName": "Harrison",
+                "givenName": "George"
+            },
+            "seats": [
+                {
+                    "number": "24B"
+                }
+            ],
+            "carNumber": "3",
+            "departurePlatform": "A",
+            "departureStationName": "Brussels-Central",
+            "destinationPlatform": "2",
+            "destinationStationName": "Antwerp-Central"
+        },
+        "boardingPass": {
+            "transitType": "PKTransitTypeTrain",
+            "headerFields": [
+                {
+                    "key": "departure",
+                    "label": "Brussels-Central",
+                    "value": "BRU"
+                },
+                {
+                    "key": "destination",
+                    "label": "Antwerp-Central",
+                    "value": "ANT"
+                }
+            ],
+            "secondaryFields": [
+                {
+                    "key": "name",
+                    "label": "Name",
+                    "value": "George Harrison"
+                }
+            ]
+        }
+    }
+}
