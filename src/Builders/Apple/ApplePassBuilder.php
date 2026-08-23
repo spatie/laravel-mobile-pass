@@ -54,6 +54,8 @@ abstract class ApplePassBuilder
 
     protected ?string $description = null;
 
+    protected ?bool $sharingProhibited = null;
+
     protected ?Price $totalPrice = null;
 
     protected ?Collection $wifiDetails = null;
@@ -372,6 +374,14 @@ abstract class ApplePassBuilder
     public function setDescription(string $description): static
     {
         $this->description = $description;
+
+        return $this;
+    }
+
+    /** A Boolean value that determines whether to show the Share button on the back of a pass. Set to true to hide the Share button. */
+    public function setSharingProhibited(bool $sharingProhibited): static
+    {
+        $this->sharingProhibited = $sharingProhibited;
 
         return $this;
     }
@@ -734,6 +744,7 @@ abstract class ApplePassBuilder
             'webServiceURL' => $this->webServiceURL(),
             'teamIdentifier' => self::appleConfig('team_identifier'),
             'description' => $this->description,
+            'sharingProhibited' => $this->sharingProhibited,
             'semantics' => $this->compileSemantics(),
             'backgroundColor' => (string) $this->backgroundColor,
             'foregroundColor' => (string) $this->foregroundColor,
@@ -822,6 +833,7 @@ abstract class ApplePassBuilder
         $this->authenticationToken = $this->data['authenticationToken'] ?? null;
         $this->teamIdentifier = $this->data['teamIdentifier'] ?? null;
         $this->description = $this->data['description'] ?? null;
+        $this->sharingProhibited = $this->data['sharingProhibited'] ?? null;
         $this->backgroundColor = Color::makeFromRgbString($this->data['backgroundColor'] ?? null);
         $this->foregroundColor = Color::makeFromRgbString($this->data['foregroundColor'] ?? null);
         $this->labelColor = Color::makeFromRgbString($this->data['labelColor'] ?? null);
