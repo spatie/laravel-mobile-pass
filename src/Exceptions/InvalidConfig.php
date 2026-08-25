@@ -54,4 +54,13 @@ class InvalidConfig extends Exception implements MobilePassException
             .'Leave the value empty if you do not need device registrations (typical for local dev over http://).'
         );
     }
+
+    public static function unrecognizedBarcodeFormat(string $format): self
+    {
+        return new self(
+            "The stored barcode format `{$format}` is not a recognized `BarcodeType` case. "
+            .'This can happen when a pass was saved by a newer version of the package that '
+            .'supports a barcode format this version does not yet know about.'
+        );
+    }
 }
