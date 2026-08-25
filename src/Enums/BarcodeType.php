@@ -8,4 +8,7 @@ enum BarcodeType: string
     case Pdf417 = 'PKBarcodeFormatPDF417';
     case Aztec = 'PKBarcodeFormatAztec';
     case Code128 = 'PKBarcodeFormatCode128';
+    case Code39 = 'PKBarcodeFormatCode39';
+    case Codabar = 'PKBarcodeFormatCodabar';
+    case Ean13 = 'PKBarcodeFormatEAN13';
 }
