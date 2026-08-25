@@ -35,7 +35,15 @@ $builder->setBarcode(
 );
 ```
 
-Under the hood the builder writes the barcode into both `barcode` (for older iOS) and `barcodes` (for iOS 9+) so the pass renders everywhere.
+Under the hood the builder writes into both `barcode` (deprecated, for pre-`barcodes` iOS) and `barcodes` (the full list Wallet actually reads). As of iOS 27, `barcodes` supports genuine fallback: pass more than one and Wallet picks the first format it supports, in order — e.g. an EAN13 barcode for iOS 27+ devices with a QR fallback for older ones:
+
+```php
+$builder
+    ->addBarcode(BarcodeType::Ean13, '4006381333931')
+    ->addBarcode(BarcodeType::Qr, 'TICKET-12345');
+```
+
+`addBarcode()` appends to the list; `setBarcode()` still replaces it entirely with a single barcode, exactly as before. The deprecated singular `barcode` key is always populated from the *last* entry in the list — the most broadly-compatible format, for the oldest devices that only read that key.
 
 ## Google
 
