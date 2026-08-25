@@ -431,7 +431,7 @@ abstract class ApplePassBuilder
         return $this;
     }
 
-    private function buildBarcode(BarcodeType $format, string $message, ?string $altText): Barcode
+    protected function buildBarcode(BarcodeType $format, string $message, ?string $altText): Barcode
     {
         $barcode = Barcode::make($format, $message);
 

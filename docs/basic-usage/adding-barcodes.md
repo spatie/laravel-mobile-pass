@@ -35,11 +35,11 @@ $builder->setBarcode(
 );
 ```
 
-Under the hood the builder writes into both `barcode` (deprecated, for pre-`barcodes` iOS) and `barcodes` (the full list Wallet actually reads). As of iOS 27, `barcodes` supports genuine fallback: pass more than one and Wallet picks the first format it supports, in order — e.g. an EAN13 barcode for iOS 27+ devices with a QR fallback for older ones:
+Under the hood the builder writes into both `barcode` (deprecated, for pre-`barcodes` iOS) and `barcodes` (the full list Wallet actually reads). As of iOS 27, `barcodes` supports genuine fallback: pass more than one and Wallet picks the first format it supports, in order — e.g. a PDF417 barcode for iOS 27+ devices with a QR fallback for older ones:
 
 ```php
 $builder
-    ->addBarcode(BarcodeType::Ean13, '4006381333931')
+    ->addBarcode(BarcodeType::Pdf417, '4006381333931')
     ->addBarcode(BarcodeType::Qr, 'TICKET-12345');
 ```
 

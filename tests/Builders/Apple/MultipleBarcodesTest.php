@@ -9,14 +9,14 @@ it('appends barcodes in call order via addBarcode', function () {
         ->setOrganizationName('Fab Four Promotions')
         ->setSerialNumber('BTL-SHEA-0042')
         ->setDescription('The Beatles at Shea Stadium')
-        ->addBarcode(BarcodeType::Ean13, '4006381333931')
+        ->addBarcode(BarcodeType::Pdf417, '4006381333931')
         ->addBarcode(BarcodeType::Qr, 'TICKET-12345')
         ->setIconImage(getTestSupportPath('images/spatie-thumbnail.png'))
         ->data();
 
     expect($data['barcodes'])->toHaveCount(2);
     expect($data['barcodes'][0])->toMatchArray([
-        'format' => 'PKBarcodeFormatEAN13',
+        'format' => 'PKBarcodeFormatPDF417',
         'message' => '4006381333931',
     ]);
     expect($data['barcodes'][1])->toMatchArray([
@@ -30,7 +30,7 @@ it('populates the deprecated barcode key with the last entry', function () {
         ->setOrganizationName('Fab Four Promotions')
         ->setSerialNumber('BTL-SHEA-0042')
         ->setDescription('The Beatles at Shea Stadium')
-        ->addBarcode(BarcodeType::Ean13, '4006381333931')
+        ->addBarcode(BarcodeType::Pdf417, '4006381333931')
         ->addBarcode(BarcodeType::Qr, 'TICKET-12345')
         ->setIconImage(getTestSupportPath('images/spatie-thumbnail.png'))
         ->data();
@@ -46,7 +46,7 @@ it('resets to a single entry when setBarcode is called after addBarcode', functi
         ->setOrganizationName('Fab Four Promotions')
         ->setSerialNumber('BTL-SHEA-0042')
         ->setDescription('The Beatles at Shea Stadium')
-        ->addBarcode(BarcodeType::Ean13, '4006381333931')
+        ->addBarcode(BarcodeType::Pdf417, '4006381333931')
         ->addBarcode(BarcodeType::Qr, 'TICKET-12345')
         ->setBarcode(BarcodeType::Aztec, 'TICKET-99999')
         ->setIconImage(getTestSupportPath('images/spatie-thumbnail.png'))
@@ -84,7 +84,7 @@ it('round-trips multiple barcodes through save and hydrate, preserving order', f
         ->setOrganizationName('Fab Four Promotions')
         ->setSerialNumber('BTL-SHEA-0042')
         ->setDescription('The Beatles at Shea Stadium')
-        ->addBarcode(BarcodeType::Ean13, '4006381333931')
+        ->addBarcode(BarcodeType::Pdf417, '4006381333931')
         ->addBarcode(BarcodeType::Qr, 'TICKET-12345')
         ->setIconImage(getTestSupportPath('images/spatie-thumbnail.png'))
         ->save();
@@ -92,7 +92,7 @@ it('round-trips multiple barcodes through save and hydrate, preserving order', f
     $data = EventTicketPassBuilder::hydrate($model)->data();
 
     expect($data['barcodes'])->toHaveCount(2);
-    expect($data['barcodes'][0]['format'])->toBe('PKBarcodeFormatEAN13');
+    expect($data['barcodes'][0]['format'])->toBe('PKBarcodeFormatPDF417');
     expect($data['barcodes'][1]['format'])->toBe('PKBarcodeFormatQR');
 });
 
@@ -128,4 +128,16 @@ it('omits barcode and barcodes when none are set', function () {
 
     expect($data)->not->toHaveKey('barcode');
     expect($data)->not->toHaveKey('barcodes');
+});
+
+it('sets altText on a barcode added via addBarcode', function () {
+    $data = EventTicketPassBuilder::make()
+        ->setOrganizationName('Fab Four Promotions')
+        ->setSerialNumber('BTL-SHEA-0042')
+        ->setDescription('The Beatles at Shea Stadium')
+        ->addBarcode(BarcodeType::Qr, 'TICKET-12345', altText: 'Show this at the gate')
+        ->setIconImage(getTestSupportPath('images/spatie-thumbnail.png'))
+        ->data();
+
+    expect($data['barcodes'][0]['altText'])->toBe('Show this at the gate');
 });
