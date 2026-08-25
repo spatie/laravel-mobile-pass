@@ -70,7 +70,8 @@ abstract class ApplePassBuilder
 
     protected ?string $downloadName = null;
 
-    protected ?Barcode $barcode = null;
+    /** @var array<int, Barcode> */
+    protected array $barcodes = [];
 
     protected ?Carbon $relevantDate = null;
 
@@ -417,15 +418,28 @@ abstract class ApplePassBuilder
 
     public function setBarcode(BarcodeType $format, string $message, ?string $altText = null): static
     {
+        $this->barcodes = [$this->buildBarcode($format, $message, $altText)];
+
+        return $this;
+    }
+
+    /** Appends a barcode to the pass's ordered barcode list, without clearing any barcodes already set. */
+    public function addBarcode(BarcodeType $format, string $message, ?string $altText = null): self
+    {
+        $this->barcodes[] = $this->buildBarcode($format, $message, $altText);
+
+        return $this;
+    }
+
+    private function buildBarcode(BarcodeType $format, string $message, ?string $altText): Barcode
+    {
         $barcode = Barcode::make($format, $message);
 
         if ($altText !== null) {
             $barcode->withAltText($altText);
         }
 
-        $this->barcode = $barcode;
-
-        return $this;
+        return $barcode;
     }
 
     public function setWifiBarcode(
@@ -723,7 +737,10 @@ abstract class ApplePassBuilder
 
     protected function compileData(): array
     {
-        $barcode = $this->barcode?->toArray();
+        $barcodes = empty($this->barcodes) ? null : array_map(
+            fn (Barcode $barcode) => $barcode->toArray(),
+            $this->barcodes,
+        );
 
         return array_merge($this->data, array_filter([
             'formatVersion' => 1,
@@ -738,8 +755,8 @@ abstract class ApplePassBuilder
             'backgroundColor' => (string) $this->backgroundColor,
             'foregroundColor' => (string) $this->foregroundColor,
             'labelColor' => (string) $this->labelColor,
-            'barcode' => $barcode,
-            'barcodes' => $barcode ? [$barcode] : null,
+            'barcode' => $barcodes ? $barcodes[array_key_last($barcodes)] : null,
+            'barcodes' => $barcodes,
             'relevantDate' => $this->relevantDate?->toIso8601String(),
             'locations' => empty($this->locations) ? null : array_map(
                 fn (Location $location) => $location->toArray(),
@@ -826,9 +843,9 @@ abstract class ApplePassBuilder
         $this->foregroundColor = Color::makeFromRgbString($this->data['foregroundColor'] ?? null);
         $this->labelColor = Color::makeFromRgbString($this->data['labelColor'] ?? null);
 
-        $this->barcode = empty($this->data['barcode'])
-            ? null
-            : Barcode::fromArray($this->data['barcode']);
+        $this->barcodes = ! empty($this->data['barcodes'])
+            ? array_map(fn (array $barcode) => Barcode::fromArray($barcode), $this->data['barcodes'])
+            : (empty($this->data['barcode']) ? [] : [Barcode::fromArray($this->data['barcode'])]);
 
         $this->relevantDate = empty($this->data['relevantDate'])
             ? null
