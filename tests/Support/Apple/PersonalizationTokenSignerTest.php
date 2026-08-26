@@ -1,6 +1,25 @@
 <?php
 
+use Spatie\LaravelMobilePass\Exceptions\InvalidCertificate;
 use Spatie\LaravelMobilePass\Support\Apple\PersonalizationTokenSigner;
+
+it('throws InvalidCertificate and cleans up temp files when the certificate cannot be loaded', function () {
+    config()->set('mobile-pass.apple.certificate_password', 'wrong-password');
+
+    $before = glob(sys_get_temp_dir().'/personalization-*');
+
+    try {
+        (new PersonalizationTokenSigner)->sign('some-token');
+
+        $this->fail('Expected InvalidCertificate to be thrown.');
+    } catch (InvalidCertificate $exception) {
+        // expected
+    }
+
+    $after = glob(sys_get_temp_dir().'/personalization-*');
+
+    expect($after)->toBe($before);
+});
 
 it('produces a non-empty binary signature over the token', function () {
     $signature = (new PersonalizationTokenSigner)->sign('324389RFHF32JOID2902F3JF23092FEJI02');

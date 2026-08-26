@@ -34,7 +34,7 @@ The four available fields are:
 - `PersonalizationField::EmailAddress` — an email address
 - `PersonalizationField::PhoneNumber` — a phone number
 
-Personalization always requires NFC. Set it up with `setNfc()` before calling `setPersonalization()`:
+Personalization always requires NFC. Set it up with `setNfc()`, in either order relative to `setPersonalization()` — the package checks for NFC when the pass is built, not when either method is called:
 
 ```php
 $builder
@@ -52,7 +52,7 @@ $builder
 
 ## Personalization logo
 
-Personalization shows a logo in Wallet during the enrollment flow, displayed at the top of the signup form. Provide it with `setPersonalizationLogo()`, just like other images in the pass:
+Personalization shows a logo in Wallet during the enrollment flow. Provide it with `setPersonalizationLogo()`, just like other images in the pass:
 
 ```php
 $builder->setPersonalizationLogo(
@@ -97,7 +97,7 @@ class CreateUserAccount
         );
 
         // Link the mobile pass to the user
-        $mobilePass->update(['user_id' => $user->id]);
+        $mobilePass->model()->associate($user)->save();
 
         // Send a welcome email, trigger onboarding, etc.
     }

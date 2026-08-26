@@ -12,25 +12,32 @@ class PersonalizationTokenSigner
         $tokenPath = tempnam(sys_get_temp_dir(), 'personalization-token');
         $signaturePath = tempnam(sys_get_temp_dir(), 'personalization-signature');
 
-        file_put_contents($tokenPath, $token);
+        try {
+            file_put_contents($tokenPath, $token);
 
-        [$cert, $privateKey] = $this->readCertificate();
+            [$cert, $privateKey] = $this->readCertificate();
 
-        openssl_pkcs7_sign(
-            $tokenPath,
-            $signaturePath,
-            $cert,
-            $privateKey,
-            [],
-            PKCS7_BINARY | PKCS7_DETACHED,
-        );
+            $signed = openssl_pkcs7_sign(
+                $tokenPath,
+                $signaturePath,
+                $cert,
+                $privateKey,
+                [],
+                PKCS7_BINARY | PKCS7_DETACHED,
+            );
 
-        $signature = file_get_contents($signaturePath);
+            if (! $signed) {
+                throw InvalidCertificate::fromPkcs7SignFailure();
+            }
 
-        unlink($tokenPath);
-        unlink($signaturePath);
+            $signature = file_get_contents($signaturePath);
 
-        return $this->convertPemToDer($signature);
+            return $this->convertPemToDer($signature);
+        } finally {
+            // Always clean up, whether signing succeeded or an exception was thrown above.
+            unlink($tokenPath);
+            unlink($signaturePath);
+        }
     }
 
     /** @return array{0: \OpenSSLCertificate|string, 1: \OpenSSLAsymmetricKey|string} */

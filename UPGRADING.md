@@ -1,5 +1,20 @@
 # Upgrading
 
+## Apple Wallet Pass Personalization
+
+This release adds Apple Wallet pass personalization support via a new `apple_mobile_pass_personalizations` table.
+
+**New installs** — publish and run the package migrations normally.
+
+**Existing installs** — publish and run the new migration:
+
+```bash
+php artisan vendor:publish --tag="mobile-pass-migrations"
+php artisan migrate
+```
+
+---
+
 ## Google Wallet i18n — LocalizedString for Loyalty and Offer pass classes
 
 `LoyaltyPassClass` and `OfferPassClass` now support per-locale translations.

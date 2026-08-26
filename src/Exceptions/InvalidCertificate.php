@@ -27,4 +27,13 @@ class InvalidCertificate extends Exception implements MobilePassException
             .'and confirm MOBILE_PASS_APPLE_CERTIFICATE_PASSWORD is correct.',
         );
     }
+
+    public static function fromPkcs7SignFailure(): self
+    {
+        return new self(
+            'The Apple Wallet personalization token could not be signed. '
+            .'Verify MOBILE_PASS_APPLE_CERTIFICATE_PATH or MOBILE_PASS_APPLE_CERTIFICATE, '
+            .'and confirm MOBILE_PASS_APPLE_CERTIFICATE_PASSWORD is correct.',
+        );
+    }
 }

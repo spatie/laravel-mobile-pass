@@ -710,25 +710,29 @@ abstract class ApplePassBuilder
     public function save(): MobilePass
     {
         if ($this->model) {
-            $this->serialNumber = $this->model->pass_serial;
+            $model = $this->model;
 
-            $this->model->update([
+            $this->serialNumber = $model->pass_serial;
+
+            $model->update([
                 'content' => $this->data(),
                 'images' => $this->images,
                 'locales' => empty($this->locales) ? null : $this->locales,
                 'download_name' => $this->downloadName,
             ]);
 
+            $this->model = $model;
+
             $this->savePersonalizationConfig();
 
-            return $this->model;
+            return $model;
         }
 
         $content = $this->data();
 
         $mobilePassClass = Config::mobilePassModel();
 
-        $this->model = $mobilePassClass::query()->create([
+        $model = $mobilePassClass::query()->create([
             'pass_serial' => $this->serialNumber,
             'type' => $this->type->value,
             'platform' => static::platform(),
@@ -739,9 +743,11 @@ abstract class ApplePassBuilder
             'download_name' => $this->downloadName,
         ]);
 
+        $this->model = $model;
+
         $this->savePersonalizationConfig();
 
-        return $this->model;
+        return $model;
     }
 
     protected function savePersonalizationConfig(): void

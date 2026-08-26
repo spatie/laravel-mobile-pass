@@ -96,7 +96,7 @@ class Config
      */
     public static function getActionClass(string $actionName, string $shouldBeOrExtend): string
     {
-        $actionClass = config("mobile-pass.actions.{$actionName}");
+        $actionClass = config("mobile-pass.actions.{$actionName}", $shouldBeOrExtend);
 
         if (! is_a($actionClass, $shouldBeOrExtend, true)) {
             throw InvalidConfig::invalidAction($actionName, $actionClass, $shouldBeOrExtend);

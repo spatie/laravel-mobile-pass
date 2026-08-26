@@ -5,6 +5,7 @@ namespace Spatie\LaravelMobilePass\Actions\Apple;
 use Spatie\LaravelMobilePass\Events\PassPersonalized;
 use Spatie\LaravelMobilePass\Models\MobilePass;
 use Spatie\LaravelMobilePass\Support\Apple\PersonalizationTokenSigner;
+use Throwable;
 
 class PersonalizeAction
 {
@@ -21,8 +22,21 @@ class PersonalizeAction
             'personalized_at' => now(),
         ]);
 
-        $pass->touch();
+        try {
+            // touch() synchronously dispatches a push notification to every registered
+            // device (via MobilePass::boot()'s `updated` listener). The signature has
+            // already been produced and the submission already recorded above, so a push
+            // failure here is a best-effort side effect, not part of the personalize
+            // contract: it must not turn an otherwise-successful response into a 500,
+            // which would leave the pass stuck in "personalized" state without Wallet
+            // ever having received its valid signature.
+            $pass->touch();
+        } catch (Throwable $exception) {
+            report($exception);
+        }
 
+        // Wallet may retry the /personalize POST, so listeners on PassPersonalized
+        // should be written idempotently rather than assuming a single delivery per pass.
         event(new PassPersonalized($pass, $submittedInfo));
 
         return $signature;
