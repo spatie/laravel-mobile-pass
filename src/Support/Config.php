@@ -19,6 +19,7 @@ use Spatie\LaravelMobilePass\Builders\Google\OfferPassBuilder;
 use Spatie\LaravelMobilePass\Enums\Platform;
 use Spatie\LaravelMobilePass\Exceptions\InvalidConfig;
 use Spatie\LaravelMobilePass\Models\Apple\AppleMobilePassDevice;
+use Spatie\LaravelMobilePass\Models\Apple\AppleMobilePassPersonalization;
 use Spatie\LaravelMobilePass\Models\Apple\AppleMobilePassRegistration;
 use Spatie\LaravelMobilePass\Models\Google\GoogleMobilePassEvent;
 use Spatie\LaravelMobilePass\Models\MobilePass;
@@ -64,6 +65,12 @@ class Config
     public static function appleDeviceModel(): string
     {
         return self::getModelClass('apple_mobile_pass_device', AppleMobilePassDevice::class);
+    }
+
+    /** @return class-string<AppleMobilePassPersonalization> */
+    public static function appleMobilePassPersonalizationModel(): string
+    {
+        return self::getModelClass('apple_mobile_pass_personalization', AppleMobilePassPersonalization::class);
     }
 
     /** @return class-string<GoogleMobilePassEvent> */
