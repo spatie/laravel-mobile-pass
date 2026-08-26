@@ -375,7 +375,7 @@ function expectedEventDetailSemantics(): array
         'leagueName' => 'Major League Baseball',
         'sportName' => 'Baseball',
         'seats' => [
-            ['number' => '22', 'row' => '8', 'section' => 'B12'],
+            ['seatNumber' => '22', 'seatRow' => '8', 'seatSection' => 'B12'],
         ],
     ];
 }

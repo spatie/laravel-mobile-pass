@@ -23,7 +23,7 @@
             },
             "seats": [
                 {
-                    "number": "24B"
+                    "seatNumber": "24B"
                 }
             ],
             "carNumber": "3",

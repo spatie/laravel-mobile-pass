@@ -37,24 +37,24 @@ class Seat implements Arrayable
     public static function fromArray(array $values): self
     {
         return new self(
-            description: $values['description'] ?? null,
-            identifier: $values['identifier'] ?? null,
-            number: $values['number'] ?? null,
-            row: $values['row'] ?? null,
-            section: $values['section'] ?? null,
-            type: $values['type'] ?? null,
+            description: $values['seatDescription'] ?? null,
+            identifier: $values['seatIdentifier'] ?? null,
+            number: $values['seatNumber'] ?? null,
+            row: $values['seatRow'] ?? null,
+            section: $values['seatSection'] ?? null,
+            type: $values['seatType'] ?? null,
         );
     }
 
     public function toArray(): array
     {
         return array_filter([
-            'description' => $this->description,
-            'identifier' => $this->identifier,
-            'number' => $this->number,
-            'row' => $this->row,
-            'section' => $this->section,
-            'type' => $this->type,
+            'seatDescription' => $this->description,
+            'seatIdentifier' => $this->identifier,
+            'seatNumber' => $this->number,
+            'seatRow' => $this->row,
+            'seatSection' => $this->section,
+            'seatType' => $this->type,
         ], fn ($value) => $value !== null);
     }
 }
