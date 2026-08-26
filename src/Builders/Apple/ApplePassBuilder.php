@@ -125,77 +125,77 @@ abstract class ApplePassBuilder
         return config("mobile-pass.apple.{$key}");
     }
 
-    public function setDownloadName(string $downloadName): self
+    public function setDownloadName(string $downloadName): static
     {
         $this->downloadName = $downloadName;
 
         return $this;
     }
 
-    public function setLogoImage(string $x1Path, ?string $x2Path = null, ?string $x3Path = null): self
+    public function setLogoImage(string $x1Path, ?string $x2Path = null, ?string $x3Path = null): static
     {
         $this->images['logo'] = new Image($x1Path, $x2Path, $x3Path);
 
         return $this;
     }
 
-    public function setIconImage(string $x1Path, ?string $x2Path = null, ?string $x3Path = null): self
+    public function setIconImage(string $x1Path, ?string $x2Path = null, ?string $x3Path = null): static
     {
         $this->images['icon'] = new Image($x1Path, $x2Path, $x3Path);
 
         return $this;
     }
 
-    public function setStripImage(string $x1Path, ?string $x2Path = null, ?string $x3Path = null): self
+    public function setStripImage(string $x1Path, ?string $x2Path = null, ?string $x3Path = null): static
     {
         $this->images['strip'] = new Image($x1Path, $x2Path, $x3Path);
 
         return $this;
     }
 
-    public function setThumbnailImage(string $x1Path, ?string $x2Path = null, ?string $x3Path = null): self
+    public function setThumbnailImage(string $x1Path, ?string $x2Path = null, ?string $x3Path = null): static
     {
         $this->images['thumbnail'] = new Image($x1Path, $x2Path, $x3Path);
 
         return $this;
     }
 
-    public function setBackgroundImage(string $x1Path, ?string $x2Path = null, ?string $x3Path = null): self
+    public function setBackgroundImage(string $x1Path, ?string $x2Path = null, ?string $x3Path = null): static
     {
         $this->images['background'] = new Image($x1Path, $x2Path, $x3Path);
 
         return $this;
     }
 
-    public function setRemoteLogoImage(string $x1Url, ?string $x2Url = null, ?string $x3Url = null): self
+    public function setRemoteLogoImage(string $x1Url, ?string $x2Url = null, ?string $x3Url = null): static
     {
         $this->images['logo'] = Image::makeRemote($x1Url, $x2Url, $x3Url);
 
         return $this;
     }
 
-    public function setRemoteIconImage(string $x1Url, ?string $x2Url = null, ?string $x3Url = null): self
+    public function setRemoteIconImage(string $x1Url, ?string $x2Url = null, ?string $x3Url = null): static
     {
         $this->images['icon'] = Image::makeRemote($x1Url, $x2Url, $x3Url);
 
         return $this;
     }
 
-    public function setRemoteStripImage(string $x1Url, ?string $x2Url = null, ?string $x3Url = null): self
+    public function setRemoteStripImage(string $x1Url, ?string $x2Url = null, ?string $x3Url = null): static
     {
         $this->images['strip'] = Image::makeRemote($x1Url, $x2Url, $x3Url);
 
         return $this;
     }
 
-    public function setRemoteThumbnailImage(string $x1Url, ?string $x2Url = null, ?string $x3Url = null): self
+    public function setRemoteThumbnailImage(string $x1Url, ?string $x2Url = null, ?string $x3Url = null): static
     {
         $this->images['thumbnail'] = Image::makeRemote($x1Url, $x2Url, $x3Url);
 
         return $this;
     }
 
-    public function setRemoteBackgroundImage(string $x1Url, ?string $x2Url = null, ?string $x3Url = null): self
+    public function setRemoteBackgroundImage(string $x1Url, ?string $x2Url = null, ?string $x3Url = null): static
     {
         $this->images['background'] = Image::makeRemote($x1Url, $x2Url, $x3Url);
 
@@ -210,7 +210,7 @@ abstract class ApplePassBuilder
         ?DateType $dateStyle = null,
         ?TimeStyleType $timeStyle = null,
         ?bool $showDateAsRelative = null,
-    ): self {
+    ): static {
         return $this->addField($key, $value, FieldType::Header, $label, $changeMessage, $dateStyle, $timeStyle, $showDateAsRelative);
     }
 
@@ -222,7 +222,7 @@ abstract class ApplePassBuilder
         ?DateType $dateStyle = null,
         ?TimeStyleType $timeStyle = null,
         ?bool $showDateAsRelative = null,
-    ): self {
+    ): static {
         return $this->addField($key, $value, FieldType::Secondary, $label, $changeMessage, $dateStyle, $timeStyle, $showDateAsRelative);
     }
 
@@ -234,7 +234,7 @@ abstract class ApplePassBuilder
         ?DateType $dateStyle = null,
         ?TimeStyleType $timeStyle = null,
         ?bool $showDateAsRelative = null,
-    ): self {
+    ): static {
         return $this->addField($key, $value, FieldType::Auxiliary, $label, $changeMessage, $dateStyle, $timeStyle, $showDateAsRelative);
     }
 
@@ -246,20 +246,19 @@ abstract class ApplePassBuilder
         ?DateType $dateStyle = null,
         ?TimeStyleType $timeStyle = null,
         ?bool $showDateAsRelative = null,
-    ): self {
+    ): static {
         return $this->addField($key, $value, FieldType::Back, $label, $changeMessage, $dateStyle, $timeStyle, $showDateAsRelative);
     }
 
-    public function addField(
+    protected function makeFieldContent(
         string $key,
         string $value,
-        FieldType $type = FieldType::Primary,
         ?string $label = null,
         ?string $changeMessage = null,
         ?DateType $dateStyle = null,
         ?TimeStyleType $timeStyle = null,
         ?bool $showDateAsRelative = null,
-    ): self {
+    ): FieldContent {
         $field = FieldContent::make($key)
             ->withValue($value)
             ->withLabel($label ?? Str::headline($key));
@@ -280,12 +279,40 @@ abstract class ApplePassBuilder
             $field->showDateAsRelative();
         }
 
-        $property = $type->value;
+        return $field;
+    }
 
-        $this->{$property} ??= collect();
-        $this->{$property}[$key] = $field;
+    public function addField(
+        string $key,
+        string $value,
+        FieldType $type = FieldType::Primary,
+        ?string $label = null,
+        ?string $changeMessage = null,
+        ?DateType $dateStyle = null,
+        ?TimeStyleType $timeStyle = null,
+        ?bool $showDateAsRelative = null,
+    ): static {
+        $field = $this->makeFieldContent($key, $value, $label, $changeMessage, $dateStyle, $timeStyle, $showDateAsRelative);
+
+        $this->storeField($type->value, $field);
 
         return $this;
+    }
+
+    protected function storeField(string $property, FieldContent $field): void
+    {
+        $this->{$property} ??= collect();
+        $this->{$property}[$field->key] = $field;
+    }
+
+    /**
+     * The builder properties that hold field collections, so `updateField()` reaches all of them.
+     *
+     * @return array<int, string>
+     */
+    protected function fieldProperties(): array
+    {
+        return array_column(FieldType::cases(), 'value');
     }
 
     public function updateField(
@@ -293,10 +320,8 @@ abstract class ApplePassBuilder
         string $value,
         ?string $changeMessage = null,
         ?string $label = null,
-    ): self {
-        foreach (FieldType::cases() as $type) {
-            $property = $type->value;
-
+    ): static {
+        foreach ($this->fieldProperties() as $property) {
             if ($this->{$property} === null) {
                 continue;
             }
@@ -330,42 +355,42 @@ abstract class ApplePassBuilder
         return $field;
     }
 
-    public function setSerialNumber(string $serialNumber): self
+    public function setSerialNumber(string $serialNumber): static
     {
         $this->serialNumber = $serialNumber;
 
         return $this;
     }
 
-    public function setOrganizationName(string $organizationName): self
+    public function setOrganizationName(string $organizationName): static
     {
         $this->organizationName = $organizationName;
 
         return $this;
     }
 
-    public function setDescription(string $description): self
+    public function setDescription(string $description): static
     {
         $this->description = $description;
 
         return $this;
     }
 
-    public function setBackgroundColor(string $hex): self
+    public function setBackgroundColor(string $hex): static
     {
         $this->backgroundColor = Color::makeFromHex($hex);
 
         return $this;
     }
 
-    public function setForegroundColor(string $hex): self
+    public function setForegroundColor(string $hex): static
     {
         $this->foregroundColor = Color::makeFromHex($hex);
 
         return $this;
     }
 
-    public function setLabelColor(string $hex): self
+    public function setLabelColor(string $hex): static
     {
         $this->labelColor = Color::makeFromHex($hex);
 
@@ -375,14 +400,14 @@ abstract class ApplePassBuilder
     /**
      * The total price for the pass.
      */
-    public function setTotalPrice(Price $totalPrice): self
+    public function setTotalPrice(Price $totalPrice): static
     {
         $this->totalPrice = $totalPrice;
 
         return $this;
     }
 
-    public function addWifiNetwork(string $ssid, string $password): self
+    public function addWifiNetwork(string $ssid, string $password): static
     {
         $this->wifiDetails ??= collect();
         $this->wifiDetails->push(new WifiNetwork($ssid, $password));
@@ -390,7 +415,7 @@ abstract class ApplePassBuilder
         return $this;
     }
 
-    public function setBarcode(BarcodeType $format, string $message, ?string $altText = null): self
+    public function setBarcode(BarcodeType $format, string $message, ?string $altText = null): static
     {
         $barcode = Barcode::make($format, $message);
 
@@ -408,7 +433,7 @@ abstract class ApplePassBuilder
         ?string $password = null,
         bool $hidden = false,
         ?string $altText = null,
-    ): self {
+    ): static {
         return $this->setBarcode(
             BarcodeType::Qr,
             WifiUri::build($ssid, $password, $hidden),
@@ -416,7 +441,7 @@ abstract class ApplePassBuilder
         );
     }
 
-    public function setRelevantDate(Carbon $date): self
+    public function setRelevantDate(Carbon $date): static
     {
         $this->relevantDate = $date;
 
@@ -428,7 +453,7 @@ abstract class ApplePassBuilder
         float $longitude,
         ?float $altitude = null,
         ?string $relevantText = null,
-    ): self {
+    ): static {
         $this->locations[] = new Location($latitude, $longitude, $altitude, $relevantText);
 
         return $this;
@@ -439,20 +464,20 @@ abstract class ApplePassBuilder
         ?int $major = null,
         ?int $minor = null,
         ?string $relevantText = null,
-    ): self {
+    ): static {
         $this->beacons[] = new Beacon($proximityUUID, $major, $minor, $relevantText);
 
         return $this;
     }
 
-    public function setMaxDistance(int $meters): self
+    public function setMaxDistance(int $meters): static
     {
         $this->maxDistance = $meters;
 
         return $this;
     }
 
-    public function addLocaleStrings(string $language, array $strings): self
+    public function addLocaleStrings(string $language, array $strings): static
     {
         $existing = $this->locales[$language]['strings'] ?? [];
         $this->locales[$language]['strings'] = array_merge($existing, $strings);
@@ -460,70 +485,70 @@ abstract class ApplePassBuilder
         return $this;
     }
 
-    public function setLocaleLogoImage(string $language, string $x1Path, ?string $x2Path = null, ?string $x3Path = null): self
+    public function setLocaleLogoImage(string $language, string $x1Path, ?string $x2Path = null, ?string $x3Path = null): static
     {
         $this->locales[$language]['images']['logo'] = new Image($x1Path, $x2Path, $x3Path);
 
         return $this;
     }
 
-    public function setLocaleIconImage(string $language, string $x1Path, ?string $x2Path = null, ?string $x3Path = null): self
+    public function setLocaleIconImage(string $language, string $x1Path, ?string $x2Path = null, ?string $x3Path = null): static
     {
         $this->locales[$language]['images']['icon'] = new Image($x1Path, $x2Path, $x3Path);
 
         return $this;
     }
 
-    public function setLocaleStripImage(string $language, string $x1Path, ?string $x2Path = null, ?string $x3Path = null): self
+    public function setLocaleStripImage(string $language, string $x1Path, ?string $x2Path = null, ?string $x3Path = null): static
     {
         $this->locales[$language]['images']['strip'] = new Image($x1Path, $x2Path, $x3Path);
 
         return $this;
     }
 
-    public function setLocaleThumbnailImage(string $language, string $x1Path, ?string $x2Path = null, ?string $x3Path = null): self
+    public function setLocaleThumbnailImage(string $language, string $x1Path, ?string $x2Path = null, ?string $x3Path = null): static
     {
         $this->locales[$language]['images']['thumbnail'] = new Image($x1Path, $x2Path, $x3Path);
 
         return $this;
     }
 
-    public function setLocaleBackgroundImage(string $language, string $x1Path, ?string $x2Path = null, ?string $x3Path = null): self
+    public function setLocaleBackgroundImage(string $language, string $x1Path, ?string $x2Path = null, ?string $x3Path = null): static
     {
         $this->locales[$language]['images']['background'] = new Image($x1Path, $x2Path, $x3Path);
 
         return $this;
     }
 
-    public function setRemoteLocaleLogoImage(string $language, string $x1Url, ?string $x2Url = null, ?string $x3Url = null): self
+    public function setRemoteLocaleLogoImage(string $language, string $x1Url, ?string $x2Url = null, ?string $x3Url = null): static
     {
         $this->locales[$language]['images']['logo'] = Image::makeRemote($x1Url, $x2Url, $x3Url);
 
         return $this;
     }
 
-    public function setRemoteLocaleIconImage(string $language, string $x1Url, ?string $x2Url = null, ?string $x3Url = null): self
+    public function setRemoteLocaleIconImage(string $language, string $x1Url, ?string $x2Url = null, ?string $x3Url = null): static
     {
         $this->locales[$language]['images']['icon'] = Image::makeRemote($x1Url, $x2Url, $x3Url);
 
         return $this;
     }
 
-    public function setRemoteLocaleStripImage(string $language, string $x1Url, ?string $x2Url = null, ?string $x3Url = null): self
+    public function setRemoteLocaleStripImage(string $language, string $x1Url, ?string $x2Url = null, ?string $x3Url = null): static
     {
         $this->locales[$language]['images']['strip'] = Image::makeRemote($x1Url, $x2Url, $x3Url);
 
         return $this;
     }
 
-    public function setRemoteLocaleThumbnailImage(string $language, string $x1Url, ?string $x2Url = null, ?string $x3Url = null): self
+    public function setRemoteLocaleThumbnailImage(string $language, string $x1Url, ?string $x2Url = null, ?string $x3Url = null): static
     {
         $this->locales[$language]['images']['thumbnail'] = Image::makeRemote($x1Url, $x2Url, $x3Url);
 
         return $this;
     }
 
-    public function setRemoteLocaleBackgroundImage(string $language, string $x1Url, ?string $x2Url = null, ?string $x3Url = null): self
+    public function setRemoteLocaleBackgroundImage(string $language, string $x1Url, ?string $x2Url = null, ?string $x3Url = null): static
     {
         $this->locales[$language]['images']['background'] = Image::makeRemote($x1Url, $x2Url, $x3Url);
 
@@ -534,7 +559,7 @@ abstract class ApplePassBuilder
         string $message,
         string $encryptionPublicKey,
         bool $requiresAuthentication = false,
-    ): self {
+    ): static {
         $this->nfc = new NfcPayload($message, $encryptionPublicKey, $requiresAuthentication);
 
         return $this;
@@ -688,12 +713,12 @@ abstract class ApplePassBuilder
         }
     }
 
-    protected function compileSemantics(): ?array
+    protected function compileSemantics(): array
     {
         return array_filter([
             'totalPrice' => $this->totalPrice?->toArray(),
             'wifiAccess' => $this->wifiDetails?->toArray(),
-        ]);
+        ], fn ($value) => $value !== null);
     }
 
     protected function compileData(): array
@@ -777,6 +802,16 @@ abstract class ApplePassBuilder
         $this->wifiDetails = empty($semantics['wifiAccess'])
             ? null
             : collect($semantics['wifiAccess'])->map(fn (array $wifi) => WifiNetwork::fromArray($wifi));
+    }
+
+    /** @param  array<string, mixed>  $semantics */
+    protected function parseSemanticDate(array $semantics, string $key): ?Carbon
+    {
+        if (empty($semantics[$key])) {
+            return null;
+        }
+
+        return Carbon::parse($semantics[$key]);
     }
 
     protected function uncompileContent(): void

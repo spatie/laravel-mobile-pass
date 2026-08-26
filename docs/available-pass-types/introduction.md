@@ -10,6 +10,7 @@ Apple and Google don't name the equivalents the same way, so here's the rough ma
 | Apple                       | Google                      | Typical use                            |
 | --------------------------- | --------------------------- | -------------------------------------- |
 | `AirlinePassBuilder`        | `BoardingPassBuilder`       | Flight boarding passes                 |
+| `TrainPassBuilder`          | —                            | Train/rail boarding passes             |
 | `EventTicketPassBuilder`    | `EventTicketPassBuilder`    | Concerts, festivals, sports events     |
 | `CouponPassBuilder`         | `OfferPassBuilder`          | Discount codes, limited-time offers    |
 | `StoreCardPassBuilder`      | `LoyaltyPassBuilder`        | Loyalty cards, membership programs     |

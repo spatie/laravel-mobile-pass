@@ -19,6 +19,23 @@ GenericPassBuilder::make()
     ->save();
 ```
 
+Generic passes also support Apple's poster layout via a separate set of fields: `addPosterHeaderField()`, `addPosterPrimaryField()`, `addPosterFooterField()`, and `addPosterBackField()`. These populate a `posterGeneric` block. There's no separate toggle: adding any poster field is what makes that block appear. Wallet renders only the first poster footer field and ignores the rest.
+
+Set an `artwork` image (see [Adding images](../basic-usage/adding-images)) too, since the poster layout renders it as a full-bleed background.
+
+Keep filling the regular fields as well. Older devices don't understand `posterGeneric`, and this package won't stop you from shipping a pass that only carries poster fields:
+
+```php
+GenericPassBuilder::make()
+    // ...
+    ->setArtworkImage(public_path('images/artwork.png'))
+    ->addHeaderField('event', 'Spatie Conference 2026')
+    ->addField('track', 'All-access')
+    ->addPosterHeaderField('event', 'Spatie Conference 2026')
+    ->addPosterPrimaryField('track', 'All-access')
+    ->save();
+```
+
 ## Google
 
 Declare the Class once per use case (the brand, the visuals, the card title), then create an Object per person.

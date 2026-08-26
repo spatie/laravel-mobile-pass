@@ -9,6 +9,7 @@ use Spatie\LaravelMobilePass\Builders\Apple\CouponPassBuilder;
 use Spatie\LaravelMobilePass\Builders\Apple\EventTicketPassBuilder as AppleEventTicketPassBuilder;
 use Spatie\LaravelMobilePass\Builders\Apple\GenericPassBuilder as AppleGenericPassBuilder;
 use Spatie\LaravelMobilePass\Builders\Apple\StoreCardPassBuilder;
+use Spatie\LaravelMobilePass\Builders\Apple\TrainPassBuilder;
 use Spatie\LaravelMobilePass\Builders\Google\BoardingPassBuilder as GoogleBoardingPassBuilder;
 use Spatie\LaravelMobilePass\Builders\Google\EventTicketPassBuilder as GoogleEventTicketPassBuilder;
 use Spatie\LaravelMobilePass\Builders\Google\GenericPassBuilder as GoogleGenericPassBuilder;
@@ -35,6 +36,7 @@ class Config
                 'event_ticket' => AppleEventTicketPassBuilder::class,
                 'generic' => AppleGenericPassBuilder::class,
                 'store_card' => StoreCardPassBuilder::class,
+                'train' => TrainPassBuilder::class,
             ],
             'google' => [
                 'boarding' => GoogleBoardingPassBuilder::class,

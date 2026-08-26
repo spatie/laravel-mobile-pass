@@ -23,7 +23,11 @@
                 {
                     "number": "66F"
                 }
-            ]
+            ],
+            "departureAirportCode": "AUH",
+            "departureAirportName": "Abu Dhabi Intl",
+            "destinationAirportCode": "LHR",
+            "destinationAirportName": "London Heathrow"
         },
         "boardingPass": {
             "transitType": "PKTransitTypeAir",

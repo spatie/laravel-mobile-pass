@@ -5,6 +5,7 @@ namespace Spatie\LaravelMobilePass\Tests\Support;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\LaravelMobilePass\Actions\Apple\NotifyAppleOfPassUpdateAction;
 use Spatie\LaravelMobilePass\Builders\Apple\AirlinePassBuilder;
+use Spatie\LaravelMobilePass\Builders\Apple\TrainPassBuilder;
 use Spatie\LaravelMobilePass\Enums\Platform;
 use Spatie\LaravelMobilePass\Exceptions\InvalidConfig;
 use Spatie\LaravelMobilePass\Support\Config;
@@ -24,6 +25,11 @@ it('will throw an exception if an invalid action is used', function () {
 it('can get an Apple pass builder class', function () {
     $class = Config::getPassBuilderClass('airline', Platform::Apple);
     expect($class)->toBe(AirlinePassBuilder::class);
+});
+
+it('can get the train pass builder class', function () {
+    $class = Config::getPassBuilderClass('train', Platform::Apple);
+    expect($class)->toBe(TrainPassBuilder::class);
 });
 
 it('will throw an exception for a non-existing Apple pass builder class', function () {

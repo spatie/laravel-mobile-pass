@@ -2,6 +2,7 @@
 
 use Spatie\LaravelMobilePass\Builders\Apple\AirlinePassBuilder;
 use Spatie\LaravelMobilePass\Builders\Apple\EventTicketPassBuilder;
+use Spatie\LaravelMobilePass\Builders\Apple\GenericPassBuilder;
 use Spatie\LaravelMobilePass\Support\Apple\PkPassReader;
 
 it('can read arbitrary file content from a pkpass zip', function () {
@@ -222,6 +223,83 @@ it('bundles localized footer images into boarding passes', function () {
 
     expect($reader->containsFile('en.lproj/footer.png'))->toBeTrue();
     expect($reader->containsFile('en.lproj/footer@2x.png'))->toBeTrue();
+});
+
+it('bundles localized artwork images into event tickets', function () {
+    $imagePath = getTestSupportPath('images/spatie-thumbnail.png');
+
+    $pass = EventTicketPassBuilder::make()
+        ->setOrganizationName('My Org')
+        ->setSerialNumber('123')
+        ->setDescription('Test Pass')
+        ->setIconImage($imagePath)
+        ->setLocaleArtworkImage('en', $imagePath, $imagePath)
+        ->generate();
+
+    $reader = PkPassReader::fromString($pass);
+
+    expect($reader->containsFile('en.lproj/artwork.png'))->toBeTrue();
+    expect($reader->containsFile('en.lproj/artwork@2x.png'))->toBeTrue();
+});
+
+it('bundles localized artwork images into generic passes', function () {
+    $imagePath = getTestSupportPath('images/spatie-thumbnail.png');
+
+    $pass = GenericPassBuilder::make()
+        ->setOrganizationName('My Org')
+        ->setSerialNumber('123')
+        ->setDescription('Test Pass')
+        ->setIconImage($imagePath)
+        ->setLocaleArtworkImage('en', $imagePath, $imagePath)
+        ->generate();
+
+    $reader = PkPassReader::fromString($pass);
+
+    expect($reader->containsFile('en.lproj/artwork.png'))->toBeTrue();
+    expect($reader->containsFile('en.lproj/artwork@2x.png'))->toBeTrue();
+});
+
+it('bundles localized venue map images into event tickets', function () {
+    $imagePath = getTestSupportPath('images/spatie-thumbnail.png');
+
+    $pass = EventTicketPassBuilder::make()
+        ->setOrganizationName('My Org')
+        ->setSerialNumber('123')
+        ->setDescription('Test Pass')
+        ->setIconImage($imagePath)
+        ->setLocaleVenueMapImage('en', $imagePath, $imagePath)
+        ->generate();
+
+    $reader = PkPassReader::fromString($pass);
+
+    expect($reader->containsFile('en.lproj/venueMap.png'))->toBeTrue();
+    expect($reader->containsFile('en.lproj/venueMap@2x.png'))->toBeTrue();
+});
+
+it('stores remote locale venue map images on event ticket model', function () {
+    $model = EventTicketPassBuilder::make()
+        ->setOrganizationName('My Org')
+        ->setSerialNumber('123')
+        ->setDescription('Test Pass')
+        ->setIconImage(getTestSupportPath('images/spatie-thumbnail.png'))
+        ->setRemoteLocaleVenueMapImage('en', 'https://example.com/pass/venue-map-en.png')
+        ->save();
+
+    expect($model->locales['en']['images']['venueMap'])
+        ->toMatchArray(['x1Path' => 'https://example.com/pass/venue-map-en.png', 'isRemote' => true]);
+});
+
+it('stores remote locale artwork images on event ticket model', function () {
+    $model = EventTicketPassBuilder::make()
+        ->setOrganizationName('My Org')
+        ->setSerialNumber('123')
+        ->setDescription('Test Pass')
+        ->setIconImage(getTestSupportPath('images/spatie-thumbnail.png'))
+        ->setRemoteLocaleArtworkImage('en', 'https://example.com/pass/artwork-en.png')
+        ->save();
+
+    expect($model->locales['en']['images']['artwork'])
+        ->toMatchArray(['x1Path' => 'https://example.com/pass/artwork-en.png', 'isRemote' => true]);
 });
 
 it('stores remote locale footer images on boarding pass model', function () {

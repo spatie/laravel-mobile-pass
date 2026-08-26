@@ -12,6 +12,10 @@ class GenericApplePassValidator extends ApplePassValidator
             'generic.secondaryFields' => ['nullable', 'array'],
             'generic.auxiliaryFields' => ['nullable', 'array'],
             'generic.backFields' => ['nullable', 'array'],
+            'posterGeneric.headerFields' => ['nullable', 'array'],
+            'posterGeneric.primaryFields' => ['nullable', 'array'],
+            'posterGeneric.footerFields' => ['nullable', 'array'],
+            'posterGeneric.backFields' => ['nullable', 'array'],
         ]);
     }
 }
