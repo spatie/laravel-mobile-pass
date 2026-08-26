@@ -22,7 +22,7 @@ $builder->setPersonalization(
             PersonalizationField::Name,
             PersonalizationField::EmailAddress,
         ],
-        termsAndConditions: 'We'll use your email to send loyalty updates. You can unsubscribe anytime.',
+        termsAndConditions: "We'll use your email to send loyalty updates. You can unsubscribe anytime.",
     )
 );
 ```
@@ -52,7 +52,7 @@ $builder
 
 ## Personalization logo
 
-Personalization shows a logo in Wallet when the user completes their profile. Provide it with `setPersonalizationLogo()`, just like other images in the pass:
+Personalization shows a logo in Wallet during the enrollment flow, displayed at the top of the signup form. Provide it with `setPersonalizationLogo()`, just like other images in the pass:
 
 ```php
 $builder->setPersonalizationLogo(
@@ -85,10 +85,11 @@ class CreateUserAccount
         $submittedInfo = $event->submittedInfo; // array of user-entered data
 
         // Create or update the user
+        // Note: field keys depend on what Wallet sends; this example assumes fullName and emailAddress
         $user = User::updateOrCreate(
             ['email' => $submittedInfo['emailAddress'] ?? null],
             [
-                'name' => $submittedInfo['name'] ?? null,
+                'name' => $submittedInfo['fullName'] ?? null,
                 'email' => $submittedInfo['emailAddress'] ?? null,
                 'phone' => $submittedInfo['phoneNumber'] ?? null,
                 'postal_code' => $submittedInfo['postalCode'] ?? null,
@@ -103,7 +104,7 @@ class CreateUserAccount
 }
 ```
 
-The `$submittedInfo` array contains the fields the user filled in, keyed by their lowercase name: `name`, `emailAddress`, `phoneNumber`, `postalCode`.
+The `$submittedInfo` array is a verbatim passthrough of the `requiredPersonalizationInfo` payload Wallet sends — its structure and key names are controlled by Apple, not this package. The example above uses `fullName` (for `PersonalizationField::Name`) and `emailAddress` (for `PersonalizationField::EmailAddress`); check your pass builder's `requiredPersonalizationFields` to understand which keys will be present in your listener.
 
 Register your listener in `EventServiceProvider` or let Laravel 11+ auto-discover it from `app/Listeners`. See [Events](advanced-usage/events) for listener setup details.
 
