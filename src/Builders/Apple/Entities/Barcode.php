@@ -4,6 +4,7 @@ namespace Spatie\LaravelMobilePass\Builders\Apple\Entities;
 
 use Illuminate\Contracts\Support\Arrayable;
 use Spatie\LaravelMobilePass\Enums\BarcodeType;
+use Spatie\LaravelMobilePass\Exceptions\InvalidConfig;
 
 class Barcode implements Arrayable
 {
@@ -23,8 +24,14 @@ class Barcode implements Arrayable
     /** @param  array<string, mixed>  $fields */
     public static function fromArray(array $fields): self
     {
+        $format = BarcodeType::tryFrom($fields['format']);
+
+        if ($format === null) {
+            throw InvalidConfig::unrecognizedBarcodeFormat($fields['format']);
+        }
+
         $barcode = new self(
-            BarcodeType::tryFrom($fields['format']),
+            $format,
             $fields['message'],
             $fields['messageEncoding'],
         );
