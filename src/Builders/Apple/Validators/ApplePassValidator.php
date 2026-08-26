@@ -10,6 +10,7 @@ abstract class ApplePassValidator
     {
         return [
             'description' => ['required', 'string'],
+            'sharingProhibited' => ['nullable', 'boolean'],
             'formatVersion' => ['required', 'integer', 'in:1'],
             'organizationName' => ['required', 'string'],
             'passTypeIdentifier' => ['required', 'string'],

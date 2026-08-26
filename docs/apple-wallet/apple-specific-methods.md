@@ -32,3 +32,11 @@ $builder->setTotalPrice(Price::make(amount: '49.50', currencyCode: 'USD'));
 ```
 
 The price lands on the pass's `semantics.totalPrice`, so Apple can surface it consistently in Wallet and Mail previews.
+
+## Sharing
+
+Wallet shows a Share button on the back of every pass by default. Hide it with `setSharingProhibited(true)`:
+
+```php
+$builder->setSharingProhibited(true);
+```
