@@ -3,6 +3,7 @@
 namespace Spatie\LaravelMobilePass\Support\Apple;
 
 use Spatie\LaravelMobilePass\Builders\Apple\ApplePassBuilder;
+use Spatie\LaravelMobilePass\Exceptions\InvalidCertificate;
 
 class PersonalizationTokenSigner
 {
@@ -40,7 +41,9 @@ class PersonalizationTokenSigner
 
         $p12Content = file_get_contents($certificatePath);
 
-        openssl_pkcs12_read($p12Content, $certs, $certificatePassword);
+        if (! openssl_pkcs12_read($p12Content, $certs, $certificatePassword)) {
+            throw InvalidCertificate::fromPkcs12ReadFailure();
+        }
 
         $cert = openssl_x509_read($certs['cert']);
         $privateKey = openssl_pkey_get_private($certs['pkey'], $certificatePassword);
