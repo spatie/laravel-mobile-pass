@@ -16,6 +16,7 @@ use Spatie\LaravelMobilePass\Builders\Apple\Entities\Image;
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\Location;
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\NfcPayload;
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\Price;
+use Spatie\LaravelMobilePass\Builders\Apple\Entities\RelevantDate;
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\WifiNetwork;
 use Spatie\LaravelMobilePass\Builders\Apple\Validators\ApplePassValidator;
 use Spatie\LaravelMobilePass\Enums\BarcodeType;
@@ -77,6 +78,9 @@ abstract class ApplePassBuilder
     protected array $barcodes = [];
 
     protected ?Carbon $relevantDate = null;
+
+    /** @var array<int, RelevantDate> */
+    protected array $relevantDates = [];
 
     protected ?int $maxDistance = null;
 
@@ -473,6 +477,20 @@ abstract class ApplePassBuilder
         return $this;
     }
 
+    public function addRelevantDate(Carbon $date): static
+    {
+        $this->relevantDates[] = new RelevantDate(date: $date);
+
+        return $this;
+    }
+
+    public function addRelevantDateInterval(Carbon $startDate, Carbon $endDate): static
+    {
+        $this->relevantDates[] = new RelevantDate(startDate: $startDate, endDate: $endDate);
+
+        return $this;
+    }
+
     public function addLocation(
         float $latitude,
         float $longitude,
@@ -770,6 +788,10 @@ abstract class ApplePassBuilder
             'barcode' => $barcodes === null ? null : Arr::last($barcodes),
             'barcodes' => $barcodes,
             'relevantDate' => $this->relevantDate?->toIso8601String(),
+            'relevantDates' => empty($this->relevantDates) ? null : array_map(
+                fn (RelevantDate $relevantDate) => $relevantDate->toArray(),
+                $this->relevantDates,
+            ),
             'locations' => empty($this->locations) ? null : array_map(
                 fn (Location $location) => $location->toArray(),
                 $this->locations,
@@ -878,6 +900,11 @@ abstract class ApplePassBuilder
         $this->relevantDate = empty($this->data['relevantDate'])
             ? null
             : Carbon::parse($this->data['relevantDate']);
+
+        $this->relevantDates = array_map(
+            fn (array $relevantDate) => RelevantDate::fromArray($relevantDate),
+            $this->data['relevantDates'] ?? [],
+        );
 
         $this->locations = array_map(
             fn (array $location) => Location::fromArray($location),

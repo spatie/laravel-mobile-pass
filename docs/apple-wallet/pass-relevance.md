@@ -21,6 +21,23 @@ $builder->setRelevantDate(Carbon::parse('2026-08-15 20:00', 'America/New_York'))
 
 When the user's device crosses into that window, the pass slides onto the lock screen. Once the event has passed, the pass drops back out of relevance.
 
+## Relevant date intervals
+
+`setRelevantDate()` covers most cases, but iOS 18+ lets you attach several relevance windows to a single pass via `Pass.RelevantDates`. Add as many as you need with `addRelevantDate()` (Apple calculates the window around a single moment, same as `setRelevantDate()`) and `addRelevantDateInterval()` (an explicit start and end):
+
+```php
+use Illuminate\Support\Carbon;
+
+$builder
+    ->addRelevantDate(Carbon::parse('2026-08-15 20:00', 'America/New_York'))
+    ->addRelevantDateInterval(
+        Carbon::parse('2026-08-15 18:00', 'America/New_York'),
+        Carbon::parse('2026-08-15 23:00', 'America/New_York'),
+    );
+```
+
+This is additive to `setRelevantDate()` — set either, both, or neither depending on which iOS versions and relevance shapes your pass needs.
+
 ## Locations
 
 Attach one or more physical locations and Wallet will bring the pass forward when the user is near one of them. Latitude and longitude are all you have to provide:
