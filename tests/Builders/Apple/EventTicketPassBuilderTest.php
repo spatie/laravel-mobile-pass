@@ -335,7 +335,14 @@ function builderWithEveryEventDetail(): EventTicketPassBuilder
         ->setLeagueAbbreviation('MLB')
         ->setLeagueName('Major League Baseball')
         ->setSportName('Baseball')
-        ->setSeats(Seat::make(number: '22', row: '8', section: 'B12'));
+        ->setSeats(Seat::make(
+            aisle: 'A',
+            number: '22',
+            level: 'Lower Bowl',
+            row: '8',
+            section: 'B12',
+            sectionColor: 'rgb(23,187,82)',
+        ));
 }
 
 function expectedEventDetailSemantics(): array
@@ -375,7 +382,14 @@ function expectedEventDetailSemantics(): array
         'leagueName' => 'Major League Baseball',
         'sportName' => 'Baseball',
         'seats' => [
-            ['seatNumber' => '22', 'seatRow' => '8', 'seatSection' => 'B12'],
+            [
+                'seatAisle' => 'A',
+                'seatLevel' => 'Lower Bowl',
+                'seatNumber' => '22',
+                'seatRow' => '8',
+                'seatSection' => 'B12',
+                'seatSectionColor' => 'rgb(23,187,82)',
+            ],
         ],
     ];
 }
