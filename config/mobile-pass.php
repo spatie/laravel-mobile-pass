@@ -1,6 +1,7 @@
 <?php
 
 use Spatie\LaravelMobilePass\Actions\Apple\NotifyAppleOfPassUpdateAction;
+use Spatie\LaravelMobilePass\Actions\Apple\PersonalizeAction;
 use Spatie\LaravelMobilePass\Actions\Apple\RegisterDeviceAction;
 use Spatie\LaravelMobilePass\Actions\Apple\UnregisterDeviceAction;
 use Spatie\LaravelMobilePass\Actions\Google\HandleGoogleCallbackAction;
@@ -68,6 +69,7 @@ return [
         'handle_google_callback' => HandleGoogleCallbackAction::class,
         'notify_apple_of_pass_update' => NotifyAppleOfPassUpdateAction::class,
         'notify_google_of_pass_update' => NotifyGoogleOfPassUpdateAction::class,
+        'personalize' => PersonalizeAction::class,
         'register_device' => RegisterDeviceAction::class,
         'unregister_device' => UnregisterDeviceAction::class,
     ],
