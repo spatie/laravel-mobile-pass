@@ -35,15 +35,19 @@ $builder->setBarcode(
 );
 ```
 
-Under the hood the builder writes into both `barcode` (deprecated, for pre-`barcodes` iOS) and `barcodes` (the full list Wallet actually reads). As of iOS 27, `barcodes` supports genuine fallback: pass more than one and Wallet picks the first format it supports, in order — e.g. a PDF417 barcode for iOS 27+ devices with a QR fallback for older ones:
+Under the hood the builder writes into both `barcode` (deprecated, read by iOS 8 and earlier) and `barcodes` (the list every current version of Wallet reads).
+
+That list is ordered. Wallet renders the first format the device supports and ignores the rest, so you can offer a preferred format with a fallback behind it. Use `addBarcode()` to append instead of replace:
 
 ```php
 $builder
-    ->addBarcode(BarcodeType::Pdf417, '4006381333931')
+    ->addBarcode(BarcodeType::Pdf417, 'TICKET-12345')
     ->addBarcode(BarcodeType::Qr, 'TICKET-12345');
 ```
 
-`addBarcode()` appends to the list; `setBarcode()` still replaces it entirely with a single barcode, exactly as before. The deprecated singular `barcode` key is always populated from the *last* entry in the list — the most broadly-compatible format, for the oldest devices that only read that key.
+Devices that can render PDF417 use it, the rest fall back to the QR code.
+
+Calling `setBarcode()` still replaces the whole list with one barcode, exactly as before, so passes built with a single call are unaffected. The deprecated singular `barcode` key gets the last entry in the list, on the assumption that you ordered it preferred first and most broadly compatible last.
 
 ## Google
 
