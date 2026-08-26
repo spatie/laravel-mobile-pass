@@ -57,6 +57,7 @@ class PersonName implements Arrayable
             'givenName' => $this->givenName,
             'middleName' => $this->middleName,
             'namePrefix' => $this->namePrefix,
+            'nameSuffix' => $this->nameSuffix,
             'nickname' => $this->nickname,
             'phoneticRepresentation' => $this->phoneticRepresentation,
         ], fn ($value) => $value !== null);
