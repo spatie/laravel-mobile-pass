@@ -28,6 +28,7 @@ use Spatie\LaravelMobilePass\Enums\Platform;
 use Spatie\LaravelMobilePass\Enums\TimeStyleType;
 use Spatie\LaravelMobilePass\Exceptions\InvalidCertificate;
 use Spatie\LaravelMobilePass\Exceptions\InvalidConfig;
+use Spatie\LaravelMobilePass\Models\Apple\AppleMobilePassPersonalization;
 use Spatie\LaravelMobilePass\Models\MobilePass;
 use Spatie\LaravelMobilePass\Support\Config;
 use Spatie\LaravelMobilePass\Support\WifiUri;
@@ -91,6 +92,8 @@ abstract class ApplePassBuilder
     protected ?NfcPayload $nfc = null;
 
     protected ?Personalization $personalization = null;
+
+    protected ?AppleMobilePassPersonalization $personalizationRecord = null;
 
     abstract protected static function validator(): ApplePassValidator;
 
@@ -610,7 +613,7 @@ abstract class ApplePassBuilder
 
     protected function isPersonalized(): bool
     {
-        return $this->model?->personalization?->personalized_at !== null;
+        return $this->personalizationRecord?->personalized_at !== null;
     }
 
     protected function addPersonalizationToFile(PKPass $pkPass): void
@@ -960,14 +963,16 @@ abstract class ApplePassBuilder
             ? null
             : NfcPayload::fromArray($this->data['nfc']);
 
-        $this->personalization = $this->model?->personalization
+        $this->personalizationRecord = $this->model?->personalization()->first();
+
+        $this->personalization = $this->personalizationRecord
             ? Personalization::make(
-                description: $this->model->personalization->description,
+                description: $this->personalizationRecord->description,
                 requiredPersonalizationFields: array_map(
                     fn (string $field) => PersonalizationField::from($field),
-                    $this->model->personalization->required_fields,
+                    $this->personalizationRecord->required_fields,
                 ),
-                termsAndConditions: $this->model->personalization->terms_and_conditions,
+                termsAndConditions: $this->personalizationRecord->terms_and_conditions,
             )
             : null;
 
