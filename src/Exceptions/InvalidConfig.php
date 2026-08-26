@@ -63,4 +63,12 @@ class InvalidConfig extends Exception implements MobilePassException
             .'supports a barcode format this version does not yet know about.'
         );
     }
+
+    public static function personalizationRequiresNfc(): self
+    {
+        return new self(
+            'Personalization requires NFC to be configured first. Apple restricts pass personalization '
+            .'(rewards enrollment) to NFC-enabled passes. Call setNfc() before calling data()/generate()/save().'
+        );
+    }
 }

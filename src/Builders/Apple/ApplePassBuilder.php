@@ -15,6 +15,7 @@ use Spatie\LaravelMobilePass\Builders\Apple\Entities\FieldContent;
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\Image;
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\Location;
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\NfcPayload;
+use Spatie\LaravelMobilePass\Builders\Apple\Entities\Personalization;
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\Price;
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\WifiNetwork;
 use Spatie\LaravelMobilePass\Builders\Apple\Validators\ApplePassValidator;
@@ -22,6 +23,7 @@ use Spatie\LaravelMobilePass\Enums\BarcodeType;
 use Spatie\LaravelMobilePass\Enums\DateType;
 use Spatie\LaravelMobilePass\Enums\FieldType;
 use Spatie\LaravelMobilePass\Enums\PassType;
+use Spatie\LaravelMobilePass\Enums\PersonalizationField;
 use Spatie\LaravelMobilePass\Enums\Platform;
 use Spatie\LaravelMobilePass\Enums\TimeStyleType;
 use Spatie\LaravelMobilePass\Exceptions\InvalidCertificate;
@@ -87,6 +89,8 @@ abstract class ApplePassBuilder
     protected array $beacons = [];
 
     protected ?NfcPayload $nfc = null;
+
+    protected ?Personalization $personalization = null;
 
     abstract protected static function validator(): ApplePassValidator;
 
@@ -590,9 +594,43 @@ abstract class ApplePassBuilder
         return $this;
     }
 
+    public function setPersonalization(Personalization $personalization): static
+    {
+        $this->personalization = $personalization;
+
+        return $this;
+    }
+
+    public function setPersonalizationLogo(string $x1Path, ?string $x2Path = null, ?string $x3Path = null): static
+    {
+        $this->images['personalizationLogo'] = new Image($x1Path, $x2Path, $x3Path);
+
+        return $this;
+    }
+
+    protected function isPersonalized(): bool
+    {
+        return $this->model?->personalization?->personalized_at !== null;
+    }
+
+    protected function addPersonalizationToFile(PKPass $pkPass): void
+    {
+        if ($this->personalization === null || $this->isPersonalized()) {
+            return;
+        }
+
+        $pkPass->addFileContent(json_encode($this->personalization->toArray()), 'personalization.json');
+    }
+
     protected function addImagesToFile(PKPass $pkPass): PKPass
     {
-        foreach ($this->images as $filename => $image) {
+        $images = $this->images;
+
+        if ($this->isPersonalized()) {
+            unset($images['personalizationLogo']);
+        }
+
+        foreach ($images as $filename => $image) {
             if (! $image instanceof Image) {
                 $image = Image::fromArray($image);
             }
@@ -678,6 +716,8 @@ abstract class ApplePassBuilder
                 'download_name' => $this->downloadName,
             ]);
 
+            $this->savePersonalizationConfig();
+
             return $this->model;
         }
 
@@ -685,7 +725,7 @@ abstract class ApplePassBuilder
 
         $mobilePassClass = Config::mobilePassModel();
 
-        return $mobilePassClass::query()->create([
+        $this->model = $mobilePassClass::query()->create([
             'pass_serial' => $this->serialNumber,
             'type' => $this->type->value,
             'platform' => static::platform(),
@@ -695,10 +735,34 @@ abstract class ApplePassBuilder
             'locales' => empty($this->locales) ? null : $this->locales,
             'download_name' => $this->downloadName,
         ]);
+
+        $this->savePersonalizationConfig();
+
+        return $this->model;
+    }
+
+    protected function savePersonalizationConfig(): void
+    {
+        if ($this->personalization === null) {
+            return;
+        }
+
+        $this->model->personalization()->updateOrCreate([], [
+            'description' => $this->personalization->description,
+            'required_fields' => array_map(
+                fn ($field) => $field->value,
+                $this->personalization->requiredPersonalizationFields,
+            ),
+            'terms_and_conditions' => $this->personalization->termsAndConditions,
+        ]);
     }
 
     public function data(): array
     {
+        if ($this->personalization !== null && $this->nfc === null) {
+            throw InvalidConfig::personalizationRequiresNfc();
+        }
+
         $configuredOrganizationName = self::appleConfig('organization_name');
 
         if (empty($this->organizationName)) {
@@ -731,6 +795,7 @@ abstract class ApplePassBuilder
 
             $this->addImagesToFile($pkPass);
             $this->addLocaleDataToPass($pkPass);
+            $this->addPersonalizationToFile($pkPass);
 
             return $pkPass->create(output: false);
         } catch (PKPassException $exception) {
@@ -894,6 +959,17 @@ abstract class ApplePassBuilder
         $this->nfc = empty($this->data['nfc'])
             ? null
             : NfcPayload::fromArray($this->data['nfc']);
+
+        $this->personalization = $this->model?->personalization
+            ? Personalization::make(
+                description: $this->model->personalization->description,
+                requiredPersonalizationFields: array_map(
+                    fn (string $field) => PersonalizationField::from($field),
+                    $this->model->personalization->required_fields,
+                ),
+                termsAndConditions: $this->model->personalization->terms_and_conditions,
+            )
+            : null;
 
         $this->uncompileSemantics();
 
