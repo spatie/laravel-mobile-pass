@@ -11,7 +11,11 @@ class PersonalizeAction
     /** @param  array<string, mixed>  $submittedInfo */
     public function execute(MobilePass $pass, string $personalizationToken, array $submittedInfo): string
     {
-        $pass->personalization()->updateOrCreate([], [
+        $personalization = $pass->personalization()->firstOrFail();
+
+        $signature = (new PersonalizationTokenSigner)->sign($personalizationToken);
+
+        $personalization->update([
             'personalization_token' => $personalizationToken,
             'submitted_info' => $submittedInfo,
             'personalized_at' => now(),
@@ -21,6 +25,6 @@ class PersonalizeAction
 
         event(new PassPersonalized($pass, $submittedInfo));
 
-        return (new PersonalizationTokenSigner)->sign($personalizationToken);
+        return $signature;
     }
 }

@@ -111,3 +111,22 @@ it('returns 422 when the payload is missing required keys', function () {
         ]), [])
         ->assertUnprocessable();
 });
+
+it('returns 404 when the pass has no personalization config', function () {
+    $pass = MobilePass::factory()->create();
+
+    $this
+        ->withoutMiddleware()
+        ->postJson(route('mobile-pass.apple.personalize', [
+            'passSerial' => $pass->pass_serial,
+            'passTypeId' => 'pass.com.example',
+        ]), [
+            'personalizationToken' => 'some-token',
+            'requiredPersonalizationInfo' => ['fullName' => 'John Appleseed'],
+        ])
+        ->assertNotFound();
+
+    $this->assertDatabaseMissing('apple_mobile_pass_personalizations', [
+        'mobile_pass_id' => $pass->getKey(),
+    ]);
+});
