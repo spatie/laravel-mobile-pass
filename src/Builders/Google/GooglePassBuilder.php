@@ -243,6 +243,9 @@ abstract class GooglePassBuilder
             BarcodeType::Pdf417 => 'PDF_417',
             BarcodeType::Aztec => 'AZTEC',
             BarcodeType::Code128 => 'CODE_128',
+            BarcodeType::Code39 => 'CODE_39',
+            BarcodeType::Codabar => 'CODABAR',
+            BarcodeType::Ean13 => 'EAN_13',
         };
     }
 
