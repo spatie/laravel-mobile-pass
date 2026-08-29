@@ -17,6 +17,22 @@ class EventTicketApplePassValidator extends ApplePassValidator
             'stripColor' => ['nullable', 'string'],
             'suppressHeaderDarkening' => ['nullable', 'boolean'],
             'useAutomaticColors' => ['nullable', 'boolean'],
+            'accessibilityURL' => ['nullable', 'string'],
+            'addOnURL' => ['nullable', 'string'],
+            'auxiliaryStoreIdentifiers' => ['nullable', 'array'],
+            'bagPolicyURL' => ['nullable', 'string'],
+            'contactVenueEmail' => ['nullable', 'string'],
+            'contactVenuePhoneNumber' => ['nullable', 'string'],
+            'contactVenueWebsite' => ['nullable', 'string'],
+            'directionsInformationURL' => ['nullable', 'string'],
+            'eventLogoText' => ['nullable', 'string'],
+            'merchandiseURL' => ['nullable', 'string'],
+            'orderFoodURL' => ['nullable', 'string'],
+            'parkingInformationURL' => ['nullable', 'string'],
+            'purchaseParkingURL' => ['nullable', 'string'],
+            'sellURL' => ['nullable', 'string'],
+            'transferURL' => ['nullable', 'string'],
+            'transitInformationURL' => ['nullable', 'string'],
         ]);
     }
 }

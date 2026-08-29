@@ -197,6 +197,96 @@ it('round-trips the poster visual appearance fields through save and hydrate', f
     expect($data['useAutomaticColors'])->toBeTrue();
 });
 
+it('compiles the poster-only URL and metadata fields', function () {
+    $compiledData = EventTicketPassBuilder::make()
+        ->setOrganizationName('My organization')
+        ->setSerialNumber(123456)
+        ->setDescription('Hello!')
+        ->setIconImage(getTestSupportPath('images/spatie-thumbnail.png'))
+        ->setAccessibilityURL('https://example.com/accessibility')
+        ->setAddOnURL('https://example.com/add-on')
+        ->setAuxiliaryStoreIdentifiers(111, 222)
+        ->setBagPolicyURL('https://example.com/bag-policy')
+        ->setContactVenueEmail('venue@example.com')
+        ->setContactVenuePhoneNumber('+1-555-0100')
+        ->setContactVenueWebsite('https://example.com/venue')
+        ->setDirectionsInformationURL('https://example.com/directions')
+        ->setEventLogoText('Fab Four Promotions')
+        ->setMerchandiseURL('https://example.com/merch')
+        ->setOrderFoodURL('https://example.com/food')
+        ->setParkingInformationURL('https://example.com/parking-info')
+        ->setPurchaseParkingURL('https://example.com/parking-purchase')
+        ->setSellURL('https://example.com/sell')
+        ->setTransferURL('https://example.com/transfer')
+        ->setTransitInformationURL('https://example.com/transit')
+        ->data();
+
+    expect($compiledData)->toMatchArray([
+        'accessibilityURL' => 'https://example.com/accessibility',
+        'addOnURL' => 'https://example.com/add-on',
+        'auxiliaryStoreIdentifiers' => [111, 222],
+        'bagPolicyURL' => 'https://example.com/bag-policy',
+        'contactVenueEmail' => 'venue@example.com',
+        'contactVenuePhoneNumber' => '+1-555-0100',
+        'contactVenueWebsite' => 'https://example.com/venue',
+        'directionsInformationURL' => 'https://example.com/directions',
+        'eventLogoText' => 'Fab Four Promotions',
+        'merchandiseURL' => 'https://example.com/merch',
+        'orderFoodURL' => 'https://example.com/food',
+        'parkingInformationURL' => 'https://example.com/parking-info',
+        'purchaseParkingURL' => 'https://example.com/parking-purchase',
+        'sellURL' => 'https://example.com/sell',
+        'transferURL' => 'https://example.com/transfer',
+        'transitInformationURL' => 'https://example.com/transit',
+    ]);
+});
+
+it('omits the poster-only URL and metadata fields when not set', function () {
+    $compiledData = EventTicketPassBuilder::make()
+        ->setOrganizationName('My organization')
+        ->setSerialNumber(123456)
+        ->setDescription('Hello!')
+        ->setIconImage(getTestSupportPath('images/spatie-thumbnail.png'))
+        ->data();
+
+    expect($compiledData)->not->toHaveKeys([
+        'accessibilityURL',
+        'addOnURL',
+        'auxiliaryStoreIdentifiers',
+        'bagPolicyURL',
+        'contactVenueEmail',
+        'contactVenuePhoneNumber',
+        'contactVenueWebsite',
+        'directionsInformationURL',
+        'eventLogoText',
+        'merchandiseURL',
+        'orderFoodURL',
+        'parkingInformationURL',
+        'purchaseParkingURL',
+        'sellURL',
+        'transferURL',
+        'transitInformationURL',
+    ]);
+});
+
+it('round-trips the poster-only URL and metadata fields through save and hydrate', function () {
+    $model = EventTicketPassBuilder::make()
+        ->setOrganizationName('My organization')
+        ->setSerialNumber(123456)
+        ->setDescription('Hello!')
+        ->setIconImage(getTestSupportPath('images/spatie-thumbnail.png'))
+        ->setAccessibilityURL('https://example.com/accessibility')
+        ->setAuxiliaryStoreIdentifiers(111, 222)
+        ->setEventLogoText('Fab Four Promotions')
+        ->save();
+
+    $data = $model->builder()->data();
+
+    expect($data['accessibilityURL'])->toBe('https://example.com/accessibility');
+    expect($data['auxiliaryStoreIdentifiers'])->toBe([111, 222]);
+    expect($data['eventLogoText'])->toBe('Fab Four Promotions');
+});
+
 it('compiles venue semantics into the semantics payload', function () {
     $compiledData = builderWithEveryVenueDetail()->data();
 

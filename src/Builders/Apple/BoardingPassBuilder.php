@@ -103,6 +103,34 @@ abstract class BoardingPassBuilder extends ApplePassBuilder
     /** @var array<int, string>|null */
     protected ?array $loungePlaceIds = null;
 
+    protected ?string $changeSeatURL = null;
+
+    protected ?string $entertainmentURL = null;
+
+    protected ?string $purchaseAdditionalBaggageURL = null;
+
+    protected ?string $purchaseLoungeAccessURL = null;
+
+    protected ?string $purchaseWifiURL = null;
+
+    protected ?string $upgradeURL = null;
+
+    protected ?string $managementURL = null;
+
+    protected ?string $registerServiceAnimalURL = null;
+
+    protected ?string $reportLostBagURL = null;
+
+    protected ?string $requestWheelchairURL = null;
+
+    protected ?string $trackBagsURL = null;
+
+    protected ?string $transitProviderEmail = null;
+
+    protected ?string $transitProviderPhoneNumber = null;
+
+    protected ?string $transitProviderWebsiteURL = null;
+
     protected static function validator(): ApplePassValidator
     {
         return new BoardingApplePassValidator;
@@ -441,6 +469,104 @@ abstract class BoardingPassBuilder extends ApplePassBuilder
         return $this;
     }
 
+    public function setChangeSeatURL(string $changeSeatURL): static
+    {
+        $this->changeSeatURL = $changeSeatURL;
+
+        return $this;
+    }
+
+    public function setEntertainmentURL(string $entertainmentURL): static
+    {
+        $this->entertainmentURL = $entertainmentURL;
+
+        return $this;
+    }
+
+    public function setPurchaseAdditionalBaggageURL(string $purchaseAdditionalBaggageURL): static
+    {
+        $this->purchaseAdditionalBaggageURL = $purchaseAdditionalBaggageURL;
+
+        return $this;
+    }
+
+    public function setPurchaseLoungeAccessURL(string $purchaseLoungeAccessURL): static
+    {
+        $this->purchaseLoungeAccessURL = $purchaseLoungeAccessURL;
+
+        return $this;
+    }
+
+    public function setPurchaseWifiURL(string $purchaseWifiURL): static
+    {
+        $this->purchaseWifiURL = $purchaseWifiURL;
+
+        return $this;
+    }
+
+    public function setUpgradeURL(string $upgradeURL): static
+    {
+        $this->upgradeURL = $upgradeURL;
+
+        return $this;
+    }
+
+    public function setManagementURL(string $managementURL): static
+    {
+        $this->managementURL = $managementURL;
+
+        return $this;
+    }
+
+    public function setRegisterServiceAnimalURL(string $registerServiceAnimalURL): static
+    {
+        $this->registerServiceAnimalURL = $registerServiceAnimalURL;
+
+        return $this;
+    }
+
+    public function setReportLostBagURL(string $reportLostBagURL): static
+    {
+        $this->reportLostBagURL = $reportLostBagURL;
+
+        return $this;
+    }
+
+    public function setRequestWheelchairURL(string $requestWheelchairURL): static
+    {
+        $this->requestWheelchairURL = $requestWheelchairURL;
+
+        return $this;
+    }
+
+    public function setTrackBagsURL(string $trackBagsURL): static
+    {
+        $this->trackBagsURL = $trackBagsURL;
+
+        return $this;
+    }
+
+    public function setTransitProviderEmail(string $transitProviderEmail): static
+    {
+        $this->transitProviderEmail = $transitProviderEmail;
+
+        return $this;
+    }
+
+    public function setTransitProviderPhoneNumber(string $transitProviderPhoneNumber): static
+    {
+        $this->transitProviderPhoneNumber = $transitProviderPhoneNumber;
+
+        return $this;
+    }
+
+    public function setTransitProviderWebsiteURL(string $transitProviderWebsiteURL): static
+    {
+        $this->transitProviderWebsiteURL = $transitProviderWebsiteURL;
+
+        return $this;
+    }
+
     protected function uncompileSemantics(): void
     {
         parent::uncompileSemantics();
@@ -569,7 +695,41 @@ abstract class BoardingPassBuilder extends ApplePassBuilder
                     'auxiliaryFields' => $this->auxiliaryFields?->values()->toArray(),
                     'backFields' => $this->backFields?->values()->toArray(),
                 ]),
+                'changeSeatURL' => $this->changeSeatURL,
+                'entertainmentURL' => $this->entertainmentURL,
+                'purchaseAdditionalBaggageURL' => $this->purchaseAdditionalBaggageURL,
+                'purchaseLoungeAccessURL' => $this->purchaseLoungeAccessURL,
+                'purchaseWifiURL' => $this->purchaseWifiURL,
+                'upgradeURL' => $this->upgradeURL,
+                'managementURL' => $this->managementURL,
+                'registerServiceAnimalURL' => $this->registerServiceAnimalURL,
+                'reportLostBagURL' => $this->reportLostBagURL,
+                'requestWheelchairURL' => $this->requestWheelchairURL,
+                'trackBagsURL' => $this->trackBagsURL,
+                'transitProviderEmail' => $this->transitProviderEmail,
+                'transitProviderPhoneNumber' => $this->transitProviderPhoneNumber,
+                'transitProviderWebsiteURL' => $this->transitProviderWebsiteURL,
             ],
         );
+    }
+
+    protected function uncompileContent(): void
+    {
+        parent::uncompileContent();
+
+        $this->changeSeatURL = $this->data['changeSeatURL'] ?? null;
+        $this->entertainmentURL = $this->data['entertainmentURL'] ?? null;
+        $this->purchaseAdditionalBaggageURL = $this->data['purchaseAdditionalBaggageURL'] ?? null;
+        $this->purchaseLoungeAccessURL = $this->data['purchaseLoungeAccessURL'] ?? null;
+        $this->purchaseWifiURL = $this->data['purchaseWifiURL'] ?? null;
+        $this->upgradeURL = $this->data['upgradeURL'] ?? null;
+        $this->managementURL = $this->data['managementURL'] ?? null;
+        $this->registerServiceAnimalURL = $this->data['registerServiceAnimalURL'] ?? null;
+        $this->reportLostBagURL = $this->data['reportLostBagURL'] ?? null;
+        $this->requestWheelchairURL = $this->data['requestWheelchairURL'] ?? null;
+        $this->trackBagsURL = $this->data['trackBagsURL'] ?? null;
+        $this->transitProviderEmail = $this->data['transitProviderEmail'] ?? null;
+        $this->transitProviderPhoneNumber = $this->data['transitProviderPhoneNumber'] ?? null;
+        $this->transitProviderWebsiteURL = $this->data['transitProviderWebsiteURL'] ?? null;
     }
 }

@@ -32,6 +32,39 @@ class EventTicketPassBuilder extends ApplePassBuilder
 
     protected ?bool $useAutomaticColors = null;
 
+    protected ?string $accessibilityURL = null;
+
+    protected ?string $addOnURL = null;
+
+    /** @var array<int, int>|null */
+    protected ?array $auxiliaryStoreIdentifiers = null;
+
+    protected ?string $bagPolicyURL = null;
+
+    protected ?string $contactVenueEmail = null;
+
+    protected ?string $contactVenuePhoneNumber = null;
+
+    protected ?string $contactVenueWebsite = null;
+
+    protected ?string $directionsInformationURL = null;
+
+    protected ?string $eventLogoText = null;
+
+    protected ?string $merchandiseURL = null;
+
+    protected ?string $orderFoodURL = null;
+
+    protected ?string $parkingInformationURL = null;
+
+    protected ?string $purchaseParkingURL = null;
+
+    protected ?string $sellURL = null;
+
+    protected ?string $transferURL = null;
+
+    protected ?string $transitInformationURL = null;
+
     protected ?string $venueName = null;
 
     protected ?Location $venueLocation = null;
@@ -158,6 +191,118 @@ class EventTicketPassBuilder extends ApplePassBuilder
     public function setUseAutomaticColors(bool $useAutomaticColors): static
     {
         $this->useAutomaticColors = $useAutomaticColors;
+
+        return $this;
+    }
+
+    public function setAccessibilityURL(string $accessibilityURL): static
+    {
+        $this->accessibilityURL = $accessibilityURL;
+
+        return $this;
+    }
+
+    public function setAddOnURL(string $addOnURL): static
+    {
+        $this->addOnURL = $addOnURL;
+
+        return $this;
+    }
+
+    public function setAuxiliaryStoreIdentifiers(int ...$auxiliaryStoreIdentifiers): static
+    {
+        $this->auxiliaryStoreIdentifiers = $auxiliaryStoreIdentifiers;
+
+        return $this;
+    }
+
+    public function setBagPolicyURL(string $bagPolicyURL): static
+    {
+        $this->bagPolicyURL = $bagPolicyURL;
+
+        return $this;
+    }
+
+    public function setContactVenueEmail(string $contactVenueEmail): static
+    {
+        $this->contactVenueEmail = $contactVenueEmail;
+
+        return $this;
+    }
+
+    public function setContactVenuePhoneNumber(string $contactVenuePhoneNumber): static
+    {
+        $this->contactVenuePhoneNumber = $contactVenuePhoneNumber;
+
+        return $this;
+    }
+
+    public function setContactVenueWebsite(string $contactVenueWebsite): static
+    {
+        $this->contactVenueWebsite = $contactVenueWebsite;
+
+        return $this;
+    }
+
+    public function setDirectionsInformationURL(string $directionsInformationURL): static
+    {
+        $this->directionsInformationURL = $directionsInformationURL;
+
+        return $this;
+    }
+
+    public function setEventLogoText(string $eventLogoText): static
+    {
+        $this->eventLogoText = $eventLogoText;
+
+        return $this;
+    }
+
+    public function setMerchandiseURL(string $merchandiseURL): static
+    {
+        $this->merchandiseURL = $merchandiseURL;
+
+        return $this;
+    }
+
+    public function setOrderFoodURL(string $orderFoodURL): static
+    {
+        $this->orderFoodURL = $orderFoodURL;
+
+        return $this;
+    }
+
+    public function setParkingInformationURL(string $parkingInformationURL): static
+    {
+        $this->parkingInformationURL = $parkingInformationURL;
+
+        return $this;
+    }
+
+    public function setPurchaseParkingURL(string $purchaseParkingURL): static
+    {
+        $this->purchaseParkingURL = $purchaseParkingURL;
+
+        return $this;
+    }
+
+    public function setSellURL(string $sellURL): static
+    {
+        $this->sellURL = $sellURL;
+
+        return $this;
+    }
+
+    public function setTransferURL(string $transferURL): static
+    {
+        $this->transferURL = $transferURL;
+
+        return $this;
+    }
+
+    public function setTransitInformationURL(string $transitInformationURL): static
+    {
+        $this->transitInformationURL = $transitInformationURL;
 
         return $this;
     }
@@ -537,6 +682,22 @@ class EventTicketPassBuilder extends ApplePassBuilder
                 'stripColor' => $this->stripColor ? (string) $this->stripColor : null,
                 'suppressHeaderDarkening' => $this->suppressHeaderDarkening,
                 'useAutomaticColors' => $this->useAutomaticColors,
+                'accessibilityURL' => $this->accessibilityURL,
+                'addOnURL' => $this->addOnURL,
+                'auxiliaryStoreIdentifiers' => $this->auxiliaryStoreIdentifiers,
+                'bagPolicyURL' => $this->bagPolicyURL,
+                'contactVenueEmail' => $this->contactVenueEmail,
+                'contactVenuePhoneNumber' => $this->contactVenuePhoneNumber,
+                'contactVenueWebsite' => $this->contactVenueWebsite,
+                'directionsInformationURL' => $this->directionsInformationURL,
+                'eventLogoText' => $this->eventLogoText,
+                'merchandiseURL' => $this->merchandiseURL,
+                'orderFoodURL' => $this->orderFoodURL,
+                'parkingInformationURL' => $this->parkingInformationURL,
+                'purchaseParkingURL' => $this->purchaseParkingURL,
+                'sellURL' => $this->sellURL,
+                'transferURL' => $this->transferURL,
+                'transitInformationURL' => $this->transitInformationURL,
             ],
         );
     }
@@ -621,6 +782,22 @@ class EventTicketPassBuilder extends ApplePassBuilder
         $this->stripColor = Color::makeFromRgbString($this->data['stripColor'] ?? null);
         $this->suppressHeaderDarkening = $this->data['suppressHeaderDarkening'] ?? null;
         $this->useAutomaticColors = $this->data['useAutomaticColors'] ?? null;
+        $this->accessibilityURL = $this->data['accessibilityURL'] ?? null;
+        $this->addOnURL = $this->data['addOnURL'] ?? null;
+        $this->auxiliaryStoreIdentifiers = $this->data['auxiliaryStoreIdentifiers'] ?? null;
+        $this->bagPolicyURL = $this->data['bagPolicyURL'] ?? null;
+        $this->contactVenueEmail = $this->data['contactVenueEmail'] ?? null;
+        $this->contactVenuePhoneNumber = $this->data['contactVenuePhoneNumber'] ?? null;
+        $this->contactVenueWebsite = $this->data['contactVenueWebsite'] ?? null;
+        $this->directionsInformationURL = $this->data['directionsInformationURL'] ?? null;
+        $this->eventLogoText = $this->data['eventLogoText'] ?? null;
+        $this->merchandiseURL = $this->data['merchandiseURL'] ?? null;
+        $this->orderFoodURL = $this->data['orderFoodURL'] ?? null;
+        $this->parkingInformationURL = $this->data['parkingInformationURL'] ?? null;
+        $this->purchaseParkingURL = $this->data['purchaseParkingURL'] ?? null;
+        $this->sellURL = $this->data['sellURL'] ?? null;
+        $this->transferURL = $this->data['transferURL'] ?? null;
+        $this->transitInformationURL = $this->data['transitInformationURL'] ?? null;
     }
 
     protected function uncompileSemantics(): void
