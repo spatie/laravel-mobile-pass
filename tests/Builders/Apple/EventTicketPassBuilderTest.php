@@ -142,6 +142,61 @@ it('round-trips preferredStyleSchemes through save and hydrate', function () {
         ->toBe(['posterEventTicket', 'eventTicket']);
 });
 
+it('compiles the poster visual appearance fields', function () {
+    $compiledData = EventTicketPassBuilder::make()
+        ->setOrganizationName('My organization')
+        ->setSerialNumber(123456)
+        ->setDescription('Hello!')
+        ->setIconImage(getTestSupportPath('images/spatie-thumbnail.png'))
+        ->usePosterLayout()
+        ->setFooterBackgroundColor('#642c00')
+        ->setStripColor('#5123aa')
+        ->setSuppressHeaderDarkening(true)
+        ->setUseAutomaticColors(true)
+        ->data();
+
+    expect($compiledData['footerBackgroundColor'])->toBe('rgb(100, 44, 0)');
+    expect($compiledData['stripColor'])->toBe('rgb(81, 35, 170)');
+    expect($compiledData['suppressHeaderDarkening'])->toBeTrue();
+    expect($compiledData['useAutomaticColors'])->toBeTrue();
+});
+
+it('omits the poster visual appearance fields when not set', function () {
+    $compiledData = EventTicketPassBuilder::make()
+        ->setOrganizationName('My organization')
+        ->setSerialNumber(123456)
+        ->setDescription('Hello!')
+        ->setIconImage(getTestSupportPath('images/spatie-thumbnail.png'))
+        ->data();
+
+    expect($compiledData)->not->toHaveKeys([
+        'footerBackgroundColor',
+        'stripColor',
+        'suppressHeaderDarkening',
+        'useAutomaticColors',
+    ]);
+});
+
+it('round-trips the poster visual appearance fields through save and hydrate', function () {
+    $model = EventTicketPassBuilder::make()
+        ->setOrganizationName('My organization')
+        ->setSerialNumber(123456)
+        ->setDescription('Hello!')
+        ->setIconImage(getTestSupportPath('images/spatie-thumbnail.png'))
+        ->setFooterBackgroundColor('#642c00')
+        ->setStripColor('#5123aa')
+        ->setSuppressHeaderDarkening(true)
+        ->setUseAutomaticColors(true)
+        ->save();
+
+    $data = $model->builder()->data();
+
+    expect($data['footerBackgroundColor'])->toBe('rgb(100, 44, 0)');
+    expect($data['stripColor'])->toBe('rgb(81, 35, 170)');
+    expect($data['suppressHeaderDarkening'])->toBeTrue();
+    expect($data['useAutomaticColors'])->toBeTrue();
+});
+
 it('compiles venue semantics into the semantics payload', function () {
     $compiledData = builderWithEveryVenueDetail()->data();
 

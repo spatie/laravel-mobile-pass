@@ -5,6 +5,7 @@ namespace Spatie\LaravelMobilePass\Builders\Apple;
 use Illuminate\Support\Carbon;
 use Spatie\LaravelMobilePass\Builders\Apple\Concerns\HasArtworkImage;
 use Spatie\LaravelMobilePass\Builders\Apple\Concerns\HasSeats;
+use Spatie\LaravelMobilePass\Builders\Apple\Entities\Color;
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\EventDateInfo;
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\Image;
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\Location;
@@ -22,6 +23,14 @@ class EventTicketPassBuilder extends ApplePassBuilder
 
     /** @var array<int, string>|null */
     protected ?array $preferredStyleSchemes = null;
+
+    protected ?Color $footerBackgroundColor = null;
+
+    protected ?Color $stripColor = null;
+
+    protected ?bool $suppressHeaderDarkening = null;
+
+    protected ?bool $useAutomaticColors = null;
 
     protected ?string $venueName = null;
 
@@ -121,6 +130,34 @@ class EventTicketPassBuilder extends ApplePassBuilder
     public function usePosterLayout(): static
     {
         $this->preferredStyleSchemes = ['posterEventTicket', 'eventTicket'];
+
+        return $this;
+    }
+
+    public function setFooterBackgroundColor(string $hex): static
+    {
+        $this->footerBackgroundColor = Color::makeFromHex($hex);
+
+        return $this;
+    }
+
+    public function setStripColor(string $hex): static
+    {
+        $this->stripColor = Color::makeFromHex($hex);
+
+        return $this;
+    }
+
+    public function setSuppressHeaderDarkening(bool $suppressHeaderDarkening): static
+    {
+        $this->suppressHeaderDarkening = $suppressHeaderDarkening;
+
+        return $this;
+    }
+
+    public function setUseAutomaticColors(bool $useAutomaticColors): static
+    {
+        $this->useAutomaticColors = $useAutomaticColors;
 
         return $this;
     }
@@ -496,6 +533,10 @@ class EventTicketPassBuilder extends ApplePassBuilder
                     'backFields' => $this->backFields?->values()->toArray(),
                 ]),
                 'preferredStyleSchemes' => $this->preferredStyleSchemes,
+                'footerBackgroundColor' => $this->footerBackgroundColor ? (string) $this->footerBackgroundColor : null,
+                'stripColor' => $this->stripColor ? (string) $this->stripColor : null,
+                'suppressHeaderDarkening' => $this->suppressHeaderDarkening,
+                'useAutomaticColors' => $this->useAutomaticColors,
             ],
         );
     }
@@ -576,6 +617,10 @@ class EventTicketPassBuilder extends ApplePassBuilder
         parent::uncompileContent();
 
         $this->preferredStyleSchemes = $this->data['preferredStyleSchemes'] ?? null;
+        $this->footerBackgroundColor = Color::makeFromRgbString($this->data['footerBackgroundColor'] ?? null);
+        $this->stripColor = Color::makeFromRgbString($this->data['stripColor'] ?? null);
+        $this->suppressHeaderDarkening = $this->data['suppressHeaderDarkening'] ?? null;
+        $this->useAutomaticColors = $this->data['useAutomaticColors'] ?? null;
     }
 
     protected function uncompileSemantics(): void
