@@ -32,6 +32,22 @@ EventTicketPassBuilder::make()
 
 Apple gates this layout behind an entitlement: your pass needs to be NFC-enabled, and the layout has to be enabled for your team. Until Apple has approved you, `usePosterLayout()` has no visible effect and Wallet keeps showing the classic layout. Check [Apple's Wallet documentation](https://developer.apple.com/documentation/walletpasses) for the current requirements.
 
+The poster layout has a few visual appearance options of its own:
+
+```php
+EventTicketPassBuilder::make()
+    // ...
+    ->usePosterLayout()
+    ->setFooterBackgroundColor('#642c00')
+    ->setSuppressHeaderDarkening(true)
+    ->setUseAutomaticColors(true)
+    ->save();
+```
+
+The `setFooterBackgroundColor()` method colors the footer area behind the barcode. The `setSuppressHeaderDarkening()` method turns off the darkening gradient Wallet normally overlays on the header. The `setUseAutomaticColors()` method lets Wallet compute the foreground and label colors from the background image itself, ignoring anything you set via `setForegroundColor()` and `setLabelColor()`.
+
+All three only apply to the poster layout. They have no effect on the classic layout.
+
 Event tickets can also carry venue details, which Wallet shows in the pass's event guide panel. Where the venue is:
 
 - `setVenueName()`, `setVenueRegionName()`, `setVenueRoom()`

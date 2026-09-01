@@ -5,6 +5,7 @@ namespace Spatie\LaravelMobilePass\Builders\Apple;
 use Illuminate\Support\Carbon;
 use Spatie\LaravelMobilePass\Builders\Apple\Concerns\HasArtworkImage;
 use Spatie\LaravelMobilePass\Builders\Apple\Concerns\HasSeats;
+use Spatie\LaravelMobilePass\Builders\Apple\Entities\Color;
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\EventDateInfo;
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\Image;
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\Location;
@@ -22,6 +23,45 @@ class EventTicketPassBuilder extends ApplePassBuilder
 
     /** @var array<int, string>|null */
     protected ?array $preferredStyleSchemes = null;
+
+    protected ?Color $footerBackgroundColor = null;
+
+    protected ?bool $suppressHeaderDarkening = null;
+
+    protected ?bool $useAutomaticColors = null;
+
+    protected ?string $accessibilityURL = null;
+
+    protected ?string $addOnURL = null;
+
+    /** @var array<int, int>|null */
+    protected ?array $auxiliaryStoreIdentifiers = null;
+
+    protected ?string $bagPolicyURL = null;
+
+    protected ?string $contactVenueEmail = null;
+
+    protected ?string $contactVenuePhoneNumber = null;
+
+    protected ?string $contactVenueWebsite = null;
+
+    protected ?string $directionsInformationURL = null;
+
+    protected ?string $eventLogoText = null;
+
+    protected ?string $merchandiseURL = null;
+
+    protected ?string $orderFoodURL = null;
+
+    protected ?string $parkingInformationURL = null;
+
+    protected ?string $purchaseParkingURL = null;
+
+    protected ?string $sellURL = null;
+
+    protected ?string $transferURL = null;
+
+    protected ?string $transitInformationURL = null;
 
     protected ?string $venueName = null;
 
@@ -121,6 +161,139 @@ class EventTicketPassBuilder extends ApplePassBuilder
     public function usePosterLayout(): static
     {
         $this->preferredStyleSchemes = ['posterEventTicket', 'eventTicket'];
+
+        return $this;
+    }
+
+    public function setFooterBackgroundColor(string $hex): static
+    {
+        $this->footerBackgroundColor = Color::makeFromHex($hex);
+
+        return $this;
+    }
+
+    public function setSuppressHeaderDarkening(bool $suppressHeaderDarkening): static
+    {
+        $this->suppressHeaderDarkening = $suppressHeaderDarkening;
+
+        return $this;
+    }
+
+    public function setUseAutomaticColors(bool $useAutomaticColors): static
+    {
+        $this->useAutomaticColors = $useAutomaticColors;
+
+        return $this;
+    }
+
+    public function setAccessibilityURL(string $accessibilityURL): static
+    {
+        $this->accessibilityURL = $accessibilityURL;
+
+        return $this;
+    }
+
+    public function setAddOnURL(string $addOnURL): static
+    {
+        $this->addOnURL = $addOnURL;
+
+        return $this;
+    }
+
+    public function setAuxiliaryStoreIdentifiers(int ...$auxiliaryStoreIdentifiers): static
+    {
+        $this->auxiliaryStoreIdentifiers = $auxiliaryStoreIdentifiers;
+
+        return $this;
+    }
+
+    public function setBagPolicyURL(string $bagPolicyURL): static
+    {
+        $this->bagPolicyURL = $bagPolicyURL;
+
+        return $this;
+    }
+
+    public function setContactVenueEmail(string $contactVenueEmail): static
+    {
+        $this->contactVenueEmail = $contactVenueEmail;
+
+        return $this;
+    }
+
+    public function setContactVenuePhoneNumber(string $contactVenuePhoneNumber): static
+    {
+        $this->contactVenuePhoneNumber = $contactVenuePhoneNumber;
+
+        return $this;
+    }
+
+    public function setContactVenueWebsite(string $contactVenueWebsite): static
+    {
+        $this->contactVenueWebsite = $contactVenueWebsite;
+
+        return $this;
+    }
+
+    public function setDirectionsInformationURL(string $directionsInformationURL): static
+    {
+        $this->directionsInformationURL = $directionsInformationURL;
+
+        return $this;
+    }
+
+    public function setEventLogoText(string $eventLogoText): static
+    {
+        $this->eventLogoText = $eventLogoText;
+
+        return $this;
+    }
+
+    public function setMerchandiseURL(string $merchandiseURL): static
+    {
+        $this->merchandiseURL = $merchandiseURL;
+
+        return $this;
+    }
+
+    public function setOrderFoodURL(string $orderFoodURL): static
+    {
+        $this->orderFoodURL = $orderFoodURL;
+
+        return $this;
+    }
+
+    public function setParkingInformationURL(string $parkingInformationURL): static
+    {
+        $this->parkingInformationURL = $parkingInformationURL;
+
+        return $this;
+    }
+
+    public function setPurchaseParkingURL(string $purchaseParkingURL): static
+    {
+        $this->purchaseParkingURL = $purchaseParkingURL;
+
+        return $this;
+    }
+
+    public function setSellURL(string $sellURL): static
+    {
+        $this->sellURL = $sellURL;
+
+        return $this;
+    }
+
+    public function setTransferURL(string $transferURL): static
+    {
+        $this->transferURL = $transferURL;
+
+        return $this;
+    }
+
+    public function setTransitInformationURL(string $transitInformationURL): static
+    {
+        $this->transitInformationURL = $transitInformationURL;
 
         return $this;
     }
@@ -496,6 +669,25 @@ class EventTicketPassBuilder extends ApplePassBuilder
                     'backFields' => $this->backFields?->values()->toArray(),
                 ]),
                 'preferredStyleSchemes' => $this->preferredStyleSchemes,
+                'footerBackgroundColor' => $this->footerBackgroundColor ? (string) $this->footerBackgroundColor : null,
+                'suppressHeaderDarkening' => $this->suppressHeaderDarkening,
+                'useAutomaticColors' => $this->useAutomaticColors,
+                'accessibilityURL' => $this->accessibilityURL,
+                'addOnURL' => $this->addOnURL,
+                'auxiliaryStoreIdentifiers' => $this->auxiliaryStoreIdentifiers,
+                'bagPolicyURL' => $this->bagPolicyURL,
+                'contactVenueEmail' => $this->contactVenueEmail,
+                'contactVenuePhoneNumber' => $this->contactVenuePhoneNumber,
+                'contactVenueWebsite' => $this->contactVenueWebsite,
+                'directionsInformationURL' => $this->directionsInformationURL,
+                'eventLogoText' => $this->eventLogoText,
+                'merchandiseURL' => $this->merchandiseURL,
+                'orderFoodURL' => $this->orderFoodURL,
+                'parkingInformationURL' => $this->parkingInformationURL,
+                'purchaseParkingURL' => $this->purchaseParkingURL,
+                'sellURL' => $this->sellURL,
+                'transferURL' => $this->transferURL,
+                'transitInformationURL' => $this->transitInformationURL,
             ],
         );
     }
@@ -576,6 +768,25 @@ class EventTicketPassBuilder extends ApplePassBuilder
         parent::uncompileContent();
 
         $this->preferredStyleSchemes = $this->data['preferredStyleSchemes'] ?? null;
+        $this->footerBackgroundColor = Color::makeFromRgbString($this->data['footerBackgroundColor'] ?? null);
+        $this->suppressHeaderDarkening = $this->data['suppressHeaderDarkening'] ?? null;
+        $this->useAutomaticColors = $this->data['useAutomaticColors'] ?? null;
+        $this->accessibilityURL = $this->data['accessibilityURL'] ?? null;
+        $this->addOnURL = $this->data['addOnURL'] ?? null;
+        $this->auxiliaryStoreIdentifiers = $this->data['auxiliaryStoreIdentifiers'] ?? null;
+        $this->bagPolicyURL = $this->data['bagPolicyURL'] ?? null;
+        $this->contactVenueEmail = $this->data['contactVenueEmail'] ?? null;
+        $this->contactVenuePhoneNumber = $this->data['contactVenuePhoneNumber'] ?? null;
+        $this->contactVenueWebsite = $this->data['contactVenueWebsite'] ?? null;
+        $this->directionsInformationURL = $this->data['directionsInformationURL'] ?? null;
+        $this->eventLogoText = $this->data['eventLogoText'] ?? null;
+        $this->merchandiseURL = $this->data['merchandiseURL'] ?? null;
+        $this->orderFoodURL = $this->data['orderFoodURL'] ?? null;
+        $this->parkingInformationURL = $this->data['parkingInformationURL'] ?? null;
+        $this->purchaseParkingURL = $this->data['purchaseParkingURL'] ?? null;
+        $this->sellURL = $this->data['sellURL'] ?? null;
+        $this->transferURL = $this->data['transferURL'] ?? null;
+        $this->transitInformationURL = $this->data['transitInformationURL'] ?? null;
     }
 
     protected function uncompileSemantics(): void

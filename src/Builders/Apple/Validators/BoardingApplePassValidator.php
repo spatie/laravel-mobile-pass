@@ -19,6 +19,20 @@ class BoardingApplePassValidator extends ApplePassValidator
             'boardingPass.secondaryFields' => ['nullable', 'array'],
             'boardingPass.auxiliaryFields' => ['nullable', 'array'],
             'boardingPass.backFields' => ['nullable', 'array'],
+            'changeSeatURL' => ['nullable', 'string'],
+            'entertainmentURL' => ['nullable', 'string'],
+            'purchaseAdditionalBaggageURL' => ['nullable', 'string'],
+            'purchaseLoungeAccessURL' => ['nullable', 'string'],
+            'purchaseWifiURL' => ['nullable', 'string'],
+            'upgradeURL' => ['nullable', 'string'],
+            'managementURL' => ['nullable', 'string'],
+            'registerServiceAnimalURL' => ['nullable', 'string'],
+            'reportLostBagURL' => ['nullable', 'string'],
+            'requestWheelchairURL' => ['nullable', 'string'],
+            'trackBagsURL' => ['nullable', 'string'],
+            'transitProviderEmail' => ['nullable', 'string'],
+            'transitProviderPhoneNumber' => ['nullable', 'string'],
+            'transitProviderWebsiteURL' => ['nullable', 'string'],
         ]);
     }
 }

@@ -99,6 +99,20 @@ abstract class ApplePassBuilder
 
     protected ?AppleMobilePassPersonalization $personalizationRecord = null;
 
+    protected ?string $logoText = null;
+
+    protected ?bool $suppressStripShine = null;
+
+    protected ?string $appLaunchURL = null;
+
+    /** @var array<int, int>|null */
+    protected ?array $associatedStoreIdentifiers = null;
+
+    protected ?string $groupingIdentifier = null;
+
+    /** @var array<string, mixed> */
+    protected array $userInfo = [];
+
     abstract protected static function validator(): ApplePassValidator;
 
     public static function make(): static
@@ -416,6 +430,50 @@ abstract class ApplePassBuilder
     public function setLabelColor(string $hex): static
     {
         $this->labelColor = Color::makeFromHex($hex);
+
+        return $this;
+    }
+
+    public function setLogoText(string $logoText): static
+    {
+        $this->logoText = $logoText;
+
+        return $this;
+    }
+
+    /** Controls whether to display the strip image without a shine effect. Apple's default is true. */
+    public function setSuppressStripShine(bool $suppressStripShine): static
+    {
+        $this->suppressStripShine = $suppressStripShine;
+
+        return $this;
+    }
+
+    public function setAppLaunchURL(string $appLaunchURL): static
+    {
+        $this->appLaunchURL = $appLaunchURL;
+
+        return $this;
+    }
+
+    public function setAssociatedStoreIdentifiers(int ...$associatedStoreIdentifiers): static
+    {
+        $this->associatedStoreIdentifiers = $associatedStoreIdentifiers;
+
+        return $this;
+    }
+
+    public function setGroupingIdentifier(string $groupingIdentifier): static
+    {
+        $this->groupingIdentifier = $groupingIdentifier;
+
+        return $this;
+    }
+
+    /** @param  array<string, mixed>  $userInfo */
+    public function setUserInfo(array $userInfo): static
+    {
+        $this->userInfo = array_replace($this->userInfo, $userInfo);
 
         return $this;
     }
@@ -804,7 +862,7 @@ abstract class ApplePassBuilder
 
         $compiledData = array_filter(
             $this->compileData(),
-            fn ($value) => ! empty($value),
+            fn ($value) => self::isPresent($value),
         );
 
         return $this->validator()->validate($compiledData);
@@ -876,10 +934,21 @@ abstract class ApplePassBuilder
                 $this->beacons,
             ),
             'nfc' => $this->nfc?->toArray(),
-            'userInfo' => [
-                'passType' => $this->type->value,
-            ],
-        ]));
+            'logoText' => $this->logoText,
+            'suppressStripShine' => $this->suppressStripShine,
+            'appLaunchURL' => $this->appLaunchURL,
+            'associatedStoreIdentifiers' => $this->associatedStoreIdentifiers,
+            'groupingIdentifier' => $this->groupingIdentifier,
+            'userInfo' => empty($this->userInfo)
+                ? null
+                : ['passType' => $this->type->value] + $this->userInfo,
+        ], fn ($value) => self::isPresent($value)));
+    }
+
+    /** Unlike `empty()`, this keeps falsy but meaningful values such as `false` and `0`. */
+    protected static function isPresent(mixed $value): bool
+    {
+        return $value !== null && $value !== '' && $value !== [];
     }
 
     /**
@@ -1030,6 +1099,13 @@ abstract class ApplePassBuilder
                 termsAndConditions: $this->personalizationRecord->terms_and_conditions,
             )
             : null;
+
+        $this->logoText = $this->data['logoText'] ?? null;
+        $this->suppressStripShine = $this->data['suppressStripShine'] ?? null;
+        $this->appLaunchURL = $this->data['appLaunchURL'] ?? null;
+        $this->associatedStoreIdentifiers = $this->data['associatedStoreIdentifiers'] ?? null;
+        $this->groupingIdentifier = $this->data['groupingIdentifier'] ?? null;
+        $this->userInfo = Arr::except($this->data['userInfo'] ?? [], 'passType');
 
         $this->uncompileSemantics();
 
