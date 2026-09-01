@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 use Spatie\LaravelMobilePass\Models\MobilePass;
 use Spatie\LaravelMobilePass\Support\Config;
 
@@ -16,7 +17,7 @@ use Spatie\LaravelMobilePass\Support\Config;
  * @property ?string $terms_and_conditions
  * @property ?string $personalization_token
  * @property ?array $submitted_info
- * @property ?\Illuminate\Support\Carbon $personalized_at
+ * @property ?Carbon $personalized_at
  * @property MobilePass $pass
  */
 class AppleMobilePassPersonalization extends Model

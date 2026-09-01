@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Carbon;
 use Spatie\LaravelMobilePass\Models\Apple\AppleMobilePassPersonalization;
 use Spatie\LaravelMobilePass\Models\MobilePass;
 
@@ -23,5 +24,5 @@ it('casts required_fields and submitted_info as arrays and personalized_at as a 
 
     expect($personalization->required_fields)->toBe(['PKPassPersonalizationFieldName']);
     expect($personalization->submitted_info)->toBe(['fullName' => 'John Appleseed']);
-    expect($personalization->personalized_at)->toBeInstanceOf(\Illuminate\Support\Carbon::class);
+    expect($personalization->personalized_at)->toBeInstanceOf(Carbon::class);
 });

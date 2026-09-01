@@ -1,10 +1,10 @@
 <?php
 
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\Personalization;
+use Spatie\LaravelMobilePass\Builders\Apple\EventTicketPassBuilder;
 use Spatie\LaravelMobilePass\Enums\PersonalizationField;
 use Spatie\LaravelMobilePass\Exceptions\InvalidConfig;
 use Spatie\LaravelMobilePass\Models\Apple\AppleMobilePassPersonalization;
-use Spatie\LaravelMobilePass\Builders\Apple\EventTicketPassBuilder;
 use Spatie\LaravelMobilePass\Support\Apple\PkPassReader;
 
 function personalizableBuilder(): EventTicketPassBuilder
