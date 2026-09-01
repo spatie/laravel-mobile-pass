@@ -80,6 +80,31 @@ class ForwardAppleWalletLogs
 
 The payload is a plain `array<string>` of log lines. There's no Google equivalent; Google Wallet doesn't post back error logs.
 
+## PassPersonalized
+
+The `Spatie\LaravelMobilePass\Events\PassPersonalized` event fires after Wallet successfully submits a user's enrollment information to the `/personalize` endpoint on an Apple pass configured for [personalization](../apple-wallet/pass-personalization).
+
+The event carries the `MobilePass` model (`$event->mobilePass`) and the submitted data (`$event->submittedInfo`, an `array`). This is the intended hook for creating the user's account, syncing a CRM, or sending a welcome email — the package deliberately doesn't do any of that itself.
+
+```php
+namespace App\Listeners;
+
+use Spatie\LaravelMobilePass\Events\PassPersonalized;
+
+class CreateUserAccount
+{
+    public function handle(PassPersonalized $event): void
+    {
+        $mobilePass = $event->mobilePass;
+        $submittedInfo = $event->submittedInfo;
+
+        // Create or update the user, then link the pass to it
+    }
+}
+```
+
+Wallet may retry the `/personalize` POST for the same pass, so write this listener idempotently rather than assuming a single delivery.
+
 ## Registering listeners
 
 Laravel 11+ auto-discovers listeners in `app/Listeners` by convention. If you've opted into explicit registration, add entries to your `EventServiceProvider`:
