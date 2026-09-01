@@ -55,12 +55,28 @@ class InvalidConfig extends Exception implements MobilePassException
         );
     }
 
+    public static function incompleteRelevantDate(): self
+    {
+        return new self(
+            'A stored `relevantDates` entry has neither a single moment nor a complete '
+            .'`startDate`/`endDate` pair. Apple requires an `endDate` whenever a `startDate` is present.'
+        );
+    }
+
     public static function unrecognizedBarcodeFormat(string $format): self
     {
         return new self(
             "The stored barcode format `{$format}` is not a recognized `BarcodeType` case. "
             .'This can happen when a pass was saved by a newer version of the package that '
             .'supports a barcode format this version does not yet know about.'
+        );
+    }
+
+    public static function personalizationRequiresNfc(): self
+    {
+        return new self(
+            'Personalization requires NFC to be configured first. Apple restricts pass personalization '
+            .'(rewards enrollment) to NFC-enabled passes. Call setNfc() before calling data()/generate()/save().'
         );
     }
 }

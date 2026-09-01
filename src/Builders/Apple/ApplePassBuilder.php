@@ -15,17 +15,21 @@ use Spatie\LaravelMobilePass\Builders\Apple\Entities\FieldContent;
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\Image;
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\Location;
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\NfcPayload;
+use Spatie\LaravelMobilePass\Builders\Apple\Entities\Personalization;
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\Price;
+use Spatie\LaravelMobilePass\Builders\Apple\Entities\RelevantDate;
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\WifiNetwork;
 use Spatie\LaravelMobilePass\Builders\Apple\Validators\ApplePassValidator;
 use Spatie\LaravelMobilePass\Enums\BarcodeType;
 use Spatie\LaravelMobilePass\Enums\DateType;
 use Spatie\LaravelMobilePass\Enums\FieldType;
 use Spatie\LaravelMobilePass\Enums\PassType;
+use Spatie\LaravelMobilePass\Enums\PersonalizationField;
 use Spatie\LaravelMobilePass\Enums\Platform;
 use Spatie\LaravelMobilePass\Enums\TimeStyleType;
 use Spatie\LaravelMobilePass\Exceptions\InvalidCertificate;
 use Spatie\LaravelMobilePass\Exceptions\InvalidConfig;
+use Spatie\LaravelMobilePass\Models\Apple\AppleMobilePassPersonalization;
 use Spatie\LaravelMobilePass\Models\MobilePass;
 use Spatie\LaravelMobilePass\Support\Config;
 use Spatie\LaravelMobilePass\Support\WifiUri;
@@ -78,6 +82,9 @@ abstract class ApplePassBuilder
 
     protected ?Carbon $relevantDate = null;
 
+    /** @var array<int, RelevantDate> */
+    protected array $relevantDates = [];
+
     protected ?int $maxDistance = null;
 
     /** @var array<int, Location> */
@@ -87,6 +94,10 @@ abstract class ApplePassBuilder
     protected array $beacons = [];
 
     protected ?NfcPayload $nfc = null;
+
+    protected ?Personalization $personalization = null;
+
+    protected ?AppleMobilePassPersonalization $personalizationRecord = null;
 
     abstract protected static function validator(): ApplePassValidator;
 
@@ -473,6 +484,20 @@ abstract class ApplePassBuilder
         return $this;
     }
 
+    public function addRelevantDate(Carbon $date): static
+    {
+        $this->relevantDates[] = RelevantDate::forDate($date);
+
+        return $this;
+    }
+
+    public function addRelevantDateInterval(Carbon $startDate, Carbon $endDate): static
+    {
+        $this->relevantDates[] = RelevantDate::forInterval($startDate, $endDate);
+
+        return $this;
+    }
+
     public function addLocation(
         float $latitude,
         float $longitude,
@@ -590,9 +615,43 @@ abstract class ApplePassBuilder
         return $this;
     }
 
+    public function setPersonalization(Personalization $personalization): static
+    {
+        $this->personalization = $personalization;
+
+        return $this;
+    }
+
+    public function setPersonalizationLogo(string $x1Path, ?string $x2Path = null, ?string $x3Path = null): static
+    {
+        $this->images['personalizationLogo'] = new Image($x1Path, $x2Path, $x3Path);
+
+        return $this;
+    }
+
+    protected function isPersonalized(): bool
+    {
+        return $this->personalizationRecord?->personalized_at !== null;
+    }
+
+    protected function addPersonalizationToFile(PKPass $pkPass): void
+    {
+        if ($this->personalization === null || $this->isPersonalized()) {
+            return;
+        }
+
+        $pkPass->addFileContent(json_encode($this->personalization->toArray()), 'personalization.json');
+    }
+
     protected function addImagesToFile(PKPass $pkPass): PKPass
     {
-        foreach ($this->images as $filename => $image) {
+        $images = $this->images;
+
+        if ($this->isPersonalized()) {
+            unset($images['personalizationLogo']);
+        }
+
+        foreach ($images as $filename => $image) {
             if (! $image instanceof Image) {
                 $image = Image::fromArray($image);
             }
@@ -669,23 +728,29 @@ abstract class ApplePassBuilder
     public function save(): MobilePass
     {
         if ($this->model) {
-            $this->serialNumber = $this->model->pass_serial;
+            $model = $this->model;
 
-            $this->model->update([
+            $this->serialNumber = $model->pass_serial;
+
+            $model->update([
                 'content' => $this->data(),
                 'images' => $this->images,
                 'locales' => empty($this->locales) ? null : $this->locales,
                 'download_name' => $this->downloadName,
             ]);
 
-            return $this->model;
+            $this->model = $model;
+
+            $this->savePersonalizationConfig();
+
+            return $model;
         }
 
         $content = $this->data();
 
         $mobilePassClass = Config::mobilePassModel();
 
-        return $mobilePassClass::query()->create([
+        $model = $mobilePassClass::query()->create([
             'pass_serial' => $this->serialNumber,
             'type' => $this->type->value,
             'platform' => static::platform(),
@@ -695,10 +760,36 @@ abstract class ApplePassBuilder
             'locales' => empty($this->locales) ? null : $this->locales,
             'download_name' => $this->downloadName,
         ]);
+
+        $this->model = $model;
+
+        $this->savePersonalizationConfig();
+
+        return $model;
+    }
+
+    protected function savePersonalizationConfig(): void
+    {
+        if ($this->personalization === null) {
+            return;
+        }
+
+        $this->model->personalization()->updateOrCreate([], [
+            'description' => $this->personalization->description,
+            'required_fields' => array_map(
+                fn ($field) => $field->value,
+                $this->personalization->requiredPersonalizationFields,
+            ),
+            'terms_and_conditions' => $this->personalization->termsAndConditions,
+        ]);
     }
 
     public function data(): array
     {
+        if ($this->personalization !== null && $this->nfc === null) {
+            throw InvalidConfig::personalizationRequiresNfc();
+        }
+
         $configuredOrganizationName = self::appleConfig('organization_name');
 
         if (empty($this->organizationName)) {
@@ -731,6 +822,7 @@ abstract class ApplePassBuilder
 
             $this->addImagesToFile($pkPass);
             $this->addLocaleDataToPass($pkPass);
+            $this->addPersonalizationToFile($pkPass);
 
             return $pkPass->create(output: false);
         } catch (PKPassException $exception) {
@@ -769,7 +861,11 @@ abstract class ApplePassBuilder
             'labelColor' => (string) $this->labelColor,
             'barcode' => $barcodes === null ? null : Arr::last($barcodes),
             'barcodes' => $barcodes,
-            'relevantDate' => $this->relevantDate?->toIso8601String(),
+            'relevantDate' => $this->compileRelevantDate(),
+            'relevantDates' => empty($this->relevantDates) ? null : array_map(
+                fn (RelevantDate $relevantDate) => $relevantDate->toArray(),
+                $this->relevantDates,
+            ),
             'locations' => empty($this->locations) ? null : array_map(
                 fn (Location $location) => $location->toArray(),
                 $this->locations,
@@ -784,6 +880,28 @@ abstract class ApplePassBuilder
                 'passType' => $this->type->value,
             ],
         ]));
+    }
+
+    /**
+     * Apple deprecated the singular `relevantDate` in favour of `relevantDates`, but
+     * iOS 17 and earlier only understand the singular key. Derive it so a pass built
+     * with the newer methods alone still surfaces on those devices.
+     */
+    protected function compileRelevantDate(): ?string
+    {
+        if ($this->relevantDate !== null) {
+            return $this->relevantDate->toIso8601String();
+        }
+
+        foreach ($this->relevantDates as $relevantDate) {
+            $moment = $relevantDate->moment();
+
+            if ($moment !== null) {
+                return $moment->toIso8601String();
+            }
+        }
+
+        return null;
     }
 
     protected function webServiceURL(): ?string
@@ -879,6 +997,11 @@ abstract class ApplePassBuilder
             ? null
             : Carbon::parse($this->data['relevantDate']);
 
+        $this->relevantDates = array_map(
+            fn (array $relevantDate) => RelevantDate::fromArray($relevantDate),
+            array_values($this->data['relevantDates'] ?? []),
+        );
+
         $this->locations = array_map(
             fn (array $location) => Location::fromArray($location),
             $this->data['locations'] ?? [],
@@ -894,6 +1017,19 @@ abstract class ApplePassBuilder
         $this->nfc = empty($this->data['nfc'])
             ? null
             : NfcPayload::fromArray($this->data['nfc']);
+
+        $this->personalizationRecord = $this->model?->personalization()->first();
+
+        $this->personalization = $this->personalizationRecord
+            ? Personalization::make(
+                description: $this->personalizationRecord->description,
+                requiredPersonalizationFields: array_map(
+                    fn (string $field) => PersonalizationField::from($field),
+                    $this->personalizationRecord->required_fields,
+                ),
+                termsAndConditions: $this->personalizationRecord->terms_and_conditions,
+            )
+            : null;
 
         $this->uncompileSemantics();
 

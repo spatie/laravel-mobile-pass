@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Mail\Attachment;
 use Illuminate\Support\Facades\URL;
@@ -22,6 +23,7 @@ use Spatie\LaravelMobilePass\Enums\Platform;
 use Spatie\LaravelMobilePass\Exceptions\CannotDownload;
 use Spatie\LaravelMobilePass\Exceptions\PlatformDoesntSupport;
 use Spatie\LaravelMobilePass\Jobs\PushPassUpdateJob;
+use Spatie\LaravelMobilePass\Models\Apple\AppleMobilePassPersonalization;
 use Spatie\LaravelMobilePass\Models\Apple\AppleMobilePassRegistration;
 use Spatie\LaravelMobilePass\Models\Google\GoogleMobilePassEvent;
 use Spatie\LaravelMobilePass\Support\Apple\DownloadableMobilePass;
@@ -78,6 +80,14 @@ class MobilePass extends Model implements Attachable, Responsable
         $modelClass = Config::appleMobilePassRegistrationModel();
 
         return $this->hasMany($modelClass, 'mobile_pass_id');
+    }
+
+    /** @return HasOne<AppleMobilePassPersonalization, $this> */
+    public function personalization(): HasOne
+    {
+        $modelClass = Config::appleMobilePassPersonalizationModel();
+
+        return $this->hasOne($modelClass, 'mobile_pass_id');
     }
 
     public function devices(): HasManyThrough

@@ -5,6 +5,7 @@ use Spatie\LaravelMobilePass\Http\Controllers\Apple\CheckForUpdatesController;
 use Spatie\LaravelMobilePass\Http\Controllers\Apple\DownloadApplePassController;
 use Spatie\LaravelMobilePass\Http\Controllers\Apple\GetAssociatedSerialsForDeviceController;
 use Spatie\LaravelMobilePass\Http\Controllers\Apple\MobilePassLogController;
+use Spatie\LaravelMobilePass\Http\Controllers\Apple\PersonalizeController;
 use Spatie\LaravelMobilePass\Http\Controllers\Apple\RegisterDeviceController;
 use Spatie\LaravelMobilePass\Http\Controllers\Apple\UnregisterDeviceController;
 use Spatie\LaravelMobilePass\Http\Controllers\Google\HandleCallbackController;
@@ -20,6 +21,9 @@ Route::macro('mobilePass', function (string $prefix = '') {
 
             Route::get('passes/{passTypeId}/{passSerial}', CheckForUpdatesController::class)
                 ->name('mobile-pass.check-for-updates');
+
+            Route::post('passes/{passTypeId}/{passSerial}/personalize', PersonalizeController::class)
+                ->name('mobile-pass.apple.personalize');
 
             Route::delete('devices/{deviceId}/registrations/{passTypeId}/{passSerial}', UnregisterDeviceController::class)
                 ->name('mobile-pass.unregister-device');

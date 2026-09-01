@@ -21,6 +21,27 @@ $builder->setRelevantDate(Carbon::parse('2026-08-15 20:00', 'America/New_York'))
 
 When the user's device crosses into that window, the pass slides onto the lock screen. Once the event has passed, the pass drops back out of relevance.
 
+## Multiple relevance windows
+
+A pass set up with `setRelevantDate()` can only be relevant at one moment. Apple deprecated that key in favour of `relevantDates`, an array that carries as many windows as you need. It arrived in iOS 18, iPadOS 18 and watchOS 11.
+
+Add a single moment with `addRelevantDate()`, where Wallet works out the surrounding window for you, or an explicit window with `addRelevantDateInterval()`:
+
+```php
+use Illuminate\Support\Carbon;
+
+$builder
+    ->addRelevantDate(Carbon::parse('2026-08-15 20:00', 'America/New_York'))
+    ->addRelevantDateInterval(
+        Carbon::parse('2026-08-15 18:00', 'America/New_York'),
+        Carbon::parse('2026-08-15 23:00', 'America/New_York'),
+    );
+```
+
+You don't have to call `setRelevantDate()` as well. Whenever you add windows and haven't set a relevant date yourself, the package writes the first window's moment to the deprecated `relevantDate` key too, so the pass still surfaces on iOS 17 and earlier, which ignore `relevantDates` entirely. Calling `setRelevantDate()` overrides that fallback.
+
+The two keys are not additive on modern devices. Wallet reads `relevantDates` and ignores `relevantDate` from iOS 18 onwards, so setting both gives you the windows in the array, not their union.
+
 ## Locations
 
 Attach one or more physical locations and Wallet will bring the pass forward when the user is near one of them. Latitude and longitude are all you have to provide:

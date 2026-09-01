@@ -17,6 +17,93 @@ it('serialises a relevant date onto the pass', function () {
     expect($data['relevantDate'])->toStartWith('1965-08-15T20:00:00');
 });
 
+it('serialises relevant date intervals onto the pass', function () {
+    $data = EventTicketPassBuilder::make()
+        ->setOrganizationName('Fab Four Promotions')
+        ->setSerialNumber('BTL-SHEA-0042')
+        ->setDescription('The Beatles at Shea Stadium')
+        ->addRelevantDate(Carbon::parse('1965-08-15 20:00', 'America/New_York'))
+        ->addRelevantDateInterval(
+            Carbon::parse('1965-08-15 18:00', 'America/New_York'),
+            Carbon::parse('1965-08-15 23:00', 'America/New_York'),
+        )
+        ->setIconImage(getTestSupportPath('images/spatie-thumbnail.png'))
+        ->data();
+
+    expect($data)->toHaveKey('relevantDates');
+    expect($data['relevantDates'])->toHaveCount(2);
+    expect($data['relevantDates'][0]['date'])->toStartWith('1965-08-15T20:00:00');
+    expect($data['relevantDates'][0]['relevantDate'])->toStartWith('1965-08-15T20:00:00');
+    expect($data['relevantDates'][0])->not->toHaveKeys(['startDate', 'endDate']);
+    expect($data['relevantDates'][1]['startDate'])->toStartWith('1965-08-15T18:00:00');
+    expect($data['relevantDates'][1]['endDate'])->toStartWith('1965-08-15T23:00:00');
+    expect($data['relevantDates'][1])->not->toHaveKeys(['date', 'relevantDate']);
+});
+
+it('derives the deprecated relevant date from the first window for older devices', function () {
+    $data = EventTicketPassBuilder::make()
+        ->setOrganizationName('Fab Four Promotions')
+        ->setSerialNumber('BTL-SHEA-0042')
+        ->setDescription('The Beatles at Shea Stadium')
+        ->addRelevantDateInterval(
+            Carbon::parse('1965-08-15 18:00', 'America/New_York'),
+            Carbon::parse('1965-08-15 23:00', 'America/New_York'),
+        )
+        ->addRelevantDate(Carbon::parse('1965-08-16 20:00', 'America/New_York'))
+        ->setIconImage(getTestSupportPath('images/spatie-thumbnail.png'))
+        ->data();
+
+    expect($data['relevantDate'])->toStartWith('1965-08-15T18:00:00');
+});
+
+it('lets an explicit relevant date win over the derived one', function () {
+    $data = EventTicketPassBuilder::make()
+        ->setOrganizationName('Fab Four Promotions')
+        ->setSerialNumber('BTL-SHEA-0042')
+        ->setDescription('The Beatles at Shea Stadium')
+        ->setRelevantDate(Carbon::parse('1965-08-14 12:00', 'America/New_York'))
+        ->addRelevantDate(Carbon::parse('1965-08-15 20:00', 'America/New_York'))
+        ->setIconImage(getTestSupportPath('images/spatie-thumbnail.png'))
+        ->data();
+
+    expect($data['relevantDate'])->toStartWith('1965-08-14T12:00:00');
+});
+
+it('leaves the relevant date keys off a pass that declares no relevance', function () {
+    $data = EventTicketPassBuilder::make()
+        ->setOrganizationName('Fab Four Promotions')
+        ->setSerialNumber('BTL-SHEA-0042')
+        ->setDescription('The Beatles at Shea Stadium')
+        ->setIconImage(getTestSupportPath('images/spatie-thumbnail.png'))
+        ->data();
+
+    expect($data)->not->toHaveKeys(['relevantDate', 'relevantDates']);
+});
+
+it('round-trips relevant date intervals through the uncompile path', function () {
+    $model = MobilePass::factory()->make([
+        'builder_name' => EventTicketPassBuilder::name(),
+        'content' => [
+            'organizationName' => 'Fab Four Promotions',
+            'serialNumber' => 'BTL-SHEA-0042',
+            'description' => 'The Beatles at Shea Stadium',
+            'relevantDates' => [
+                ['relevantDate' => '1965-08-15T20:00:00-04:00'],
+                ['startDate' => '1965-08-15T18:00:00-04:00', 'endDate' => '1965-08-15T23:00:00-04:00'],
+            ],
+        ],
+    ]);
+
+    $data = EventTicketPassBuilder::hydrate($model)->data();
+
+    expect($data['relevantDates'])->toHaveCount(2);
+    expect($data['relevantDates'][0]['date'])->toStartWith('1965-08-15T20:00:00');
+    expect($data['relevantDates'][0]['relevantDate'])->toStartWith('1965-08-15T20:00:00');
+    expect($data['relevantDates'][1]['startDate'])->toStartWith('1965-08-15T18:00:00');
+    expect($data['relevantDates'][1]['endDate'])->toStartWith('1965-08-15T23:00:00');
+    expect($data['relevantDate'])->toStartWith('1965-08-15T20:00:00');
+});
+
 it('serialises locations and max distance onto the pass', function () {
     $data = EventTicketPassBuilder::make()
         ->setOrganizationName('Fab Four Promotions')

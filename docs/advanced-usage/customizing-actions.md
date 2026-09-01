@@ -42,7 +42,7 @@ return [
 
 ## Available actions
 
-The five actions below are registered under the `actions` key in `config/mobile-pass.php`. Each one can be swapped out independently.
+The six actions below are registered under the `actions` key in `config/mobile-pass.php`. Each one can be swapped out independently.
 
 ### register_device
 
@@ -67,6 +67,12 @@ Runs after a `MobilePass` row is updated for an Apple pass. It signs and sends a
 Default: `Spatie\LaravelMobilePass\Actions\Google\NotifyGoogleOfPassUpdateAction`
 
 Runs after a `MobilePass` row is updated for a Google pass. It sends a PATCH request to Google's Wallet REST API with the new object payload, and Google fans the change out to devices. Override to add extra telemetry, to patch additional fields, or to short-circuit when you know Google already has the latest state.
+
+### personalize
+
+Default: `Spatie\LaravelMobilePass\Actions\Apple\PersonalizeAction`
+
+Runs when Wallet calls the personalize endpoint after the user submits their enrollment information. It signs the personalization token, records the submission on the `AppleMobilePassPersonalization` row, and fires `PassPersonalized`. Override to change how submissions are persisted or to add validation before the signature is produced.
 
 ### handle_google_callback
 
