@@ -22,6 +22,7 @@ abstract class ApplePassValidator
             'barcode' => [],
             'barcodes' => [],
             'relevantDate' => [],
+            'relevantDates' => [],
             'locations' => [],
             'maxDistance' => [],
             'beacons' => [],
