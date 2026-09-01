@@ -1,5 +1,20 @@
 # Upgrading
 
+## Apple seat semantic tags now use Apple's wire keys
+
+`Seat` used to serialize its properties under bare keys (`number`, `row`, `section`, ...). Apple's
+`SemanticTagType.Seat` dictionary expects `seat`-prefixed keys (`seatNumber`, `seatRow`, `seatSection`, ...),
+so Wallet ignored the seat details this package wrote. They are now written under the keys Apple documents.
+
+No code changes are required. The property names on `Seat` are unchanged, the three new properties
+(`aisle`, `level` and `sectionColor`) were appended to the constructor so positional calls keep working,
+and passes stored before this release still hydrate: `Seat::fromArray()` reads the old bare keys as a
+fallback and rewrites them under the correct keys on the next save.
+
+If you assert on the raw `pass.json` in your own tests, note that the keys inside `semantics.seats` changed.
+
+---
+
 ## Apple Wallet Pass Personalization
 
 This release adds Apple Wallet pass personalization support via a new `apple_mobile_pass_personalizations` table.

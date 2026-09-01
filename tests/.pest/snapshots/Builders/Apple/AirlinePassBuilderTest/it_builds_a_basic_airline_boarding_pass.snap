@@ -21,7 +21,7 @@
             "destinationLocationDescription": "Abu Dhabi Intl",
             "seats": [
                 {
-                    "number": "66F"
+                    "seatNumber": "66F"
                 }
             ],
             "departureAirportCode": "AUH",
