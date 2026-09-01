@@ -55,6 +55,14 @@ class InvalidConfig extends Exception implements MobilePassException
         );
     }
 
+    public static function incompleteRelevantDate(): self
+    {
+        return new self(
+            'A stored `relevantDates` entry has neither a single moment nor a complete '
+            .'`startDate`/`endDate` pair. Apple requires an `endDate` whenever a `startDate` is present.'
+        );
+    }
+
     public static function unrecognizedBarcodeFormat(string $format): self
     {
         return new self(

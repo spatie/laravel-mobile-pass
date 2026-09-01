@@ -479,14 +479,14 @@ abstract class ApplePassBuilder
 
     public function addRelevantDate(Carbon $date): static
     {
-        $this->relevantDates[] = new RelevantDate(date: $date);
+        $this->relevantDates[] = RelevantDate::forDate($date);
 
         return $this;
     }
 
     public function addRelevantDateInterval(Carbon $startDate, Carbon $endDate): static
     {
-        $this->relevantDates[] = new RelevantDate(startDate: $startDate, endDate: $endDate);
+        $this->relevantDates[] = RelevantDate::forInterval($startDate, $endDate);
 
         return $this;
     }
@@ -787,7 +787,7 @@ abstract class ApplePassBuilder
             'labelColor' => (string) $this->labelColor,
             'barcode' => $barcodes === null ? null : Arr::last($barcodes),
             'barcodes' => $barcodes,
-            'relevantDate' => $this->relevantDate?->toIso8601String(),
+            'relevantDate' => $this->compileRelevantDate(),
             'relevantDates' => empty($this->relevantDates) ? null : array_map(
                 fn (RelevantDate $relevantDate) => $relevantDate->toArray(),
                 $this->relevantDates,
@@ -806,6 +806,28 @@ abstract class ApplePassBuilder
                 'passType' => $this->type->value,
             ],
         ]));
+    }
+
+    /**
+     * Apple deprecated the singular `relevantDate` in favour of `relevantDates`, but
+     * iOS 17 and earlier only understand the singular key. Derive it so a pass built
+     * with the newer methods alone still surfaces on those devices.
+     */
+    protected function compileRelevantDate(): ?string
+    {
+        if ($this->relevantDate !== null) {
+            return $this->relevantDate->toIso8601String();
+        }
+
+        foreach ($this->relevantDates as $relevantDate) {
+            $moment = $relevantDate->moment();
+
+            if ($moment !== null) {
+                return $moment->toIso8601String();
+            }
+        }
+
+        return null;
     }
 
     protected function webServiceURL(): ?string
@@ -903,7 +925,7 @@ abstract class ApplePassBuilder
 
         $this->relevantDates = array_map(
             fn (array $relevantDate) => RelevantDate::fromArray($relevantDate),
-            $this->data['relevantDates'] ?? [],
+            array_values($this->data['relevantDates'] ?? []),
         );
 
         $this->locations = array_map(
