@@ -6,6 +6,7 @@ All notable changes to `laravel-mobile-pass` will be documented in this file.
 
 ### What's Changed
 
+* fix/feat: seat semantic tag wire keys by @manfield in https://github.com/spatie/laravel-mobile-pass/pull/65
 * fix: include nameSuffix when serializing PersonName by @manfield in https://github.com/spatie/laravel-mobile-pass/pull/66
 * feat: add Pass.RelevantDates support to Apple passes by @manfield in https://github.com/spatie/laravel-mobile-pass/pull/67
 * feat: apple pass personalization by @manfield in https://github.com/spatie/laravel-mobile-pass/pull/68
