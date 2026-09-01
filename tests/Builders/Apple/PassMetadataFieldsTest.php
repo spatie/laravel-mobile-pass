@@ -62,7 +62,7 @@ it('round-trips logoText, appLaunchURL, associatedStoreIdentifiers, and grouping
     expect($data['groupingIdentifier'])->toBe('shea-stadium-1965');
 });
 
-it('always includes passType in userInfo, even without setUserInfo', function () {
+it('omits userInfo entirely when setUserInfo was never called', function () {
     $data = EventTicketPassBuilder::make()
         ->setOrganizationName('Fab Four Promotions')
         ->setSerialNumber('BTL-SHEA-0042')
@@ -70,7 +70,31 @@ it('always includes passType in userInfo, even without setUserInfo', function ()
         ->setIconImage(getTestSupportPath('images/spatie-thumbnail.png'))
         ->data();
 
+    expect($data)->not->toHaveKey('userInfo');
+});
+
+it('cannot have passType overwritten by the caller', function () {
+    $data = EventTicketPassBuilder::make()
+        ->setOrganizationName('Fab Four Promotions')
+        ->setSerialNumber('BTL-SHEA-0042')
+        ->setDescription('The Beatles at Shea Stadium')
+        ->setIconImage(getTestSupportPath('images/spatie-thumbnail.png'))
+        ->setUserInfo(['passType' => 'not-a-pass-type'])
+        ->data();
+
     expect($data['userInfo'])->toBe(['passType' => 'eventTicket']);
+});
+
+it('keeps integer-like userInfo keys intact', function () {
+    $data = EventTicketPassBuilder::make()
+        ->setOrganizationName('Fab Four Promotions')
+        ->setSerialNumber('BTL-SHEA-0042')
+        ->setDescription('The Beatles at Shea Stadium')
+        ->setIconImage(getTestSupportPath('images/spatie-thumbnail.png'))
+        ->setUserInfo(['12345' => 'seat A'])
+        ->data();
+
+    expect($data['userInfo'][12345])->toBe('seat A');
 });
 
 it('merges custom userInfo data alongside passType', function () {

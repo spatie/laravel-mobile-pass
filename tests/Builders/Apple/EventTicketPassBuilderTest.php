@@ -150,13 +150,11 @@ it('compiles the poster visual appearance fields', function () {
         ->setIconImage(getTestSupportPath('images/spatie-thumbnail.png'))
         ->usePosterLayout()
         ->setFooterBackgroundColor('#642c00')
-        ->setStripColor('#5123aa')
         ->setSuppressHeaderDarkening(true)
         ->setUseAutomaticColors(true)
         ->data();
 
     expect($compiledData['footerBackgroundColor'])->toBe('rgb(100, 44, 0)');
-    expect($compiledData['stripColor'])->toBe('rgb(81, 35, 170)');
     expect($compiledData['suppressHeaderDarkening'])->toBeTrue();
     expect($compiledData['useAutomaticColors'])->toBeTrue();
 });
@@ -171,7 +169,6 @@ it('omits the poster visual appearance fields when not set', function () {
 
     expect($compiledData)->not->toHaveKeys([
         'footerBackgroundColor',
-        'stripColor',
         'suppressHeaderDarkening',
         'useAutomaticColors',
     ]);
@@ -184,7 +181,6 @@ it('round-trips the poster visual appearance fields through save and hydrate', f
         ->setDescription('Hello!')
         ->setIconImage(getTestSupportPath('images/spatie-thumbnail.png'))
         ->setFooterBackgroundColor('#642c00')
-        ->setStripColor('#5123aa')
         ->setSuppressHeaderDarkening(true)
         ->setUseAutomaticColors(true)
         ->save();
@@ -192,7 +188,6 @@ it('round-trips the poster visual appearance fields through save and hydrate', f
     $data = $model->builder()->data();
 
     expect($data['footerBackgroundColor'])->toBe('rgb(100, 44, 0)');
-    expect($data['stripColor'])->toBe('rgb(81, 35, 170)');
     expect($data['suppressHeaderDarkening'])->toBeTrue();
     expect($data['useAutomaticColors'])->toBeTrue();
 });

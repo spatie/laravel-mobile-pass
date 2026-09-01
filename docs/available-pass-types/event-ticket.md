@@ -39,18 +39,14 @@ EventTicketPassBuilder::make()
     // ...
     ->usePosterLayout()
     ->setFooterBackgroundColor('#642c00')
-    ->setStripColor('#5123aa')
     ->setSuppressHeaderDarkening(true)
     ->setUseAutomaticColors(true)
     ->save();
 ```
 
-- `setFooterBackgroundColor()` colors the footer area behind the barcode.
-- `setStripColor()` colors the text drawn over the strip image, if you're using one.
-- `setSuppressHeaderDarkening()` turns off the darkening gradient Wallet normally overlays on the header.
-- `setUseAutomaticColors()` lets Wallet compute the foreground and label colors from the background image itself, ignoring anything set via `setForegroundColor()`/`setLabelColor()`.
+The `setFooterBackgroundColor()` method colors the footer area behind the barcode. The `setSuppressHeaderDarkening()` method turns off the darkening gradient Wallet normally overlays on the header. The `setUseAutomaticColors()` method lets Wallet compute the foreground and label colors from the background image itself, ignoring anything you set via `setForegroundColor()` and `setLabelColor()`.
 
-All four only apply to the poster layout — they have no effect on the classic layout.
+All three only apply to the poster layout. They have no effect on the classic layout.
 
 Event tickets can also carry venue details, which Wallet shows in the pass's event guide panel. Where the venue is:
 

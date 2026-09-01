@@ -473,7 +473,7 @@ abstract class ApplePassBuilder
     /** @param  array<string, mixed>  $userInfo */
     public function setUserInfo(array $userInfo): static
     {
-        $this->userInfo = array_merge($this->userInfo, $userInfo);
+        $this->userInfo = array_replace($this->userInfo, $userInfo);
 
         return $this;
     }
@@ -862,7 +862,7 @@ abstract class ApplePassBuilder
 
         $compiledData = array_filter(
             $this->compileData(),
-            fn ($value) => ! empty($value),
+            fn ($value) => self::isPresent($value),
         );
 
         return $this->validator()->validate($compiledData);
@@ -939,8 +939,16 @@ abstract class ApplePassBuilder
             'appLaunchURL' => $this->appLaunchURL,
             'associatedStoreIdentifiers' => $this->associatedStoreIdentifiers,
             'groupingIdentifier' => $this->groupingIdentifier,
-            'userInfo' => array_merge(['passType' => $this->type->value], $this->userInfo),
-        ]));
+            'userInfo' => empty($this->userInfo)
+                ? null
+                : ['passType' => $this->type->value] + $this->userInfo,
+        ], fn ($value) => self::isPresent($value)));
+    }
+
+    /** Unlike `empty()`, this keeps falsy but meaningful values such as `false` and `0`. */
+    protected static function isPresent(mixed $value): bool
+    {
+        return $value !== null && $value !== '' && $value !== [];
     }
 
     /**

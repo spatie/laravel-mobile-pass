@@ -26,8 +26,6 @@ class EventTicketPassBuilder extends ApplePassBuilder
 
     protected ?Color $footerBackgroundColor = null;
 
-    protected ?Color $stripColor = null;
-
     protected ?bool $suppressHeaderDarkening = null;
 
     protected ?bool $useAutomaticColors = null;
@@ -170,13 +168,6 @@ class EventTicketPassBuilder extends ApplePassBuilder
     public function setFooterBackgroundColor(string $hex): static
     {
         $this->footerBackgroundColor = Color::makeFromHex($hex);
-
-        return $this;
-    }
-
-    public function setStripColor(string $hex): static
-    {
-        $this->stripColor = Color::makeFromHex($hex);
 
         return $this;
     }
@@ -679,7 +670,6 @@ class EventTicketPassBuilder extends ApplePassBuilder
                 ]),
                 'preferredStyleSchemes' => $this->preferredStyleSchemes,
                 'footerBackgroundColor' => $this->footerBackgroundColor ? (string) $this->footerBackgroundColor : null,
-                'stripColor' => $this->stripColor ? (string) $this->stripColor : null,
                 'suppressHeaderDarkening' => $this->suppressHeaderDarkening,
                 'useAutomaticColors' => $this->useAutomaticColors,
                 'accessibilityURL' => $this->accessibilityURL,
@@ -779,7 +769,6 @@ class EventTicketPassBuilder extends ApplePassBuilder
 
         $this->preferredStyleSchemes = $this->data['preferredStyleSchemes'] ?? null;
         $this->footerBackgroundColor = Color::makeFromRgbString($this->data['footerBackgroundColor'] ?? null);
-        $this->stripColor = Color::makeFromRgbString($this->data['stripColor'] ?? null);
         $this->suppressHeaderDarkening = $this->data['suppressHeaderDarkening'] ?? null;
         $this->useAutomaticColors = $this->data['useAutomaticColors'] ?? null;
         $this->accessibilityURL = $this->data['accessibilityURL'] ?? null;
