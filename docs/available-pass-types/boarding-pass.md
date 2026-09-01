@@ -25,6 +25,8 @@ AirlinePassBuilder::make()
     ->save();
 ```
 
+Besides the `number` shown above, a `Seat` can carry a `description`, `identifier`, `row`, `section`, `type`, `aisle`, `level` and `sectionColor`. All of them are optional, and `setSeats()` accepts more than one `Seat`.
+
 For trains, `TrainPassBuilder` ships with the package and works exactly like `AirlinePassBuilder`:
 
 ```php

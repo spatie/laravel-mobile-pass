@@ -93,6 +93,21 @@ EventTicketPassBuilder::make()
     ->save();
 ```
 
+A `Seat` carries the nine properties Apple defines: `description`, `identifier`, `number`, `row`, `section`, `type`, `aisle`, `level` and `sectionColor`. All of them are optional, so pass only the ones you have. The `sectionColor` is a CSS-style RGB triple.
+
+```php
+Seat::make(
+    number: '22',
+    row: '8',
+    section: 'B12',
+    aisle: 'A',
+    level: 'Lower Bowl',
+    sectionColor: 'rgb(23,187,82)',
+)
+```
+
+Pass several seats at once by giving `setSeats()` more than one `Seat`.
+
 ## Google
 
 Declare the Class once per event (the venue, the show, the shared visuals), then create an Object per ticket.

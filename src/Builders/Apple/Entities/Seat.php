@@ -7,38 +7,38 @@ use Illuminate\Contracts\Support\Arrayable;
 class Seat implements Arrayable
 {
     public function __construct(
-        public ?string $aisle,
-        public ?string $description,
-        public ?string $identifier,
-        public ?string $level,
-        public ?string $number,
-        public ?string $row,
-        public ?string $section,
-        public ?string $sectionColor,
-        public ?string $type,
+        public ?string $description = null,
+        public ?string $identifier = null,
+        public ?string $number = null,
+        public ?string $row = null,
+        public ?string $section = null,
+        public ?string $type = null,
+        public ?string $aisle = null,
+        public ?string $level = null,
+        public ?string $sectionColor = null,
     ) {}
 
     public static function make(
-        ?string $aisle = null,
         ?string $description = null,
         ?string $identifier = null,
-        ?string $level = null,
         ?string $number = null,
         ?string $row = null,
         ?string $section = null,
-        ?string $sectionColor = null,
         ?string $type = null,
+        ?string $aisle = null,
+        ?string $level = null,
+        ?string $sectionColor = null,
     ): self {
         return new self(
-            aisle: $aisle,
             description: $description,
             identifier: $identifier,
-            level: $level,
             number: $number,
             row: $row,
             section: $section,
-            sectionColor: $sectionColor,
             type: $type,
+            aisle: $aisle,
+            level: $level,
+            sectionColor: $sectionColor,
         );
     }
 
@@ -46,15 +46,15 @@ class Seat implements Arrayable
     public static function fromArray(array $values): self
     {
         return new self(
+            description: $values['seatDescription'] ?? $values['description'] ?? null,
+            identifier: $values['seatIdentifier'] ?? $values['identifier'] ?? null,
+            number: $values['seatNumber'] ?? $values['number'] ?? null,
+            row: $values['seatRow'] ?? $values['row'] ?? null,
+            section: $values['seatSection'] ?? $values['section'] ?? null,
+            type: $values['seatType'] ?? $values['type'] ?? null,
             aisle: $values['seatAisle'] ?? null,
-            description: $values['seatDescription'] ?? null,
-            identifier: $values['seatIdentifier'] ?? null,
             level: $values['seatLevel'] ?? null,
-            number: $values['seatNumber'] ?? null,
-            row: $values['seatRow'] ?? null,
-            section: $values['seatSection'] ?? null,
             sectionColor: $values['seatSectionColor'] ?? null,
-            type: $values['seatType'] ?? null,
         );
     }
 
