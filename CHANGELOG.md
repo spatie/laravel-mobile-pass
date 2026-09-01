@@ -2,6 +2,25 @@
 
 All notable changes to `laravel-mobile-pass` will be documented in this file.
 
+## 1.10.0 - 2026-09-01
+
+### What's Changed
+
+* fix: include nameSuffix when serializing PersonName by @manfield in https://github.com/spatie/laravel-mobile-pass/pull/66
+* feat: add Pass.RelevantDates support to Apple passes by @manfield in https://github.com/spatie/laravel-mobile-pass/pull/67
+* feat: apple pass personalization by @manfield in https://github.com/spatie/laravel-mobile-pass/pull/68
+
+Apple passes can now declare several relevance windows with `addRelevantDate()` and `addRelevantDateInterval()`. Each single moment is written to both `relevantDate` and `date` so Wallet picks it up on iOS 18 as well as iOS 26, and the deprecated top-level `relevantDate` is derived from the first window so passes still surface on iOS 17 and earlier.
+
+Pass personalization adds a new table. Existing installs should publish and run the new migration:
+
+```bash
+php artisan vendor:publish --tag="mobile-pass-migrations"
+php artisan migrate
+
+```
+**Full Changelog**: https://github.com/spatie/laravel-mobile-pass/compare/1.9.0...1.10.0
+
 ## 1.9.0 - 2026-08-26
 
 ### What's Changed
@@ -93,6 +112,7 @@ EventTicketPassBuilder::make()
 
 
 
+
 ```
 A remote variant, `setRemoteBackgroundImage()`, is available as well. The image (along with its @2x and @3x densities) is bundled into the generated `.pkpass`.
 
@@ -114,6 +134,7 @@ EventTicketPassClass::make('beatles-shea-1965')
     ->addTextModule('Doors', 'Doors open at 18:30')
     ->addImageModule('https://example.com/seating-chart.png', 'seating')
     ->save();
+
 
 
 
