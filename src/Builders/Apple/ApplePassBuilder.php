@@ -908,8 +908,7 @@ abstract class ApplePassBuilder
             'organizationName' => $this->organizationName,
             'passTypeIdentifier' => self::appleConfig('type_identifier'),
             'serialNumber' => $this->serialNumber,
-            'authenticationToken' => self::appleConfig('webservice.secret'),
-            'webServiceURL' => $this->webServiceURL(),
+            ...$this->compileWebServiceCredentials(),
             'teamIdentifier' => self::appleConfig('team_identifier'),
             'description' => $this->description,
             'sharingProhibited' => $this->sharingProhibited,
@@ -949,6 +948,34 @@ abstract class ApplePassBuilder
     protected static function isPresent(mixed $value): bool
     {
         return $value !== null && $value !== '' && $value !== [];
+    }
+
+    /**
+     * `webServiceURL` and `authenticationToken` are a pair: Wallet only treats a pass as
+     * updatable when it carries both, and rejects passes that include one without the
+     * other. Apple also requires the web service URL to be served over HTTPS, so we only
+     * emit either key when a resolvable HTTPS URL and a configured secret come together.
+     *
+     * @return array{webServiceURL?: string, authenticationToken?: string}
+     */
+    protected function compileWebServiceCredentials(): array
+    {
+        $webServiceURL = $this->webServiceURL();
+
+        if ($webServiceURL === null) {
+            return [];
+        }
+
+        $authenticationToken = self::appleConfig('webservice.secret');
+
+        if (! is_string($authenticationToken) || $authenticationToken === '') {
+            return [];
+        }
+
+        return [
+            'webServiceURL' => $webServiceURL,
+            'authenticationToken' => $authenticationToken,
+        ];
     }
 
     /**
