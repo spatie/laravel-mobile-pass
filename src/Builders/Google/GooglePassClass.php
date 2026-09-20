@@ -128,9 +128,11 @@ abstract class GooglePassClass
 
     public function save(): static
     {
-        $payload = static::validator()->validate(
-            $this->compileData() + $this->compileModules() + ['id' => $this->id()]
-        );
+        $payload = $this->compileData() + $this->compileModules() + ['id' => $this->id()];
+
+        $payload['reviewStatus'] = 'UNDER_REVIEW';
+
+        $payload = static::validator()->validate($payload);
 
         app(GoogleWalletClient::class)->insertClass(static::resourceName(), $this->id(), $payload);
 
