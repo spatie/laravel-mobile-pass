@@ -55,6 +55,15 @@ class InvalidConfig extends Exception implements MobilePassException
         );
     }
 
+    public static function webserviceSecretMissing(): self
+    {
+        return new self(
+            'The `mobile-pass.apple.webservice.host` config value is set, but `mobile-pass.apple.webservice.secret` is empty. '
+            .'Apple only makes passes updatable when both are present. '
+            .'Set MOBILE_PASS_APPLE_WEBSERVICE_SECRET, or leave the host empty if you do not need device registrations.'
+        );
+    }
+
     public static function incompleteRelevantDate(): self
     {
         return new self(

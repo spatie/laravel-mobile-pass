@@ -49,6 +49,7 @@ try {
 
 - `InvalidConfig::missingGoogleCredentials()`: no Google service account key is configured. Set either `MOBILE_PASS_GOOGLE_KEY` (raw JSON or base64-encoded JSON) or `MOBILE_PASS_GOOGLE_KEY_PATH`.
 - `InvalidConfig::webserviceHostMustBeHttps($host)`: `mobile-pass.apple.webservice.host` is set to a non-HTTPS URL. Apple rejects passes whose `webServiceURL` isn't HTTPS. Leave the value empty for local development over `http://`.
+- `InvalidConfig::webserviceSecretMissing()`: `mobile-pass.apple.webservice.host` is set, but `mobile-pass.apple.webservice.secret` is empty. Apple only makes passes updatable when both are present. Set `MOBILE_PASS_APPLE_WEBSERVICE_SECRET`, or leave the host empty.
 - `InvalidConfig::passBuilderNotRegistered()` and `InvalidConfig::invalidPassBuilderClass()`: a builder you're referencing isn't in the `builders` config key, or doesn't extend the expected base class.
 
 These surface at runtime the first time the package tries to use the misconfigured value. Catch them in a `Handler::register()` call if you want to render a friendlier error page for developers.

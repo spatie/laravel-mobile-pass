@@ -951,10 +951,8 @@ abstract class ApplePassBuilder
     }
 
     /**
-     * `webServiceURL` and `authenticationToken` are a pair: Wallet only treats a pass as
-     * updatable when it carries both, and rejects passes that include one without the
-     * other. Apple also requires the web service URL to be served over HTTPS, so we only
-     * emit either key when a resolvable HTTPS URL and a configured secret come together.
+     * Wallet rejects a pass that carries only one of `webServiceURL` and
+     * `authenticationToken`, so both are emitted together or not at all.
      *
      * @return array{webServiceURL?: string, authenticationToken?: string}
      */
@@ -969,6 +967,10 @@ abstract class ApplePassBuilder
         $authenticationToken = self::appleConfig('webservice.secret');
 
         if (! is_string($authenticationToken) || $authenticationToken === '') {
+            if (self::isPresent(self::appleConfig('webservice.host'))) {
+                throw InvalidConfig::webserviceSecretMissing();
+            }
+
             return [];
         }
 

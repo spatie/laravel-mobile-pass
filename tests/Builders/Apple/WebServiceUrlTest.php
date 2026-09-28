@@ -22,11 +22,17 @@ it('omits webServiceURL and authenticationToken when neither the host nor the se
     expect($data)->not->toHaveKeys(['webServiceURL', 'authenticationToken']);
 });
 
-it('omits both keys when only the host is configured', function () {
-    // Apple rejects passes that carry a webServiceURL without an
-    // authenticationToken, so neither key may end up in pass.json.
+it('throws when the host is configured without a secret', function () {
     config()->set('mobile-pass.apple.webservice.host', 'https://example.test');
     config()->set('mobile-pass.apple.webservice.secret', null);
+
+    buildCouponPassData();
+})->throws(InvalidConfig::class, 'webservice.secret` is empty');
+
+it('omits both keys when app.url is HTTPS but no secret is configured', function () {
+    config()->set('mobile-pass.apple.webservice.host', null);
+    config()->set('mobile-pass.apple.webservice.secret', null);
+    config()->set('app.url', 'https://my-app.test');
 
     $data = buildCouponPassData();
 

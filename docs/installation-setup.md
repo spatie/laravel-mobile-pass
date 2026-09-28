@@ -44,10 +44,11 @@ return [
         'certificate_password' => env('MOBILE_PASS_APPLE_CERTIFICATE_PASSWORD'),
 
         'apple_push_base_url' => 'https://api.push.apple.com/3/device',
+
         /*
-        * `secret` and `host` together make passes updatable. Apple only accepts
-        * passes that carry a webServiceURL and authenticationToken as a pair, so
-        * pass.json includes both only when both values are configured here.
+        * Set a secret to make passes updatable. When no host is set, APP_URL
+        * is used if it's HTTPS. Without both a secret and an HTTPS host, passes
+        * are generated without webServiceURL and authenticationToken.
         */
         'webservice' => [
             'secret' => env('MOBILE_PASS_APPLE_WEBSERVICE_SECRET'),
