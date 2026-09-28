@@ -2,6 +2,19 @@
 
 All notable changes to `laravel-mobile-pass` will be documented in this file.
 
+## 1.11.1 - 2026-09-28
+
+### What's Changed
+
+* fix: set Google pass class review status on update by @Alibaghaee in https://github.com/spatie/laravel-mobile-pass/pull/72
+* fix: only emit Apple web-service credentials when fully configured by @n3crosis in https://github.com/spatie/laravel-mobile-pass/pull/70
+
+### New Contributors
+
+* @n3crosis made their first contribution in https://github.com/spatie/laravel-mobile-pass/pull/70
+
+**Full Changelog**: https://github.com/spatie/laravel-mobile-pass/compare/1.11.0...1.11.1
+
 ## 1.11.0 - 2026-09-01
 
 ### What's Changed
@@ -26,6 +39,7 @@ Pass personalization adds a new table. Existing installs should publish and run 
 ```bash
 php artisan vendor:publish --tag="mobile-pass-migrations"
 php artisan migrate
+
 
 
 ```
@@ -124,6 +138,7 @@ EventTicketPassBuilder::make()
 
 
 
+
 ```
 A remote variant, `setRemoteBackgroundImage()`, is available as well. The image (along with its @2x and @3x densities) is bundled into the generated `.pkpass`.
 
@@ -145,6 +160,7 @@ EventTicketPassClass::make('beatles-shea-1965')
     ->addTextModule('Doors', 'Doors open at 18:30')
     ->addImageModule('https://example.com/seating-chart.png', 'seating')
     ->save();
+
 
 
 
