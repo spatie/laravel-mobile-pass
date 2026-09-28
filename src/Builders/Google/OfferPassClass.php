@@ -126,7 +126,6 @@ class OfferPassClass extends GooglePassClass
             'localizedFinePrint' => $this->finePrint?->toArray(),
             'logo' => $this->logo?->toArray(),
             'hexBackgroundColor' => $this->backgroundColor,
-            'reviewStatus' => $this->reviewStatus,
         ]);
     }
 

@@ -135,7 +135,6 @@ class LoyaltyPassClass extends GooglePassClass
             'accountIdLabel' => $this->accountIdLabel?->defaultValue,
             'localizedAccountIdLabel' => $this->accountIdLabel?->toArray(),
             'hexBackgroundColor' => $this->backgroundColor,
-            'reviewStatus' => $this->reviewStatus,
         ]);
     }
 

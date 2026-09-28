@@ -104,7 +104,6 @@ class GenericPassClass extends GooglePassClass
             'hexBackgroundColor' => $this->backgroundColor,
             'logo' => $this->logo?->toArray(),
             'heroImage' => $this->hero?->toArray(),
-            'reviewStatus' => $this->reviewStatus,
         ]);
     }
 
