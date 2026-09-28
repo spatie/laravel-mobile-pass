@@ -104,7 +104,6 @@ class BoardingPassClass extends GooglePassClass
             'logo' => $this->logo?->toArray(),
             'heroImage' => $this->hero?->toArray(),
             'hexBackgroundColor' => $this->backgroundColor,
-            'reviewStatus' => $this->reviewStatus,
         ]);
     }
 

@@ -20,8 +20,6 @@ use Spatie\LaravelMobilePass\Support\Google\GoogleWalletClient;
  */
 abstract class GooglePassClass
 {
-    protected string $reviewStatus = 'UNDER_REVIEW';
-
     protected ?string $issuerName = null;
 
     protected ?string $backgroundColor = null;
@@ -128,8 +126,12 @@ abstract class GooglePassClass
 
     public function save(): static
     {
+        // Google rejects updates to approved classes unless reviewStatus is sent as UNDER_REVIEW.
         $payload = static::validator()->validate(
-            $this->compileData() + $this->compileModules() + ['id' => $this->id()]
+            $this->compileData() + $this->compileModules() + [
+                'id' => $this->id(),
+                'reviewStatus' => 'UNDER_REVIEW',
+            ]
         );
 
         app(GoogleWalletClient::class)->insertClass(static::resourceName(), $this->id(), $payload);
@@ -222,10 +224,6 @@ abstract class GooglePassClass
     {
         if (isset($payload['issuerName'])) {
             $this->issuerName = (string) $payload['issuerName'];
-        }
-
-        if (isset($payload['reviewStatus'])) {
-            $this->reviewStatus = (string) $payload['reviewStatus'];
         }
 
         if (isset($payload['hexBackgroundColor'])) {

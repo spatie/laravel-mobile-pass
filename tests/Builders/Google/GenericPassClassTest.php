@@ -37,8 +37,40 @@ it('saves the expected payload to Google', function () {
         expect($request['hexBackgroundColor'])->toBe('#00ff00');
         expect($request['logo']['sourceUri']['uri'])->toBe('https://cdn.example.com/logo.png');
         expect($request['heroImage']['sourceUri']['uri'])->toBe('https://cdn.example.com/hero.png');
+        expect($request['reviewStatus'])->toBe('UNDER_REVIEW');
 
         return true;
+    });
+});
+
+it('resets reviewStatus to UNDER_REVIEW when updating an existing class', function () {
+    Http::fakeSequence()
+        ->push([
+            'id' => '3388.membership',
+            'reviewStatus' => 'APPROVED',
+            'cardTitle' => [
+                'defaultValue' => [
+                    'language' => 'en-US',
+                    'value' => 'Spatie Membership',
+                ],
+            ],
+        ], 200)
+        ->push(['error' => ['code' => 409]], 409)
+        ->push(['id' => '3388.membership', 'reviewStatus' => 'UNDER_REVIEW'], 200);
+
+    $class = GenericPassClass::find('membership');
+
+    expect($class)->not->toBeNull();
+
+    $class
+        ->setIssuerName('Spatie')
+        ->save();
+
+    Http::assertSentCount(3);
+    Http::assertSent(function ($request) {
+        return $request->method() === 'PATCH'
+            && str_ends_with($request->url(), '/genericClass/3388.membership')
+            && $request['reviewStatus'] === 'UNDER_REVIEW';
     });
 });
 
