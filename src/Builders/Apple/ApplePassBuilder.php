@@ -908,8 +908,7 @@ abstract class ApplePassBuilder
             'organizationName' => $this->organizationName,
             'passTypeIdentifier' => self::appleConfig('type_identifier'),
             'serialNumber' => $this->serialNumber,
-            'authenticationToken' => self::appleConfig('webservice.secret'),
-            'webServiceURL' => $this->webServiceURL(),
+            ...$this->compileWebServiceCredentials(),
             'teamIdentifier' => self::appleConfig('team_identifier'),
             'description' => $this->description,
             'sharingProhibited' => $this->sharingProhibited,
@@ -949,6 +948,36 @@ abstract class ApplePassBuilder
     protected static function isPresent(mixed $value): bool
     {
         return $value !== null && $value !== '' && $value !== [];
+    }
+
+    /**
+     * Wallet rejects a pass that carries only one of `webServiceURL` and
+     * `authenticationToken`, so both are emitted together or not at all.
+     *
+     * @return array{webServiceURL?: string, authenticationToken?: string}
+     */
+    protected function compileWebServiceCredentials(): array
+    {
+        $webServiceURL = $this->webServiceURL();
+
+        if ($webServiceURL === null) {
+            return [];
+        }
+
+        $authenticationToken = self::appleConfig('webservice.secret');
+
+        if (! is_string($authenticationToken) || $authenticationToken === '') {
+            if (self::isPresent(self::appleConfig('webservice.host'))) {
+                throw InvalidConfig::webserviceSecretMissing();
+            }
+
+            return [];
+        }
+
+        return [
+            'webServiceURL' => $webServiceURL,
+            'authenticationToken' => $authenticationToken,
+        ];
     }
 
     /**
