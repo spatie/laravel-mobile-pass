@@ -1,11 +1,11 @@
 <?php
 
-use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Spatie\LaravelMobilePass\Http\Middleware\VerifyGoogleCallbackRequest;
 use Spatie\LaravelMobilePass\Tests\TestSupport\Google\GoogleFixtures;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 beforeEach(function () {
     config()->set('mobile-pass.google.issuer_id', '3388000000000000001');
@@ -67,7 +67,7 @@ it('rejects a request with a non-JSON body', function () {
     $request = Request::create('/google/callbacks', 'POST', content: 'not json');
 
     (new VerifyGoogleCallbackRequest)->handle($request, fn () => response('ok'));
-})->throws(AuthenticationException::class, 'Invalid Google callback payload.');
+})->throws(HttpException::class, 'Invalid Google callback payload.');
 
 it('rejects an unsupported protocol version', function () {
     fakeRootKeysSuccess();
@@ -75,14 +75,14 @@ it('rejects an unsupported protocol version', function () {
     $payload['protocolVersion'] = 'ECv1';
 
     (new VerifyGoogleCallbackRequest)->handle(ecv2Request($payload), fn () => response('ok'));
-})->throws(AuthenticationException::class, 'Unsupported Google callback protocol version.');
+})->throws(HttpException::class, 'Unsupported Google callback protocol version.');
 
 it('rejects when no issuer id is configured', function () {
     fakeRootKeysSuccess();
     config()->set('mobile-pass.google.issuer_id', null);
 
     (new VerifyGoogleCallbackRequest)->handle(ecv2Request(buildValidPayload()), fn () => response('ok'));
-})->throws(AuthenticationException::class, 'No Google issuer id configured.');
+})->throws(HttpException::class, 'No Google issuer id configured.');
 
 it('rejects a tampered signedMessage', function () {
     fakeRootKeysSuccess();
@@ -90,21 +90,21 @@ it('rejects a tampered signedMessage', function () {
     $payload['signedMessage'] = (string) json_encode(['eventType' => 'save', 'objectId' => 'tampered']);
 
     (new VerifyGoogleCallbackRequest)->handle(ecv2Request($payload), fn () => response('ok'));
-})->throws(AuthenticationException::class, 'Invalid Google callback signature');
+})->throws(HttpException::class, 'Invalid Google callback signature');
 
 it('rejects an expired intermediate signing key', function () {
     fakeRootKeysSuccess();
     $payload = buildValidPayload(intermediateExpirationMs: (int) round((microtime(true) - 60) * 1000));
 
     (new VerifyGoogleCallbackRequest)->handle(ecv2Request($payload), fn () => response('ok'));
-})->throws(AuthenticationException::class, 'Intermediate signing key has expired');
+})->throws(HttpException::class, 'Intermediate signing key has expired');
 
 it('rejects when the configured issuer id does not match the signed payload', function () {
     fakeRootKeysSuccess();
     config()->set('mobile-pass.google.issuer_id', '9999999999999999999');
 
     (new VerifyGoogleCallbackRequest)->handle(ecv2Request(buildValidPayload()), fn () => response('ok'));
-})->throws(AuthenticationException::class, 'Message signature failed verification');
+})->throws(HttpException::class, 'Message signature failed verification');
 
 it('rejects when intermediateSigningKey is missing', function () {
     fakeRootKeysSuccess();
@@ -112,7 +112,7 @@ it('rejects when intermediateSigningKey is missing', function () {
     unset($payload['intermediateSigningKey']);
 
     (new VerifyGoogleCallbackRequest)->handle(ecv2Request($payload), fn () => response('ok'));
-})->throws(AuthenticationException::class, 'Missing intermediateSigningKey');
+})->throws(HttpException::class, 'Missing intermediateSigningKey');
 
 it('caches the root keys after the first successful verification', function () {
     fakeRootKeysSuccess();
@@ -142,7 +142,7 @@ it('does not refetch keys when usable cached keys fail to verify the payload', f
 
     try {
         (new VerifyGoogleCallbackRequest)->handle(ecv2Request(buildValidPayload()), fn () => response('ok'));
-    } catch (AuthenticationException) {
+    } catch (HttpException) {
         // expected — cached keys are usable but can't verify this payload
     }
 
@@ -163,7 +163,7 @@ it('keeps cached keys around when a forged payload arrives', function () {
 
     try {
         (new VerifyGoogleCallbackRequest)->handle(ecv2Request($payload), fn () => response('ok'));
-    } catch (AuthenticationException) {
+    } catch (HttpException) {
         // expected
     }
 
@@ -177,7 +177,7 @@ it('throws when Google root keys cannot be fetched on a cold cache', function ()
     ]);
 
     (new VerifyGoogleCallbackRequest)->handle(ecv2Request(buildValidPayload()), fn () => response('ok'));
-})->throws(AuthenticationException::class, 'Failed to fetch Google root keys');
+})->throws(HttpException::class, 'Failed to fetch Google root keys');
 
 it('skips expired root keys when picking a verifier', function () {
     Http::fake([
@@ -193,4 +193,17 @@ it('skips expired root keys when picking a verifier', function () {
     ]);
 
     (new VerifyGoogleCallbackRequest)->handle(ecv2Request(buildValidPayload()), fn () => response('ok'));
-})->throws(AuthenticationException::class, 'No usable Google root keys available');
+})->throws(HttpException::class, 'No usable Google root keys available');
+
+it('responds with a plain 401 when the Google callback is not validly signed', function (array $payload) {
+    fakeRootKeysSuccess();
+
+    $this
+        ->post(route('mobile-pass.google.callback'), $payload)
+        ->assertUnauthorized();
+})->with([
+    'tampered payload' => fn () => array_merge(buildValidPayload(), [
+        'signedMessage' => (string) json_encode(['eventType' => 'save', 'objectId' => 'tampered']),
+    ]),
+    'empty payload' => fn () => [],
+]);

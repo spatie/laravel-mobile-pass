@@ -3,7 +3,6 @@
 namespace Spatie\LaravelMobilePass\Http\Middleware;
 
 use Closure;
-use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
@@ -37,23 +36,23 @@ class VerifyGoogleCallbackRequest
         $payload = json_decode($request->getContent(), true);
 
         if (! is_array($payload)) {
-            throw new AuthenticationException('Invalid Google callback payload.');
+            abort(401, 'Invalid Google callback payload.');
         }
 
         if (($payload['protocolVersion'] ?? null) !== self::PROTOCOL_VERSION) {
-            throw new AuthenticationException('Unsupported Google callback protocol version.');
+            abort(401, 'Unsupported Google callback protocol version.');
         }
 
         $issuerId = (string) config('mobile-pass.google.issuer_id');
 
         if ($issuerId === '') {
-            throw new AuthenticationException('No Google issuer id configured.');
+            abort(401, 'No Google issuer id configured.');
         }
 
         try {
             $claims = $this->verifyAndDecode($payload, $issuerId);
         } catch (Throwable $exception) {
-            throw new AuthenticationException('Invalid Google callback signature: '.$exception->getMessage());
+            abort(401, 'Invalid Google callback signature: '.$exception->getMessage());
         }
 
         $request->attributes->set('google_callback_claims', $claims);
