@@ -4,6 +4,7 @@ use Dotenv\Dotenv;
 use Illuminate\Support\Arr;
 use Spatie\LaravelMobilePass\Support\Apple\PkPassReader;
 use Spatie\LaravelMobilePass\Tests\TestCase;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 uses(TestCase::class)->in(__DIR__);
 
@@ -11,6 +12,20 @@ if (file_exists(__DIR__.'/../.env')) {
     $dotEnv = Dotenv::createImmutable(__DIR__.'/..');
 
     $dotEnv->load();
+}
+
+function expectUnauthorized(Closure $callback): void
+{
+    try {
+        $callback();
+    } catch (HttpException $exception) {
+        expect($exception->getStatusCode())->toBe(401);
+        expect($exception->getMessage())->toBe('');
+
+        return;
+    }
+
+    test()->fail('Expected the request to be aborted with a 401.');
 }
 
 function getTestSupportPath(string $path): string
