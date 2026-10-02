@@ -36,23 +36,23 @@ class VerifyGoogleCallbackRequest
         $payload = json_decode($request->getContent(), true);
 
         if (! is_array($payload)) {
-            abort(401, 'Invalid Google callback payload.');
+            abort(401);
         }
 
         if (($payload['protocolVersion'] ?? null) !== self::PROTOCOL_VERSION) {
-            abort(401, 'Unsupported Google callback protocol version.');
+            abort(401);
         }
 
         $issuerId = (string) config('mobile-pass.google.issuer_id');
 
         if ($issuerId === '') {
-            abort(401, 'No Google issuer id configured.');
+            abort(401);
         }
 
         try {
             $claims = $this->verifyAndDecode($payload, $issuerId);
-        } catch (Throwable $exception) {
-            abort(401, 'Invalid Google callback signature: '.$exception->getMessage());
+        } catch (Throwable) {
+            abort(401);
         }
 
         $request->attributes->set('google_callback_claims', $claims);

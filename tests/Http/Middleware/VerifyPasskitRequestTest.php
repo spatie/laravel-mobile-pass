@@ -3,7 +3,6 @@
 use Illuminate\Http\Request;
 use Spatie\LaravelMobilePass\Http\Middleware\VerifyApplePasskitRequest;
 use Spatie\LaravelMobilePass\Models\MobilePass;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 
 it('handles the request when a valid auth token is provided', function () {
     config(['mobile-pass.apple.webservice.secret' => 'pass12345']);
@@ -26,15 +25,7 @@ it('aborts with a 401 when an invalid auth token is provided', function () {
     $request = Request::create(uri: '/test');
     $request->headers->set('Authorization', 'ApplePass incorrect');
 
-    try {
-        (new VerifyApplePasskitRequest)->handle($request, fn () => response('Done!'));
-    } catch (HttpException $exception) {
-        expect($exception->getStatusCode())->toBe(401);
-
-        return;
-    }
-
-    $this->fail('Expected the middleware to abort the request.');
+    expectUnauthorized(fn () => (new VerifyApplePasskitRequest)->handle($request, fn () => response('Done!')));
 });
 
 it('responds with a plain 401 when the Apple auth header is wrong or missing', function (array $headers) {
