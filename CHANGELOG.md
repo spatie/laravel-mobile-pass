@@ -2,6 +2,25 @@
 
 All notable changes to `laravel-mobile-pass` will be documented in this file.
 
+## 1.11.2 - 2026-10-19
+
+### Fixes
+
+- Return HTTP 401 for unauthorized Apple Wallet requests and invalid Google Wallet callbacks instead of redirecting to a login route or returning HTTP 500 when no login route exists.
+- Keep verification failure details out of the response.
+- Strengthen regression coverage for JSON callbacks, login-route presence, and forged callbacks using cached keys.
+
+### Tooling and requirements
+
+- Update to Pest 5, PHPUnit 13.4, and Testbench 11.
+- Require PHP 8.4+ and Laravel 13.23+; CI covers PHP 8.4 and 8.5.
+
+No application API breaking changes. Applications on older PHP or Laravel versions should remain on an earlier package release.
+
+**Full Changelog**: https://github.com/spatie/laravel-mobile-pass/compare/1.11.1...1.11.2
+
+**Pull request**: https://github.com/spatie/laravel-mobile-pass/pull/73
+
 ## 1.11.1 - 2026-09-28
 
 ### What's Changed
@@ -39,6 +58,7 @@ Pass personalization adds a new table. Existing installs should publish and run 
 ```bash
 php artisan vendor:publish --tag="mobile-pass-migrations"
 php artisan migrate
+
 
 
 
@@ -139,6 +159,7 @@ EventTicketPassBuilder::make()
 
 
 
+
 ```
 A remote variant, `setRemoteBackgroundImage()`, is available as well. The image (along with its @2x and @3x densities) is bundled into the generated `.pkpass`.
 
@@ -160,6 +181,7 @@ EventTicketPassClass::make('beatles-shea-1965')
     ->addTextModule('Doors', 'Doors open at 18:30')
     ->addImageModule('https://example.com/seating-chart.png', 'seating')
     ->save();
+
 
 
 
