@@ -3,7 +3,7 @@ title: Requirements
 weight: 3
 ---
 
-This package needs PHP 8.3+ and Laravel 12+.
+This package needs PHP 8.4+ and Laravel 13.23+.
 
 You'll also need the [zip extension](https://www.php.net/manual/en/zip.installation.php) enabled.
 
