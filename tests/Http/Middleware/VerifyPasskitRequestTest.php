@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 use Spatie\LaravelMobilePass\Http\Middleware\VerifyApplePasskitRequest;
 use Spatie\LaravelMobilePass\Models\MobilePass;
 
@@ -28,8 +29,12 @@ it('aborts with a 401 when an invalid auth token is provided', function () {
     expectUnauthorized(fn () => (new VerifyApplePasskitRequest)->handle($request, fn () => response('Done!')));
 });
 
-it('responds with a plain 401 when the Apple auth header is wrong or missing', function (array $headers) {
+it('responds with a plain 401 when the Apple auth header is wrong or missing', function (array $headers, bool $hasLoginRoute) {
     config(['mobile-pass.apple.webservice.secret' => 'pass12345']);
+
+    if ($hasLoginRoute) {
+        Route::get('login', fn () => 'Login')->name('login');
+    }
 
     $pass = MobilePass::factory()->create();
 
@@ -50,4 +55,7 @@ it('responds with a plain 401 when the Apple auth header is wrong or missing', f
 })->with([
     'wrong header' => [['Authorization' => 'ApplePass incorrect']],
     'missing header' => [[]],
+])->with([
+    'without a login route' => false,
+    'with a login route' => true,
 ]);

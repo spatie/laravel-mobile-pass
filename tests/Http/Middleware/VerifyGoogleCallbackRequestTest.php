@@ -3,9 +3,9 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Route;
 use Spatie\LaravelMobilePass\Http\Middleware\VerifyGoogleCallbackRequest;
 use Spatie\LaravelMobilePass\Tests\TestSupport\Google\GoogleFixtures;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 
 beforeEach(function () {
     config()->set('mobile-pass.google.issuer_id', '3388000000000000001');
@@ -140,11 +140,7 @@ it('does not refetch keys when usable cached keys fail to verify the payload', f
         3600,
     );
 
-    try {
-        (new VerifyGoogleCallbackRequest)->handle(ecv2Request(buildValidPayload()), fn () => response('ok'));
-    } catch (HttpException) {
-        // expected — cached keys are usable but can't verify this payload
-    }
+    expectUnauthorized(fn () => (new VerifyGoogleCallbackRequest)->handle(ecv2Request(buildValidPayload()), fn () => response('ok')));
 
     Http::assertSentCount(0);
 });
@@ -161,11 +157,7 @@ it('keeps cached keys around when a forged payload arrives', function () {
     $payload = buildValidPayload();
     $payload['signedMessage'] = (string) json_encode(['eventType' => 'save', 'objectId' => 'forged']);
 
-    try {
-        (new VerifyGoogleCallbackRequest)->handle(ecv2Request($payload), fn () => response('ok'));
-    } catch (HttpException) {
-        // expected
-    }
+    expectUnauthorized(fn () => (new VerifyGoogleCallbackRequest)->handle(ecv2Request($payload), fn () => response('ok')));
 
     expect(Cache::has('mobile-pass.google.root-keys'))->toBeTrue();
     Http::assertSentCount(0);
@@ -195,15 +187,27 @@ it('skips expired root keys when picking a verifier', function () {
     expectUnauthorized(fn () => (new VerifyGoogleCallbackRequest)->handle(ecv2Request(buildValidPayload()), fn () => response('ok')));
 });
 
-it('responds with a plain 401 when the Google callback is not validly signed', function (array $payload) {
+it('responds with a plain 401 when the Google callback is not validly signed', function (array $payload, bool $hasLoginRoute) {
     fakeRootKeysSuccess();
 
+    if ($hasLoginRoute) {
+        Route::get('login', fn () => 'Login')->name('login');
+    }
+
     $this
-        ->post(route('mobile-pass.google.callback'), $payload)
+        ->call(
+            'POST',
+            route('mobile-pass.google.callback'),
+            server: ['CONTENT_TYPE' => 'application/json'],
+            content: json_encode($payload, JSON_THROW_ON_ERROR),
+        )
         ->assertUnauthorized();
 })->with([
     'tampered payload' => fn () => array_merge(buildValidPayload(), [
         'signedMessage' => (string) json_encode(['eventType' => 'save', 'objectId' => 'tampered']),
     ]),
     'empty payload' => fn () => [],
+])->with([
+    'without a login route' => false,
+    'with a login route' => true,
 ]);
