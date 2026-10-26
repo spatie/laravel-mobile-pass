@@ -25,8 +25,6 @@ class User extends Model
 }
 ```
 
-Once you've associated passes with a model, see [Retrieving mobile passes](basic-usage/retrieving-mobile-passes) for the helper methods that fetch them back.
-
 ## Building a pass
 
 Here's an Apple Wallet event ticket:
@@ -89,3 +87,14 @@ return $mobilePass;
 Android users get redirected to the Google Wallet save URL, iPhone users get the `.pkpass` download. The `Responsable` model picks the right response for the platform the pass was built for.
 
 Updating a Google pass works a little differently from Apple. See [Updating a pass](basic-usage/updating-a-pass) for both flows side by side.
+
+## Associating a pass with a model
+
+Calling `save()` on either an Apple or Google builder stores the pass, but doesn't automatically associate it with a user or any other model. To link the `$mobilePass` created above to an existing user, call `addMobilePass()` on a model that uses the `HasMobilePasses` trait:
+
+```php
+$user = User::firstOrFail();
+$user->addMobilePass($mobilePass);
+```
+
+You can now retrieve the pass through `$user->mobilePasses` or `$user->firstMobilePass()`. See [Retrieving mobile passes](basic-usage/retrieving-mobile-passes) for the platform and pass-type filters.
