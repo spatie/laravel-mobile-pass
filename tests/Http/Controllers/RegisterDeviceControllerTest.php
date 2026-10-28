@@ -118,3 +118,58 @@ it('returns 404 if the pass doesnt exist', function () {
         ])
         ->assertNotFound();
 });
+
+it('returns 404 when the pass type ID does not belong to the pass', function () {
+    $pass = MobilePass::factory()->create();
+
+    $this
+        ->withoutMiddleware()
+        ->postJson(route('mobile-pass.register-device', [
+            'passSerial' => $pass->pass_serial,
+            'deviceId' => '12345',
+            'passTypeId' => 'pass.com.attacker',
+        ]), ['pushToken' => '12345'])
+        ->assertNotFound();
+
+    expect(AppleMobilePassRegistration::count())->toBe(0);
+});
+
+it('rejects a missing or malformed push token', function (array $payload) {
+    $pass = MobilePass::factory()->create();
+
+    $this
+        ->withoutMiddleware()
+        ->postJson(route('mobile-pass.register-device', [
+            'passSerial' => $pass->pass_serial,
+            'deviceId' => '12345',
+            'passTypeId' => 'pass.com.example',
+        ]), $payload)
+        ->assertUnprocessable();
+
+    expect(AppleMobilePassRegistration::count())->toBe(0);
+})->with([
+    'missing' => [[]],
+    'not hex' => [['pushToken' => '../../evil']],
+    'too long' => [['pushToken' => str_repeat('a', 201)]],
+]);
+
+it('refuses to store the same device twice for a pass', function () {
+    $registration = AppleMobilePassRegistration::factory()->create();
+
+    expect(fn () => AppleMobilePassRegistration::query()->create([
+        'device_id' => $registration->device_id,
+        'mobile_pass_id' => $registration->mobile_pass_id,
+        'pass_type_id' => 'pass.com.example',
+    ]))->toThrow(\Illuminate\Database\UniqueConstraintViolationException::class);
+});
+
+it('removes registrations when the pass is deleted', function () {
+    // SQLite only enforces foreign keys, and therefore cascades, when this pragma is on.
+    \Illuminate\Support\Facades\DB::statement('PRAGMA foreign_keys = ON');
+
+    $registration = AppleMobilePassRegistration::factory()->create();
+
+    $registration->pass->delete();
+
+    expect(AppleMobilePassRegistration::count())->toBe(0);
+});
