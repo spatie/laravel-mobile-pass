@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Http;
 use Spatie\LaravelMobilePass\Builders\Google\Entities\LocalizedString;
 use Spatie\LaravelMobilePass\Builders\Google\EventTicketPassBuilder;
 use Spatie\LaravelMobilePass\Builders\Google\EventTicketPassClass;
+use Spatie\LaravelMobilePass\Builders\Google\GenericPassBuilder;
 use Spatie\LaravelMobilePass\Builders\Google\GenericPassClass;
 use Spatie\LaravelMobilePass\Builders\Google\LoyaltyPassClass;
 use Spatie\LaravelMobilePass\Builders\Google\OfferPassClass;
@@ -71,24 +72,32 @@ it('EventTicketPassClass::setEventName accepts a LocalizedString with translatio
     });
 });
 
-it('GenericPassClass::setCardTitle accepts a LocalizedString with translations', function () {
-    Http::fake(['*/genericClass' => Http::response([], 200)]);
+it('GenericPassBuilder::setCardTitle accepts a LocalizedString with translations', function () {
+    Http::fake(['*/genericObject' => Http::response([], 200)]);
 
-    GenericPassClass::make('gc-001')
+    GenericPassBuilder::make()
+        ->setClass('gc-001')
         ->setCardTitle(
             LocalizedString::of('My Card', 'en-US')
                 ->addTranslation('it', 'La Mia Carta')
         )
+        ->setHeader(LocalizedString::of('Ringo', 'en-US'))
         ->save();
 
     Http::assertSent(function ($request) {
         expect($request['cardTitle']['defaultValue']['value'])->toBe('My Card');
         expect($request['cardTitle']['translatedValues'])
             ->toContain(['language' => 'it', 'value' => 'La Mia Carta']);
+        expect($request['header']['defaultValue']['value'])->toBe('Ringo');
 
         return true;
     });
 });
+
+it('throws when LocalizedString and non-default language are both passed to GenericPassBuilder', function () {
+    GenericPassBuilder::make()
+        ->setHeader(LocalizedString::of('Ringo', 'en-US'), 'it');
+})->throws(InvalidArgumentException::class);
 
 it('EventTicketPassBuilder::setSection accepts a LocalizedString with translations', function () {
     Http::fake(['*/eventTicketObject' => Http::response([], 200)]);

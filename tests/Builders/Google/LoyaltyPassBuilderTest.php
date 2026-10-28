@@ -21,7 +21,6 @@ it('creates a MobilePass row and POSTs the loyalty object to Google', function (
         ->setObjectSuffix('jane')
         ->setAccountId('AC-42')
         ->setAccountName('Jane Doe')
-        ->setBalanceMicros(125000000)
         ->setBalanceString('125 points')
         ->setBarcode(BarcodeType::Aztec, 'LP-42')
         ->save();
@@ -34,9 +33,88 @@ it('creates a MobilePass row and POSTs the loyalty object to Google', function (
     Http::assertSent(function ($request) {
         expect($request['accountId'])->toBe('AC-42');
         expect($request['accountName'])->toBe('Jane Doe');
-        expect($request['loyaltyPoints']['balance']['micros'])->toBe(125000000);
-        expect($request['loyaltyPoints']['balance']['string'])->toBe('125 points');
+        expect($request['loyaltyPoints']['balance'])->toBe(['string' => '125 points']);
         expect($request['barcode']['type'])->toBe('AZTEC');
+
+        return true;
+    });
+});
+
+it('sends an int balance', function () {
+    Http::fake(['*/loyaltyObject' => Http::response([], 200)]);
+
+    LoyaltyPassBuilder::make()
+        ->setClass('lp-2026')
+        ->setObjectSuffix('jane')
+        ->setBalanceInt(1250)
+        ->setSecondaryBalanceInt(3)
+        ->save();
+
+    Http::assertSent(function ($request) {
+        expect($request['loyaltyPoints']['balance'])->toBe(['int' => 1250]);
+        expect($request['secondaryLoyaltyPoints']['balance'])->toBe(['int' => 3]);
+
+        return true;
+    });
+});
+
+it('sends a money balance as micros with a currency code', function () {
+    Http::fake(['*/loyaltyObject' => Http::response([], 200)]);
+
+    LoyaltyPassBuilder::make()
+        ->setClass('lp-2026')
+        ->setObjectSuffix('jane')
+        ->setBalanceMoney(12_500_000, 'EUR')
+        ->setSecondaryBalanceMoney(500_000, 'USD')
+        ->save();
+
+    Http::assertSent(function ($request) {
+        expect($request['loyaltyPoints']['balance'])->toBe([
+            'money' => ['micros' => '12500000', 'currencyCode' => 'EUR'],
+        ]);
+        expect($request['secondaryLoyaltyPoints']['balance'])->toBe([
+            'money' => ['micros' => '500000', 'currencyCode' => 'USD'],
+        ]);
+
+        return true;
+    });
+});
+
+it('maps the deprecated setBalanceMicros() onto a single valid balance subtype', function () {
+    Http::fake(['*/loyaltyObject' => Http::response([], 200)]);
+
+    LoyaltyPassBuilder::make()
+        ->setClass('lp-2026')
+        ->setObjectSuffix('jane')
+        ->setBalanceMicros(1250)
+        ->setSecondaryBalanceMicros(2_000_000, 'EUR')
+        ->save();
+
+    Http::assertSent(function ($request) {
+        expect($request['loyaltyPoints']['balance'])->toBe(['int' => 1250]);
+        expect($request['secondaryLoyaltyPoints']['balance'])->toBe([
+            'money' => ['micros' => '2000000', 'currencyCode' => 'EUR'],
+        ]);
+
+        return true;
+    });
+});
+
+it('only ever sends one balance subtype, the last one set', function () {
+    Http::fake(['*/loyaltyObject' => Http::response([], 200)]);
+
+    LoyaltyPassBuilder::make()
+        ->setClass('lp-2026')
+        ->setObjectSuffix('jane')
+        ->setBalanceMicros(125000000)
+        ->setBalanceString('125 points')
+        ->setSecondaryBalanceString('Gold')
+        ->setSecondaryBalanceInt(7)
+        ->save();
+
+    Http::assertSent(function ($request) {
+        expect($request['loyaltyPoints']['balance'])->toBe(['string' => '125 points']);
+        expect($request['secondaryLoyaltyPoints']['balance'])->toBe(['int' => 7]);
 
         return true;
     });

@@ -4,6 +4,7 @@ namespace Spatie\LaravelMobilePass\Builders\Google;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
+use Spatie\LaravelMobilePass\Builders\Google\Concerns\BuildsGoogleIds;
 use Spatie\LaravelMobilePass\Builders\Google\Entities\Image;
 use Spatie\LaravelMobilePass\Builders\Google\Entities\ImageModule;
 use Spatie\LaravelMobilePass\Builders\Google\Entities\Link;
@@ -12,7 +13,7 @@ use Spatie\LaravelMobilePass\Builders\Google\Entities\Location;
 use Spatie\LaravelMobilePass\Builders\Google\Entities\TextModule;
 use Spatie\LaravelMobilePass\Builders\Google\Validators\GooglePassClassValidator;
 use Spatie\LaravelMobilePass\Exceptions\GoogleWalletRequestFailed;
-use Spatie\LaravelMobilePass\Support\Google\GoogleCredentials;
+use Spatie\LaravelMobilePass\Exceptions\PlatformDoesntSupport;
 use Spatie\LaravelMobilePass\Support\Google\GoogleWalletClient;
 
 /**
@@ -20,6 +21,8 @@ use Spatie\LaravelMobilePass\Support\Google\GoogleWalletClient;
  */
 abstract class GooglePassClass
 {
+    use BuildsGoogleIds;
+
     protected ?string $issuerName = null;
 
     protected ?string $backgroundColor = null;
@@ -46,7 +49,10 @@ abstract class GooglePassClass
     /** @param array<string, mixed> $payload */
     abstract protected function applyHydratedPayload(array $payload): void;
 
-    public function __construct(protected string $suffix) {}
+    public function __construct(protected string $suffix)
+    {
+        static::ensureValidSuffix($suffix);
+    }
 
     public static function make(string $suffix): static
     {
@@ -121,18 +127,27 @@ abstract class GooglePassClass
 
     public function id(): string
     {
-        return GoogleCredentials::issuerId().'.'.$this->suffix;
+        return static::qualifiedGoogleId($this->suffix);
+    }
+
+    /**
+     * The reviewStatus sent with every save. Google rejects updates to approved
+     * classes unless it is sent as UNDER_REVIEW. Return null for class types
+     * that have no reviewStatus field.
+     */
+    protected function reviewStatus(): ?string
+    {
+        return 'UNDER_REVIEW';
     }
 
     public function save(): static
     {
-        // Google rejects updates to approved classes unless reviewStatus is sent as UNDER_REVIEW.
-        $payload = static::validator()->validate(
+        $payload = static::validator()->validate($this->filterEmpty(
             $this->compileData() + $this->compileModules() + [
                 'id' => $this->id(),
-                'reviewStatus' => 'UNDER_REVIEW',
+                'reviewStatus' => $this->reviewStatus(),
             ]
-        );
+        ));
 
         app(GoogleWalletClient::class)->insertClass(static::resourceName(), $this->id(), $payload);
 
@@ -140,16 +155,20 @@ abstract class GooglePassClass
     }
 
     /**
-     * Google has no hard delete for classes. Flipping reviewStatus to REJECTED
-     * stops Google from promoting the class while existing passes keep working.
+     * @deprecated Google Wallet has no way for issuers to retire a class. The
+     *             previous implementation set reviewStatus to REJECTED, which
+     *             only Google may set, so the request never succeeded. To stop
+     *             issuing passes for a class, stop creating objects for it, and
+     *             expire the existing objects (MobilePass::expire()) if needed.
+     *
+     * @throws PlatformDoesntSupport
      */
-    public function retire(): static
+    public function retire(): never
     {
-        app(GoogleWalletClient::class)->patchClass(static::resourceName(), $this->id(), [
-            'reviewStatus' => 'REJECTED',
-        ]);
-
-        return $this;
+        throw new PlatformDoesntSupport(
+            'Google Wallet does not let issuers retire or delete a class: reviewStatus REJECTED can only be set by Google. '
+            .'Stop creating objects for this class and expire the existing objects instead.'
+        );
     }
 
     /** @return Collection<int, static> */
@@ -162,7 +181,7 @@ abstract class GooglePassClass
 
     public static function find(string $suffix): ?static
     {
-        $id = GoogleCredentials::issuerId().'.'.$suffix;
+        $id = static::qualifiedGoogleId(static::ensureValidSuffix($suffix));
 
         try {
             $payload = app(GoogleWalletClient::class)->getClass(static::resourceName(), $id);

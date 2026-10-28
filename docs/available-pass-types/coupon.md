@@ -40,7 +40,14 @@ OfferPassClass::make('summer-2026-20off')
 // Per redeemer
 OfferPassBuilder::make()
     ->setClass('summer-2026-20off')
-    ->setTitle('20% off for Dan')
     ->setRedemptionCode('DAN20SUMMER')
     ->save();
 ```
+
+The offer's title lives on the Class (`OfferPassClass::setTitle()`). Google's offer Object has no title, so `OfferPassBuilder::setTitle()` is deprecated and its value is not sent.
+
+Google's offer Object has no redemption code field either, so `setRedemptionCode()` puts the code where people can see it:
+
+- If you haven't called `setBarcode()`, the code becomes a QR barcode, with the code printed underneath as readable text.
+- If you have set a barcode with a different value, the code is added as a "Redemption code" text module on the pass.
+- If your barcode already carries the same value, nothing extra is added.

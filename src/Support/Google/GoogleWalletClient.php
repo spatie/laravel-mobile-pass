@@ -20,7 +20,7 @@ class GoogleWalletClient
      */
     public function insertClass(string $resource, string $id, array $payload): array
     {
-        return $this->insertOrPatch($resource, $id, $payload);
+        return $this->insertOrUpdate($resource, $id, $payload);
     }
 
     /**
@@ -29,7 +29,7 @@ class GoogleWalletClient
      */
     public function insertObject(string $resource, string $id, array $payload): array
     {
-        return $this->insertOrPatch($resource, $id, $payload);
+        return $this->insertOrUpdate($resource, $id, $payload);
     }
 
     /**
@@ -50,16 +50,38 @@ class GoogleWalletClient
         return $this->patch($resource, $id, $payload);
     }
 
+    /**
+     * Replace the whole class. Fields absent from the payload are cleared on Google.
+     *
+     * @param  array<string, mixed>  $payload
+     * @return array<string, mixed>
+     */
+    public function updateClass(string $resource, string $id, array $payload): array
+    {
+        return $this->update($resource, $id, $payload);
+    }
+
+    /**
+     * Replace the whole object. Fields absent from the payload are cleared on Google.
+     *
+     * @param  array<string, mixed>  $payload
+     * @return array<string, mixed>
+     */
+    public function updateObject(string $resource, string $id, array $payload): array
+    {
+        return $this->update($resource, $id, $payload);
+    }
+
     /** @return array<string, mixed> */
     public function getClass(string $resource, string $id): array
     {
-        return $this->get("/{$resource}/{$id}");
+        return $this->get($this->resourcePath($resource, $id));
     }
 
     /** @return array<int, array<string, mixed>> */
     public function listClasses(string $resource): array
     {
-        $issuerId = GoogleCredentials::issuerId();
+        $issuerId = rawurlencode(GoogleCredentials::issuerId());
 
         $response = $this->get("/{$resource}?issuerId={$issuerId}");
 
@@ -67,16 +89,22 @@ class GoogleWalletClient
     }
 
     /**
+     * Insert the resource, or fully replace it (PUT) when it already exists.
+     *
+     * A full update rather than a PATCH matters here: builders omit empty
+     * fields from their payload, so a PATCH would never clear a field that
+     * was removed since the previous save.
+     *
      * @param  array<string, mixed>  $payload
      * @return array<string, mixed>
      */
-    protected function insertOrPatch(string $resource, string $id, array $payload): array
+    protected function insertOrUpdate(string $resource, string $id, array $payload): array
     {
         $endpoint = "/{$resource}";
         $response = $this->request()->post($this->url($endpoint), $payload + ['id' => $id]);
 
         if ($response->status() === 409) {
-            return $this->patch($resource, $id, $payload);
+            return $this->update($resource, $id, $payload + ['id' => $id]);
         }
 
         return $this->parse($response, $endpoint);
@@ -86,14 +114,33 @@ class GoogleWalletClient
      * @param  array<string, mixed>  $payload
      * @return array<string, mixed>
      */
+    protected function update(string $resource, string $id, array $payload): array
+    {
+        $endpoint = $this->resourcePath($resource, $id);
+
+        return $this->parse(
+            $this->request()->put($this->url($endpoint), $payload),
+            $endpoint
+        );
+    }
+
+    /**
+     * @param  array<string, mixed>  $payload
+     * @return array<string, mixed>
+     */
     protected function patch(string $resource, string $id, array $payload): array
     {
-        $endpoint = "/{$resource}/{$id}";
+        $endpoint = $this->resourcePath($resource, $id);
 
         return $this->parse(
             $this->request()->patch($this->url($endpoint), $payload),
             $endpoint
         );
+    }
+
+    protected function resourcePath(string $resource, string $id): string
+    {
+        return '/'.$resource.'/'.rawurlencode($id);
     }
 
     /** @return array<string, mixed> */

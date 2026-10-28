@@ -30,7 +30,9 @@ EventTicketPassClass::make('beatles-shea-1965')
     ->save();
 ```
 
-The suffix (`'beatles-shea-1965'` here) is what you'll reference later when creating individual ticket passes. The full class ID Google sees is `{issuer-id}.{suffix}`, which the package stitches together for you.
+The suffix (`'beatles-shea-1965'` here) is what you'll reference later when creating individual ticket passes. The full class ID Google sees is `{issuer-id}.{suffix}`, which the package stitches together for you. Suffixes may only contain letters, digits, `.`, `_` and `-`; anything else throws an `InvalidPass` exception.
+
+Calling `save()` on a Class that already exists on Google replaces it completely, so a field you stop setting is cleared on Google as well. Every save (except for generic classes, which have no review status) sends `reviewStatus: UNDER_REVIEW`, which Google requires when updating an approved class.
 
 Google stores Classes on its own servers, not in your database.
 
@@ -70,7 +72,7 @@ EventTicketPassClass::make('beatles-shea-1965')
     ->save();
 ```
 
-- `addLocation(float $latitude, float $longitude)` adds a point to the class's `locations`.
+- `addLocation(float $latitude, float $longitude)` adds a point to the class's `locations`. Google's generic Class has no `locations` field, so on `GenericPassClass` this is ignored.
 - `addLink(string $uri, ?string $description = null)` adds a URI to the links module. The description is optional.
 - `addTextModule(string $header, string $body, ?string $id = null)` adds a text module.
 - `addImageModule(string $imageUrl, ?string $id = null)` adds an image module. The image must be a hosted URL.
@@ -79,10 +81,12 @@ Each method can be called multiple times to add more than one entry. When you fe
 
 ## Retiring a class
 
-Google has no hard delete for classes. What you can do is call `retire()`, which flips the class's `reviewStatus` to `REJECTED`. Google will stop promoting it, but every pass you've already issued against it keeps working.
+Google has no way to delete or retire a class. Only Google itself can set a class's `reviewStatus` to `REJECTED`, so the deprecated `retire()` method now throws a `PlatformDoesntSupport` exception instead of sending a request that Google refuses.
+
+To stop using a class, stop creating new Objects for it. If the passes already issued against it should stop being valid, expire them:
 
 ```php
-EventTicketPassClass::find('beatles-shea-1965')?->retire();
+$mobilePass->expire();
 ```
 
 ## Available Class builders

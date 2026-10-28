@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Http;
 use Spatie\LaravelMobilePass\Builders\Google\OfferPassClass;
+use Spatie\LaravelMobilePass\Exceptions\PlatformDoesntSupport;
 use Spatie\LaravelMobilePass\Tests\TestSupport\Google\GoogleFixtures;
 
 beforeEach(function () {
@@ -49,14 +50,13 @@ it('saves the expected payload to Google', function () {
     });
 });
 
-it('retire() patches reviewStatus to REJECTED', function () {
-    Http::fake(['*/offerClass/3388.summer-sale' => Http::response([], 200)]);
+it('retire() is unsupported and sends nothing to Google', function () {
+    Http::fake();
 
-    OfferPassClass::make('summer-sale')->retire();
+    expect(fn () => OfferPassClass::make('summer-sale')->retire())
+        ->toThrow(PlatformDoesntSupport::class);
 
-    Http::assertSent(fn ($request) => $request->method() === 'PATCH'
-        && $request['reviewStatus'] === 'REJECTED'
-    );
+    Http::assertNothingSent();
 });
 
 it('find() returns null on 404', function () {
