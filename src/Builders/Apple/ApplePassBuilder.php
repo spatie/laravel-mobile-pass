@@ -31,6 +31,7 @@ use Spatie\LaravelMobilePass\Exceptions\InvalidCertificate;
 use Spatie\LaravelMobilePass\Exceptions\InvalidConfig;
 use Spatie\LaravelMobilePass\Models\Apple\AppleMobilePassPersonalization;
 use Spatie\LaravelMobilePass\Models\MobilePass;
+use Spatie\LaravelMobilePass\Support\Apple\AuthenticationToken;
 use Spatie\LaravelMobilePass\Support\Config;
 use Spatie\LaravelMobilePass\Support\WifiUri;
 
@@ -903,7 +904,11 @@ abstract class ApplePassBuilder
             $this->barcodes,
         );
 
-        return array_merge($this->data, array_filter([
+        // The web service credentials are always derived from the current config, so stale
+        // stored values must not survive when the web service is disabled or the token changes.
+        $storedData = Arr::except($this->data, ['webServiceURL', 'authenticationToken']);
+
+        return array_merge($storedData, array_filter([
             'formatVersion' => 1,
             'organizationName' => $this->organizationName,
             'passTypeIdentifier' => self::appleConfig('type_identifier'),
@@ -976,7 +981,7 @@ abstract class ApplePassBuilder
 
         return [
             'webServiceURL' => $webServiceURL,
-            'authenticationToken' => $authenticationToken,
+            'authenticationToken' => AuthenticationToken::for($this->serialNumber),
         ];
     }
 

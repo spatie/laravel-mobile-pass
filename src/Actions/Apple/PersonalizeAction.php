@@ -3,6 +3,7 @@
 namespace Spatie\LaravelMobilePass\Actions\Apple;
 
 use Spatie\LaravelMobilePass\Events\PassPersonalized;
+use Spatie\LaravelMobilePass\Exceptions\PassAlreadyPersonalized;
 use Spatie\LaravelMobilePass\Models\MobilePass;
 use Spatie\LaravelMobilePass\Support\Apple\PersonalizationTokenSigner;
 use Throwable;
@@ -13,6 +14,17 @@ class PersonalizeAction
     public function execute(MobilePass $pass, string $personalizationToken, array $submittedInfo): string
     {
         $personalization = $pass->personalization()->firstOrFail();
+
+        // The signer signs whatever bytes it receives with the pass type certificate, so a
+        // pass can be personalized only once. A retry with the same token gets the same
+        // signature back, because Wallet may resend the request when a response is lost.
+        if ($personalization->personalized_at !== null) {
+            if (! hash_equals((string) $personalization->personalization_token, $personalizationToken)) {
+                throw PassAlreadyPersonalized::forSerial($pass->pass_serial);
+            }
+
+            return (new PersonalizationTokenSigner)->sign($personalizationToken);
+        }
 
         $signature = (new PersonalizationTokenSigner)->sign($personalizationToken);
 

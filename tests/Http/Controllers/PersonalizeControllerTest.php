@@ -130,3 +130,68 @@ it('returns 404 when the pass has no personalization config', function () {
         'mobile_pass_id' => $pass->getKey(),
     ]);
 });
+
+it('returns the same signature when Wallet retries with the same token', function () {
+    $pass = MobilePass::factory()->create();
+
+    AppleMobilePassPersonalization::factory()->create(['mobile_pass_id' => $pass->getKey()]);
+
+    $personalize = fn (string $token) => $this
+        ->withoutMiddleware()
+        ->postJson(route('mobile-pass.apple.personalize', [
+            'passSerial' => $pass->pass_serial,
+            'passTypeId' => 'pass.com.example',
+        ]), [
+            'personalizationToken' => $token,
+            'requiredPersonalizationInfo' => ['fullName' => 'John Appleseed'],
+        ]);
+
+    $personalize('first-token')->assertSuccessful();
+
+    Event::fake([PassPersonalized::class]);
+
+    $personalize('first-token')->assertSuccessful();
+
+    Event::assertNotDispatched(PassPersonalized::class);
+});
+
+it('refuses to sign a different token once the pass has been personalized', function () {
+    $pass = MobilePass::factory()->create();
+
+    AppleMobilePassPersonalization::factory()->create(['mobile_pass_id' => $pass->getKey()]);
+
+    $personalize = fn (string $token, string $name) => $this
+        ->withoutMiddleware()
+        ->postJson(route('mobile-pass.apple.personalize', [
+            'passSerial' => $pass->pass_serial,
+            'passTypeId' => 'pass.com.example',
+        ]), [
+            'personalizationToken' => $token,
+            'requiredPersonalizationInfo' => ['fullName' => $name],
+        ]);
+
+    $personalize('first-token', 'John Appleseed')->assertSuccessful();
+    $personalize('other-token', 'Mallory')->assertStatus(409);
+
+    $personalization = AppleMobilePassPersonalization::where('mobile_pass_id', $pass->getKey())->first();
+
+    expect($personalization->personalization_token)->toBe('first-token')
+        ->and($personalization->submitted_info)->toBe(['fullName' => 'John Appleseed']);
+});
+
+it('rejects an oversized personalization token', function () {
+    $pass = MobilePass::factory()->create();
+
+    AppleMobilePassPersonalization::factory()->create(['mobile_pass_id' => $pass->getKey()]);
+
+    $this
+        ->withoutMiddleware()
+        ->postJson(route('mobile-pass.apple.personalize', [
+            'passSerial' => $pass->pass_serial,
+            'passTypeId' => 'pass.com.example',
+        ]), [
+            'personalizationToken' => str_repeat('a', 4097),
+            'requiredPersonalizationInfo' => ['fullName' => 'John Appleseed'],
+        ])
+        ->assertUnprocessable();
+});

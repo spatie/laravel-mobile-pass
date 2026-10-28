@@ -11,7 +11,7 @@ class PersonalizeRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'personalizationToken' => ['required', 'string'],
+            'personalizationToken' => ['required', 'string', 'max:4096'],
             'requiredPersonalizationInfo' => ['required', 'array'],
         ];
     }
