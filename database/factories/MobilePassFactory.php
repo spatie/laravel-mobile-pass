@@ -24,7 +24,7 @@ class MobilePassFactory extends Factory
             'type' => 'generic',
             'platform' => Platform::Apple,
             'images' => [
-                'icon' => new Image(getTestSupportPath('images/spatie-thumbnail.png')),
+                'icon' => new Image(__DIR__.'/images/icon.png'),
             ],
             'content' => [
                 'formatVersion' => 1,
