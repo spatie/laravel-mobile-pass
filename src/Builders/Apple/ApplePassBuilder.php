@@ -29,8 +29,8 @@ use Spatie\LaravelMobilePass\Enums\PassType;
 use Spatie\LaravelMobilePass\Enums\PersonalizationField;
 use Spatie\LaravelMobilePass\Enums\Platform;
 use Spatie\LaravelMobilePass\Enums\TimeStyleType;
-use Spatie\LaravelMobilePass\Exceptions\InvalidCertificate;
 use Spatie\LaravelMobilePass\Exceptions\ImageNotFound;
+use Spatie\LaravelMobilePass\Exceptions\InvalidCertificate;
 use Spatie\LaravelMobilePass\Exceptions\InvalidConfig;
 use Spatie\LaravelMobilePass\Models\Apple\AppleMobilePassPersonalization;
 use Spatie\LaravelMobilePass\Models\MobilePass;
@@ -799,11 +799,20 @@ abstract class ApplePassBuilder
 
         $path = sys_get_temp_dir()."/LaravelMobilePass-{$hash}.p12";
 
-        if (file_exists($path)) {
+        $certificate = base64_decode($contents);
+
+        // Reuse the file only when it is complete. A write that was cut short would
+        // otherwise make every pass fail with a certificate error from then on.
+        if (is_file($path) && hash_equals(sha1($certificate), (string) sha1_file($path))) {
             return $path;
         }
 
-        file_put_contents($path, base64_decode($contents));
+        // The file holds the private key, so it must only be readable by this user. It is
+        // written under a temporary name and renamed so readers never see a partial file.
+        $temporaryPath = tempnam(sys_get_temp_dir(), 'LaravelMobilePass-');
+        chmod($temporaryPath, 0600);
+        file_put_contents($temporaryPath, $certificate);
+        rename($temporaryPath, $path);
 
         return $path;
     }

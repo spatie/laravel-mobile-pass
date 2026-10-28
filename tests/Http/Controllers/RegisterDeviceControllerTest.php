@@ -2,6 +2,8 @@
 
 namespace Spatie\LaravelMobilePass\Tests\Http;
 
+use Illuminate\Database\UniqueConstraintViolationException;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
 use Spatie\LaravelMobilePass\Actions\Apple\NotifyAppleOfPassUpdateAction;
 use Spatie\LaravelMobilePass\Events\MobilePassAdded;
@@ -160,12 +162,12 @@ it('refuses to store the same device twice for a pass', function () {
         'device_id' => $registration->device_id,
         'mobile_pass_id' => $registration->mobile_pass_id,
         'pass_type_id' => 'pass.com.example',
-    ]))->toThrow(\Illuminate\Database\UniqueConstraintViolationException::class);
+    ]))->toThrow(UniqueConstraintViolationException::class);
 });
 
 it('removes registrations when the pass is deleted', function () {
     // SQLite only enforces foreign keys, and therefore cascades, when this pragma is on.
-    \Illuminate\Support\Facades\DB::statement('PRAGMA foreign_keys = ON');
+    DB::statement('PRAGMA foreign_keys = ON');
 
     $registration = AppleMobilePassRegistration::factory()->create();
 
