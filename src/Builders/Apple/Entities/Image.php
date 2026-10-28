@@ -13,6 +13,10 @@ class Image
         public bool $isRemote = false,
     ) {
         if ($this->isRemote) {
+            foreach (array_filter([$x1Path, $x2Path, $x3Path]) as $url) {
+                self::assertHttpUrl($url);
+            }
+
             return;
         }
 
@@ -52,6 +56,16 @@ class Image
             $image['x3Path'] ?? null,
             $image['isRemote'] ?? false,
         );
+    }
+
+    /** Rejects schemes like file:// or php:// that would read local files into the pass. */
+    private static function assertHttpUrl(string $url): void
+    {
+        $scheme = strtolower((string) parse_url($url, PHP_URL_SCHEME));
+
+        if (! in_array($scheme, ['http', 'https'], true)) {
+            throw ImageNotFound::unsupportedUrl($url);
+        }
     }
 
     private static function assertFileExists(string $path): void

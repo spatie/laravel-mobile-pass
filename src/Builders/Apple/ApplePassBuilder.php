@@ -2,9 +2,11 @@
 
 namespace Spatie\LaravelMobilePass\Builders\Apple;
 
+use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 use PKPass\PKPass;
 use PKPass\PKPassException;
@@ -28,6 +30,7 @@ use Spatie\LaravelMobilePass\Enums\PersonalizationField;
 use Spatie\LaravelMobilePass\Enums\Platform;
 use Spatie\LaravelMobilePass\Enums\TimeStyleType;
 use Spatie\LaravelMobilePass\Exceptions\InvalidCertificate;
+use Spatie\LaravelMobilePass\Exceptions\ImageNotFound;
 use Spatie\LaravelMobilePass\Exceptions\InvalidConfig;
 use Spatie\LaravelMobilePass\Models\Apple\AppleMobilePassPersonalization;
 use Spatie\LaravelMobilePass\Models\MobilePass;
@@ -715,22 +718,56 @@ abstract class ApplePassBuilder
                 $image = Image::fromArray($image);
             }
 
-            $addFile = $image->isRemote ? 'addRemoteFile' : 'addFile';
-
-            if ($image->x1Path) {
-                $pkPass->{$addFile}($image->x1Path, "{$filename}.png");
-            }
-
-            if ($image->x2Path) {
-                $pkPass->{$addFile}($image->x2Path, "{$filename}@2x.png");
-            }
-
-            if ($image->x3Path) {
-                $pkPass->{$addFile}($image->x3Path, "{$filename}@3x.png");
-            }
+            $this->addImageVariantsToFile($pkPass, $image, $filename);
         }
 
         return $pkPass;
+    }
+
+    protected function addImageVariantsToFile(PKPass $pkPass, Image $image, string $name, ?string $language = null): void
+    {
+        $variants = [
+            "{$name}.png" => $image->x1Path,
+            "{$name}@2x.png" => $image->x2Path,
+            "{$name}@3x.png" => $image->x3Path,
+        ];
+
+        foreach ($variants as $filename => $path) {
+            if (! $path) {
+                continue;
+            }
+
+            if (! $image->isRemote) {
+                $language === null
+                    ? $pkPass->addFile($path, $filename)
+                    : $pkPass->addLocaleFile($language, $path, $filename);
+
+                continue;
+            }
+
+            // PKPass would fetch a remote file twice, once for the manifest hash and once for
+            // the zip, so differing responses would break the signature. Download it once here.
+            $content = $this->downloadRemoteImage($path);
+
+            $language === null
+                ? $pkPass->addFileContent($content, $filename)
+                : $pkPass->addLocaleFileContent($language, $content, $filename);
+        }
+    }
+
+    protected function downloadRemoteImage(string $url): string
+    {
+        try {
+            $response = Http::timeout(10)->get($url);
+        } catch (ConnectionException) {
+            throw ImageNotFound::couldNotDownload($url);
+        }
+
+        if ($response->failed() || $response->body() === '') {
+            throw ImageNotFound::couldNotDownload($url, $response->status());
+        }
+
+        return $response->body();
     }
 
     protected function addLocaleDataToPass(PKPass $pkPass): void
@@ -744,16 +781,8 @@ abstract class ApplePassBuilder
                 if (! $image instanceof Image) {
                     $image = Image::fromArray($image);
                 }
-                $method = $image->isRemote ? 'addLocaleRemoteFile' : 'addLocaleFile';
-                if ($image->x1Path) {
-                    $pkPass->{$method}($language, $image->x1Path, "{$name}.png");
-                }
-                if ($image->x2Path) {
-                    $pkPass->{$method}($language, $image->x2Path, "{$name}@2x.png");
-                }
-                if ($image->x3Path) {
-                    $pkPass->{$method}($language, $image->x3Path, "{$name}@3x.png");
-                }
+
+                $this->addImageVariantsToFile($pkPass, $image, $name, $language);
             }
         }
     }
