@@ -2,6 +2,7 @@
 
 use Spatie\LaravelMobilePass\Builders\Apple\EventTicketPassBuilder;
 use Spatie\LaravelMobilePass\Enums\BarcodeType;
+use Spatie\LaravelMobilePass\Exceptions\InvalidPass;
 use Spatie\LaravelMobilePass\Models\MobilePass;
 
 it('appends barcodes in call order via addBarcode', function () {
@@ -140,4 +141,32 @@ it('sets altText on a barcode added via addBarcode', function () {
         ->data();
 
     expect($data['barcodes'][0]['altText'])->toBe('Show this at the gate');
+});
+
+it('rejects barcode formats that Apple Wallet does not support', function (BarcodeType $format) {
+    EventTicketPassBuilder::make()
+        ->setOrganizationName('Fab Four Promotions')
+        ->setSerialNumber('BTL-SHEA-0043')
+        ->setDescription('The Beatles at Shea Stadium')
+        ->setBarcode($format, '4006381333931')
+        ->data();
+})->with([
+    BarcodeType::Code39,
+    BarcodeType::Codabar,
+    BarcodeType::Ean13,
+])->throws(InvalidPass::class);
+
+it('keeps every barcode field after validation', function () {
+    $data = EventTicketPassBuilder::make()
+        ->setOrganizationName('Fab Four Promotions')
+        ->setSerialNumber('BTL-SHEA-0044')
+        ->setDescription('The Beatles at Shea Stadium')
+        ->setBarcode(BarcodeType::Code128, 'TICKET-1', 'alt text')
+        ->data();
+
+    expect($data['barcodes'][0])->toMatchArray([
+        'format' => 'PKBarcodeFormatCode128',
+        'message' => 'TICKET-1',
+        'altText' => 'alt text',
+    ]);
 });
