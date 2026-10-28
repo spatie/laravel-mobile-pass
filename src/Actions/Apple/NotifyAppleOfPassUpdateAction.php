@@ -10,11 +10,41 @@ use Spatie\LaravelMobilePass\Models\MobilePass;
 
 class NotifyAppleOfPassUpdateAction
 {
+    /**
+     * APNs reasons that mean the registration can never receive a push again.
+     *
+     * @var array<int, string>
+     */
+    protected array $invalidRegistrationReasons = [
+        'BadDeviceToken',
+        'DeviceTokenNotForTopic',
+    ];
+
     public function execute(MobilePass $mobilePass): void
     {
-        $mobilePass->registrations->each(
-            fn (AppleMobilePassRegistration $registration) => $this->notifyUpdate($registration),
+        $failures = [];
+
+        // One failing device must not keep the other devices from hearing about the update,
+        // so every registration is notified before the first failure is rethrown.
+        $mobilePass->registrations()->with('device')->get()->each(
+            function (AppleMobilePassRegistration $registration) use ($mobilePass, &$failures) {
+                $registration->setRelation('pass', $mobilePass);
+
+                try {
+                    $this->notifyUpdate($registration);
+                } catch (AppleWalletRequestFailed $exception) {
+                    $failures[] = $exception;
+                }
+            },
         );
+
+        if ($failures !== []) {
+            foreach (array_slice($failures, 1) as $failure) {
+                report($failure);
+            }
+
+            throw $failures[0];
+        }
     }
 
     /** @return array<string, string> */
@@ -61,6 +91,12 @@ class NotifyAppleOfPassUpdateAction
     protected function handleResponse(AppleMobilePassRegistration $registration, Response $response): void
     {
         if ($response->status() === 410) {
+            $registration->delete();
+
+            return;
+        }
+
+        if ($response->status() === 400 && in_array($response->json('reason'), $this->invalidRegistrationReasons, true)) {
             $registration->delete();
 
             return;

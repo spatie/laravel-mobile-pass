@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Bus;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Queue;
 use Spatie\LaravelMobilePass\Actions\Apple\NotifyAppleOfPassUpdateAction;
 use Spatie\LaravelMobilePass\Actions\Google\NotifyGoogleOfPassUpdateAction;
@@ -29,4 +31,39 @@ it('queues when a queue connection is configured', function () {
     PushPassUpdateJob::dispatch($pass, NotifyGoogleOfPassUpdateAction::class);
 
     Queue::assertPushedOn('mobile-pass', PushPassUpdateJob::class);
+});
+
+it('waits for the surrounding transaction to commit before pushing', function () {
+    config()->set('mobile-pass.queue.connection', null);
+    config(['mobile-pass.apple.apple_push_base_url' => 'https://example.com']);
+    Http::fake();
+
+    $pass = MobilePass::factory()->hasRegistrations(1)->create(['platform' => Platform::Apple]);
+
+    DB::transaction(function () use ($pass) {
+        $pass->update(['download_name' => 'changed']);
+
+        Http::assertNothingSent();
+    });
+
+    Http::assertSentCount(1);
+});
+
+it('does not push when the surrounding transaction rolls back', function () {
+    config()->set('mobile-pass.queue.connection', null);
+    config(['mobile-pass.apple.apple_push_base_url' => 'https://example.com']);
+    Http::fake();
+
+    $pass = MobilePass::factory()->hasRegistrations(1)->create(['platform' => Platform::Apple]);
+
+    try {
+        DB::transaction(function () use ($pass) {
+            $pass->update(['download_name' => 'changed']);
+
+            throw new RuntimeException('rollback');
+        });
+    } catch (RuntimeException) {
+    }
+
+    Http::assertNothingSent();
 });

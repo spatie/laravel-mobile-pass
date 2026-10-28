@@ -21,6 +21,10 @@ class PushPassUpdateJob implements ShouldQueue
         public MobilePass $mobilePass,
         public string $actionClass,
     ) {
+        // Pushing before the surrounding transaction commits would announce a change
+        // that can still be rolled back, or let a worker read the old row.
+        $this->afterCommit();
+
         $connection = config('mobile-pass.queue.connection');
 
         if ($connection === null) {
