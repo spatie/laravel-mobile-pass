@@ -105,3 +105,9 @@ BoardingPassBuilder::make()
     ->setConfirmationCode('ABC123')
     ->save();
 ```
+
+A few Google-specific details:
+
+- `setAirlineCode()` takes the two-character IATA code of the marketing carrier and is sent as `flightHeader.carrier.carrierIataCode`.
+- `setLogoUrl()` sets the airline logo on the carrier (`flightHeader.carrier.airlineLogo`). Google's flight Class has no top-level logo.
+- `setLocalScheduledDepartureDateTime()` is the local time at the departure airport. It is sent without a UTC offset (for example `2026-04-20T14:30:00`), because Google rejects offsets and derives the time zone from the airport. Whatever time zone the `Carbon` instance carries is ignored, so pass the wall-clock time at the airport.

@@ -114,3 +114,39 @@ it('carries the status, body and endpoint on AppleWalletRequestFailed', function
         expect($exception->endpoint)->toStartWith('https://example.com/');
     }
 });
+
+it('notifies the remaining devices when one push fails', function () {
+    $pass = MobilePass::factory()->hasRegistrations(3)->create();
+    $failingToken = $pass->devices->first()->push_token;
+
+    Http::fake([
+        "example.com/{$failingToken}" => Http::response(['reason' => 'TooManyRequests'], 429),
+        '*' => Http::response(),
+    ]);
+
+    expect(fn () => app(NotifyAppleOfPassUpdateAction::class)->execute($pass))
+        ->toThrow(AppleWalletRequestFailed::class);
+
+    Http::assertSentCount(3);
+});
+
+it('deletes the registration when Apple reports a bad device token', function (string $reason) {
+    Http::fake(['*' => Http::response(['reason' => $reason], 400)]);
+
+    $pass = MobilePass::factory()->hasRegistrations(1)->create();
+
+    app(NotifyAppleOfPassUpdateAction::class)->execute($pass);
+
+    expect($pass->registrations()->count())->toBe(0);
+})->with(['BadDeviceToken', 'DeviceTokenNotForTopic']);
+
+it('keeps the registration on other 400 responses', function () {
+    Http::fake(['*' => Http::response(['reason' => 'BadTopic'], 400)]);
+
+    $pass = MobilePass::factory()->hasRegistrations(1)->create();
+
+    expect(fn () => app(NotifyAppleOfPassUpdateAction::class)->execute($pass))
+        ->toThrow(AppleWalletRequestFailed::class);
+
+    expect($pass->registrations()->count())->toBe(1);
+});

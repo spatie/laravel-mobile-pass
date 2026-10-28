@@ -42,6 +42,30 @@ it('creates a MobilePass row and POSTs the generic object to Google', function (
     });
 });
 
+it('sends logo, hero image and background color on the generic object', function () {
+    Http::fake(['*/genericObject' => Http::response([], 200)]);
+
+    $pass = GenericPassBuilder::make()
+        ->setClass('gen-2026')
+        ->setObjectSuffix('alpha')
+        ->setHeader('Member Card')
+        ->setCardTitle('Acme Inc')
+        ->setLogoUrl('https://cdn.example.com/logo.png')
+        ->setHeroImageUrl('https://cdn.example.com/hero.png')
+        ->setBackgroundColor('#00ff00')
+        ->save();
+
+    Http::assertSent(function ($request) {
+        expect($request['logo']['sourceUri']['uri'])->toBe('https://cdn.example.com/logo.png');
+        expect($request['heroImage']['sourceUri']['uri'])->toBe('https://cdn.example.com/hero.png');
+        expect($request['hexBackgroundColor'])->toBe('#00ff00');
+
+        return true;
+    });
+
+    expect($pass->content['googleObjectPayload']['logo']['sourceUri']['uri'])->toBe('https://cdn.example.com/logo.png');
+});
+
 it('throws when setClass() is not called', function () {
     GenericPassBuilder::make()->setHeader('x')->save();
 })->throws(RuntimeException::class);

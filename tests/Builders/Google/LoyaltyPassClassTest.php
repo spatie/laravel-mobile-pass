@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Http;
 use Spatie\LaravelMobilePass\Builders\Google\LoyaltyPassClass;
+use Spatie\LaravelMobilePass\Exceptions\PlatformDoesntSupport;
 use Spatie\LaravelMobilePass\Tests\TestSupport\Google\GoogleFixtures;
 
 beforeEach(function () {
@@ -50,14 +51,13 @@ it('saves the expected payload to Google', function () {
     });
 });
 
-it('retire() patches reviewStatus to REJECTED', function () {
-    Http::fake(['*/loyaltyClass/3388.spatie-club' => Http::response([], 200)]);
+it('retire() is unsupported and sends nothing to Google', function () {
+    Http::fake();
 
-    LoyaltyPassClass::make('spatie-club')->retire();
+    expect(fn () => LoyaltyPassClass::make('spatie-club')->retire())
+        ->toThrow(PlatformDoesntSupport::class);
 
-    Http::assertSent(fn ($request) => $request->method() === 'PATCH'
-        && $request['reviewStatus'] === 'REJECTED'
-    );
+    Http::assertNothingSent();
 });
 
 it('find() returns null on 404', function () {

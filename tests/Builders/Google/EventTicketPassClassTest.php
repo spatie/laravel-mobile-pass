@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Http;
 use Spatie\LaravelMobilePass\Builders\Google\EventTicketPassClass;
+use Spatie\LaravelMobilePass\Exceptions\PlatformDoesntSupport;
 use Spatie\LaravelMobilePass\Tests\TestSupport\Google\GoogleFixtures;
 
 beforeEach(function () {
@@ -36,14 +37,31 @@ it('saves the expected payload to Google', function () {
     });
 });
 
-it('retire() patches reviewStatus to REJECTED', function () {
-    Http::fake(['*/eventTicketClass/3388.ts-2026' => Http::response([], 200)]);
+it('retire() is unsupported and sends nothing to Google', function () {
+    Http::fake();
 
-    EventTicketPassClass::make('ts-2026')->retire();
+    expect(fn () => EventTicketPassClass::make('ts-2026')->retire())
+        ->toThrow(PlatformDoesntSupport::class);
 
-    Http::assertSent(fn ($request) => $request->method() === 'PATCH'
-        && $request['reviewStatus'] === 'REJECTED'
-    );
+    Http::assertNothingSent();
+});
+
+it('replaces an existing class with a full PUT and resets reviewStatus to UNDER_REVIEW', function () {
+    Http::fakeSequence()
+        ->push(['error' => ['code' => 409]], 409)
+        ->push(['id' => '3388.ts-2026', 'reviewStatus' => 'UNDER_REVIEW'], 200);
+
+    EventTicketPassClass::make('ts-2026')
+        ->setEventName('The Eras Tour')
+        ->save();
+
+    Http::assertSentCount(2);
+    Http::assertSent(function ($request) {
+        return $request->method() === 'PUT'
+            && str_ends_with($request->url(), '/eventTicketClass/3388.ts-2026')
+            && $request['reviewStatus'] === 'UNDER_REVIEW'
+            && $request['eventName']['defaultValue']['value'] === 'The Eras Tour';
+    });
 });
 
 it('find() returns null on 404', function () {

@@ -24,12 +24,12 @@ class MobilePassFactory extends Factory
             'type' => 'generic',
             'platform' => Platform::Apple,
             'images' => [
-                'icon' => new Image(getTestSupportPath('images/spatie-thumbnail.png')),
+                'icon' => new Image(__DIR__.'/images/icon.png'),
             ],
             'content' => [
                 'formatVersion' => 1,
                 'organizationName' => 'Laravel King',
-                'passTypeIdentifier' => 'pass.app.gowallet',
+                'passTypeIdentifier' => config('mobile-pass.apple.type_identifier') ?? 'pass.com.example',
                 'webServiceURL' => '/passkit/',
                 'teamIdentifier' => '2SQU7LWHMY',
                 'description' => 'Laravel Exclusive Coupon',

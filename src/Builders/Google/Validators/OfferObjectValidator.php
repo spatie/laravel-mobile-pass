@@ -10,8 +10,6 @@ class OfferObjectValidator extends GooglePassObjectValidator
             'id' => ['required', 'string'],
             'classId' => ['required', 'string'],
             'state' => ['nullable', 'string'],
-            'title' => ['nullable', 'string'],
-            'redemptionCode' => ['nullable', 'string'],
             'barcode' => ['nullable', 'array'],
         ];
     }

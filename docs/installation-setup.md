@@ -53,6 +53,14 @@ return [
         'webservice' => [
             'secret' => env('MOBILE_PASS_APPLE_WEBSERVICE_SECRET'),
             'host' => env('MOBILE_PASS_APPLE_WEBSERVICE_HOST'),
+
+            /*
+            * Each pass gets its own authentication token, derived from the secret.
+            * Passes issued by older versions of this package carry the raw secret
+            * instead. Enable this temporarily so those devices can fetch an updated
+            * pass with its own token, then disable it again.
+            */
+            'accept_shared_secret' => env('MOBILE_PASS_APPLE_WEBSERVICE_ACCEPT_SHARED_SECRET', false),
         ],
     ],
 

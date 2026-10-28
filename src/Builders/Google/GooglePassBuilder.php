@@ -6,6 +6,7 @@ use Illuminate\Support\Str;
 use RuntimeException;
 use Spatie\LaravelMobilePass\Actions\Google\CreateGoogleObjectAction;
 use Spatie\LaravelMobilePass\Builders\Apple\Entities\Barcode;
+use Spatie\LaravelMobilePass\Builders\Google\Concerns\BuildsGoogleIds;
 use Spatie\LaravelMobilePass\Builders\Google\Entities\Image;
 use Spatie\LaravelMobilePass\Builders\Google\Entities\ImageModule;
 use Spatie\LaravelMobilePass\Builders\Google\Entities\Link;
@@ -16,7 +17,6 @@ use Spatie\LaravelMobilePass\Enums\PassType;
 use Spatie\LaravelMobilePass\Enums\Platform;
 use Spatie\LaravelMobilePass\Models\MobilePass;
 use Spatie\LaravelMobilePass\Support\Config;
-use Spatie\LaravelMobilePass\Support\Google\GoogleCredentials;
 use Spatie\LaravelMobilePass\Support\WifiUri;
 
 /**
@@ -24,6 +24,8 @@ use Spatie\LaravelMobilePass\Support\WifiUri;
  */
 abstract class GooglePassBuilder
 {
+    use BuildsGoogleIds;
+
     protected ?string $classSuffix = null;
 
     protected ?string $objectSuffix = null;
@@ -69,14 +71,14 @@ abstract class GooglePassBuilder
 
     public function setClass(string $suffix): static
     {
-        $this->classSuffix = $suffix;
+        $this->classSuffix = static::ensureValidSuffix($suffix, 'classSuffix');
 
         return $this;
     }
 
     public function setObjectSuffix(string $suffix): static
     {
-        $this->objectSuffix = $suffix;
+        $this->objectSuffix = static::ensureValidSuffix($suffix, 'objectSuffix');
 
         return $this;
     }
@@ -150,7 +152,7 @@ abstract class GooglePassBuilder
     {
         $this->objectSuffix ??= (string) Str::uuid();
 
-        return GoogleCredentials::issuerId().'.'.$this->objectSuffix;
+        return static::qualifiedGoogleId($this->objectSuffix);
     }
 
     public function classId(): string
@@ -159,7 +161,7 @@ abstract class GooglePassBuilder
             throw new RuntimeException('Call setClass() before saving a Google pass.');
         }
 
-        return GoogleCredentials::issuerId().'.'.$this->classSuffix;
+        return static::qualifiedGoogleId($this->classSuffix);
     }
 
     public function save(): MobilePass

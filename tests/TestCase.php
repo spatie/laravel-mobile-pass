@@ -57,6 +57,9 @@ class TestCase extends Orchestra
         $migration = include __DIR__.'/../database/migrations/create_apple_mobile_pass_personalizations_table.php.stub';
         $migration->up();
 
+        $migration = include __DIR__.'/../database/migrations/add_constraints_to_apple_mobile_pass_registrations_table.php.stub';
+        $migration->up();
+
         Schema::create('test_models', function (Blueprint $table) {
             $table->id();
             $table->timestamps();

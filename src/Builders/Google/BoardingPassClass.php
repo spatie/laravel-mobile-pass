@@ -47,6 +47,11 @@ class BoardingPassClass extends GooglePassClass
         return $this;
     }
 
+    public function getAirlineCode(): ?string
+    {
+        return $this->airlineCode;
+    }
+
     public function setFlightNumber(string $flightNumber): self
     {
         $this->flightNumber = $flightNumber;
@@ -73,6 +78,10 @@ class BoardingPassClass extends GooglePassClass
         return $this;
     }
 
+    /**
+     * flightClass has no top-level logo: this sets the carrier's airline logo
+     * (flightHeader.carrier.airlineLogo), shown at the top of the card.
+     */
     public function setLogoUrl(string $url): self
     {
         $this->logo = Image::fromUrl($url);
@@ -91,17 +100,20 @@ class BoardingPassClass extends GooglePassClass
     protected function compileData(): array
     {
         $flightHeader = $this->filterEmpty([
-            'carrier' => $this->airlineCode ? ['airlineCode' => $this->airlineCode] : null,
+            'carrier' => $this->filterEmpty([
+                'carrierIataCode' => $this->airlineCode,
+                'airlineLogo' => $this->logo?->toArray(),
+            ]),
             'flightNumber' => $this->flightNumber,
         ]);
 
         return $this->filterEmpty([
             'issuerName' => $this->issuerName,
-            'localScheduledDepartureDateTime' => $this->localScheduledDepartureDateTime?->toIso8601String(),
+            // Google wants the local airport time without a UTC offset and rejects values that carry one.
+            'localScheduledDepartureDateTime' => $this->localScheduledDepartureDateTime?->format('Y-m-d\TH:i:s'),
             'flightHeader' => $flightHeader,
             'origin' => $this->originAirportCode ? ['airportIataCode' => $this->originAirportCode] : null,
             'destination' => $this->destinationAirportCode ? ['airportIataCode' => $this->destinationAirportCode] : null,
-            'logo' => $this->logo?->toArray(),
             'heroImage' => $this->hero?->toArray(),
             'hexBackgroundColor' => $this->backgroundColor,
         ]);
@@ -116,8 +128,13 @@ class BoardingPassClass extends GooglePassClass
             $this->localScheduledDepartureDateTime = Carbon::parse((string) $payload['localScheduledDepartureDateTime']);
         }
 
-        if (isset($payload['flightHeader']['carrier']['airlineCode'])) {
-            $this->airlineCode = (string) $payload['flightHeader']['carrier']['airlineCode'];
+        // `airlineCode` is what earlier versions of this package (incorrectly) stored.
+        $carrierCode = $payload['flightHeader']['carrier']['carrierIataCode']
+            ?? $payload['flightHeader']['carrier']['airlineCode']
+            ?? null;
+
+        if ($carrierCode !== null) {
+            $this->airlineCode = (string) $carrierCode;
         }
 
         if (isset($payload['flightHeader']['flightNumber'])) {
@@ -132,7 +149,9 @@ class BoardingPassClass extends GooglePassClass
             $this->destinationAirportCode = (string) $payload['destination']['airportIataCode'];
         }
 
-        $this->logo = $this->hydrateImage($payload, 'logo');
+        // A top-level `logo` is what earlier versions of this package (incorrectly) stored.
+        $this->logo = $this->hydrateImage($payload['flightHeader']['carrier'] ?? [], 'airlineLogo')
+            ?? $this->hydrateImage($payload, 'logo');
         $this->hero = $this->hydrateImage($payload, 'heroImage');
     }
 }

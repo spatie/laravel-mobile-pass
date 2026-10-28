@@ -26,7 +26,7 @@ it('lets Apple register, list, look up, and unregister a pass that uses a custom
             'passSerial' => $customSerial,
             'deviceId' => 'device-1',
             'passTypeId' => 'pass.com.example',
-        ]), ['pushToken' => 'token-1'])
+        ]), ['pushToken' => 'abc1'])
         ->assertCreated();
 
     $this->assertModelExists(AppleMobilePassRegistration::class, [

@@ -41,3 +41,22 @@ it('writes a new file when the certificate is rotated', function () {
         ->and(file_get_contents($secondPath))->toBe('second-certificate')
         ->and(file_get_contents($firstPath))->toBe('first-certificate');
 });
+
+it('only lets the current user read the written certificate', function () {
+    config()->set('mobile-pass.apple.certificate', base64_encode('private-certificate'));
+
+    $path = CouponPassBuilder::getCertificatePath();
+
+    expect(fileperms($path) & 0777)->toBe(0600);
+});
+
+it('rewrites a certificate file that was left incomplete', function () {
+    $contents = base64_encode('complete-certificate');
+    config()->set('mobile-pass.apple.certificate', $contents);
+
+    file_put_contents(sys_get_temp_dir().'/LaravelMobilePass-'.md5($contents).'.p12', 'complete-');
+
+    $path = CouponPassBuilder::getCertificatePath();
+
+    expect(file_get_contents($path))->toBe('complete-certificate');
+});

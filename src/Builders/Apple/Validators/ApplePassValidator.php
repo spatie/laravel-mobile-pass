@@ -2,6 +2,8 @@
 
 namespace Spatie\LaravelMobilePass\Builders\Apple\Validators;
 
+use Illuminate\Validation\Rule;
+use Spatie\LaravelMobilePass\Enums\BarcodeType;
 use Spatie\LaravelMobilePass\Exceptions\InvalidPass;
 
 abstract class ApplePassValidator
@@ -26,6 +28,13 @@ abstract class ApplePassValidator
             'userInfo' => ['nullable', 'array'],
             'barcode' => [],
             'barcodes' => [],
+            // Wallet only renders these four formats. The other BarcodeType cases are Google-only.
+            'barcodes.*.format' => [Rule::in([
+                BarcodeType::Qr->value,
+                BarcodeType::Pdf417->value,
+                BarcodeType::Aztec->value,
+                BarcodeType::Code128->value,
+            ])],
             'relevantDate' => [],
             'relevantDates' => [],
             'locations' => [],

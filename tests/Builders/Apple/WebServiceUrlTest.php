@@ -2,6 +2,7 @@
 
 use Spatie\LaravelMobilePass\Builders\Apple\CouponPassBuilder;
 use Spatie\LaravelMobilePass\Exceptions\InvalidConfig;
+use Spatie\LaravelMobilePass\Support\Apple\AuthenticationToken;
 
 function buildCouponPassData(): array
 {
@@ -65,7 +66,7 @@ it('appends /passkit to the configured host', function () {
     $data = buildCouponPassData();
 
     expect($data['webServiceURL'])->toBe('https://example.test/passkit')
-        ->and($data['authenticationToken'])->toBe('a-very-secret-token-0123456789');
+        ->and($data['authenticationToken'])->toBe(AuthenticationToken::for($data['serialNumber']));
 });
 
 it('strips a trailing slash from the configured https host', function () {
@@ -85,7 +86,7 @@ it('falls back to config(app.url) when the host is not set and the app URL is HT
     $data = buildCouponPassData();
 
     expect($data['webServiceURL'])->toBe('https://my-app.test/passkit')
-        ->and($data['authenticationToken'])->toBe('a-very-secret-token-0123456789');
+        ->and($data['authenticationToken'])->toBe(AuthenticationToken::for($data['serialNumber']));
 });
 
 it('ignores a non-HTTPS app.url when the host is not set', function () {
@@ -105,4 +106,30 @@ it('preserves a custom path in the configured host (for users with a route prefi
     $data = buildCouponPassData();
 
     expect($data['webServiceURL'])->toBe('https://example.test/api/passkit');
+});
+
+it('gives every pass its own authentication token instead of the shared secret', function () {
+    config()->set('mobile-pass.apple.webservice.host', 'https://example.test');
+    config()->set('mobile-pass.apple.webservice.secret', 'a-very-secret-token-0123456789');
+
+    $first = CouponPassBuilder::make()->setDescription('Coupon')->setSerialNumber('first')->data();
+    $second = CouponPassBuilder::make()->setDescription('Coupon')->setSerialNumber('second')->data();
+
+    expect($first['authenticationToken'])
+        ->not->toBe('a-very-secret-token-0123456789')
+        ->not->toBe($second['authenticationToken'])
+        ->toHaveLength(64);
+});
+
+it('drops stored web service credentials once the web service is disabled', function () {
+    config()->set('mobile-pass.apple.webservice.host', 'https://example.test');
+    config()->set('mobile-pass.apple.webservice.secret', 'a-very-secret-token-0123456789');
+
+    $pass = CouponPassBuilder::make()->setDescription('Coupon')->setSerialNumber('abc')->save();
+
+    config()->set('mobile-pass.apple.webservice.host', null);
+    config()->set('mobile-pass.apple.webservice.secret', null);
+    config()->set('app.url', 'http://localhost');
+
+    expect($pass->fresh()->builder()->data())->not->toHaveKeys(['webServiceURL', 'authenticationToken']);
 });

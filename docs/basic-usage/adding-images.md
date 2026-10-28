@@ -80,7 +80,9 @@ EventTicketPassClass::make('beatles-shea-1965')
     ->save();
 ```
 
-Different Class types expose different image setters. Event tickets and boarding passes take a logo and a hero image. Loyalty programs take a program logo via `setProgramLogoUrl()`. Offers take a logo.
+Different Class types expose different image setters. Event tickets take a logo and a hero image. Boarding passes take a hero image, and `setLogoUrl()` sets the airline logo on the carrier. Loyalty programs take a program logo via `setProgramLogoUrl()`. Offers take a logo.
+
+Generic passes are the exception: Google's generic Class has no images or colors, so `setLogoUrl()`, `setHeroImageUrl()` and `setBackgroundColor()` live on `GenericPassBuilder` (the Object) instead. See [Generic](../available-pass-types/generic).
 
 Google caches images it has fetched. When you change a URL's contents in place, you may need to use a new URL (or append a cache-busting query string) to see the new image.
 
@@ -106,7 +108,7 @@ Both platforms support a background color (handy when you're not using a backgro
 $builder->setBackgroundColor('#1d72b8');
 ```
 
-On Google hand a hex string to `setBackgroundColor()` on the Class:
+On Google hand a hex string to `setBackgroundColor()` on the Class (or, for generic passes, on `GenericPassBuilder`):
 
 ```php
 EventTicketPassClass::make('beatles-shea-1965')

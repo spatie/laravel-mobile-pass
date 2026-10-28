@@ -30,3 +30,5 @@ Each Google pass Object also has its own unique ID. By default, the package gene
 ```php
 $builder->setObjectSuffix("ticket-{$ticketId}");
 ```
+
+Class and object suffixes may only contain letters, digits, `.`, `_` and `-` (Google's own rule for ids). Anything else makes `setClass()` or `setObjectSuffix()` throw an `InvalidPass` exception. Building an id also requires `mobile-pass.google.issuer_id` to be configured; without it an `InvalidConfig` exception is thrown.

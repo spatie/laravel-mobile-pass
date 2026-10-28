@@ -13,6 +13,9 @@ class GenericObjectValidator extends GooglePassObjectValidator
             'header' => ['nullable', 'array'],
             'cardTitle' => ['nullable', 'array'],
             'subheader' => ['nullable', 'array'],
+            'logo' => ['nullable', 'array'],
+            'heroImage' => ['nullable', 'array'],
+            'hexBackgroundColor' => ['nullable', 'string'],
             'notifications' => ['nullable', 'array'],
             'barcode' => ['nullable', 'array'],
         ];

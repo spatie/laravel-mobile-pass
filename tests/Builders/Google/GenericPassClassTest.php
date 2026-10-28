@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Http;
 use Spatie\LaravelMobilePass\Builders\Google\GenericPassClass;
+use Spatie\LaravelMobilePass\Exceptions\PlatformDoesntSupport;
 use Spatie\LaravelMobilePass\Tests\TestSupport\Google\GoogleFixtures;
 
 beforeEach(function () {
@@ -15,7 +16,24 @@ it('computes the full id from issuer + suffix', function () {
     expect(GenericPassClass::make('membership')->id())->toBe('3388.membership');
 });
 
-it('saves the expected payload to Google', function () {
+it('only sends fields that exist on genericClass', function () {
+    Http::fake(['*/genericClass' => Http::response([], 200)]);
+
+    GenericPassClass::make('membership')
+        ->addLink('https://spatie.be', 'Visit our site')
+        ->addTextModule('Opening hours', 'Mon to Fri, 9 to 5')
+        ->save();
+
+    Http::assertSent(function ($request) {
+        expect($request['id'])->toBe('3388.membership');
+        expect($request['linksModuleData']['uris'][0]['uri'])->toBe('https://spatie.be');
+        expect($request['textModulesData'][0]['header'])->toBe('Opening hours');
+
+        return true;
+    });
+});
+
+it('does not send object-level display fields, locations or reviewStatus on genericClass', function () {
     Http::fake(['*/genericClass' => Http::response([], 200)]);
 
     GenericPassClass::make('membership')
@@ -26,62 +44,47 @@ it('saves the expected payload to Google', function () {
         ->setBackgroundColor('#00ff00')
         ->setLogoUrl('https://cdn.example.com/logo.png')
         ->setHeroImageUrl('https://cdn.example.com/hero.png')
+        ->addLocation(37.424015, -122.09259)
         ->save();
 
     Http::assertSent(function ($request) {
-        expect($request['id'])->toBe('3388.membership');
-        expect($request['issuerName'])->toBe('Spatie');
-        expect($request['cardTitle']['defaultValue']['value'])->toBe('Spatie Membership');
-        expect($request['subheader']['defaultValue']['value'])->toBe('Annual Plan');
-        expect($request['header']['defaultValue']['value'])->toBe('Pro Member');
-        expect($request['hexBackgroundColor'])->toBe('#00ff00');
-        expect($request['logo']['sourceUri']['uri'])->toBe('https://cdn.example.com/logo.png');
-        expect($request['heroImage']['sourceUri']['uri'])->toBe('https://cdn.example.com/hero.png');
-        expect($request['reviewStatus'])->toBe('UNDER_REVIEW');
+        expect($request->data())->toBe(['id' => '3388.membership']);
 
         return true;
     });
 });
 
-it('resets reviewStatus to UNDER_REVIEW when updating an existing class', function () {
+it('keeps the deprecated class-level display setters readable', function () {
+    $class = GenericPassClass::make('membership')->setCardTitle('Spatie Membership');
+
+    expect($class->getCardTitle())->toBe('Spatie Membership');
+});
+
+it('replaces an existing generic class with a full PUT and no reviewStatus', function () {
     Http::fakeSequence()
-        ->push([
-            'id' => '3388.membership',
-            'reviewStatus' => 'APPROVED',
-            'cardTitle' => [
-                'defaultValue' => [
-                    'language' => 'en-US',
-                    'value' => 'Spatie Membership',
-                ],
-            ],
-        ], 200)
         ->push(['error' => ['code' => 409]], 409)
-        ->push(['id' => '3388.membership', 'reviewStatus' => 'UNDER_REVIEW'], 200);
+        ->push(['id' => '3388.membership'], 200);
 
-    $class = GenericPassClass::find('membership');
-
-    expect($class)->not->toBeNull();
-
-    $class
-        ->setIssuerName('Spatie')
+    GenericPassClass::make('membership')
+        ->addTextModule('Opening hours', 'Mon to Fri, 9 to 5')
         ->save();
 
-    Http::assertSentCount(3);
+    Http::assertSentCount(2);
     Http::assertSent(function ($request) {
-        return $request->method() === 'PATCH'
+        return $request->method() === 'PUT'
             && str_ends_with($request->url(), '/genericClass/3388.membership')
-            && $request['reviewStatus'] === 'UNDER_REVIEW';
+            && ! array_key_exists('reviewStatus', $request->data())
+            && $request['textModulesData'][0]['header'] === 'Opening hours';
     });
 });
 
-it('retire() patches reviewStatus to REJECTED', function () {
-    Http::fake(['*/genericClass/3388.membership' => Http::response([], 200)]);
+it('retire() is unsupported and sends nothing to Google', function () {
+    Http::fake();
 
-    GenericPassClass::make('membership')->retire();
+    expect(fn () => GenericPassClass::make('membership')->retire())
+        ->toThrow(PlatformDoesntSupport::class);
 
-    Http::assertSent(fn ($request) => $request->method() === 'PATCH'
-        && $request['reviewStatus'] === 'REJECTED'
-    );
+    Http::assertNothingSent();
 });
 
 it('find() returns null on 404', function () {

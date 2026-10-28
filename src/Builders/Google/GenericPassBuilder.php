@@ -2,6 +2,7 @@
 
 namespace Spatie\LaravelMobilePass\Builders\Google;
 
+use Spatie\LaravelMobilePass\Builders\Google\Entities\Image;
 use Spatie\LaravelMobilePass\Builders\Google\Entities\LocalizedString;
 use Spatie\LaravelMobilePass\Builders\Google\Validators\GenericObjectValidator;
 use Spatie\LaravelMobilePass\Builders\Google\Validators\GooglePassObjectValidator;
@@ -19,6 +20,12 @@ class GenericPassBuilder extends GooglePassBuilder
 
     protected ?bool $expiryNotificationEnabled = null;
 
+    protected ?Image $logo = null;
+
+    protected ?Image $hero = null;
+
+    protected ?string $backgroundColor = null;
+
     protected static function validator(): GooglePassObjectValidator
     {
         return new GenericObjectValidator;
@@ -34,23 +41,44 @@ class GenericPassBuilder extends GooglePassBuilder
         return 'genericObject';
     }
 
-    public function setHeader(string $value, string $language = 'en-US'): self
+    public function setHeader(LocalizedString|string $value, string $language = 'en-US'): self
     {
-        $this->header = LocalizedString::of($value, $language);
+        $this->header = $this->localized($value, $language);
 
         return $this;
     }
 
-    public function setCardTitle(string $value, string $language = 'en-US'): self
+    public function setCardTitle(LocalizedString|string $value, string $language = 'en-US'): self
     {
-        $this->cardTitle = LocalizedString::of($value, $language);
+        $this->cardTitle = $this->localized($value, $language);
 
         return $this;
     }
 
-    public function setSubheader(string $value, string $language = 'en-US'): self
+    public function setSubheader(LocalizedString|string $value, string $language = 'en-US'): self
     {
-        $this->subheader = LocalizedString::of($value, $language);
+        $this->subheader = $this->localized($value, $language);
+
+        return $this;
+    }
+
+    public function setLogoUrl(string $url): self
+    {
+        $this->logo = Image::fromUrl($url);
+
+        return $this;
+    }
+
+    public function setHeroImageUrl(string $url): self
+    {
+        $this->hero = Image::fromUrl($url);
+
+        return $this;
+    }
+
+    public function setBackgroundColor(string $hex): self
+    {
+        $this->backgroundColor = $hex;
 
         return $this;
     }
@@ -62,6 +90,19 @@ class GenericPassBuilder extends GooglePassBuilder
         return $this;
     }
 
+    protected function localized(LocalizedString|string $value, string $language): LocalizedString
+    {
+        if ($value instanceof LocalizedString && $language !== 'en-US') {
+            throw new \InvalidArgumentException(
+                'Do not pass $language when $value is already a LocalizedString — set the language via LocalizedString::of() instead.'
+            );
+        }
+
+        return $value instanceof LocalizedString
+            ? $value
+            : LocalizedString::of($value, $language);
+    }
+
     /** @return array<string, mixed> */
     protected function compileData(): array
     {
@@ -71,6 +112,9 @@ class GenericPassBuilder extends GooglePassBuilder
             'header' => $this->header?->toArray(),
             'cardTitle' => $this->cardTitle?->toArray(),
             'subheader' => $this->subheader?->toArray(),
+            'logo' => $this->logo?->toArray(),
+            'heroImage' => $this->hero?->toArray(),
+            'hexBackgroundColor' => $this->backgroundColor,
             'notifications' => $notifications,
         ]);
     }

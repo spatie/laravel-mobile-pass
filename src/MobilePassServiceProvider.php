@@ -17,7 +17,8 @@ class MobilePassServiceProvider extends PackageServiceProvider
             ->hasRoutes('mobile-pass')
             ->hasMigration('create_mobile_pass_tables')
             ->hasMigration('add_locales_to_mobile_passes_table')
-            ->hasMigration('create_apple_mobile_pass_personalizations_table');
+            ->hasMigration('create_apple_mobile_pass_personalizations_table')
+            ->hasMigration('add_constraints_to_apple_mobile_pass_registrations_table');
     }
 
     public function registeringPackage(): void

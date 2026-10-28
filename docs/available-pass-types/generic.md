@@ -38,7 +38,7 @@ GenericPassBuilder::make()
 
 ## Google
 
-Declare the Class once per use case (the brand, the visuals, the card title), then create an Object per person.
+Google's generic Class is a thin template. Unlike the other Class types it carries no title, header, images or colors: those all live on the Object. Declare the Class once per use case (with any shared links, text or image modules), then create an Object per person carrying the visuals.
 
 ```php
 use Spatie\LaravelMobilePass\Builders\Google\GenericPassBuilder;
@@ -46,17 +46,21 @@ use Spatie\LaravelMobilePass\Builders\Google\GenericPassClass;
 
 // Once, per use case
 GenericPassClass::make('spatie-conference-badge')
-    ->setIssuerName('Spatie Conference')
-    ->setCardTitle('Spatie Conference 2026')
-    ->setSubheader('Attendee badge')
-    ->setLogoUrl('https://cdn.example.com/conf-logo.png')
+    ->addLink('https://conference.spatie.be', 'Conference website')
     ->save();
 
 // Per attendee
 GenericPassBuilder::make()
     ->setClass('spatie-conference-badge')
+    ->setCardTitle('Spatie Conference 2026')
     ->setHeader('Ringo Starr')
-    ->setCardTitle('All-access badge')
     ->setSubheader('Speaker')
+    ->setLogoUrl('https://cdn.example.com/conf-logo.png')
+    ->setHeroImageUrl('https://cdn.example.com/conf-hero.png')
+    ->setBackgroundColor('#1d72b8')
     ->save();
 ```
+
+Google requires a card title and a header on every generic Object. `setCardTitle()`, `setHeader()` and `setSubheader()` accept either a string or a `LocalizedString` with translations.
+
+`GenericPassClass::setIssuerName()`, `setCardTitle()`, `setHeader()`, `setSubheader()`, `setLogoUrl()`, `setHeroImageUrl()`, `setBackgroundColor()` and `addLocation()` are deprecated. Google's generic Class has none of those fields, so their values are no longer sent (Google rejected them). Set them on `GenericPassBuilder` instead.

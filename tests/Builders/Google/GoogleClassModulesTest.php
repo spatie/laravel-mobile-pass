@@ -13,10 +13,11 @@ beforeEach(function () {
 });
 
 it('sends location, link, text and image modules to Google', function () {
-    Http::fake(['*/genericClass' => Http::response([], 200)]);
+    Http::fake(['*/loyaltyClass' => Http::response([], 200)]);
 
-    GenericPassClass::make('membership')
+    LoyaltyPassClass::make('membership')
         ->setIssuerName('Spatie')
+        ->setProgramName('Spatie Club')
         ->addLocation(37.424015, -122.09259)
         ->addLink('https://spatie.be', 'Visit our site')
         ->addLink('tel:+3232001212')
@@ -39,6 +40,22 @@ it('sends location, link, text and image modules to Google', function () {
 
         expect($request['imageModulesData'][0]['mainImage']['sourceUri']['uri'])->toBe('https://cdn.example.com/promo.png');
         expect($request['imageModulesData'][0]['id'])->toBe('promo');
+
+        return true;
+    });
+});
+
+it('does not send locations on genericClass, which has no such field', function () {
+    Http::fake(['*/genericClass' => Http::response([], 200)]);
+
+    GenericPassClass::make('membership')
+        ->addLocation(37.424015, -122.09259)
+        ->addLink('https://spatie.be')
+        ->save();
+
+    Http::assertSent(function ($request) {
+        expect($request->data())->not->toHaveKey('locations');
+        expect($request['linksModuleData']['uris'][0]['uri'])->toBe('https://spatie.be');
 
         return true;
     });

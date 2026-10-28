@@ -19,9 +19,14 @@ class RegisterDeviceController extends Controller
         /** @var class-string<RegisterDeviceAction> $actionClass */
         $actionClass = Config::getActionClass('register_device', RegisterDeviceAction::class);
 
+        // APNs device tokens are hex strings. The token ends up in the push URL path.
+        $validated = $request->validate([
+            'pushToken' => ['required', 'string', 'max:200', 'regex:/^[0-9a-fA-F]+$/'],
+        ]);
+
         $registration = (new $actionClass)->execute(
             $request->deviceId,
-            $request->input('pushToken'),
+            $validated['pushToken'],
             $request->passTypeId,
             $request->passSerial,
         );

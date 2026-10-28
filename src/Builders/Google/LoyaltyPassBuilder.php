@@ -14,15 +14,18 @@ class LoyaltyPassBuilder extends GooglePassBuilder
 
     protected ?string $accountName = null;
 
-    protected ?int $balanceMicros = null;
-
-    protected ?string $balanceString = null;
+    /**
+     * Google's LoyaltyPointsBalance is a oneof: exactly one of string, int,
+     * double or money. The last balance setter called wins.
+     *
+     * @var array<string, mixed>|null
+     */
+    protected ?array $balance = null;
 
     protected ?string $balanceLabel = null;
 
-    protected ?int $secondaryBalanceMicros = null;
-
-    protected ?string $secondaryBalanceString = null;
+    /** @var array<string, mixed>|null */
+    protected ?array $secondaryBalance = null;
 
     protected ?string $secondaryBalanceLabel = null;
 
@@ -55,16 +58,45 @@ class LoyaltyPassBuilder extends GooglePassBuilder
         return $this;
     }
 
-    public function setBalanceMicros(int $micros): self
+    public function setBalanceString(string $value): self
     {
-        $this->balanceMicros = $micros;
+        $this->balance = ['string' => $value];
 
         return $this;
     }
 
-    public function setBalanceString(string $value): self
+    public function setBalanceInt(int $value): self
     {
-        $this->balanceString = $value;
+        $this->balance = ['int' => $value];
+
+        return $this;
+    }
+
+    public function setBalanceDouble(float $value): self
+    {
+        $this->balance = ['double' => $value];
+
+        return $this;
+    }
+
+    /** @param  int  $micros  The amount in millionths of the currency unit, e.g. 12_500_000 for 12.50. */
+    public function setBalanceMoney(int $micros, string $currencyCode): self
+    {
+        $this->balance = $this->money($micros, $currencyCode);
+
+        return $this;
+    }
+
+    /**
+     * @deprecated Google has no "micros" balance. Without a currency code the value is
+     *             sent as an int balance; with one it is sent as a money balance.
+     *             Use setBalanceInt() or setBalanceMoney() instead.
+     */
+    public function setBalanceMicros(int $micros, ?string $currencyCode = null): self
+    {
+        $this->balance = $currencyCode === null
+            ? ['int' => $micros]
+            : $this->money($micros, $currencyCode);
 
         return $this;
     }
@@ -76,16 +108,45 @@ class LoyaltyPassBuilder extends GooglePassBuilder
         return $this;
     }
 
-    public function setSecondaryBalanceMicros(int $micros): self
+    public function setSecondaryBalanceString(string $value): self
     {
-        $this->secondaryBalanceMicros = $micros;
+        $this->secondaryBalance = ['string' => $value];
 
         return $this;
     }
 
-    public function setSecondaryBalanceString(string $value): self
+    public function setSecondaryBalanceInt(int $value): self
     {
-        $this->secondaryBalanceString = $value;
+        $this->secondaryBalance = ['int' => $value];
+
+        return $this;
+    }
+
+    public function setSecondaryBalanceDouble(float $value): self
+    {
+        $this->secondaryBalance = ['double' => $value];
+
+        return $this;
+    }
+
+    /** @param  int  $micros  The amount in millionths of the currency unit, e.g. 12_500_000 for 12.50. */
+    public function setSecondaryBalanceMoney(int $micros, string $currencyCode): self
+    {
+        $this->secondaryBalance = $this->money($micros, $currencyCode);
+
+        return $this;
+    }
+
+    /**
+     * @deprecated Google has no "micros" balance. Without a currency code the value is
+     *             sent as an int balance; with one it is sent as a money balance.
+     *             Use setSecondaryBalanceInt() or setSecondaryBalanceMoney() instead.
+     */
+    public function setSecondaryBalanceMicros(int $micros, ?string $currencyCode = null): self
+    {
+        $this->secondaryBalance = $currencyCode === null
+            ? ['int' => $micros]
+            : $this->money($micros, $currencyCode);
 
         return $this;
     }
@@ -103,28 +164,27 @@ class LoyaltyPassBuilder extends GooglePassBuilder
         return $this->filterEmpty([
             'accountId' => $this->accountId,
             'accountName' => $this->accountName,
-            'loyaltyPoints' => $this->compilePoints(
-                $this->balanceLabel,
-                $this->balanceMicros,
-                $this->balanceString,
-            ),
-            'secondaryLoyaltyPoints' => $this->compilePoints(
-                $this->secondaryBalanceLabel,
-                $this->secondaryBalanceMicros,
-                $this->secondaryBalanceString,
-            ),
+            'loyaltyPoints' => $this->compilePoints($this->balanceLabel, $this->balance),
+            'secondaryLoyaltyPoints' => $this->compilePoints($this->secondaryBalanceLabel, $this->secondaryBalance),
         ]);
     }
 
-    /** @return array<string, mixed> */
-    protected function compilePoints(?string $label, ?int $micros, ?string $string): array
+    /**
+     * @param  array<string, mixed>|null  $balance
+     * @return array<string, mixed>
+     */
+    protected function compilePoints(?string $label, ?array $balance): array
     {
         return $this->filterEmpty([
             'label' => $label,
-            'balance' => $this->filterEmpty([
-                'micros' => $micros,
-                'string' => $string,
-            ]),
+            'balance' => $balance,
         ]);
+    }
+
+    /** @return array{money: array{micros: string, currencyCode: string}} */
+    protected function money(int $micros, string $currencyCode): array
+    {
+        // Money.micros is an int64, which Google's JSON mapping represents as a string.
+        return ['money' => ['micros' => (string) $micros, 'currencyCode' => $currencyCode]];
     }
 }

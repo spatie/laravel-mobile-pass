@@ -5,7 +5,7 @@ weight: 4
 
 Barcodes are the scannable bit of a pass: a QR code at a festival gate, a PDF417 on a boarding pass, an Aztec for a bus ticket. The package exposes barcode formats through a shared `BarcodeType` enum, restricted to the formats both Apple and Google Wallet understand.
 
-The seven cases on `BarcodeType` are `Qr`, `Pdf417`, `Aztec`, `Code128`, `Code39`, `Codabar`, and `Ean13`. Pick the one your scanners expect.
+The seven cases on `BarcodeType` are `Qr`, `Pdf417`, `Aztec`, `Code128`, `Code39`, `Codabar`, and `Ean13`. Pick the one your scanners expect. Apple Wallet only supports `Qr`, `Pdf417`, `Aztec`, and `Code128`; an Apple pass with any other format throws an `InvalidPass` exception. `Code39`, `Codabar`, and `Ean13` are for Google Wallet passes.
 
 Apple's Wallet Passes reference also documents an eighth format, `PKBarcodeFormatI2of5` (generic Interleaved 2 of 5) — it's deliberately left out of `BarcodeType`. Google Wallet's closest equivalent, `ITF_14`, is a narrower 14-digit GTIN variant, not the same symbology, so there's no faithful cross-platform mapping for it. Since `BarcodeType` exists specifically so the same call works on both platforms, and any scanner setup choosing a barcode format should already be picking one both platforms render correctly, this isn't expected to be a real limitation in practice.
 
