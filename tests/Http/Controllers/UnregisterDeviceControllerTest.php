@@ -17,7 +17,7 @@ it('deletes the registration', function () {
             'deviceId' => $registration->device->getKey(),
             'passTypeId' => $registration->pass_type_id,
         ]))
-        ->assertSuccessful();
+        ->assertOk();
 
     expect($registration->fresh())->toBeNull();
 });
@@ -32,7 +32,7 @@ it('doesnt delete the device', function () {
             'deviceId' => $registration->device->getKey(),
             'passTypeId' => $registration->pass_type_id,
         ]))
-        ->assertSuccessful();
+        ->assertOk();
 
     $this->assertModelExists(AppleMobilePassDevice::class, [
         'device_id' => $registration->device->getKey(),
@@ -47,7 +47,7 @@ it('returns success even if the registration wasnt found', function () {
             'deviceId' => '12345',
             'passTypeId' => 'pass.com.example',
         ]))
-        ->assertSuccessful();
+        ->assertOk();
 });
 
 it('fires MobilePassRemoved when a registration is deleted', function () {
