@@ -80,7 +80,9 @@ EventTicketPassClass::make('beatles-shea-1965')
     ->save();
 ```
 
-Different Class types expose different image setters. Event tickets and boarding passes take a logo and a hero image. Loyalty programs take a program logo via `setProgramLogoUrl()`. Offers take a logo.
+Different Class types expose different image setters. Event tickets, boarding passes, generic passes and offers take a logo and a hero image. Loyalty programs take a program logo via `setProgramLogoUrl()` and a hero image via `setHeroImageUrl()`.
+
+Every Google builder also has a `setHeroImageUrl()` that overrides the Class's hero image for a single pass.
 
 Google caches images it has fetched. When you change a URL's contents in place, you may need to use a new URL (or append a cache-busting query string) to see the new image.
 

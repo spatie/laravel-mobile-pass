@@ -48,3 +48,15 @@ it('creates a MobilePass row and POSTs the object to Google', function () {
 it('throws when setClass() is not called', function () {
     EventTicketPassBuilder::make()->setAttendeeName('John')->save();
 })->throws(RuntimeException::class);
+
+it('compiles a per-object hero image from the base builder', function () {
+    Http::fake(['*/eventTicketObject' => Http::response([], 200)]);
+
+    EventTicketPassBuilder::make()
+        ->setClass('ts-2026')
+        ->setObjectSuffix('ticket-1')
+        ->setHeroImageUrl('https://cdn.example.com/hero.jpg')
+        ->save();
+
+    Http::assertSent(fn ($request) => $request['heroImage']['sourceUri']['uri'] === 'https://cdn.example.com/hero.jpg');
+});

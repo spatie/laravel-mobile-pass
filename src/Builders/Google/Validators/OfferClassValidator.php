@@ -39,6 +39,7 @@ class OfferClassValidator extends GooglePassClassValidator
             'localizedFinePrint.translatedValues.*.language' => ['nullable', 'string'],
             'localizedFinePrint.translatedValues.*.value' => ['nullable', 'string'],
             'logo' => ['nullable', 'array'],
+            'heroImage' => ['nullable', 'array'],
             'hexBackgroundColor' => ['nullable', 'string'],
             'reviewStatus' => ['nullable', 'string'],
         ];

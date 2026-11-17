@@ -21,6 +21,8 @@ class OfferPassClass extends GooglePassClass
 
     protected ?Image $logo = null;
 
+    protected ?Image $hero = null;
+
     protected static function resourceName(): string
     {
         return 'offerClass';
@@ -110,6 +112,13 @@ class OfferPassClass extends GooglePassClass
         return $this;
     }
 
+    public function setHeroImageUrl(string $url): self
+    {
+        $this->hero = Image::fromUrl($url);
+
+        return $this;
+    }
+
     /** @return array<string, mixed> */
     protected function compileData(): array
     {
@@ -125,6 +134,7 @@ class OfferPassClass extends GooglePassClass
             'finePrint' => $this->finePrint?->defaultValue,
             'localizedFinePrint' => $this->finePrint?->toArray(),
             'logo' => $this->logo?->toArray(),
+            'heroImage' => $this->hero?->toArray(),
             'hexBackgroundColor' => $this->backgroundColor,
         ]);
     }
@@ -144,5 +154,6 @@ class OfferPassClass extends GooglePassClass
         }
 
         $this->logo = $this->hydrateImage($payload, 'logo');
+        $this->hero = $this->hydrateImage($payload, 'heroImage');
     }
 }
