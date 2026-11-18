@@ -2,6 +2,24 @@
 
 All notable changes to `laravel-mobile-pass` will be documented in this file.
 
+## 1.11.3 - 2026-11-18
+
+### Fixes
+
+- Return HTTP 200 with an empty body after Apple Wallet device unregistration, as required by Apple’s web service specification. This also applies when the registration no longer exists. Fixes the unexpected HTTP 204 response reported in #79.
+- Keep regression coverage for registration deletion, device preservation, and missing registrations, and assert the empty response body.
+
+### Maintenance
+
+- Run the existing test matrix and PHPStan for pull requests, including fork contributions.
+- Restore documentation for associating passes with models and update the README ad image URL.
+
+Thanks @alex-chevski for the fix and regression tests in #80.
+
+No dependency requirements or application APIs changed.
+
+**Full Changelog**: https://github.com/spatie/laravel-mobile-pass/compare/1.11.2...1.11.3
+
 ## 1.11.2 - 2026-10-19
 
 ### Fixes
@@ -58,6 +76,7 @@ Pass personalization adds a new table. Existing installs should publish and run 
 ```bash
 php artisan vendor:publish --tag="mobile-pass-migrations"
 php artisan migrate
+
 
 
 
@@ -160,6 +179,7 @@ EventTicketPassBuilder::make()
 
 
 
+
 ```
 A remote variant, `setRemoteBackgroundImage()`, is available as well. The image (along with its @2x and @3x densities) is bundled into the generated `.pkpass`.
 
@@ -181,6 +201,7 @@ EventTicketPassClass::make('beatles-shea-1965')
     ->addTextModule('Doors', 'Doors open at 18:30')
     ->addImageModule('https://example.com/seating-chart.png', 'seating')
     ->save();
+
 
 
 
