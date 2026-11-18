@@ -47,6 +47,24 @@ LoyaltyPassBuilder::make()
     ->save();
 ```
 
+### Hero images
+
+A hero image is the banner across the front of the card. Set a default for the whole program on the Class, and override it per member on the Object. When an Object has no hero image, Google falls back to the one on the Class.
+
+```php
+LoyaltyPassClass::make('spatie-rewards')
+    ->setHeroImageUrl('https://cdn.example.com/spatie-rewards-hero.png')
+    ->save();
+
+LoyaltyPassBuilder::make()
+    ->setClass('spatie-rewards')
+    ->setAccountId('USER-7842')
+    ->setHeroImageUrl('https://cdn.example.com/members/7842.jpg')
+    ->save();
+```
+
+The card's background color is set on the Class with `setBackgroundColor()`. Google doesn't support a per-member background color on loyalty Objects.
+
 ### Labels and a second value on the card face
 
 `setBalanceLabel()` sets the caption above the balance. Without it, Google falls back to a locale default.

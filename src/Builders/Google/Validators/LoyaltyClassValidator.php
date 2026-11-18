@@ -17,6 +17,7 @@ class LoyaltyClassValidator extends GooglePassClassValidator
             'localizedProgramName.translatedValues.*.language' => ['nullable', 'string'],
             'localizedProgramName.translatedValues.*.value' => ['nullable', 'string'],
             'programLogo' => ['nullable', 'array'],
+            'heroImage' => ['nullable', 'array'],
             'rewardsTier' => ['nullable', 'string'],
             'localizedRewardsTier' => ['nullable', 'array'],
             'localizedRewardsTier.defaultValue.value' => ['nullable', 'string'],

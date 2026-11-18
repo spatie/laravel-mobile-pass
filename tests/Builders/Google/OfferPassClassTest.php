@@ -78,3 +78,30 @@ it('all() returns a collection hydrated from resources', function () {
     expect($classes)->toHaveCount(2);
     expect($classes[0]->getTitle())->toBe('Offer A');
 });
+
+it('sends the hero image and hydrates it back through find()', function () {
+    Http::fake([
+        '*/offerClass/3388.spring' => Http::response([
+            'id' => '3388.spring',
+            'title' => 'Spring Sale',
+            'heroImage' => ['sourceUri' => ['uri' => 'https://cdn.example.com/hero.png']],
+        ], 200),
+        '*/offerClass' => Http::response([], 200),
+    ]);
+
+    OfferPassClass::make('spring')
+        ->setTitle('Spring Sale')
+        ->setHeroImageUrl('https://cdn.example.com/hero.png')
+        ->save();
+
+    Http::assertSent(fn ($request) => $request->method() === 'POST'
+        && $request['heroImage']['sourceUri']['uri'] === 'https://cdn.example.com/hero.png'
+    );
+
+    OfferPassClass::find('spring')->save();
+
+    Http::assertSentCount(3);
+    Http::assertSent(fn ($request) => $request->method() === 'POST'
+        && $request['heroImage'] === ['sourceUri' => ['uri' => 'https://cdn.example.com/hero.png']]
+    );
+});

@@ -23,6 +23,16 @@ EventTicketPassBuilder::make()
 
 Saving without a class throws a `RuntimeException`.
 
+## Hero images
+
+Every Google builder can override the Class's hero image for a single pass. Google falls back to the Class's hero image when the Object doesn't set one:
+
+```php
+$builder->setHeroImageUrl('https://cdn.example.com/members/7842.jpg');
+```
+
+The URL has to be publicly reachable over HTTPS, like every other [Google image](google-wallet/hosting-images).
+
 ## Object IDs
 
 Each Google pass Object also has its own unique ID. By default, the package generates a UUID for each Object you create. If you'd rather control the ID yourself (say, to line it up with a primary key from your database), pass a suffix:

@@ -13,6 +13,8 @@ class LoyaltyPassClass extends GooglePassClass
 
     protected ?Image $programLogo = null;
 
+    protected ?Image $hero = null;
+
     protected ?LocalizedString $rewardsTier = null;
 
     protected ?LocalizedString $rewardsTierLabel = null;
@@ -54,6 +56,13 @@ class LoyaltyPassClass extends GooglePassClass
     public function setProgramLogoUrl(string $url): self
     {
         $this->programLogo = Image::fromUrl($url);
+
+        return $this;
+    }
+
+    public function setHeroImageUrl(string $url): self
+    {
+        $this->hero = Image::fromUrl($url);
 
         return $this;
     }
@@ -126,6 +135,7 @@ class LoyaltyPassClass extends GooglePassClass
             'programName' => $this->programName?->defaultValue,
             'localizedProgramName' => $this->programName?->toArray(),
             'programLogo' => $this->programLogo?->toArray(),
+            'heroImage' => $this->hero?->toArray(),
             'rewardsTier' => $this->rewardsTier?->defaultValue,
             'localizedRewardsTier' => $this->rewardsTier?->toArray(),
             'rewardsTierLabel' => $this->rewardsTierLabel?->defaultValue,
@@ -145,6 +155,7 @@ class LoyaltyPassClass extends GooglePassClass
 
         $this->programName = $this->hydrateLocalizedString($payload, 'localizedProgramName', 'programName');
         $this->programLogo = $this->hydrateImage($payload, 'programLogo');
+        $this->hero = $this->hydrateImage($payload, 'heroImage');
         $this->rewardsTier = $this->hydrateLocalizedString($payload, 'localizedRewardsTier', 'rewardsTier');
         $this->rewardsTierLabel = $this->hydrateLocalizedString($payload, 'localizedRewardsTierLabel', 'rewardsTierLabel');
         $this->accountNameLabel = $this->hydrateLocalizedString($payload, 'localizedAccountNameLabel', 'accountNameLabel');

@@ -83,3 +83,29 @@ it('omits secondaryLoyaltyPoints when no secondary balance is set', function () 
 it('throws when setClass() is not called', function () {
     LoyaltyPassBuilder::make()->setAccountId('AC-42')->save();
 })->throws(RuntimeException::class);
+
+it('compiles a per-object hero image', function () {
+    Http::fake(['*/loyaltyObject' => Http::response([], 200)]);
+
+    $pass = LoyaltyPassBuilder::make()
+        ->setClass('lp-2026')
+        ->setObjectSuffix('jane')
+        ->setHeroImageUrl('https://cdn.example.com/members/jane.jpg')
+        ->save();
+
+    expect($pass->content['googleObjectPayload']['heroImage']['sourceUri']['uri'])
+        ->toBe('https://cdn.example.com/members/jane.jpg');
+
+    Http::assertSent(fn ($request) => $request['heroImage']['sourceUri']['uri'] === 'https://cdn.example.com/members/jane.jpg');
+});
+
+it('omits heroImage when no per-object hero image is set', function () {
+    Http::fake(['*/loyaltyObject' => Http::response([], 200)]);
+
+    LoyaltyPassBuilder::make()
+        ->setClass('lp-2026')
+        ->setObjectSuffix('jane')
+        ->save();
+
+    Http::assertSent(fn ($request) => ! array_key_exists('heroImage', $request->data()));
+});

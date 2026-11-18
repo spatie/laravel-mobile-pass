@@ -15,13 +15,21 @@ abstract class GooglePassObjectValidator
      */
     public function validate(array $payload): array
     {
-        $validator = validator($payload, $this->rules() + $this->moduleRules());
+        $validator = validator($payload, $this->rules() + $this->commonRules() + $this->moduleRules());
 
         if ($validator->fails()) {
             throw new InvalidPass($validator);
         }
 
         return $validator->validated();
+    }
+
+    /** @return array<string, array<int, string>> */
+    protected function commonRules(): array
+    {
+        return [
+            'heroImage' => ['nullable', 'array'],
+        ];
     }
 
     /**
