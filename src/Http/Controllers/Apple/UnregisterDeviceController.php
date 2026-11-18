@@ -21,6 +21,6 @@ class UnregisterDeviceController extends Controller
 
         (new $action)->execute($request->deviceId, $request->passSerial);
 
-        return response()->noContent();
+        return response()->noContent(200);
     }
 }
