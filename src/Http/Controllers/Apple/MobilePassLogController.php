@@ -14,6 +14,8 @@ class MobilePassLogController extends Controller
 {
     public function __invoke(Request $request): void
     {
-        event(new AppleMobilePassLogsReceived($request->json('logs')));
+        $logs = $request->json('logs');
+
+        event(new AppleMobilePassLogsReceived(is_array($logs) ? $logs : []));
     }
 }
