@@ -20,10 +20,10 @@ class RegisterDeviceController extends Controller
         $actionClass = Config::getActionClass('register_device', RegisterDeviceAction::class);
 
         $registration = (new $actionClass)->execute(
-            $request->deviceId,
+            $request->route('deviceId'),
             $request->input('pushToken'),
-            $request->passTypeId,
-            $request->passSerial,
+            $request->route('passTypeId'),
+            $request->route('passSerial'),
         );
 
         return response()

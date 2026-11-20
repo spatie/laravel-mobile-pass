@@ -31,6 +31,7 @@ use Spatie\LaravelMobilePass\Exceptions\InvalidCertificate;
 use Spatie\LaravelMobilePass\Exceptions\InvalidConfig;
 use Spatie\LaravelMobilePass\Models\Apple\AppleMobilePassPersonalization;
 use Spatie\LaravelMobilePass\Models\MobilePass;
+use Spatie\LaravelMobilePass\Support\Apple\AuthenticationToken;
 use Spatie\LaravelMobilePass\Support\Config;
 use Spatie\LaravelMobilePass\Support\WifiUri;
 
@@ -964,15 +965,21 @@ abstract class ApplePassBuilder
             return [];
         }
 
-        $authenticationToken = self::appleConfig('webservice.secret');
+        $secret = self::appleConfig('webservice.secret');
 
-        if (! is_string($authenticationToken) || $authenticationToken === '') {
+        if (! is_string($secret) || $secret === '') {
             if (self::isPresent(self::appleConfig('webservice.host'))) {
                 throw InvalidConfig::webserviceSecretMissing();
             }
 
             return [];
         }
+
+        // Apple doesn't let an update change the token of a pass, so a stored
+        // pass that was generated with the shared secret as its token keeps it.
+        $authenticationToken = $this->model !== null && $this->authenticationToken === $secret
+            ? $secret
+            : AuthenticationToken::forSerial($this->model->pass_serial ?? (string) $this->serialNumber);
 
         return [
             'webServiceURL' => $webServiceURL,

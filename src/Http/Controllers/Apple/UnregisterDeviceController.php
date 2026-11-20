@@ -19,7 +19,7 @@ class UnregisterDeviceController extends Controller
         /** @var class-string<UnregisterDeviceAction> $action */
         $action = Config::getActionClass('unregister_device', UnregisterDeviceAction::class);
 
-        (new $action)->execute($request->deviceId, $request->passSerial);
+        (new $action)->execute($request->route('deviceId'), $request->route('passSerial'));
 
         return response()->noContent(200);
     }
