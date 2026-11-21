@@ -39,6 +39,7 @@ class TestCase extends Orchestra
 
     protected function getEnvironmentSetUp($app)
     {
+        $app['config']->set('app.key', 'base64:'.base64_encode(str_repeat('a', 32)));
         $app['config']->set('mobile-pass.apple.certificate', null);
         $app['config']->set('mobile-pass.apple.certificate_path', __DIR__.'/TestSupport/apple/test-certificate.p12');
         $app['config']->set('mobile-pass.apple.certificate_password', 'test');

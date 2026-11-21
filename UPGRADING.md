@@ -1,5 +1,44 @@
 # Upgrading
 
+## Apple passes get their own web service token
+
+Every updatable Apple pass used to carry `mobile-pass.apple.webservice.secret` itself as its `authenticationToken`,
+and the web service accepted that value for every pass. Anyone who unzipped one `.pkpass` could read the secret and then
+fetch, register, unregister or personalize any other pass whose serial number they knew.
+
+Passes generated from now on carry their own token, derived from the serial number, the secret and `APP_KEY`. The
+web service accepts a token only for the pass it belongs to, and the secret doesn't open these passes. You don't
+have to replace the secret, and there is no database migration. Your app needs an `APP_KEY`.
+
+**Passes generated before this release keep the secret as their token.** Apple
+[doesn't let an update change the token](https://developer.apple.com/documentation/walletpasses/adding-a-web-service-to-update-passes)
+of a pass that is in a wallet, so these passes can't be moved to a token of their own. You choose what happens to
+them:
+
+- By default they keep receiving updates. The secret is accepted for these passes only, so anyone who has one of
+  them can still access the others.
+- Set `MOBILE_PASS_APPLE_WEBSERVICE_ACCEPT_SHARED_SECRET=false` to stop that. These passes stay in the wallet, but
+  no longer receive updates. To make such a pass updatable again, hand out a new pass with a new serial number.
+
+  If you published the config file, first add the key to the `apple.webservice` array:
+
+  ```php
+  'accept_shared_secret' => env('MOBILE_PASS_APPLE_WEBSERVICE_ACCEPT_SHARED_SECRET', true),
+  ```
+
+A pass counts as generated before this release when its stored `content` holds the secret as `authenticationToken`.
+A pass that you saved while the web service was not configured has no token in its `content`. If you handed it out
+after you configured the web service, it carries the secret too, but it is not recognized and stops updating. To
+keep such a pass updating, store the secret as `authenticationToken` in its `content`.
+
+Don't change the secret afterwards: every pass you handed out stops updating. Changing `APP_KEY` does the same for
+the passes generated from this release on.
+
+`VerifyApplePasskitRequest::expectedAuthorizationValue()` is removed, because there is no longer one value for all
+passes.
+
+---
+
 ## Apple seat semantic tags now use Apple's wire keys
 
 `Seat` used to serialize its properties under bare keys (`number`, `row`, `section`, ...). Apple's
