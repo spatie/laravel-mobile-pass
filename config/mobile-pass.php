@@ -37,10 +37,22 @@ return [
         * Set a secret to make passes updatable. When no host is set, APP_URL
         * is used if it's HTTPS. Without both a secret and an HTTPS host, passes
         * are generated without webServiceURL and authenticationToken.
+        *
+        * By default, passes use the shared secret as their authenticationToken.
+        * Enable per_pass_tokens to derive tokens from each serial, this secret
+        * and config('app.key'). Read UPGRADING.md before enabling it.
         */
         'webservice' => [
             'secret' => env('MOBILE_PASS_APPLE_WEBSERVICE_SECRET'),
             'host' => env('MOBILE_PASS_APPLE_WEBSERVICE_HOST'),
+            'per_pass_tokens' => false,
+
+            /*
+            * Only applies when per_pass_tokens is enabled. Accept the shared
+            * secret for passes whose stored token matches it. These passes
+            * retain the shared-secret security risk. See UPGRADING.md.
+            */
+            'accept_shared_secret' => env('MOBILE_PASS_APPLE_WEBSERVICE_ACCEPT_SHARED_SECRET', true),
         ],
     ],
 
