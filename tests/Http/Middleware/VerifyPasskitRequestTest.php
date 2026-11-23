@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Testing\TestResponse;
 use Spatie\LaravelMobilePass\Builders\Apple\CouponPassBuilder;
 use Spatie\LaravelMobilePass\Builders\Apple\GenericPassBuilder;
+use Spatie\LaravelMobilePass\Http\Middleware\VerifyApplePasskitRequest;
 use Spatie\LaravelMobilePass\Models\Apple\AppleMobilePassPersonalization;
 use Spatie\LaravelMobilePass\Models\Apple\AppleMobilePassRegistration;
 use Spatie\LaravelMobilePass\Models\MobilePass;
@@ -11,7 +12,10 @@ use Spatie\LaravelMobilePass\Support\Apple\AuthenticationToken;
 use Spatie\LaravelMobilePass\Support\Apple\PkPassReader;
 
 beforeEach(function () {
-    config(['mobile-pass.apple.webservice.secret' => 'a-very-secret-token-0123456789']);
+    config([
+        'mobile-pass.apple.webservice.secret' => 'a-very-secret-token-0123456789',
+        'mobile-pass.apple.webservice.per_pass_tokens' => true,
+    ]);
 });
 
 function callAppleWebService(string $method, string $routeName, MobilePass $pass, ?string $token): TestResponse
@@ -55,6 +59,60 @@ dataset('endpoints that require the pass token', [
     'unregister a device' => ['DELETE', 'mobile-pass.unregister-device'],
     'personalize' => ['POST', 'mobile-pass.apple.personalize'],
 ]);
+
+it('keeps passes saved before web service setup updating by default', function (string $method, string $routeName, array $options) {
+    config(['mobile-pass.apple.webservice' => $options]);
+
+    $pass = CouponPassBuilder::make()
+        ->setDescription('Existing coupon')
+        ->setIconImage(getTestSupportPath('images/spatie-thumbnail.png'))
+        ->save();
+
+    expect($pass->content)->not->toHaveKey('authenticationToken');
+
+    config([
+        'mobile-pass.apple.webservice.secret' => 'a-very-secret-token-0123456789',
+        'mobile-pass.apple.webservice.host' => 'https://example.test',
+        'mobile-pass.apple.webservice.accept_shared_secret' => false,
+    ]);
+
+    $token = PkPassReader::fromString($pass->generate())->passProperty('authenticationToken');
+
+    expect($token)->toBe('a-very-secret-token-0123456789')
+        ->and($pass->fresh()->content)->not->toHaveKey('authenticationToken');
+
+    callAppleWebService($method, $routeName, $pass, $token)->assertSuccessful();
+})->with('endpoints that require the pass token')->with([
+    'unpublished option' => [[]],
+    'disabled option' => [['per_pass_tokens' => false]],
+]);
+
+it('preserves custom authorization middleware without a serial route parameter by default', function () {
+    config(['mobile-pass.apple.webservice' => []]);
+
+    app()->bind(VerifyApplePasskitRequest::class, fn () => new class extends VerifyApplePasskitRequest
+    {
+        protected function expectedAuthorizationValue(): string
+        {
+            return 'CustomPass custom-token';
+        }
+    });
+
+    Route::get('custom-pass-auth', fn () => 'Accepted')->middleware(VerifyApplePasskitRequest::class);
+
+    $this->get('custom-pass-auth', ['Authorization' => 'CustomPass custom-token'])->assertOk()->assertSee('Accepted');
+    $this->get('custom-pass-auth', ['Authorization' => 'CustomPass wrong-token'])->assertUnauthorized();
+});
+
+it('preserves responses for unknown serials by default', function () {
+    config(['mobile-pass.apple.webservice' => ['secret' => 'legacy-secret']]);
+
+    $parameters = ['deviceId' => 'device-1', 'passTypeId' => 'pass.com.example', 'passSerial' => 'unknown-serial'];
+    $headers = ['Authorization' => 'ApplePass legacy-secret'];
+
+    $this->getJson(route('mobile-pass.check-for-updates', $parameters), $headers)->assertNotFound();
+    $this->deleteJson(route('mobile-pass.unregister-device', $parameters), [], $headers)->assertOk();
+});
 
 it('rejects the shared secret', function (string $method, string $routeName) {
     $pass = MobilePass::factory()->create();

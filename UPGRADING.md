@@ -1,59 +1,61 @@
 # Upgrading
 
-## Apple passes get their own web service token
+## Opt-in per-pass Apple web service tokens
 
-Every updatable Apple pass used to carry `mobile-pass.apple.webservice.secret` itself as its `authenticationToken`,
-and the web service accepted that value for every pass. Anyone who unzipped one `.pkpass` could read the secret and then
-fetch, register, unregister or personalize any other pass whose serial number they knew.
+**Upgrading does not change token generation or authentication by default.** Passes still carry
+`mobile-pass.apple.webservice.secret` as their `authenticationToken`, and the web service accepts it as before.
+This preserves the existing security risk: anyone who unzips one `.pkpass` can read the shared secret and access
+other passes whose serial numbers they know.
 
-Passes generated from now on carry their own token, derived from the serial number, the secret and `APP_KEY`. The
-web service accepts a token only for the pass it belongs to, and the secret doesn't open these passes. You don't
-have to replace the secret, and there is no database migration. Your app needs an `APP_KEY`.
+To enable per-pass tokens, add or change these keys in the published config's `apple.webservice` array:
 
-**Passes generated before this release keep the secret as their token.** Apple
+```php
+'per_pass_tokens' => true,
+'accept_shared_secret' => true,
+```
+
+With `per_pass_tokens` enabled, new passes carry a token derived from their serial number, the secret and
+`config('app.key')`. The web service accepts that token only for its own serial, and the shared secret cannot
+open these new passes. There is no database migration. Read the checks below before enabling this mode.
+
+### Existing passes when opting in
+
+**Passes already issued with the shared secret keep it as their token.** Apple
 [doesn't let an update change the token](https://developer.apple.com/documentation/walletpasses/adding-a-web-service-to-update-passes)
 of a pass that is in a wallet, so these passes can't be moved to a token of their own. You choose what happens to
 them:
 
-- By default they keep receiving updates. The secret is accepted for these passes only, so anyone who has one of
-  them can still access the others.
-- Set `MOBILE_PASS_APPLE_WEBSERVICE_ACCEPT_SHARED_SECRET=false` to stop that. These passes stay in the wallet, but
+- With `accept_shared_secret` enabled they keep receiving updates if their stored token matches the secret.
+  The secret is accepted for these passes only, so anyone who has one of them can still access the others.
+- Set `accept_shared_secret` to `false` in the config to stop that. These passes stay in the wallet, but
   no longer receive updates. To make such a pass updatable again, hand out a new pass with a new serial number.
 
-  If you published the config file, first add the key to the `apple.webservice` array:
-
-  ```php
-  'accept_shared_secret' => env('MOBILE_PASS_APPLE_WEBSERVICE_ACCEPT_SHARED_SECRET', true),
-  ```
-
-A pass counts as generated before this release when its stored `content` holds the secret as `authenticationToken`.
+A pass counts as issued with the shared secret when its stored `content` holds the secret as `authenticationToken`.
 A pass that you saved while the web service was not configured has no token in its `content`. If you handed it out
 after you configured the web service, it carries the secret too, but it is not recognized and stops updating. To
-keep such a pass updating, store the secret as `authenticationToken` in its `content` before upgrading. Only do
+keep such a pass updating, store the secret as `authenticationToken` in its `content` before opting in. Only do
 this for passes you know were issued with the shared secret. Marking other passes this way exposes them to anyone
 who has an old pass. If you cannot determine which token was issued, give the user a new pass with a new serial.
 
 Don't change the secret afterwards: every pass you handed out stops updating. Changing `APP_KEY` does the same for
-the passes generated from this release on. Laravel's `APP_PREVIOUS_KEYS` does not preserve access: these tokens
+passes issued with per-pass tokens. Laravel's `APP_PREVIOUS_KEYS` does not preserve access: these tokens
 use the current `app.key` directly, not Laravel's encrypter.
 
-### Compatibility checks before deploying
+### Checks before opting in
 
-This change is not completely backward compatible, even with `accept_shared_secret` enabled:
+These changes apply only when `per_pass_tokens` is enabled:
 
-- An `APP_KEY` is now required to generate an updatable pass and authenticate web service requests, including
-  requests for legacy passes. Without it, the package throws `MissingAppKeyException`.
 - Legacy passes whose stored content has no token need the check described above, or their updates stop.
 - The shared secret now gets a 401 for an unknown serial, rather than a 404 or a successful unregister response.
   When no web service secret is configured, all protected requests get a 401.
-- Custom middleware must provide the `passSerial` route parameter. Overriding the removed
-  `VerifyApplePasskitRequest::expectedAuthorizationValue()` method no longer changes authentication.
+- Custom middleware must provide the `passSerial` route parameter. The
+  `VerifyApplePasskitRequest::expectedAuthorizationValue()` override applies only in the default shared-secret mode.
 - If custom actions store legacy passes outside the configured mobile pass model, the legacy fallback cannot
   find their token. Adapt that integration before upgrading.
 
-Deploy the generator and web service together, with the same secret and `APP_KEY` on every instance. Old web
+Enable the mode on the generator and web service together, with the same secret and `APP_KEY` on every instance. Old web
 service instances reject the new tokens and still accept the shared secret for every serial. Rolling back the
-web service after issuing new tokens also stops those passes from updating.
+web service or disabling `per_pass_tokens` after issuing new tokens also stops those passes from updating.
 
 After changing the published config or environment values, rebuild any Laravel config cache and restart
 long-running application processes. Keeping legacy support enabled preserves its security risk; disabling it

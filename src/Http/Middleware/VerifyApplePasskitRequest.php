@@ -12,6 +12,15 @@ class VerifyApplePasskitRequest
     public function handle(Request $request, Closure $next): mixed
     {
         $providedAuthorization = (string) $request->header('Authorization');
+
+        if (! config('mobile-pass.apple.webservice.per_pass_tokens', false)) {
+            if (! hash_equals($this->expectedAuthorizationValue(), $providedAuthorization)) {
+                abort(401);
+            }
+
+            return $next($request);
+        }
+
         $passSerial = (string) $request->route('passSerial');
         $secret = config('mobile-pass.apple.webservice.secret');
 
@@ -30,6 +39,11 @@ class VerifyApplePasskitRequest
         }
 
         abort(401);
+    }
+
+    protected function expectedAuthorizationValue(): string
+    {
+        return 'ApplePass '.config('mobile-pass.apple.webservice.secret');
     }
 
     /**

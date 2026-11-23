@@ -66,7 +66,7 @@ it('appends /passkit to the configured host', function () {
     $data = buildCouponPassData();
 
     expect($data['webServiceURL'])->toBe('https://example.test/passkit')
-        ->and($data['authenticationToken'])->toBe(hash_hmac('sha256', 'abc', 'a-very-secret-token-0123456789'.config('app.key')));
+        ->and($data['authenticationToken'])->toBe('a-very-secret-token-0123456789');
 });
 
 it('strips a trailing slash from the configured https host', function () {
@@ -86,7 +86,7 @@ it('falls back to config(app.url) when the host is not set and the app URL is HT
     $data = buildCouponPassData();
 
     expect($data['webServiceURL'])->toBe('https://my-app.test/passkit')
-        ->and($data['authenticationToken'])->toBe(hash_hmac('sha256', 'abc', 'a-very-secret-token-0123456789'.config('app.key')));
+        ->and($data['authenticationToken'])->toBe('a-very-secret-token-0123456789');
 });
 
 it('ignores a non-HTTPS app.url when the host is not set', function () {
@@ -108,7 +108,18 @@ it('preserves a custom path in the configured host (for users with a route prefi
     expect($data['webServiceURL'])->toBe('https://example.test/api/passkit');
 });
 
-it('throws when no app key is set, because the token would then be derived from the secret alone', function () {
+it('derives per-pass tokens from the configured app key when opted in', function () {
+    config()->set('mobile-pass.apple.webservice.per_pass_tokens', true);
+    config()->set('mobile-pass.apple.webservice.host', 'https://example.test');
+    config()->set('mobile-pass.apple.webservice.secret', 'a-very-secret-token-0123456789');
+    config()->set('app.key', 'configured-app-key');
+
+    expect(buildCouponPassData()['authenticationToken'])
+        ->toBe(hash_hmac('sha256', 'abc', 'a-very-secret-token-0123456789configured-app-key'));
+});
+
+it('throws when opted in without an app key, because the token would then be derived from the secret alone', function () {
+    config()->set('mobile-pass.apple.webservice.per_pass_tokens', true);
     config()->set('mobile-pass.apple.webservice.host', 'https://example.test');
     config()->set('mobile-pass.apple.webservice.secret', 'a-very-secret-token-0123456789');
     config()->set('app.key', '');

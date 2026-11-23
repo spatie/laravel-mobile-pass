@@ -977,9 +977,13 @@ abstract class ApplePassBuilder
 
         // Apple doesn't let an update change the token of a pass, so a stored
         // pass that was generated with the shared secret as its token keeps it.
-        $authenticationToken = $this->model !== null && $this->authenticationToken === $secret
-            ? $secret
-            : AuthenticationToken::forSerial($this->model->pass_serial ?? (string) $this->serialNumber);
+        $authenticationToken = $secret;
+
+        if (config('mobile-pass.apple.webservice.per_pass_tokens', false)) {
+            $authenticationToken = $this->model !== null && $this->authenticationToken === $secret
+                ? $secret
+                : AuthenticationToken::forSerial($this->model->pass_serial ?? (string) $this->serialNumber);
+        }
 
         return [
             'webServiceURL' => $webServiceURL,
