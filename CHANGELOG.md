@@ -2,6 +2,25 @@
 
 All notable changes to `laravel-mobile-pass` will be documented in this file.
 
+## 1.12.0 - 2026-11-23
+
+### Added
+
+- Opt-in per-pass Apple Wallet web service authentication. Enable `apple.webservice.per_pass_tokens` in the published config to derive each new pass token from its serial, the web service secret, and `config("app.key")`.
+- Keep shared-secret token generation and authentication unchanged by default, including existing middleware overrides. Existing apps do not need to change their configuration.
+
+### Fixed
+
+- Use route identifiers when registering or unregistering Apple Wallet devices, so request input cannot redirect an authenticated request to a different pass or device.
+
+### Before opting in
+
+The shared-secret security risk remains until per-pass mode is enabled. Existing passes cannot change their installed authentication token. Read [UPGRADING.md](https://github.com/spatie/laravel-mobile-pass/blob/1.12.0/UPGRADING.md) before opting in, especially for passes without a stored token. Enable the mode on the generator and web service together; do not disable it after issuing per-pass tokens. Legacy shared-secret support can be disabled separately with `apple.webservice.accept_shared_secret`.
+
+Thanks @f4llenz for the contribution and @anepoti71 for reporting the issue in #83.
+
+**Full Changelog**: https://github.com/spatie/laravel-mobile-pass/compare/1.11.3...1.12.0
+
 ## 1.11.3 - 2026-11-18
 
 ### Fixes
@@ -76,6 +95,7 @@ Pass personalization adds a new table. Existing installs should publish and run 
 ```bash
 php artisan vendor:publish --tag="mobile-pass-migrations"
 php artisan migrate
+
 
 
 
@@ -180,6 +200,7 @@ EventTicketPassBuilder::make()
 
 
 
+
 ```
 A remote variant, `setRemoteBackgroundImage()`, is available as well. The image (along with its @2x and @3x densities) is bundled into the generated `.pkpass`.
 
@@ -201,6 +222,7 @@ EventTicketPassClass::make('beatles-shea-1965')
     ->addTextModule('Doors', 'Doors open at 18:30')
     ->addImageModule('https://example.com/seating-chart.png', 'seating')
     ->save();
+
 
 
 
