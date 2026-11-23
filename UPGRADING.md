@@ -29,13 +29,35 @@ them:
 A pass counts as generated before this release when its stored `content` holds the secret as `authenticationToken`.
 A pass that you saved while the web service was not configured has no token in its `content`. If you handed it out
 after you configured the web service, it carries the secret too, but it is not recognized and stops updating. To
-keep such a pass updating, store the secret as `authenticationToken` in its `content`.
+keep such a pass updating, store the secret as `authenticationToken` in its `content` before upgrading. Only do
+this for passes you know were issued with the shared secret. Marking other passes this way exposes them to anyone
+who has an old pass. If you cannot determine which token was issued, give the user a new pass with a new serial.
 
 Don't change the secret afterwards: every pass you handed out stops updating. Changing `APP_KEY` does the same for
-the passes generated from this release on.
+the passes generated from this release on. Laravel's `APP_PREVIOUS_KEYS` does not preserve access: these tokens
+use the current `app.key` directly, not Laravel's encrypter.
 
-`VerifyApplePasskitRequest::expectedAuthorizationValue()` is removed, because there is no longer one value for all
-passes.
+### Compatibility checks before deploying
+
+This change is not completely backward compatible, even with `accept_shared_secret` enabled:
+
+- An `APP_KEY` is now required to generate an updatable pass and authenticate web service requests, including
+  requests for legacy passes. Without it, the package throws `MissingAppKeyException`.
+- Legacy passes whose stored content has no token need the check described above, or their updates stop.
+- The shared secret now gets a 401 for an unknown serial, rather than a 404 or a successful unregister response.
+  When no web service secret is configured, all protected requests get a 401.
+- Custom middleware must provide the `passSerial` route parameter. Overriding the removed
+  `VerifyApplePasskitRequest::expectedAuthorizationValue()` method no longer changes authentication.
+- If custom actions store legacy passes outside the configured mobile pass model, the legacy fallback cannot
+  find their token. Adapt that integration before upgrading.
+
+Deploy the generator and web service together, with the same secret and `APP_KEY` on every instance. Old web
+service instances reject the new tokens and still accept the shared secret for every serial. Rolling back the
+web service after issuing new tokens also stops those passes from updating.
+
+After changing the published config or environment values, rebuild any Laravel config cache and restart
+long-running application processes. Keeping legacy support enabled preserves its security risk; disabling it
+requires users of legacy passes to install replacement passes.
 
 ---
 

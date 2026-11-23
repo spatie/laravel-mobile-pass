@@ -56,21 +56,6 @@ dataset('endpoints that require the pass token', [
     'personalize' => ['POST', 'mobile-pass.apple.personalize'],
 ]);
 
-it('accepts the token of the requested pass', function (string $method, string $routeName) {
-    $pass = MobilePass::factory()->create();
-
-    callAppleWebService($method, $routeName, $pass, AuthenticationToken::forSerial($pass->pass_serial))
-        ->assertSuccessful();
-})->with('endpoints that require the pass token');
-
-it('rejects the token of another pass', function (string $method, string $routeName) {
-    $pass = MobilePass::factory()->create();
-    $otherPass = MobilePass::factory()->create();
-
-    callAppleWebService($method, $routeName, $pass, AuthenticationToken::forSerial($otherPass->pass_serial))
-        ->assertUnauthorized();
-})->with('endpoints that require the pass token');
-
 it('rejects the shared secret', function (string $method, string $routeName) {
     $pass = MobilePass::factory()->create();
 
@@ -111,7 +96,7 @@ it('rejects every request when no secret is configured', function (?string $secr
         ->assertUnauthorized();
 })->with([null, '']);
 
-it('generates passes that authenticate with their own token only', function () {
+it('generates passes that authenticate with their own token only', function (string $method, string $routeName) {
     config(['mobile-pass.apple.webservice.host' => 'https://example.test']);
 
     [$pass, $otherPass] = collect(['serial-1', 'serial-2'])->map(
@@ -125,11 +110,33 @@ it('generates passes that authenticate with their own token only', function () {
 
     $token = PkPassReader::fromString($pass->generate())->passProperty('authenticationToken');
 
-    expect($token)->not->toContain('a-very-secret-token-0123456789');
+    callAppleWebService($method, $routeName, $otherPass, $token)->assertUnauthorized();
+    callAppleWebService($method, $routeName, $pass, $token)->assertSuccessful();
+    callAppleWebService($method, $routeName, $pass, 'a-very-secret-token-0123456789')->assertUnauthorized();
 
-    callAppleWebService('GET', 'mobile-pass.check-for-updates', $pass, $token)->assertSuccessful();
-    callAppleWebService('GET', 'mobile-pass.check-for-updates', $otherPass, $token)->assertUnauthorized();
-    callAppleWebService('GET', 'mobile-pass.check-for-updates', $pass, 'a-very-secret-token-0123456789')->assertUnauthorized();
+    expect($token)->not->toContain('a-very-secret-token-0123456789');
+})->with('endpoints that require the pass token');
+
+it('keeps a new pass token when saving and serving an update', function () {
+    config(['mobile-pass.apple.webservice.host' => 'https://example.test']);
+
+    $pass = CouponPassBuilder::make()
+        ->setDescription('Original coupon')
+        ->setIconImage(getTestSupportPath('images/spatie-thumbnail.png'))
+        ->save();
+
+    $original = PkPassReader::fromString($pass->generate());
+    $token = $original->passProperty('authenticationToken');
+
+    $pass->builder()->setDescription('Updated coupon')->save();
+
+    $response = callAppleWebService('GET', 'mobile-pass.check-for-updates', $pass, $token)->assertOk();
+    $updated = PkPassReader::fromString($response->getContent());
+
+    expect($updated->passProperty('authenticationToken'))->toBe($token)
+        ->and($updated->passProperty('serialNumber'))->toBe($original->passProperty('serialNumber'))
+        ->and($updated->passProperty('description'))->toBe('Updated coupon')
+        ->and($pass->fresh()->content['authenticationToken'])->toBe($token);
 });
 
 it('keeps the shared secret in a pass that was generated with it', function () {
@@ -163,25 +170,48 @@ it('does not hand the shared secret or the token of another pass to a new pass',
         ->toBe(AuthenticationToken::forSerial($otherPass->pass_serial));
 });
 
-it('registers and unregisters a device for the pass in the URL only', function () {
+it('registers and unregisters using the route identifiers instead of request input', function (string $inputSource) {
     $registration = AppleMobilePassRegistration::factory()->create();
     $otherRegistration = AppleMobilePassRegistration::factory()->create(['device_id' => $registration->device_id]);
+    $otherDeviceRegistration = AppleMobilePassRegistration::factory()->create(['mobile_pass_id' => $registration->mobile_pass_id]);
     $pass = $registration->pass;
 
     $headers = ['Authorization' => 'ApplePass '.AuthenticationToken::forSerial($pass->pass_serial)];
     $parameters = ['deviceId' => $registration->device_id, 'passTypeId' => 'pass.com.example', 'passSerial' => $pass->pass_serial];
-    $input = ['pushToken' => 'push-token-1', 'passSerial' => $otherRegistration->pass->pass_serial];
+    $input = [
+        'deviceId' => $otherDeviceRegistration->device_id,
+        'passTypeId' => 'pass.com.attacker',
+        'passSerial' => $otherRegistration->pass->pass_serial,
+    ];
 
-    $this->deleteJson(route('mobile-pass.unregister-device', $parameters), $input, $headers)->assertOk();
+    $unregisterUrl = route('mobile-pass.unregister-device', $parameters);
+    $registerUrl = route('mobile-pass.register-device', $parameters);
+
+    if ($inputSource === 'query') {
+        $unregisterUrl .= '?'.http_build_query($input);
+        $registerUrl .= '?'.http_build_query($input);
+        $input = [];
+    }
+
+    $this->deleteJson($unregisterUrl, $input, $headers)->assertOk();
 
     expect($registration->fresh())->toBeNull()
-        ->and($otherRegistration->fresh())->not->toBeNull();
+        ->and($otherRegistration->fresh())->not->toBeNull()
+        ->and($otherDeviceRegistration->fresh())->not->toBeNull();
 
-    $this->postJson(route('mobile-pass.register-device', $parameters), $input, $headers)->assertCreated();
+    $this->postJson($registerUrl, ['pushToken' => 'push-token-1', ...$input], $headers)->assertCreated();
 
-    expect($pass->registrations()->count())->toBe(1)
-        ->and($otherRegistration->pass->registrations()->count())->toBe(1);
-});
+    $this->assertDatabaseHas('apple_mobile_pass_registrations', [
+        'mobile_pass_id' => $pass->getKey(),
+        'device_id' => $registration->device_id,
+        'pass_type_id' => 'pass.com.example',
+    ]);
+
+    expect($pass->registrations()->count())->toBe(2)
+        ->and($otherRegistration->pass->registrations()->count())->toBe(1)
+        ->and($registration->device->fresh()->push_token)->toBe('push-token-1')
+        ->and($otherDeviceRegistration->device->fresh()->push_token)->not->toBe('push-token-1');
+})->with(['body', 'query']);
 
 it('does not require a token to list the updated passes of a device', function () {
     $registration = AppleMobilePassRegistration::factory()->create();
