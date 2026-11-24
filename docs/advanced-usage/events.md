@@ -78,7 +78,7 @@ class ForwardAppleWalletLogs
 }
 ```
 
-The payload is a plain `array<string>` of log lines. There's no Google equivalent; Google Wallet doesn't post back error logs.
+The payload is a plain `array<string>` of log lines. If Apple posts a malformed payload or one without a `logs` key, the endpoint still responds with `200` and `logEntries` is an empty array. There's no Google equivalent; Google Wallet doesn't post back error logs.
 
 ## PassPersonalized
 
