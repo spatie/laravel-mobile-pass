@@ -34,6 +34,8 @@ abstract class GooglePassBuilder
 
     protected PassType $type;
 
+    protected ?Image $hero = null;
+
     /** @var array<int, Link> */
     protected array $links = [];
 
@@ -105,6 +107,13 @@ abstract class GooglePassBuilder
             WifiUri::build($ssid, $password, $hidden),
             $altText ?? $ssid,
         );
+    }
+
+    public function setHeroImageUrl(string $url): static
+    {
+        $this->hero = Image::fromUrl($url);
+
+        return $this;
     }
 
     public function addLink(string $uri, ?string $description = null): static
@@ -199,6 +208,7 @@ abstract class GooglePassBuilder
             'classId' => $this->classId(),
             'state' => $this->state,
             'barcode' => $this->compileBarcode(),
+            'heroImage' => $this->hero?->toArray(),
         ], $this->compileData(), $this->compileModules()));
     }
 

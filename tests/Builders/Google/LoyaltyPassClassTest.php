@@ -79,3 +79,38 @@ it('all() returns a collection hydrated from resources', function () {
     expect($classes)->toHaveCount(2);
     expect($classes[0]->getProgramName())->toBe('Club A');
 });
+
+it('sends the hero image and hydrates it back through find()', function () {
+    Http::fake([
+        '*/loyaltyClass/3388.rewards' => Http::response([
+            'id' => '3388.rewards',
+            'programName' => 'Spatie Rewards',
+            'heroImage' => ['sourceUri' => ['uri' => 'https://cdn.example.com/hero.png']],
+        ], 200),
+        '*/loyaltyClass' => Http::response([], 200),
+    ]);
+
+    LoyaltyPassClass::make('rewards')
+        ->setProgramName('Spatie Rewards')
+        ->setHeroImageUrl('https://cdn.example.com/hero.png')
+        ->save();
+
+    Http::assertSent(fn ($request) => $request->method() === 'POST'
+        && $request['heroImage']['sourceUri']['uri'] === 'https://cdn.example.com/hero.png'
+    );
+
+    LoyaltyPassClass::find('rewards')->save();
+
+    Http::assertSentCount(3);
+    Http::assertSent(fn ($request) => $request->method() === 'POST'
+        && $request['heroImage'] === ['sourceUri' => ['uri' => 'https://cdn.example.com/hero.png']]
+    );
+});
+
+it('omits heroImage when no hero image is set', function () {
+    Http::fake(['*/loyaltyClass' => Http::response([], 200)]);
+
+    LoyaltyPassClass::make('rewards')->setProgramName('Spatie Rewards')->save();
+
+    Http::assertSent(fn ($request) => ! array_key_exists('heroImage', $request->data()));
+});
